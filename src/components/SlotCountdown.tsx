@@ -26,13 +26,13 @@ const networks: Record<string, NetworkConfig> = {
   sepolia: {
     beaconApi: "https://ethereum-sepolia-beacon-api.publicnode.com",
     rpc: "https://ethereum-sepolia-rpc.publicnode.com",
-    target: 7020544,
+    target: 7118848,
     name: "Sepolia",
   },
   holesky: {
     beaconApi: "https://ethereum-holesky-beacon-api.publicnode.com",
     rpc: "https://ethereum-holesky-rpc.publicnode.com",
-    target: 3620864,
+    target: 3710976,
     name: "Holesky",
   },
   mainnet: {
@@ -55,7 +55,7 @@ const SlotCountdown: React.FC = () => {
   const [currentEpoch, setCurrentEpoch] = useState<number>(0);
   const [currentBlock, setCurrentBlock] = useState<number>(0);
   const [timer, setTimer] = useState<number>(13); // 13-second timer
-  const [network, setNetwork] = useState<keyof typeof networks>("holesky"); // Default network
+  const [network, setNetwork] = useState<keyof typeof networks>("sepolia"); // Default network
   const [loading, setLoading] = useState<boolean>(true); // Show loader only on first load
   const [countdown, setCountdown] = useState<string>(""); // Countdown for days, hours, minutes
   const [isUpgradeLive, setIsUpgradeLive] = useState<boolean>(false); // Track if the upgrade is live
@@ -226,9 +226,9 @@ const SlotCountdown: React.FC = () => {
             </Button>
           </HStack>
 
-          {loading ? (
+          {(loading) ? (
             <Spinner size="xl" color="blue.500" />
-          ) : isUpgradeLive ? (
+          ) : (isUpgradeLive || slotsRemaining<=0) ? (
             // Celebratory Animation
             <Text
               fontSize="2xl"
