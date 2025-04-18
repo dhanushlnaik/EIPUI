@@ -32,7 +32,8 @@ import NetworkUpgradesChart from "@/components/NetworkUpgradesChart";
 import NetworkUpgradesChart2 from "@/components/NetworkUpgradesChart2";
 import { FaSyncAlt } from "react-icons/fa";
 import { useRouter } from "next/router";
-import Graph from "@/components/NetworkUpgradesGraph";
+// import Graph from "@/components/NetworkUpgradesGraph";
+import Graph from "@/components/EIP3DWrapper"
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 import { IconButton } from '@chakra-ui/react';
 import { useRef } from 'react';
@@ -467,7 +468,7 @@ const All = () => {
             fontSize={{ base: "md", md: "lg", lg: "2xl" }}
             textAlign="justify"
             lineHeight="1.6"
-            maxWidth="1200px" // Limit text width for better readability
+            
           >
             Ethereum developers are moving toward the next major network upgrade, Prague and Electra, 
             collectively known as{" "}
@@ -497,11 +498,6 @@ const All = () => {
             <NLink href="https://notes.ethereum.org/@ethpandaops/pectra-devnet-6">
               <Text as="span" color="blue.500" textDecor="underline">
                 Devnet 6
-              </Text>
-            </NLink>.Specs and other details can be followed below.{" "}
-            <NLink href="#carousel-section">
-              <Text as="span" color="blue.500" textDecor="underline">
-                View more
               </Text>
             </NLink>.
           </Text>
@@ -548,105 +544,109 @@ const All = () => {
 
           </Flex>
 
-          <Flex
-      position="relative"
-      width="100%"
-      align="center"
-    >
-      {/* Left arrow */}
-      <IconButton
-        aria-label="Scroll left"
-        icon={<ChevronLeftIcon />}
-        position="absolute"
-        left={0}
-        zIndex={1}
-        onClick={scrollLeft}
-        bg="white"
-        boxShadow="md"
-        _hover={{ bg: "gray.100" }}
-      />
+          <Flex position="relative" width="100%" align="center">
+  {/* Left arrow with proper spacing */}
+  <IconButton
+    aria-label="Scroll left"
+    icon={<ChevronLeftIcon />}
+    position="absolute"
+    left={0}
+    zIndex={2}  // Higher z-index to ensure it's above content
+    onClick={scrollLeft}
+    bg="#30A0E0"
+    boxShadow="md"
+    _hover={{ bg: "gray.100" }}
+  />
 
-      {/* Cards container */}
-      <Flex
-        ref={containerRef}
-        flex="1"
-        overflowX="auto"
-        overflowY="hidden"
-        py={4}
-        px={8}
-        scrollBehavior="smooth"
-        sx={{
-          "&::-webkit-scrollbar": {
-            height: "8px",
-          },
-          "&::-webkit-scrollbar-thumb": {
-            background: "#3182ce",
-            borderRadius: "4px",
-          },
-          "&::-webkit-scrollbar-thumb:hover": {
-            background: "#2b6cb0",
-          },
-          "&::-webkit-scrollbar-track": {
-            background: "#edf2f7",
-          },
-        }}
-      >
-        <Flex gap={4} flexWrap="nowrap">
-          {PectraPosts.map((pectra, index) => (
-            <Card
-              key={index}
-              image={pectra.image}
-              title={pectra.title}
-              content={pectra.content}
-              link={pectra.link}
-              // minWidth="300px"
-              // flex="0 0 auto"
-            />
-          ))}
-        </Flex>
-      </Flex>
-
-      {/* Right arrow */}
-      <IconButton
-        aria-label="Scroll right"
-        icon={<ChevronRightIcon />}
-        position="absolute"
-        right={0}
-        zIndex={1}
-        onClick={scrollRight}
-        bg="white"
-        boxShadow="md"
-        _hover={{ bg: "gray.100" }}
-      />
+  {/* Cards container with hidden scrollbar */}
+  <Flex
+    ref={containerRef}
+    flex="1"
+    overflow="hidden"  // Completely hide overflow
+    py={4}
+    pl={10}  // Left padding for arrow space
+    pr={10}  // Right padding for arrow space
+    _hover={{
+      overflowX: "auto",  // Only show scroll on hover
+    }}
+    sx={{
+      scrollbarWidth: "none",  // Hide scrollbar for Firefox
+      "&::-webkit-scrollbar": {
+        display: "none",  // Hide scrollbar for Chrome/Safari
+      },
+      // Additional space for last card
+      "& > div": {
+        paddingRight: "40px",
+      },
+    }}
+  >
+    <Flex gap={6} flexWrap="nowrap">
+      {PectraPosts.map((pectra, index) => (
+        <Box 
+          key={index}
+          flex="0 0 auto"
+          width={{ base: "280px", md: "320px" }}
+          // Add margin to first and last items for arrow clearance
+          ml={index === 0 ? 2 : 0}
+          mr={index === PectraPosts.length - 1 ? 2 : 0}
+        >
+          <Card
+            image={pectra.image}
+            title={pectra.title}
+            content={pectra.content}
+            link={pectra.link}
+          />
+        </Box>
+      ))}
     </Flex>
+  </Flex>
+
+  {/* Right arrow with proper spacing */}
+  <IconButton
+    aria-label="Scroll right"
+    icon={<ChevronRightIcon />}
+    position="absolute"
+    right={0}
+    zIndex={2}  // Higher z-index
+    onClick={scrollRight}
+    bg="#30A0E0"
+    boxShadow="md"
+    _hover={{ bg: "gray.100" }}
+  />
+</Flex>
         
 
 
 
 
 
-        <Box id="NetworkUpgradesChart" mt={2} mb={2}>
-          <Text
-                  fontSize={{ base: '2xl', md: '3xl', lg: '3xl' }}
-                  fontWeight="bold"
-                  color="#30A0E0"
-                  mt={2}
-                >
-                  Network Upgrades and EIPs Relationship Graph
-                </Text>
-                <br/>
-          <Flex justifyContent="center" alignItems="center">
-            <Image
-              src="/Pectra_Relations2.jpg"
-              alt="Image 1"
-              borderRadius="md"
-              width={{ base: "250px", md: "350px", lg: "500px" }}
-              height="auto"
-              objectFit="contain"
-            />
-          </Flex>
-          <br/>
-        </Box>
+<Box
+  id="NetworkUpgradesChart"
+  mt={2}
+  mb={2}
+  px={{ base: 2, md: 4, lg: 6 }}
+  width="100%"
+  maxWidth="100vw"
+  overflowX="auto"
+>
+  <Text
+    fontSize={{ base: '2xl', md: '3xl', lg: '3xl' }}
+    fontWeight="bold"
+    color="#30A0E0"
+    mt={2}
+    textAlign="center"
+  >
+    Network Upgrades and EIPs Relationship Graph
+  </Text>
+  <br />
+  <Flex justifyContent="center" alignItems="center" width="100%">
+    <Box width="100%" maxWidth="100%" overflowX="auto">
+      <Graph />
+    </Box>
+  </Flex>
+  <br />
+</Box>
+
 
 
 
