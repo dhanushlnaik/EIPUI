@@ -74,7 +74,6 @@ interface EIP3 {
   __v: number;
 }
 
-
 interface EIP2 {
   status: string;
   eips: {
@@ -115,7 +114,9 @@ interface Data {
 }
 
 import OtherBox from "@/components/OtherStats";
+import FeedbackWidget from "@/components/FeedbackWidget";
 import EipTable from "@/components/EipTable";
+import { useScrollSpy } from "@/hooks/useScrollSpy";
 
 const ALL_OPTIONS = ["Core", "Networking", "Interface", "Meta", "Informational"];
 const Status_OPTIONS = ["Draft", "Review", "Last Call", "Living", "Final", "Stagnant", "Withdrawn"];
@@ -124,7 +125,11 @@ const Status_OPTIONS = ["Draft", "Review", "Last Call", "Living", "Final", "Stag
 const Type = () => {
   const [data, setData] = useState<EIP[]>([]);
   const [data4, setData4] = useState<EIP[]>([]);
-  const [data2, setData2] = useState<APIResponse>({ eip: [], erc: [], rip: [] });
+  const [data2, setData2] = useState<APIResponse>({
+    eip: [],
+    erc: [],
+    rip: [],
+  });
   const [data3, setData3] = useState<Data>({ eip: [], erc: [], rip: [] });
   const [isLoading, setIsLoading] = useState(true);
   const [selected, setSelected] = useState<"status" | "type">("type");
@@ -133,6 +138,28 @@ const Type = () => {
   const router = useRouter();
   const basePath = typeof window !== "undefined" ? window.location.origin : "";
   const toast = useToast();
+  useScrollSpy([
+  "graphs",
+  "draftvsfinal",
+  "core",
+  "networking",
+  "interface",
+  "meta",
+  "informational",
+  "draft",
+  "review",
+  "lastcall",
+  "final",
+  "stagnant",
+  "withdrawn",
+  "living",
+  "metatable",
+  "informationaltable",
+  "coretable",
+  "networkingtable",
+  "interfacetable",
+]);
+
 
   const handleCopyOverviewChart = () => {
     const url = `${window.location.origin}/eip?view=${selected}${selected === 'type' ? '&filter=Core' : ''}#${selected}-graphs`;
@@ -314,13 +341,15 @@ const Type = () => {
                 }
               />
 
-              <Box className="w-full mt-6">
+              <Box className="w-full mt-6" id="githubstats">
                 <OtherBox type="EIPs" />
               </Box>
               <ButtonGroup size="md" isAttached>
                 <Button
-                  colorScheme="blue"
-                  variant={selected === "type" ? "solid" : "outline"}
+                  bg={selected === "type" ? "#40E0D0" : "white"}
+                  color={selected === "type" ? "white" : "#40E0D0"}
+                  borderColor="#40E0D0"
+                  variant="outline"
                   onClick={() => {
                     setSelected("type");
                     router.push("?view=type", undefined, { shallow: true });
@@ -329,8 +358,10 @@ const Type = () => {
                   Type
                 </Button>
                 <Button
-                  colorScheme="blue"
-                  variant={selected === "status" ? "solid" : "outline"}
+                  bg={selected === "status" ? "#40E0D0" : "white"}
+                  color={selected === "status" ? "white" : "#40E0D0"}
+                  borderColor="#40E0D0"
+                  variant="outline"
                   onClick={() => {
                     setSelected("status");
                     router.push("?view=status", undefined, { shallow: true });
@@ -380,10 +411,10 @@ const Type = () => {
               </Box>
             </Box>
 
-            <Box px={{ base: 4, md: 8 }} py={6} maxW="6xl" mx="auto">
+            <Box px={{ base: 4, md: 8 }} py={6} maxW="6xl" mx="auto" id="categories">
               {selected === "type" && (
                 <>
-                  <Text fontSize="2xl" fontWeight="bold" textAlign="center" color="blue.500">
+                  <Text fontSize="2xl" fontWeight="bold" textAlign="center" color="#40E0D0">
                     Select Category or Type to View EIP Stats
                   </Text>
                   <Box display="flex" justifyContent="center" my={4}>
@@ -458,12 +489,12 @@ const Type = () => {
               </Box>
             </Box>
 
-            <Box paddingBottom={{ lg: "5", md: "5", sm: "5", base: "5" }}>
+            <Box paddingBottom={{ lg: "5", md: "5", sm: "5", base: "5" }} >
               {selected === "status" && (
                 <>
                   <Box paddingY="8">
                     <Flex justify="space-between" align="center" mb={4} id="draftvsfinal">
-                      <Text fontSize="3xl" fontWeight="bold" color="#A020F0">
+                      <Text fontSize="3xl" fontWeight="bold" color="#40E0D0">
                         Draft vs Final (Over the Years)
                       </Text>
                       <Button
@@ -479,8 +510,8 @@ const Type = () => {
                     <AreaStatus type="EIPs" />
                   </Box>
 
-                  <Box px={{ base: 4, md: 8 }} py={6} maxW="6xl" mx="auto" id="status-graphs">
-                    <Text fontSize="2xl" fontWeight="bold" textAlign="center" color="blue.500">
+                  <Box px={{ base: 4, md: 8 }} py={6} maxW="6xl" mx="auto" id="statuses">
+                    <Text fontSize="2xl" fontWeight="bold" textAlign="center" color="#40E0D0">
                       EIP Status Dashboard
                     </Text>
 
@@ -568,7 +599,7 @@ const Type = () => {
             marginX={{ lg: "40", md: "2", sm: "2", base: "2" }}
             paddingX={{ lg: "10", md: "5", sm: "5", base: "5" }}
           >
-            <Box className="w-full mt-6">
+            <Box className="w-full mt-6" id="tables">
               <EipTable dataset={data4} cat="All" status="All" />
             </Box>
 

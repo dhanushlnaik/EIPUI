@@ -133,6 +133,7 @@ const sidebarStructure = [
     label: "Upgrade",
     href: "/upgrade",
     children: [
+      { label: "FUSAKA", href: "/upgrade#pectra" },
       { label: "PECTRA", href: "/upgrade#pectra" },
       {
         label: "Network Upgrades Graph",
@@ -302,12 +303,9 @@ const bottomItems = [
   { icon: UserCircle2, label: "Profile", href: "/profile" },
   { icon: Settings, label: "Settings", href: "/" },
 ];
-
 export default function AppSidebar() {
   const { isCollapsed, toggleCollapse } = useSidebarStore();
-  const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>(
-    {}
-  );
+  const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
 
   const bg = useColorModeValue("gray.100", "gray.900");
   const borderColor = useColorModeValue("gray.300", "gray.700");
@@ -334,8 +332,8 @@ export default function AppSidebar() {
       roundedRight="xl"
       overflowY="auto"
       py={4}
+      sx={{ scrollbarWidth: "none", msOverflowStyle: "none", "&::-webkit-scrollbar": { display: "none" } }}
     >
-      {/* Collapse/Expand Button */}
       <Box px={2} mb={2}>
         <IconButton
           aria-label="Toggle Sidebar"
@@ -347,8 +345,7 @@ export default function AppSidebar() {
         />
       </Box>
 
-      {/* Main Items */}
-      <VStack spacing={1} px={2} align="stretch" flex="1" overflowY="auto">
+      <VStack spacing={1} px={2} align="stretch" flex="1">
         {sidebarStructure.map((item) => (
           <SidebarItem
             key={item.label}
@@ -364,7 +361,6 @@ export default function AppSidebar() {
 
       <Divider borderColor={borderColor} my={2} />
 
-      {/* Bottom Items */}
       <VStack spacing={1} px={2} align="stretch">
         {bottomItems.map((item) => (
           <SidebarItem
@@ -382,7 +378,7 @@ export default function AppSidebar() {
   );
 }
 
-function SidebarItem({
+export function SidebarItem({
   item,
   expanded,
   expandedItems,
@@ -399,33 +395,31 @@ function SidebarItem({
 }) {
   const hasChildren = item.children && item.children.length > 0;
   const isExpanded = expandedItems[item.label];
+  const activeSection = useSidebarStore((s) => s.activeSection);
+
   const textColor = useColorModeValue("gray.800", "whiteAlpha.900");
   const iconColor = useColorModeValue("gray.600", "gray.300");
   const hoverBg = useColorModeValue("gray.200", "gray.700");
 
-const variants: Variants = {
-  open: {
-    opacity: 1,
-    height: "auto",
-    transition: { duration: 0.3 },
-    pointerEvents: "auto",
-  },
-  isCollapsed: {
-    opacity: 0,
-    height: 0,
-    transition: { duration: 0.3 },
-    pointerEvents: "none",
-  },
-};
+  const isActive =
+    (item.id && activeSection === item.id) ||
+    item.href?.includes(`#${activeSection}`);
 
+  const variants: Variants = {
+    open: { opacity: 1, height: "auto", pointerEvents: "auto", transition: { duration: 0.3 } },
+    isCollapsed: { opacity: 0, height: 0, pointerEvents: "none", transition: { duration: 0.2 } },
+  };
 
   return (
     <Box>
+      {/* Main clickable row */}
       <Tooltip label={isCollapsed ? item.label : ""} placement="right" hasArrow>
         <HStack
           spacing={3}
           px={3}
           py={2}
+          bg={isActive ? useColorModeValue("blue.100", "blue.700") : "transparent"}
+          fontWeight={isActive ? "bold" : "normal"}
           borderRadius="md"
           cursor={hasChildren || item.href ? "pointer" : "default"}
           onClick={() => hasChildren && toggleExpand(item.label)}
@@ -433,32 +427,50 @@ const variants: Variants = {
           justifyContent={expanded ? "flex-start" : "center"}
           color={textColor}
           userSelect="none"
-          transition="background-color 0.2s"
+          transition="all 0.2s"
         >
           {item.icon && (
             <Icon as={item.icon} boxSize={5} color={iconColor} flexShrink={0} />
           )}
+
           {expanded && (
             <>
               {item.href && !hasChildren ? (
-                <Link href={item.href} passHref legacyBehavior>
-                  <Text
-                    as="a"
-                    flex="1"
-                    fontWeight="medium"
-                    fontSize="sm"
-                    _hover={{ textDecoration: "underline" }}
-                  >
-                    {item.label}
-                  </Text>
-                </Link>
-              ) : (
                 <Text
+                  as="a"
+                  onClick={(e) => {
+                    const href = item.href;
+                    if (!href) return;
+
+                    const isHashLink = href.includes("#");
+                    if (isHashLink) {
+                      e.preventDefault();
+                      const [path, hash] = href.split("#");
+
+                      if (path && window.location.pathname !== path) {
+                        window.location.href = href;
+                        return;
+                      }
+
+                      const target = document.getElementById(hash);
+                      if (target) {
+                        target.scrollIntoView({ behavior: "smooth", block: "start" });
+                        history.pushState(null, "", href);
+                      }
+                    } else {
+                      window.location.href = href;
+                    }
+                  }}
+                  cursor="pointer"
                   flex="1"
                   fontWeight="medium"
                   fontSize="sm"
-                  userSelect="none"
+                  _hover={{ textDecoration: "underline" }}
                 >
+                  {item.label}
+                </Text>
+              ) : (
+                <Text flex="1" fontWeight="medium" fontSize="sm">
                   {item.label}
                 </Text>
               )}
@@ -468,7 +480,6 @@ const variants: Variants = {
                   as={isExpanded ? ChevronDown : ChevronRight}
                   boxSize={4}
                   color={iconColor}
-                  userSelect="none"
                 />
               )}
             </>
@@ -476,46 +487,86 @@ const variants: Variants = {
         </HStack>
       </Tooltip>
 
-      {/* Submenus */}
+      {/* Submenu Items */}
       {hasChildren && (
         <AnimatePresence initial={false}>
           {expanded && isExpanded && (
-<MotionDiv
-  display="flex"
-  flexDirection="column"
-  pl={6 + depth * 12}
-  alignItems="stretch"
-  gap={1} // replaces `spacing`
-  mt={1}
-  initial="isCollapsed"
-  animate="open"
-  exit="isCollapsed"
-  variants={variants}
-  overflow="hidden"
-  position="relative"
->
+            <MotionDiv
+              display="flex"
+              flexDirection="column"
+              pl={`${depth * 1.5}rem`}
+              alignItems="stretch"
+              gap={1.5}
+              mt={1}
+              initial="isCollapsed"
+              animate="open"
+              exit="isCollapsed"
+              variants={variants}
+              overflow="hidden"
+              position="relative"
+            >
+              {/* Vertical Line */}
               <Box
                 position="absolute"
-                left="12px"
+                left="1rem"
                 top="0"
                 bottom="0"
                 width="2px"
                 bg={useColorModeValue("blue.400", "blue.300")}
                 borderRadius="full"
-                opacity={0.5}
-                zIndex={0}
+                opacity={0.1}
+                zIndex={-1}
               />
-              {item.children.map((child: any) => (
-                <SidebarItem
-                  key={child.label}
-                  item={child}
-                  expanded={expanded}
-                  expandedItems={expandedItems}
-                  toggleExpand={toggleExpand}
-                  depth={depth + 1}
-                  isCollapsed={isCollapsed}
-                />
-              ))}
+
+              {/* Subitems */}
+              {item.children.map((child: any) => {
+                const isChildActive =
+                  child.id === activeSection ||
+                  child.href?.includes(`#${activeSection}`);
+
+                return (
+                  <Box
+                    key={child.label}
+                    borderRadius="md"
+                    px={3}
+                    py={1.5}
+                    fontSize="sm"
+                    color={useColorModeValue(
+                      isChildActive ? "blue.800" : "gray.800",
+                      isChildActive ? "white" : "gray.200"
+                    )}
+                    bg={
+                      isChildActive
+                        ? useColorModeValue("blue.100", "blue.600")
+                        : "transparent"
+                    }
+                    fontWeight={isChildActive ? "bold" : "normal"}
+                    _hover={{
+                      bg: useColorModeValue("blue.200", "blue.500"),
+                    }}
+                    transition="all 0.2s ease"
+                    onClick={() => {
+                      if (child.href) {
+                        const [path, hash] = child.href.split("#");
+                        if (path && window.location.pathname !== path) {
+                          window.location.href = child.href;
+                        } else if (hash) {
+                          const el = document.getElementById(hash);
+                          if (el) {
+                            el.scrollIntoView({ behavior: "smooth" });
+                            history.pushState(null, "", child.href);
+                          }
+                        }
+                      }
+                    }}
+                    cursor="pointer"
+                    position="relative"
+                    zIndex={1}
+                  >
+                    {child.label}
+                  </Box>
+                );
+              })}
             </MotionDiv>
           )}
         </AnimatePresence>

@@ -1,5 +1,13 @@
 import AllLayout from "@/components/Layout";
-import { Box, Button, Grid, Text, useColorModeValue, Link as LI, GridItem, Select, SimpleGrid, Link, useToast, } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Grid,
+  Text,
+  useColorModeValue,
+  Link as LI,
+  useToast,
+} from "@chakra-ui/react";
 import FlexBetween from "@/components/FlexBetween";
 import Header from "@/components/Header";
 import { CopyIcon, DownloadIcon } from "@chakra-ui/icons";
@@ -27,8 +35,11 @@ import { ButtonGroup, Flex } from "@chakra-ui/react";
 import TypeGraphs from "@/components/TypeGraphs4";
 import CatTable from "@/components/CatTable";
 import CatTable2 from "@/components/CatTable2";
+import ERCsPRChart from "@/components/Ercsprs";
+import FeedbackWidget from "@/components/FeedbackWidget";
 import ErcTable from "@/components/ErcTable";
 import { useRouter } from "next/router";
+import { useScrollSpy } from "@/hooks/useScrollSpy";
 
 interface EIP {
   _id: string;
@@ -70,7 +81,6 @@ interface EIP3 {
   createdYear: number;
   __v: number;
 }
-
 
 interface EIP2 {
   status: string;
@@ -118,14 +128,34 @@ const Status_OPTIONS = ["Draft", "Review", "Last Call", "Living", "Final", "Stag
 const ERC = () => {
   const [data, setData] = useState<EIP[]>([]);
   const [data4, setData4] = useState<EIP[]>([]);
-  const [data2, setData2] = useState<APIResponse>({ eip: [], erc: [], rip: [] });
+  const [data2, setData2] = useState<APIResponse>({
+    eip: [],
+    erc: [],
+    rip: [],
+  });
   const [data3, setData3] = useState<Data>({ eip: [], erc: [], rip: [] });
   const [isLoading, setIsLoading] = useState(true);
   const [selected, setSelected] = useState<"status" | "type">("type");
+
   const [selectedStatusInner, setSelectedStatusInner] = useState(Status_OPTIONS[0]);
   const router = useRouter();
   const basePath = typeof window !== "undefined" ? window.location.origin : "";
   const toast = useToast();
+  
+  useScrollSpy([
+  "graphs",
+  "ercprogress",
+  "draft",
+  "review",
+  "lastcall",
+  "final",
+  "stagnant",
+  "withdrawn",
+  "living",
+  "metatable",
+  "erctable",
+]);
+
 
   const handleCopyOverviewChart = () => {
     const url = `${window.location.origin}/erc?view=${selected}#charts`;
@@ -222,154 +252,108 @@ const ERC = () => {
     return () => clearTimeout(timeout);
   }, []);
   return (
-    <AllLayout>
-      {isLoading ? (
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          height="100vh"
-        >
+    <>
+      <FeedbackWidget />
+      <AllLayout>
+        {isLoading ? ( // Check if the data is still loading
+          // Show loader if data is loading
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            height="100vh"
+          >
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              {/* Your loader component */}
+              <LoaderComponent />
+            </motion.div>
+          </Box>
+        ) : (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
           >
-            {/* Your loader component */}
-            <LoaderComponent />
-          </motion.div>
-        </Box>
-      ) : (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <Box
-            paddingBottom={{ lg: "10", md: "10", sm: "10", base: "10" }}
-            marginX={{ lg: "40", md: "2", sm: "2", base: "2" }}
-            paddingX={{ lg: "10", md: "5", sm: "5", base: "5" }}
-            marginTop={{ lg: "10", md: "5", sm: "5", base: "5" }}
-          >
-            <Flex
-              direction={{ base: "column", md: "row" }}
-              justify="space-between"
-              align="center"
-              wrap="wrap"
-              gap={4}
+            <Box
+              paddingBottom={{ lg: "10", md: "10", sm: "10", base: "10" }}
+              marginX={{ lg: "40", md: "2", sm: "2", base: "2" }}
+              paddingX={{ lg: "10", md: "5", sm: "5", base: "5" }}
+              marginTop={{ lg: "10", md: "5", sm: "5", base: "5" }}
             >
-              {/* Header Section */}
-              <Header
-                title={`Ethereum Request for Comment - [ ${data.length} ]`}
-                subtitle={
-                  <Flex align="center" gap={2} flexWrap="wrap">
-                    <Text>
-                      The goal of Ethereum Request for Change (ERCs) is to standardize and provide high-quality documentation for the Ethereum application layer.
-                    </Text>
-                    <Button
-                      size="sm"
-                      colorScheme="blue"
-                      variant="link"
-                      as={Link}
-                      href="/FAQs/ERC"
-                    >
-                      Learn More
-                    </Button>
-                  </Flex>
-                }
-              />
+              <Flex
+                direction={{ base: "column", md: "row" }} // Stack on smaller screens, horizontal on larger screens
+                justify="space-between"
+                align="center"
+                wrap="wrap" // Enable wrapping for responsiveness
+                gap={4} // Add spacing between wrapped elements
+              >
+                {/* Header Section */}
+                <Header
+                  title={`Ethereum Request for Comment -      [ ${data?.length} ]`}
+                  subtitle="ERCs describe application-level standard for the Ethereum ecosystem."
+                />
 
-              {/* OtherBox Full Width */}
-              <Box className="w-full mt-6">
-                <OtherBox type="ERCs" />
-              </Box>
-
-              {/* Toggle Buttons */}
-              <ButtonGroup size="md" isAttached>
-                <Button
-                  colorScheme="blue"
-                  variant={selected === "type" ? "solid" : "outline"}
-                  onClick={() => setSelected("type")}
-                  flex="1"
-                >
-                  Type
-                </Button>
-                <Button
-                  colorScheme="blue"
-                  variant={selected === "status" ? "solid" : "outline"}
-                  onClick={() => setSelected("status")}
-                  flex="1"
-                >
-                  Status
-                </Button>
-              </ButtonGroup>
-            </Flex>
-
-            <Box display={{ base: "block", md: "block", lg: "none" }} className="w-full pt-4">
-              <SearchBox />
-            </Box>
-
-            <Box className="w-full flex flex-col gap-5 pt-8" id="graphs">
-              {/* Copy Link Button for Overview Chart */}
-              <Flex justify="flex-end" mb={2}>
-                <Button
-                  onClick={handleCopyOverviewChart}
-                  size="sm"
-                  leftIcon={<CopyIcon />}
-                  colorScheme="blue"
-                  variant="ghost"
-                >
-                  Copy Link
-                </Button>
+                {/* Toggle Buttons */}
+                <ButtonGroup size="md" isAttached>
+                  <Button
+                    colorScheme="blue"
+                    variant={selected === "type" ? "solid" : "outline"}
+                    onClick={() => setSelected("type")}
+                    flex="1" // Equal size buttons
+                  >
+                    Type
+                  </Button>
+                  <Button
+                    colorScheme="blue"
+                    variant={selected === "status" ? "solid" : "outline"}
+                    onClick={() => setSelected("status")}
+                    flex="1" // Equal size buttons
+                  >
+                    Status
+                  </Button>
+                </ButtonGroup>
               </Flex>
 
-              {/* AllChart - Full Width Below Donut */}
-              <Box className="w-full overflow-hidden">
-                <Box className="w-full h-full">
-                  {selected === "status" ? (
-                    <AllChart3 type="ERC" />
-                  ) : (
-                    <AllChart type="ERC" />
-                  )}
-                </Box>
+              <Box
+                display={{ base: "block", md: "block", lg: "none" }}
+                className="w-full pt-4"
+              >
+                <SearchBox />
               </Box>
 
-              {/* Donut Chart - Full Width on Top */}
-              <Box className="w-full overflow-hidden">
-                <Box className="w-full h-full">
+              <Box
+                className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 pt-8 gap-5"
+                id="graphs"
+              >
+                <Box>
                   {selected === "status" ? (
                     <ERCStatusDonut />
                   ) : (
                     <ERCTypeDonut />
                   )}
                 </Box>
+                <Box>
+                  {selected === "status" ? (
+                    <AllChart3 type="ERC" />
+                  ) : (
+                    <AllChart type="ERC" />
+                  )}
+                </Box>
+                <Box className="h-fit">
+                  <OtherBox type="ERCs" />
+                </Box>
               </Box>
-            </Box>
 
-            <Box paddingTop={8}>
-              {selected !== "status" && (
-                <>
-                  <Flex justify="flex-end" mb={2}>
-                    <Button
-                      onClick={handleCopyERCStatusGraph}
-                      size="sm"
-                      leftIcon={<CopyIcon />}
-                      colorScheme="blue"
-                      variant="ghost"
-                    >
-                      Copy Link
-                    </Button>
-                  </Flex>
-                  <ERCStatusGraph />
-                </>
-              )}
-            </Box>
-
-
-            {selected === "status" && (
-              <Box paddingY="8">
-                <Flex align="center" justify="space-between" mb={4}>
+              <Box paddingTop={8}>
+                {selected === "status" ? <></> : <ERCStatusGraph />}
+              </Box>
+              {selected === "status" && (
+                <Box paddingY="8">
                   <Text
                     id="ercprogress"
                     fontSize="3xl"
@@ -378,140 +362,116 @@ const ERC = () => {
                   >
                     Draft vs Final (Over the Years)
                   </Text>
-
-                  {/* Copy Link Button for Draft vs Final Area Chart */}
-                  <Button
-                    onClick={handleCopyAreaChart}
-                    size="sm"
-                    leftIcon={<CopyIcon />}
-                    colorScheme="blue"
-                    variant="ghost"
-                  >
-                    Copy Link
-                  </Button>
-                </Flex>
-
-                <AreaStatus type="ERCs" />
-              </Box>
-            )}
-
-            <Box px={{ base: 4, md: 8 }} py={6} maxW="6xl" mx="auto">
-              {selected === "status" && (
-                <>
-                  <Text
-                    fontSize="2xl"
-                    fontWeight="bold"
-                    textAlign="center"
-                    color="blue.500"
-                    mb={4}
-                  >
-                    Select ERC Status to View Stats
-                  </Text>
-
-                  <Flex justify="center" mb={6} align="center" gap={4}>
-                    <Select
-                      maxW="320px"
-                      value={selectedStatusInner}
-                      onChange={(e) => setSelectedStatusInner(e.target.value)}
-                      borderColor="blue.400"
-                      _hover={{ borderColor: "blue.500" }}
-                      focusBorderColor="blue.500"
-                    >
-                      {["Draft", "Review", "Last Call", "Final"].map((status) => (
-                        <option key={status} value={status}>
-                          {status} ({data.filter((item) => item.status === status).length})
-                        </option>
-                      ))}
-                    </Select>
-
-                    {/* Copy Link Button for Status Detail */}
-                    <Button
-                      onClick={handleCopyStatusDetail}
-                      size="sm"
-                      leftIcon={<CopyIcon />}
-                      colorScheme="blue"
-                      variant="ghost"
-                    >
-                      Copy Link
-                    </Button>
-                  </Flex>
-
-                  {/* Grid with StackedColumnChart and CatTable */}
-                  <Box pt={8}>
-                    <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6} alignItems="stretch">
-                      <GridItem colSpan={{ base: 1, md: 2 }}>
-                        <Box
-                          minH="100%"
-                          h="full"
-                          display="flex"
-                          flexDirection="column"
-                          borderRadius="xl"
-                          bg="gray.50"
-                          p={4}
-                        >
-                          <StackedColumnChart
-                            type="ERCs"
-                            status={selectedStatusInner}
-                            dataset={data2}
-                          />
-                        </Box>
-                      </GridItem>
-
-                      <GridItem colSpan={{ base: 1, md: 1 }}>
-                        <Box
-                          minH="100%"
-                          h="full"
-                          display="flex"
-                          flexDirection="column"
-                          borderRadius="xl"
-                          bg="gray.50"
-                          p={4}
-                        >
-                          <CatTable
-                            dataset={data4}
-                            cat="All"
-                            status={selectedStatusInner}
-                          />
-                        </Box>
-                      </GridItem>
-                    </SimpleGrid>
-                  </Box>
-                </>
+                  <AreaStatus type="ERCs" />
+                </Box>
               )}
-            </Box>
-          </Box>
 
-          <Box
-            paddingBottom={{ lg: "10", sm: "10", base: "10" }}
-            marginX={{ lg: "40", md: "2", sm: "2", base: "2" }}
-            paddingX={{ lg: "10", md: "5", sm: "5", base: "5" }}
-          >
-            <Box className="w-full mt-6">
-              <ErcTable dataset={data4} cat="All" status="All" />
+              {["Draft", "Review", "Last Call", "Final"]?.map((status) => (
+                <Box
+                  key={status}
+                  className={"group relative flex flex-col gap-3"}
+                  paddingBottom={8}
+                >
+                  {/* Label Section aligned to the left */}
+                  <Box className={"flex gap-3"}>
+                    <Text
+                      id={`${status.toLowerCase().replace(/\s+/g, "")}`}
+                      fontSize="3xl"
+                      fontWeight="bold"
+                      color="#30A0E0"
+                    >
+                      {status} -{" "}
+                      <NextLink href={`/tableStatus/erc/${status}`}>
+                        [
+                        {data?.filter((item) => item.status === status)?.length}
+                        ]
+                      </NextLink>
+                    </Text>
+                    <p className={"text-red-700"}>*</p>
+                    <p className={"hidden group-hover:block text-lg"}>
+                      Count as on date
+                    </p>
+                  </Box>
+
+                  {/* Scrollable Charts Grid */}
+                  <Box overflowX="auto">
+                    <Grid
+                      templateColumns={{
+                        base: "1fr",
+                        sm: "1fr",
+                        lg: "repeat(2, 1fr)",
+                      }}
+                      gap={6}
+                    >
+                      <StackedColumnChart
+                        type={"ERCs"}
+                        status={status}
+                        dataset={data2}
+                      />
+                      <CBoxStatus
+                        status={status}
+                        type={"ERCs"}
+                        dataset={data3}
+                      />
+                    </Grid>
+                  </Box>
+                </Box>
+              ))}
             </Box>
+
+  <Box>
+    <ERCsPRChart/>
+  </Box>
 
             <Box
-              bg={useColorModeValue("blue.50", "gray.700")}
-              color="black"
-              borderRadius="md"
-              padding={4}
-              marginTop={4}
+              paddingBottom={{ lg: "10", sm: "10", base: "10" }}
+              marginX={{ lg: "40", md: "2", sm: "2", base: "2" }}
+              paddingX={{ lg: "10", md: "5", sm: "5", base: "5" }}
+              // marginTop={{ lg: "2", md: "2", sm: "", base: "2" }}
             >
-              <Text>
-                Also checkout{' '}
-                <LI href="/eip" color="blue" isExternal>
-                  EIPs
-                </LI>{' '}
-                and{' '}
-                <LI href="/rip" color="blue" isExternal>
-                  RIPs
-                </LI>.
-              </Text>
+              {selected === "status" ? (
+                <>
+                  <CatTable dataset={data4} cat="All" status="Draft" />
+                  <CatTable dataset={data4} cat="All" status="Final" />
+                  <CatTable dataset={data4} cat="All" status="Review" />
+                  <CatTable dataset={data4} cat="All" status="Last Call" />
+                  <CatTable dataset={data4} cat="All" status="Living" />
+                  <CatTable dataset={data4} cat="All" status="Withdrawn" />
+                  <CatTable dataset={data4} cat="All" status="Stagnant" />
+                </>
+              ) : (
+                <>
+                  {["Meta", "ERC"]?.map((status) => (
+                    <div key={status} id={`${status.toLowerCase()}table`}>
+                      <CatTable2 dataset={data4} cat="All" status={status} />
+                    </div>
+                  ))}
+                </>
+              )}
+              <Box
+                bg={useColorModeValue("blue.50", "gray.700")} // Background color for the box
+                color="black" // Text color
+                borderRadius="md" // Rounded corners
+                padding={4} // Padding inside the box
+                marginTop={4} // Margin above the box
+              >
+                <Text>
+                  Also checkout{" "}
+                  <LI href="/eip" color="blue" isExternal>
+                    EIPs
+                  </LI>{" "}
+                  and{" "}
+                  <LI href="/rip" color="blue" isExternal>
+                    RIPs
+                  </LI>
+                  .
+                </Text>
+              </Box>
             </Box>
-          </Box>
-        </motion.div>
-      )}
-    </AllLayout>
+          </motion.div>
+        )}
+      </AllLayout>
+    </>
   );
 
 };

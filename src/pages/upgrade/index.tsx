@@ -1020,6 +1020,7 @@
 
 // export default All;
 
+'use client';
 import React, { useState, useEffect, useLayoutEffect } from "react";
 import AllLayout from "@/components/Layout";
 import {
@@ -1038,7 +1039,8 @@ import {
   SimpleGrid,
   Badge,
   AspectRatio,
-  Grid
+  Grid,
+  GridItem
 } from "@chakra-ui/react";
 import SlotCountdown from "@/components/SlotCountdown";
 import NLink from "next/link";
@@ -1062,6 +1064,9 @@ import { useRef } from 'react';
 import UpgradesTimeline from "@/components/UpgradesTimeline";
 import { Card } from "@/components/pectraCards";
 import StatusGraph from "@/components/Statuschangesgraph";
+import { useSidebar } from '@/components/Sidebar/SideBarContext';
+import { useScrollSpy } from "@/hooks/useScrollSpy";
+import FeedbackWidget from "@/components/FeedbackWidget";
 
 const sepolia_key = process.env.NEXT_PUBLIC_SEPOLIA_API as string;
 
@@ -1070,6 +1075,9 @@ const All = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const bg = useColorModeValue("#f6f6f7", "#171923");
   const [selectedOption, setSelectedOption] = useState<'pectra' | 'fusaka'>('pectra');
+  const { selectedUpgrade, setSelectedUpgrade } = useSidebar();
+  // const selectedOption = selectedUpgrade;       // just alias so rest of code works
+  // const setSelectedOption = setSelectedUpgrade;
   const optionArr = [
     "Meta",
     "Informational",
@@ -1080,6 +1088,22 @@ const All = () => {
     "RIP",
   ];
   const [isLoading, setIsLoading] = useState(true);
+  const [isMediumOrLarger, setIsMediumOrLarger] = useState(false);
+
+
+  useEffect(() => {
+    const checkWidth = () => {
+      setIsMediumOrLarger(window.innerWidth >= 768);
+    };
+
+    checkWidth(); // initial check
+    window.addEventListener('resize', checkWidth);
+
+    return () => {
+      window.removeEventListener('resize', checkWidth);
+    };
+  }, []);
+
 
   useEffect(() => {
     if (bg === "#f6f6f7") {
@@ -1093,13 +1117,13 @@ const All = () => {
 
   const scrollLeft = () => {
     if (containerRef.current) {
-      containerRef.current.scrollBy({ left: -300, behavior: 'smooth' });
+      containerRef.current.scrollBy({ left: -300, behavior: "smooth" });
     }
   };
 
   const scrollRight = () => {
     if (containerRef.current) {
-      containerRef.current.scrollBy({ left: 300, behavior: 'smooth' });
+      containerRef.current.scrollBy({ left: 300, behavior: "smooth" });
     }
   };
 
@@ -1155,36 +1179,106 @@ const All = () => {
     {
       image: "pectraimg1.jpg",
       title: "Holesky Testnet Support Ends in September",
-      content: "Holesky testnet support ends in September as Ethereum transitions to Hoodi for improved validator testing & Pectra upgrade readiness.",
-      link: "https://etherworld.co/2025/03/19/holesky-testnet-support-ends-in-september/"
+      content:
+        "Holesky testnet support ends in September as Ethereum transitions to Hoodi for improved validator testing & Pectra upgrade readiness.",
+      link: "https://etherworld.co/2025/03/19/holesky-testnet-support-ends-in-september/",
     },
     {
       image: "pectraimg3.jpg",
       title: "New Ethereum Testnet ‘Hoodi’ Announced for Pectra Testing",
-      content: "Hoodi is Ethereum’s new testnet, designed to replace Holesky with a mainnet-like environment for testing Pectra, validator exits, & staking operations.",
-      link: "https://etherworld.co/2025/03/14/new-ethereum-testnet-hoodi-announced-for-pectra-testing/"
+      content:
+        "Hoodi is Ethereum’s new testnet, designed to replace Holesky with a mainnet-like environment for testing Pectra, validator exits, & staking operations.",
+      link: "https://etherworld.co/2025/03/14/new-ethereum-testnet-hoodi-announced-for-pectra-testing/",
     },
     {
       image: "pectraimg4.jpg",
       title: "How Holesky Finally Reached Stability",
-      content: "A sneak peek at how the Ethereum community came together to fix Holesky after two weeks of chaos.",
-      link: "https://etherworld.co/2025/03/11/how-holesky-finally-reached-stability/"
+      content:
+        "A sneak peek at how the Ethereum community came together to fix Holesky after two weeks of chaos.",
+      link: "https://etherworld.co/2025/03/11/how-holesky-finally-reached-stability/",
     },
     {
       image: "pectraimg5.png",
       title: "Holesky and Hoodi Testnet Updates",
-      content: "The Pectra testnet activation revealed issues in clients with deposit contract configurations changes on Ethereum testnets. While Sepolia's recovery was straightforward and the network has since fully recovered, Holesky experienced extensive inactivity leaks as pa...",
-      link: "https://blog.ethereum.org/2025/03/18/hoodi-holesky"
+      content:
+        "The Pectra testnet activation revealed issues in clients with deposit contract configurations changes on Ethereum testnets. While Sepolia's recovery was straightforward and the network has since fully recovered, Holesky experienced extensive inactivity leaks as pa...",
+      link: "https://blog.ethereum.org/2025/03/18/hoodi-holesky",
     },
     {
       image: "pectraimg6.jpg",
       title: "Sepolia Pectra Incident Update",
-      content: "A sneak peek at how the Ethereum community came together to fix Holesky after two weeks of chaos.",
-      link: "At 7:29 UTC today, on epoch 222464, the Pectra network upgrade went live on the Sepolia testnet. Unfortunately, an issue with Sepolia's permissioned deposit contract prevented many execution layer clients from including transactions in blocks."
+      content:
+        "A sneak peek at how the Ethereum community came together to fix Holesky after two weeks of chaos.",
+      link: "At 7:29 UTC today, on epoch 222464, the Pectra network upgrade went live on the Sepolia testnet. Unfortunately, an issue with Sepolia's permissioned deposit contract prevented many execution layer clients from including transactions in blocks.",
     },
   ]
 
   const pectraData = [
+    {
+      eip: "2537",
+      title: "Precompile for BLS12-381 curve operations",
+      author:
+        "Alex Vlasov (@shamatar), Kelly Olson (@ineffectualproperty), Alex Stokes (@ralexstokes), Antonio Sanso (@asanso)",
+      link: "https://eipsinsight.com/eips/eip-2537",
+      type: "Standards Track",
+      category: "Core",
+      discussion:
+        "https://ethereum-magicians.org/t/eip2537-bls12-precompile-discussion-thread/4187",
+    },
+    {
+      eip: "2935",
+      title: "Serve historical block hashes from state",
+      author:
+        "Vitalik Buterin (@vbuterin), Tomasz Stanczak (@tkstanczak), Guillaume Ballet (@gballet), Gajinder Singh (@g11tech), Tanishq Jasoria (@tanishqjasoria), Ignacio Hagopian (@jsign), Jochem Brouwer (@jochem-brouwer)",
+      link: "https://eipsinsight.com/eips/eip-2935",
+      type: "Standards Track",
+      category: "Core",
+      discussion:
+        "https://ethereum-magicians.org/t/eip-2935-save-historical-block-hashes-in-state/4565",
+    },
+    {
+      eip: "6110",
+      title: "Supply validator deposits on chain",
+      author:
+        "Mikhail Kalinin (@mkalinin), Danny Ryan (@djrtwo), Peter Davies (@petertdavies)",
+      link: "https://eipsinsight.com/eips/eip-6110",
+      type: "Standards Track",
+      category: "Core",
+      discussion:
+        "https://ethereum-magicians.org/t/eip-6110-supply-validator-deposits-on-chain/12072",
+    },
+    {
+      eip: "7002",
+      title: "Execution layer triggerable withdrawals",
+      author:
+        "Danny Ryan (@djrtwo), Mikhail Kalinin (@mkalinin), Ansgar Dietrichs (@adietrichs), Hsiao-Wei Wang (@hwwhww), lightclient (@lightclient)",
+      link: "https://eipsinsight.com/eips/eip-7002",
+      type: "Standards Track",
+      category: "Core",
+      discussion:
+        "https://ethereum-magicians.org/t/eip-7002-execution-layer-triggerable-exits/14195",
+    },
+    {
+      eip: "7251",
+      title: "Increase the MAX_EFFECTIVE_BALANCE",
+      author:
+        "mike (@michaelneuder), Francesco (@fradamt), dapplion (@dapplion), Mikhail (@mkalinin), Aditya (@adiasg), Justin (@justindrake), lightclient (@lightclient)",
+      link: "https://eipsinsight.com/eips/eip-2251",
+      type: "Standards Track",
+      category: "Core",
+      discussion:
+        "https://ethereum-magicians.org/t/eip-7251-increase-the-max-effective-balance/15982",
+    },
+    {
+      eip: "7549",
+      title: "Move committee index outside Attestation",
+      author: "dapplion (@dapplion)",
+      link: "https://eipsinsight.com/eips/eip-7549",
+      type: "Standards Track",
+      category: "Core",
+      discussion:
+        "https://ethereum-magicians.org/t/eip-7549-move-committee-index-outside-attestation/16390",
+    },
 
     {
       eip: "2537",
@@ -1287,87 +1381,6 @@ const All = () => {
       category: "Core",
       discussion: "https://ethereum-magicians.org/t/add-blob-schedule-to-execution-client-configuration-files/22182"
     },
-    //   {
-    //     eip: "3670",
-    //     title: "EOF - Code Validation",
-    //     author: "Alex Beregszaszi (@axic), Andrei Maiboroda (@gumb0), Paweł Bylica (@chfast)",
-    //     link: "https://eipsinsight.com/eips/eip-3670",
-    //     type:"Standards Track",
-    //   category:"Core",
-    //   discussion:"https://ethereum-magicians.org/t/eip-3670-eof-code-validation/6693"
-    // },
-    //   {
-    //     eip: "4200",
-    //     title: "EOF - Static relative jumps",
-    //     author: "Alex Beregszaszi (@axic), Andrei Maiboroda (@gumb0), Paweł Bylica (@chfast)",
-    //     link: "https://eipsinsight.com/eips/eip-4200",
-    //     type:"Standards Track",
-    //   category:"Core",
-    //   discussion:"https://ethereum-magicians.org/t/eip-3920-static-relative-jumps/7108"
-    // },
-    //   {
-    //     eip: "4750",
-    //     title: "EOF - Functions",
-    //     author: "Andrei Maiboroda (@gumb0), Alex Beregszaszi (@axic), Paweł Bylica (@chfast)",
-    //     link: "https://eipsinsight.com/eips/eip-4750",
-    //     type:"Standards Track",
-    //   category:"Core",
-    //   discussion:"https://ethereum-magicians.org/t/eip-4750-eof-functions/8195"
-    // },
-    //   {
-    //     eip: "5450",
-    //     title: "EOF - Stack Validation",
-    //     author: "Andrei Maiboroda (@gumb0), Paweł Bylica (@chfast), Alex Beregszaszi (@axic), Danno Ferrin (@shemnon)",
-    //     link: "https://eipsinsight.com/eips/eip-5450",
-    //     type:"Standards Track",
-    //   category:"Core",
-    //   discussion:"https://ethereum-magicians.org/t/eip-5450-eof-stack-validation/10410"
-    // },
-    //   {
-    //     eip: "6206",
-    //     title: "EOF - JUMPF and non-returning functions",
-    //     author: "Andrei Maiboroda (@gumb0), Alex Beregszaszi (@axic), Paweł Bylica (@chfast), Matt Garnett (@lightclient)",
-    //     link: "https://eipsinsight.com/eips/eip-6206",
-    //     type:"Standards Track",
-    //   category:"Core",
-    //   discussion:"https://ethereum-magicians.org/t/eip-4750-eof-functions/8195"
-    // },
-    //   {
-    //     eip: "7069",
-    //     title: "Revamped CALL instructions",
-    //     author: "Alex Beregszaszi (@axic), Paweł Bylica (@chfast), Danno Ferrin (@shemnon), Andrei Maiboroda (@gumb0), Charles Cooper (@charles-cooper)",
-    //     link: "https://eipsinsight.com/eips/eip-7069",
-    //     type:"Standards Track",
-    //   category:"Core",
-    //   discussion:"https://ethereum-magicians.org/t/eip-revamped-call-instructions/14432"
-    // },
-    //   {
-    //     eip: "7480",
-    //     title: "EOF - Data section access instructions",
-    //     author: "Andrei Maiboroda (@gumb0), Alex Beregszaszi (@axic), Paweł Bylica (@chfast)",
-    //     link: "https://eipsinsight.com/eips/eip-7480",
-    //     type:"Standards Track",
-    //   category:"Core",
-    //   discussion:"https://ethereum-magicians.org/t/eip-7480-eof-data-instructions/15414"
-    // },
-    //   {
-    //     eip: "7620",
-    //     title: "EOF Contract Creation",
-    //     author: "Alex Beregszaszi (@axic), Paweł Bylica (@chfast), Andrei Maiboroda (@gumb0), Piotr Dobaczewski (@pdobacz)",
-    //     link: "https://eipsinsight.com/eips/eip-7620",
-    //     type:"Standards Track",
-    //   category:"Core",
-    //   discussion:"https://ethereum-magicians.org/t/eip-7620-eof-contract-creation-instructions/18625"
-    // },
-    //   {
-    //     eip: "7698",
-    //     title: "EOF - Creation transaction",
-    //     author: "Piotr Dobaczewski (@pdobacz), Andrei Maiboroda (@gumb0), Paweł Bylica (@chfast), Alex Beregszaszi (@axic)",
-    //     link: "https://eipsinsight.com/eips/eip-7698",
-    //     type:"Standards Track",
-    //   category:"Core",
-    //   discussion:"https://ethereum-magicians.org/t/eip-7698-eof-creation-transaction/19784"
-    // },
   ];
 
   const fusakaData = [
@@ -1526,9 +1539,25 @@ const All = () => {
   const currentPosts = selectedOption === 'pectra' ? PectraPosts : FusakaPosts;
   const currentData = selectedOption === 'pectra' ? pectraData : fusakaData;
   const upgradeName = selectedOption === 'pectra' ? 'Pectra' : 'Fusaka';
+  
+  useScrollSpy([
+  "pectra",
+  "NetworkUpgradesChartp",
+  "NetworkUpgrades",
+  "AuthorContributions",
+  "pectra-table",
+]);
+
+  useLayoutEffect(() => {
+    router.events.on("routeChangeComplete", scrollToHash);
+    return () => {
+      router.events.off("routeChangeComplete", scrollToHash);
+    };
+  }, [router]);
 
   return (
     <>
+      <FeedbackWidget />
       <AllLayout>
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -1549,160 +1578,154 @@ const All = () => {
                 transition={{ duration: 0.5 } as any}
                 fontSize={{ base: "2xl", md: "4xl", lg: "6xl" }}
                 fontWeight={{ base: "extrabold", md: "bold", lg: "bold" }}
-                color="#30A0E0"
+                color="#00CED1"
+                id="pectrafusaka"
               >
                 Ethereum Network Upgrades
               </Text>
 
               <br />
+              <Box mt={4} mb={4}>
+                <select
+                  value={selectedOption}
+                  onChange={(e) => setSelectedOption(e.target.value as 'pectra' | 'fusaka')}
+                  style={{
+                    padding: '10px',
+                    fontSize: '20px',
+                    borderRadius: '6px',
+                    border: '1px solid gray',
+                  }}
+                >
+                <option value="pectra">Pectra</option>
+                <option value="fusaka">Fusaka</option>
+              </select>
+            </Box>
+
+            <Box id="NetworkUpgrades" mt={2}>
+              <UpgradesTimeline
+                selectedOption={selectedOption}
+                setSelectedOption={setSelectedOption}
+                pectraData={pectraData}
+                fusakaData={fusakaData}
+              />
+            </Box>
+
+            <Flex
+              direction={{ base: "column", md: "row" }}
+              align="flex-start"
+              gap={{ base: 4, md: 6 }}
+              width="100%"
+              justify="space-between"
+              wrap="wrap"
+            >
               <Text
-                as={motion.div}
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 } as any}
-                fontSize={{ base: "2xl", md: "2xl", lg: "4xl" }}
-                fontWeight="bold"
-                color="#30A0E0"
-                mt={2}
-                id="pectra"
+                flex={{ base: "1 1 auto", md: "3" }}
+                fontSize={{ base: "md", md: "lg", lg: "2xl" }}
+                textAlign="justify"
+                lineHeight="1.6"
               >
-                {upgradeName.toUpperCase()}
+                {selectedOption === 'pectra' ? (
+                  <>
+                    Ethereum developers are moving toward the next major network upgrade, Prague and Electra,
+                    collectively known as{" "}
+                    <NLink href="https://eipsinsight.com/eips/eip-7600">
+                      <Text as="span" color="blue.500" textDecor="underline">
+                        Pectra
+                      </Text>
+                    </NLink>. This upgrade will involve significant changes to both the{" "}
+                    <NLink href="https://www.youtube.com/watch?v=nJ57mkttCH0">
+                      <Text as="span" color="blue.500" textDecor="underline">
+                        Execution and Consensus layers
+                      </Text>
+                    </NLink>{" "}
+                    on the mainnet. Given the complexities of testing and the scope of changes, including 11{" "}
+                    <NLink href="https://www.youtube.com/watch?v=AyidVR6X6J8">
+                      <Text as="span" color="blue.500" textDecor="underline">
+                        Ethereum Improvement Proposals (EIPs)
+                      </Text>
+                    </NLink>,
+                    the developers recently decided to reduce the scope of the Pectra upgrade. Some EIPs have
+                    now been shifted to the upcoming{" "}
+                    <NLink href="https://eipsinsight.com/eips/eip-7607">
+                      <Text as="span" color="blue.500" textDecor="underline">
+                        Fusaka
+                      </Text>
+                    </NLink>(a combination of Fulu and Osaka) upgrade. Currently, the testing team is working on Pectra{" "}
+                    <NLink href="https://notes.ethereum.org/@ethpandaops/pectra-devnet-6">
+                      <Text as="span" color="blue.500" textDecor="underline">
+                        Devnet 6
+                      </Text>
+                    </NLink>
+                  </>
+                ) : (
+                  <>
+                    <NLink href="https://eipsinsight.com/eips/eip-7607">
+                      <Text as="span" color="blue.500" textDecor="underline">
+                        Fusaka
+                      </Text>
+                    </NLink> upgrade is Ethereum's next major network enhancement expected in late 2025, aiming to improve scalability, efficiency, and cryptographic performance. Key features include <NLink href="https://eipsinsight.com/eips/eip-7594">
+                      <Text as="span" color="blue.500" textDecor="underline">
+                        PeerDAS
+                      </Text>
+                    </NLink> (Peer Data Availability Sampling) to reduce bandwidth and enhance Layer 2 support, Blob Parameter Override (BPO) for dynamic data load testing, and ModExp precompiles (<NLink href="https://eipsinsight.com/eips/eip-7823">
+                      <Text as="span" color="blue.500" textDecor="underline">
+                        EIP-7823
+                      </Text>
+                    </NLink> & <NLink href="https://eipsinsight.com/eips/eip-7883">
+                      <Text as="span" color="blue.500" textDecor="underline">
+                        EIP-7883
+                      </Text>
+                    </NLink>) to speed up cryptographic operations like RSA & zk-SNARKs. Currently, testing is underway via
+                    <NLink href="https://notes.ethereum.org/@ethpandaops/fusaka-devnet-0">
+                      <Text as="span" color="blue.500" textDecor="underline">
+                        Devnet 0
+                      </Text>
+                    </NLink>, validating these core components ahead of June's in-person dev meeting. Despite tight timelines and coordination challenges across teams, Fusaka is seen as essential for Ethereum's roadmap, setting the stage for the upcoming <NLink href="https://etherworld.co/2025/01/09/glamsterdam-the-next-upgrade-after-fusaka/">
+                      <Text as="span" color="blue.500" textDecor="underline">
+                        Glamsterdam
+                      </Text>
+                    </NLink> upgrade.</>
+                )}
               </Text>
+            </Flex>
 
-              <Box id="NetworkUpgrades" mt={2}>
-                <UpgradesTimeline
-                  selectedOption={selectedOption}
-                  setSelectedOption={setSelectedOption}
-                  pectraData={pectraData}
-                  fusakaData={fusakaData}
-                />
-              </Box>
+            {/* Blog Cards Section - Vertical Scroll with same width and responsive */}
 
-              <Flex
-                direction={{ base: "column", md: "row" }}
-                align="flex-start"
-                gap={{ base: 4, md: 6 }}
-                width="100%"
-                justify="space-between"
-                wrap="wrap"
+            <Box
+              maxHeight="450px"
+              overflowY="auto"
+              width="100%"
+              padding="4"
+            >
+              <Grid
+                // Responsive: 1 column on small screens, 3 columns on medium and up
+                templateColumns={{ base: '1fr', md: 'repeat(3, 1fr)' }}
+                gap={6}
               >
-                <Text
-                  flex={{ base: "1 1 auto", md: "3" }}
-                  fontSize={{ base: "md", md: "lg", lg: "2xl" }}
-                  textAlign="justify"
-                  lineHeight="1.6"
-                >
-                  {selectedOption === 'pectra' ? (
-                    <>
-                      Ethereum developers are moving toward the next major network upgrade, Prague and Electra,
-                      collectively known as{" "}
-                      <NLink href="https://eipsinsight.com/eips/eip-7600">
-                        <Text as="span" color="blue.500" textDecor="underline">
-                          Pectra
-                        </Text>
-                      </NLink>. This upgrade will involve significant changes to both the{" "}
-                      <NLink href="https://www.youtube.com/watch?v=nJ57mkttCH0">
-                        <Text as="span" color="blue.500" textDecor="underline">
-                          Execution and Consensus layers
-                        </Text>
-                      </NLink>{" "}
-                      on the mainnet. Given the complexities of testing and the scope of changes, including 11{" "}
-                      <NLink href="https://www.youtube.com/watch?v=AyidVR6X6J8">
-                        <Text as="span" color="blue.500" textDecor="underline">
-                          Ethereum Improvement Proposals (EIPs)
-                        </Text>
-                      </NLink>,
-                      the developers recently decided to reduce the scope of the Pectra upgrade. Some EIPs have
-                      now been shifted to the upcoming{" "}
-                      <NLink href="https://eipsinsight.com/eips/eip-7607">
-                        <Text as="span" color="blue.500" textDecor="underline">
-                          Fusaka
-                        </Text>
-                      </NLink>(a combination of Fulu and Osaka) upgrade. Currently, the testing team is working on Pectra{" "}
-                      <NLink href="https://notes.ethereum.org/@ethpandaops/pectra-devnet-6">
-                        <Text as="span" color="blue.500" textDecor="underline">
-                          Devnet 6
-                        </Text>
-                      </NLink>
-                    </>
-                  ) : (
-                    <>
-                      <NLink href="https://eipsinsight.com/eips/eip-7607">
-                        <Text as="span" color="blue.500" textDecor="underline">
-                          Fusaka
-                        </Text>
-                      </NLink> upgrade is Ethereum's next major network enhancement expected in late 2025, aiming to improve scalability, efficiency, and cryptographic performance. Key features include <NLink href="https://eipsinsight.com/eips/eip-7594">
-                        <Text as="span" color="blue.500" textDecor="underline">
-                          PeerDAS
-                        </Text>
-                      </NLink> (Peer Data Availability Sampling) to reduce bandwidth and enhance Layer 2 support, Blob Parameter Override (BPO) for dynamic data load testing, and ModExp precompiles (<NLink href="https://eipsinsight.com/eips/eip-7823">
-                        <Text as="span" color="blue.500" textDecor="underline">
-                          EIP-7823
-                        </Text>
-                      </NLink> & <NLink href="https://eipsinsight.com/eips/eip-7883">
-                        <Text as="span" color="blue.500" textDecor="underline">
-                          EIP-7883
-                        </Text>
-                      </NLink>) to speed up cryptographic operations like RSA & zk-SNARKs. Currently, testing is underway via 
-                      <NLink href="https://notes.ethereum.org/@ethpandaops/fusaka-devnet-0">
-                        <Text as="span" color="blue.500" textDecor="underline">
-                          Devnet 0
-                        </Text>
-                      </NLink>, validating these core components ahead of June's in-person dev meeting. Despite tight timelines and coordination challenges across teams, Fusaka is seen as essential for Ethereum's roadmap, setting the stage for the upcoming <NLink href="https://etherworld.co/2025/01/09/glamsterdam-the-next-upgrade-after-fusaka/">
-                        <Text as="span" color="blue.500" textDecor="underline">
-                          Glamsterdam
-                        </Text>
-                      </NLink> upgrade.</>
-                  )}
-                </Text>
-              </Flex>
+                {currentPosts?.map((post, index) => {
+                  const isLastRow =
+                    index >= currentPosts.length - (currentPosts.length % 3 || 3);
 
-              {/* Blog Cards Section */}
-              <Flex position="relative" width="100%" align="center">
-                <IconButton
-                  aria-label="Scroll left"
-                  icon={<ChevronLeftIcon />}
-                  position="absolute"
-                  left={0}
-                  zIndex={2}
-                  onClick={scrollLeft}
-                  bg="#30A0E0"
-                  boxShadow="md"
-                  _hover={{ bg: "gray.100" }}
-                />
+                  const lastRowCount = currentPosts.length % 3;
+                  // Only apply colSpan logic on md and up, else always 1 on small screens
+                  const colSpan =
+                    lastRowCount === 2 && isLastRow && isMediumOrLarger ? 1.5 : 1;
 
-                <Flex
-                  ref={containerRef}
-                  flex="1"
-                  overflow="hidden"
-                  py={4}
-                  pl={6}
-                  pr={10}
-                  _hover={{
-                    overflowX: "auto",
-                  }}
-                  sx={{
-                    scrollbarWidth: "none",
-                    "&::-webkit-scrollbar": {
-                      display: "none",
-                    },
-                    "& > div": {
-                      paddingRight: "40px",
-                    },
-                  }}
-                >
-                  <Flex
-                    gap={6}
-                    flexWrap="nowrap"
-                    ml={-2}
-                  >
-                    {currentPosts?.map((post, index) => (
+
+                  return (
+                    <GridItem
+                      key={index}
+                      colSpan={colSpan}
+                      display="flex"
+                      justifyContent="center"
+                      alignItems="stretch"
+                    >
                       <Box
-                        key={index}
-                        flex="0 0 auto"
-                        width={{ base: "280px", md: "320px" }}
-                        ml={index === 0 ? 4 : 0}
-                        mr={index === currentPosts?.length - 1 ? 2 : 0}
+                        width="100%"
+                        height="100%"
+                        borderWidth="1px"
+                        borderRadius="md"
+                        overflow="hidden"
                       >
                         <Card
                           image={post.image}
@@ -1711,72 +1734,67 @@ const All = () => {
                           link={post.link}
                         />
                       </Box>
-                    ))}
-                  </Flex>
-                </Flex>
-
-                <IconButton
-                  aria-label="Scroll right"
-                  icon={<ChevronRightIcon />}
-                  position="absolute"
-                  right={0}
-                  zIndex={2}
-                  onClick={scrollRight}
-                  bg="#30A0E0"
-                  boxShadow="md"
-                  _hover={{ bg: "gray.100" }}
-                />
-              </Flex>
-
-              {/* Network Upgrades Chart - Remains the same for both */}
-              <Box
-                id="NetworkUpgradesChart"
-                mt={2}
-                mb={2}
-                px={{ base: 2, md: 4, lg: 6 }}
-                width="100%"
-                maxWidth="100vw"
-                overflowX="auto"
-              >
-                <Text
-                  fontSize={{ base: '2xl', md: '3xl', lg: '3xl' }}
-                  fontWeight="bold"
-                  color="#30A0E0"
-                  mt={2}
-                  textAlign="center"
-                >
-                  Network Upgrades and EIPs Relationship Graph
-                </Text>
-                <br />
-                <Flex justifyContent="center" alignItems="center" width="100%">
-                  <Box width="100%" maxWidth="100%" overflow="hidden">
-                    <Graph />
-                  </Box>
-                </Flex>
-                <br />
-              </Box>
-
-              <Box id="NetworkUpgrades" mt={2}>
-                <NetworkUpgradesChart />
-              </Box>
-              <br />
-              <Box id="AuthorContributions">
-                <NetworkUpgradesChart2 />
-              </Box>
-
-              {/* Table Section */}
-              <Box
-                id={selectedOption === 'pectra' ? 'pectra-table' : 'fusaka-table'}
-                display={{ base: "none", md: "block" }}
-              >
-                <PectraTable PectraData={currentData} title={upgradeName} />
-                <br />
-              </Box>
-
+                    </GridItem>
+                  );
+                })}
+              </Grid>
             </Box>
+            <Box
+              id="upgrade-table"  // Consistent ID
+              display={{ base: "none", md: "block" }}
+            >
+              {/* Content changes based on selection */}
+              <PectraTable
+                PectraData={selectedOption === 'pectra' ? pectraData : fusakaData}
+                title={selectedOption === 'pectra' ? 'Pectra' : 'Fusaka'}
+              />
+              <br />
+            </Box>
+
+
+            {/* Network Upgrades Chart - Remains the same for both */}
+            <Box
+              id="NetworkUpgradesChartp"
+              mt={2}
+              mb={2}
+              px={{ base: 2, md: 4, lg: 6 }}
+              width="100%"
+              maxWidth="100vw"
+              overflowX="auto"
+            >
+              <Text
+                fontSize={{ base: '2xl', md: '3xl', lg: '3xl' }}
+                fontWeight="bold"
+                color="#00CED1"
+                mt={2}
+                textAlign="center"
+              >
+                Network Upgrades and EIPs Relationship Graph
+              </Text>
+              <br />
+              <Flex justifyContent="center" alignItems="center" width="100%">
+                <Box width="100%" maxWidth="100%" overflow="hidden">
+                  <Graph />
+                </Box>
+              </Flex>
+              <br />
+            </Box>
+
+            <Box id="NetworkUpgradeschart" mt={2}>
+              <NetworkUpgradesChart />
+            </Box>
+            <br />
+            <Box id="AuthorContributions">
+              <NetworkUpgradesChart2 />
+            </Box>
+
+            {/* Table Section */}
+
+
           </Box>
-        </motion.div>
-      </AllLayout>
+        </Box>
+      </motion.div>
+    </AllLayout >
     </>
   );
 };
