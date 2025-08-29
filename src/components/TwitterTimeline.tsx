@@ -154,118 +154,128 @@ const TwitterTimeline: React.FC = () => {
                 maxH="700px"
                 overflowY="auto"
                 p={6}
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
                 css={{
                   '&::-webkit-scrollbar': {
-                    width: '6px',
+                    width: '8px',
                   },
                   '&::-webkit-scrollbar-track': {
-                    background: 'transparent',
+                    background: useColorModeValue('rgba(0,0,0,0.05)', 'rgba(255,255,255,0.05)'),
+                    borderRadius: '4px',
                   },
                   '&::-webkit-scrollbar-thumb': {
                     background: scrollbarColor,
-                    borderRadius: '3px',
-                  },
-                  '&::-webkit-scrollbar-thumb:hover': {
-                    background: useColorModeValue('gray.400', 'gray.400'),
+                    borderRadius: '4px',
+                    '&:hover': {
+                      background: useColorModeValue('gray.400', 'gray.400'),
+                    }
                   },
                 }}
               >
-        {/* Tweet 1: Nody Observability */}
-        <Box mb={6} position="relative">
+        {/* Tweet 1: Scheduled Insights - Don't let old habits hold you back */}
+        <Box mb={6} position="relative" width="100%" maxW="550px">
           <blockquote 
             className="twitter-tweet" 
             data-theme={useColorModeValue('light', 'dark')}
+            style={{ margin: '0 auto' }}
           >
             <p lang="en" dir="ltr">
-              Blame is easy. Observability is better. Nody picks the right button. 
+              Don't let old habits hold you back. Switch to scheduled insights and see your workflow soar. <br /><br />
+              Visit <a href="https://t.co/mXCeU990gC">https://t.co/mXCeU990gC</a>
               <a href="https://twitter.com/hashtag/EIPsInsight?src=hash&amp;ref_src=twsrc%5Etfw">#EIPsInsight</a> 
-              <a href="https://twitter.com/hashtag/Monitoring?src=hash&amp;ref_src=twsrc%5Etfw">#Monitoring</a> 
-              <a href="https://twitter.com/hashtag/Web3?src=hash&amp;ref_src=twsrc%5Etfw">#Web3</a> 
-              <a href="https://t.co/8XAxhnznN7">pic.twitter.com/8XAxhnznN7</a>
+              <a href="https://twitter.com/hashtag/Efficiency?src=hash&amp;ref_src=twsrc%5Etfw">#Efficiency</a> 
+              <a href="https://twitter.com/hashtag/MemeFriday?src=hash&amp;ref_src=twsrc%5Etfw">#MemeFriday</a> 
+              <a href="https://t.co/AIHhJXqTge">pic.twitter.com/AIHhJXqTge</a>
             </p>
             &mdash; EIPsInsight (@TeamAvarch) 
-            <a href="https://twitter.com/TeamAvarch/status/1958753245855457626?ref_src=twsrc%5Etfw">
-              August 22, 2025
+            <a href="https://twitter.com/TeamAvarch/status/1961405069284270189?ref_src=twsrc%5Etfw">
+              August 29, 2025
             </a>
           </blockquote>
         </Box>
 
-        {/* Tweet 2: EIP-7934 RLP Execution Block Size Limit */}
-        <Box mb={6} position="relative">
+        {/* Tweet 2: New Blog: EIP Proposal Builder and Validation Issues */}
+        <Box mb={6} position="relative" width="100%" maxW="550px">
           <blockquote 
             className="twitter-tweet" 
             data-theme={useColorModeValue('light', 'dark')}
+            style={{ margin: '0 auto' }}
           >
             <p lang="en" dir="ltr">
-              🚧 EIP‑7934 (Fusaka): RLP Execution Block Size Limit<br /><br />
-              As Ethereum raises capacity, 7934 adds a byte‑size ceiling for the whole block (with margin) so bigger blocks still propagate fast and stay DoS‑resistant.<br />
-              It's the guardrail that complements EIP‑7935's higher gas limit and… 
-              <a href="https://t.co/dz49AK7pnN">pic.twitter.com/dz49AK7pnN</a>
+              New on the blog: EIP Proposal Builder and Validation Issues with Legacy EIPs
+              <a href="https://t.co/bk3ooSCZ6u">https://t.co/bk3ooSCZ6u</a> 
+              <a href="https://t.co/1jdFJVbv7c">pic.twitter.com/1jdFJVbv7c</a>
             </p>
             &mdash; EIPsInsight (@TeamAvarch) 
-            <a href="https://twitter.com/TeamAvarch/status/1958553227118686225?ref_src=twsrc%5Etfw">
-              August 21, 2025
+            <a href="https://twitter.com/TeamAvarch/status/1961139312080392361?ref_src=twsrc%5Etfw">
+              August 28, 2025
             </a>
           </blockquote>
         </Box>
 
-        {/* Tweet 3: Protocol PBS */}
-        <Box mb={6} position="relative">
+        {/* Tweet 3: EIP-7702 Programmable EOAs */}
+        <Box mb={6} position="relative" width="100%" maxW="550px">
           <blockquote 
             className="twitter-tweet" 
             data-theme={useColorModeValue('light', 'dark')}
+            style={{ margin: '0 auto' }}
           >
             <p lang="en" dir="ltr">
-              Protocol PBS (e.g., EIP-7732 direction) should be…
+              EIP‑7702: Programmable EOAs<br /><br />
+              It lets a regular EOA temporarily act like a smart account via a special transaction, so the same address can batch actions, use sponsored gas, and apply scoped permissions without migrating wallets.
+              <a href="https://t.co/V5ME7RgfP1">https://t.co/V5ME7RgfP1</a><br /><br />
+              Unlocks: batch actions… 
+              <a href="https://t.co/7un7ejdCKq">pic.twitter.com/7un7ejdCKq</a>
             </p>
             &mdash; EIPsInsight (@TeamAvarch) 
-            <a href="https://twitter.com/TeamAvarch/status/1958176494360183210?ref_src=twsrc%5Etfw">
-              August 20, 2025
+            <a href="https://twitter.com/TeamAvarch/status/1961136200544391362?ref_src=twsrc%5Etfw">
+              August 28, 2025
             </a>
           </blockquote>
         </Box>
 
-        {/* Tweet 4: This Week's EIP/ERC Activity */}
-        <Box mb={6} position="relative">
+        {/* Tweet 4: EIP-7702 UX Features */}
+        <Box mb={6} position="relative" width="100%" maxW="550px">
           <blockquote 
             className="twitter-tweet" 
             data-theme={useColorModeValue('light', 'dark')}
+            style={{ margin: '0 auto' }}
           >
             <p lang="en" dir="ltr">
-              This Week's EIP/ERC Activity (Aug 19, 2025)<br /><br />
+              After recent incidents, should EIP-7702 UX features ship sooner or wait for more hardening?
+            </p>
+            &mdash; EIPsInsight (@TeamAvarch) 
+            <a href="https://twitter.com/TeamAvarch/status/1960763160333529494?ref_src=twsrc%5Etfw">
+              August 27, 2025
+            </a>
+          </blockquote>
+        </Box>
+
+        {/* Tweet 5: This Week's EIP/ERC Activity (Aug 26) */}
+        <Box mb={6} position="relative" width="100%" maxW="550px">
+          <blockquote 
+            className="twitter-tweet" 
+            data-theme={useColorModeValue('light', 'dark')}
+            style={{ margin: '0 auto' }}
+          >
+            <p lang="en" dir="ltr">
+              This Week's EIP/ERC Activity (Aug 19, 2025) <br /><br />
+              Last Call:<br />
+              ☞ EIP-7786: Cross-Chain Messaging Gateway<br />
+              Last Call Deadline: 2025-08-19
+              <a href="https://t.co/3QGiTeW4BH">https://t.co/3QGiTeW4BH</a><br />
+              ☞ EIP-7858: Expirable NFTs and SBTs<br />
+              Last Call Deadline: 2025-08-31
+              <a href="https://t.co/ht3SEOuLky">https://t.co/ht3SEOuLky</a><br /><br />
               Drafts:<br />
-              ☞ EIP-7999: Unified Multidimensional Fee Market
-              <a href="https://t.co/wZ3Pr2nhwy">https://t.co/wZ3Pr2nhwy</a><br />
-              ☞ EIP-7979: Call and Return Opcodes for the EVM
-              <a href="https://t.co/RMhowKwGu5">https://t.co/RMhowKwGu5</a><br />
-              ☞ ERC-8004: Trustless Agents
-              <a href="https://t.co/f4NmLMdZ4f">https://t.co/f4NmLMdZ4f</a><br />
-              ☞ ERC-7955: Permissionless… 
-              <a href="https://t.co/DZXwE8pyDd">pic.twitter.com/DZXwE8pyDd</a>
+              ☞ EIP-7997:… 
+              <a href="https://t.co/5N1BkfU3O2">pic.twitter.com/5N1BkfU3O2</a>
             </p>
             &mdash; EIPsInsight (@TeamAvarch) 
-            <a href="https://twitter.com/TeamAvarch/status/1957806815523000816?ref_src=twsrc%5Etfw">
-              August 19, 2025
-            </a>
-          </blockquote>
-        </Box>
-
-        {/* Tweet 5: Why EIP‑7951 */}
-        <Box mb={6} position="relative">
-          <blockquote 
-            className="twitter-tweet" 
-            data-theme={useColorModeValue('light', 'dark')}
-          >
-            <p lang="en" dir="ltr">
-              Why EIP‑7951 (secp256r1 precompile) from Fusaka:<br /><br />
-              EIP‑7951: adding a precompile for the secp256r1 (aka P‑256) elliptic curve. 
-              It meaningfully improves interoperability with Web2 security, unlocks new wallet UX, 
-              and reduces gas costs for a very common signature scheme that's… 
-              <a href="https://t.co/wCjeVJzvHJ">pic.twitter.com/wCjeVJzvHJ</a>
-            </p>
-            &mdash; EIPsInsight (@TeamAvarch) 
-            <a href="https://twitter.com/TeamAvarch/status/1957518120870113470?ref_src=twsrc%5Etfw">
-              August 18, 2025
+            <a href="https://twitter.com/TeamAvarch/status/1960340209725235302?ref_src=twsrc%5Etfw">
+              August 26, 2025
             </a>
           </blockquote>
         </Box>
