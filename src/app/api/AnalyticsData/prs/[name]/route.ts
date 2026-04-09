@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest, NextResponse } from "next/server";
 import { MongoClient } from 'mongodb';
 
 const MONGODB_URI = process.env.OPENPRS_MONGODB_URI || '';
@@ -22,12 +22,18 @@ const connectToDatabase = async () => {
   return client.db(DB_NAME);
 };
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { name, page = '1', limit = '1000', fields } = req.query;
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { name: string } }
+) {
+  const name = params.name;
+  const page = req.nextUrl.searchParams.get("page") || "1";
+  const limit = req.nextUrl.searchParams.get("limit") || "1000";
+  const fields = req.nextUrl.searchParams.get("fields");
 
   // Validate collection name
   if (!name || typeof name !== 'string' || !Object.keys(SNAPSHOT_COLLECTIONS).includes(name)) {
-    return res.status(400).json({ error: 'Invalid collection name. Must be: eips, ercs, rips, or all' });
+    return NextResponse.json({ error: 'Invalid collection name. Must be: eips, ercs, rips, or all' }, { status: 400 });
   }
 
   // Parse pagination parameters
@@ -36,11 +42,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   
   // Validate pagination parameters
   if (isNaN(pageNumber) || pageNumber < 1) {
-    return res.status(400).json({ error: 'Invalid page number' });
+    return NextResponse.json({ error: 'Invalid page number' }, { status: 400 });
   }
   
   if (isNaN(limitNumber) || limitNumber < 1 || limitNumber > 1000) {
-    return res.status(400).json({ error: 'Invalid limit. Must be between 1 and 1000' });
+    return NextResponse.json({ error: 'Invalid limit. Must be between 1 and 1000' }, { status: 400 });
   }
 
   try {
@@ -74,7 +80,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       .toArray();
 
     // Return paginated response with metadata
-    return res.status(200).json({
+    return NextResponse.json({
       data,
       pagination: {
         page: pageNumber,
@@ -92,10 +98,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
   } catch (error) {
     console.error('Database query error:', error);
-    return res.status(500).json({ 
+    return NextResponse.json({
       error: 'Failed to retrieve snapshot data from the database',
       details: error instanceof Error ? error.message : 'Unknown error'
-    });
+    }, { status: 500 });
   }
 }
 

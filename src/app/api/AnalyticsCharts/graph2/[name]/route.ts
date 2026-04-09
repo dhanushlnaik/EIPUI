@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest, NextResponse } from "next/server";
 import { MongoClient } from 'mongodb';
 
 const MONGODB_URI = process.env.OPENPRS_MONGODB_URI || '';
@@ -45,21 +45,20 @@ async function getDb() {
   return client.db(DB_NAME);
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'GET') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
-  const name = typeof req.query.name === 'string' ? req.query.name.toLowerCase() : '';
-  const view = typeof req.query.view === 'string' ? req.query.view.toLowerCase() : '';
-  const startDate = typeof req.query.startDate === 'string' ? req.query.startDate : undefined;
-  const endDate = typeof req.query.endDate === 'string' ? req.query.endDate : undefined;
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { name: string } }
+) {
+  const name = (params.name || "").toLowerCase();
+  const view = (req.nextUrl.searchParams.get("view") || "").toLowerCase();
+  const startDate = req.nextUrl.searchParams.get("startDate") || undefined;
+  const endDate = req.nextUrl.searchParams.get("endDate") || undefined;
 
   const validNames = ['eips', 'ercs', 'rips', 'all'];
   if (!validNames.includes(name)) {
-    return res.status(400).json({
+    return NextResponse.json({
       error: 'Invalid name. Use eips, ercs, rips, or all',
-    });
+    }, { status: 400 });
   }
 
   const viewCategory = view !== 'subcategory';
@@ -210,12 +209,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       response.data.subcategory = subcategoryData.map(normalize);
     }
 
-    return res.status(200).json(response);
+    return NextResponse.json(response);
   } catch (error) {
     console.error('Graph 2 API error:', error);
-    return res.status(500).json({
+    return NextResponse.json({
       error: 'Internal server error',
       details: error instanceof Error ? error.message : 'Unknown error',
-    });
+    }, { status: 500 });
   }
 }

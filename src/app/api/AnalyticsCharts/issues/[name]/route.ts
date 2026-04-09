@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextResponse } from "next/server";
 import { MongoClient } from 'mongodb';
 
 const MONGODB_URI = process.env.MONGODB_URI || '';
@@ -20,11 +20,14 @@ const connectToDatabase = async () => {
   return client.db(DB_NAME);
 };
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { name } = req.query;
+export async function GET(
+  _req: Request,
+  { params }: { params: { name: string } }
+) {
+  const name = params.name;
 
   if (!name || typeof name !== 'string' || !Object.keys(COLLECTIONS).includes(name)) {
-    return res.status(400).json({ error: 'Invalid collection name' });
+    return NextResponse.json({ error: 'Invalid collection name' }, { status: 400 });
   }
 
   try {
@@ -34,10 +37,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Convert cursor to an array
     const data = await collection.find({}).toArray();
-    return res.status(200).json(data);
+    return NextResponse.json(data);
   } catch (error) {
     console.error("Database query error:", error);
-    return res.status(500).json({ error: 'Failed to retrieve data from the database' });
+    return NextResponse.json({ error: 'Failed to retrieve data from the database' }, { status: 500 });
   }
 }
 
@@ -48,7 +51,6 @@ process.on('SIGINT', async () => {
     console.log("MongoDB connection closed on app termination");
   }
 });
-
 
 
 

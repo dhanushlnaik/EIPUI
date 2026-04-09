@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest, NextResponse } from "next/server";
 import { MongoClient } from 'mongodb';
 
 const MONGODB_URI = process.env.OPENPRS_MONGODB_URI || '';
@@ -54,11 +54,17 @@ function processRawLabelsData(data: RawLabelDataItem[], monthsWindow: number): R
     });
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { name, limit, months, labels } = req.query;
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { name: string } }
+) {
+  const name = params.name;
+  const limit = req.nextUrl.searchParams.get("limit");
+  const months = req.nextUrl.searchParams.get("months");
+  const labels = req.nextUrl.searchParams.get("labels");
 
   if (!name || typeof name !== 'string' || !Object.keys(RAW_LABELS_COLLECTIONS).includes(name)) {
-    return res.status(400).json({ error: 'Invalid collection name. Must be: eip, erc, rip, or all' });
+    return NextResponse.json({ error: 'Invalid collection name. Must be: eip, erc, rip, or all' }, { status: 400 });
   }
 
   // Ignore limit parameter and always return all data
@@ -69,7 +75,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (months && typeof months === 'string') {
     monthsNumber = parseInt(months, 10);
     if (isNaN(monthsNumber) || monthsNumber < 1) {
-      return res.status(400).json({ error: 'Invalid months. Must be a positive number' });
+      return NextResponse.json({ error: 'Invalid months. Must be a positive number' }, { status: 400 });
     }
   }
 
@@ -100,7 +106,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Get unique labels for frontend filtering
     const uniqueLabels = [...new Set(processedData.map(item => item.type))].sort();
 
-    return res.status(200).json({
+    return NextResponse.json({
       data: processedData,
       metadata: {
         totalRecords: processedData.length,
@@ -114,10 +120,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
   } catch (error) {
     console.error("Database query error:", error);
-    return res.status(500).json({ 
+    return NextResponse.json({
       error: 'Failed to retrieve raw labels chart data from the database',
       details: error instanceof Error ? error.message : 'Unknown error'
-    });
+    }, { status: 500 });
   }
 }
 

@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest, NextResponse } from "next/server";
 import { MongoClient } from 'mongodb';
 
 const MONGODB_URI = process.env.MONGODB_URI || '';
@@ -32,21 +32,25 @@ const connectToDatabase = async () => {
   return client.db();
 };
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { name, month } = req.query;
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { name: string } }
+) {
+  const name = params.name;
+  const month = req.nextUrl.searchParams.get("month");
 
   // Validate repo name
   if (!name || typeof name !== 'string' || !Object.keys(PR_COLLECTIONS).includes(name)) {
-    return res.status(400).json({ 
+    return NextResponse.json({
       error: 'Invalid repo name. Must be: eip, erc, or rip' 
-    });
+    }, { status: 400 });
   }
 
   // Validate month format (YYYY-MM)
   if (!month || typeof month !== 'string' || !/^\d{4}-\d{2}$/.test(month)) {
-    return res.status(400).json({ 
+    return NextResponse.json({
       error: 'Invalid month format. Must be YYYY-MM (e.g., 2024-11)' 
-    });
+    }, { status: 400 });
   }
 
   try {
@@ -114,7 +118,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     });
 
-    return res.status(200).json({
+    return NextResponse.json({
       data: detailedData,
       metadata: {
         totalRecords: detailedData.length,
@@ -128,10 +132,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   } catch (error) {
     console.error('Database query error:', error);
-    return res.status(500).json({
+    return NextResponse.json({
       error: 'Failed to retrieve PR details',
       details: error instanceof Error ? error.message : 'Unknown error'
-    });
+    }, { status: 500 });
   }
 }
 

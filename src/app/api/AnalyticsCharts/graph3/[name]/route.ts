@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest, NextResponse } from "next/server";
 import { MongoClient } from 'mongodb';
 
 const MONGODB_URI = process.env.OPENPRS_MONGODB_URI || '';
@@ -37,20 +37,19 @@ async function getDb() {
   return client.db(DB_NAME);
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'GET') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
-  const name = typeof req.query.name === 'string' ? req.query.name.toLowerCase() : '';
-  const startDate = typeof req.query.startDate === 'string' ? req.query.startDate : undefined;
-  const endDate = typeof req.query.endDate === 'string' ? req.query.endDate : undefined;
-  const months = typeof req.query.months === 'string' ? parseInt(req.query.months, 10) : 0;
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { name: string } }
+) {
+  const name = (params.name || "").toLowerCase();
+  const startDate = req.nextUrl.searchParams.get("startDate") || undefined;
+  const endDate = req.nextUrl.searchParams.get("endDate") || undefined;
+  const months = parseInt(req.nextUrl.searchParams.get("months") || "0", 10) || 0;
 
   if (!name || !CHART_COLLECTIONS[name]) {
-    return res.status(400).json({
+    return NextResponse.json({
       error: 'Invalid name. Use eips, ercs, rips, or all',
-    });
+    }, { status: 400 });
   }
 
   try {
@@ -112,16 +111,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return (a.type || '').localeCompare(b.type || '');
     });
 
-    return res.status(200).json({
+    return NextResponse.json({
       specType: SPEC_BY_NAME[name] || name,
       data: chartData,
       dateRange: { start: startDate || 'earliest', end: endDate || 'latest' },
     });
   } catch (error) {
     console.error('Graph 3 API error:', error);
-    return res.status(500).json({
+    return NextResponse.json({
       error: 'Internal server error',
       details: error instanceof Error ? error.message : 'Unknown error',
-    });
+    }, { status: 500 });
   }
 }

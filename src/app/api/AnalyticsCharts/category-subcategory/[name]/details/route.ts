@@ -8,7 +8,7 @@
  * Query: name=eips|ercs|rips|all, month=YYYY-MM[, source=snapshot]
  * Response: MonthKey, Month, Repo, Process, Participants, PRNumber, PRId, PRLink, Title, Author, State, CreatedAt, ClosedAt, Labels, GitHubRepo.
  */
-import type { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest, NextResponse } from "next/server";
 import mongoose, { Schema, Connection } from "mongoose";
 
 const MONGODB_URI = process.env.OPENPRS_MONGODB_URI || "";
@@ -97,20 +97,19 @@ async function getConn(): Promise<Connection> {
   return conn;
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== "GET") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
-
-  const name = req.query.name as string;
-  const month = typeof req.query.month === "string" ? req.query.month : "";
-  const source = typeof req.query.source === "string" ? req.query.source : "";
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { name: string } }
+) {
+  const name = params.name;
+  const month = req.nextUrl.searchParams.get("month") || "";
+  const source = req.nextUrl.searchParams.get("source") || "";
 
   if (!name || !["eips", "ercs", "rips", "all"].includes(name)) {
-    return res.status(400).json({ error: "Invalid name. Use eips, ercs, rips, or all." });
+    return NextResponse.json({ error: "Invalid name. Use eips, ercs, rips, or all." }, { status: 400 });
   }
   if (!month || !/^\d{4}-\d{2}$/.test(month)) {
-    return res.status(400).json({ error: "Invalid month. Use YYYY-MM." });
+    return NextResponse.json({ error: "Invalid month. Use YYYY-MM." }, { status: 400 });
   }
 
   const [y, m] = month.split("-").map(Number);
@@ -182,13 +181,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       await conn.close();
-      return res.status(200).json(rows);
+      return NextResponse.json(rows);
     } catch (error) {
       console.error("[category-subcategory details from snapshots]", error);
-      return res.status(500).json({
+      return NextResponse.json({
         error: "Failed to fetch PR details from snapshots",
         details: error instanceof Error ? error.message : "Unknown error",
-      });
+      }, { status: 500 });
     }
   }
 
@@ -236,12 +235,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     await conn.close();
-    return res.status(200).json(rows);
+    return NextResponse.json(rows);
   } catch (error) {
     console.error("[category-subcategory details from PR collections]", error);
-    return res.status(500).json({
+    return NextResponse.json({
       error: "Failed to fetch PR details",
       details: error instanceof Error ? error.message : "Unknown error",
-    });
+    }, { status: 500 });
   }
 }

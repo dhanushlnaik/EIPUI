@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest, NextResponse } from "next/server";
 import { MongoClient } from 'mongodb';
 
 const MONGODB_URI = process.env.OPENPRS_MONGODB_URI || '';
@@ -29,24 +29,24 @@ const connectToDatabase = async () => {
   return client.db(DB_NAME);
 };
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { name, months } = req.query;
-
-  if (req.method !== 'GET') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { name: string } }
+) {
+  const name = params.name;
+  const months = req.nextUrl.searchParams.get("months");
 
   if (!name || typeof name !== 'string' || !CHART_COLLECTIONS[name]) {
-    return res.status(400).json({
+    return NextResponse.json({
       error: 'Invalid collection name. Must be: eips, ercs, rips, or all',
-    });
+    }, { status: 400 });
   }
 
   let monthsNumber = 0;
   if (months && typeof months === 'string') {
     monthsNumber = parseInt(months, 10);
     if (isNaN(monthsNumber) || monthsNumber < 1) {
-      return res.status(400).json({ error: 'Invalid months. Must be a positive number' });
+      return NextResponse.json({ error: 'Invalid months. Must be a positive number' }, { status: 400 });
     }
   }
 
@@ -102,7 +102,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return (a.type || '').localeCompare(b.type || '');
     });
 
-    return res.status(200).json({
+    return NextResponse.json({
       data: chartData,
       metadata: {
         totalRecords: chartData.length,
@@ -113,9 +113,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
   } catch (error) {
     console.error('Category-subcategory chart API error:', error);
-    return res.status(500).json({
+    return NextResponse.json({
       error: 'Failed to retrieve category-subcategory chart data',
       details: error instanceof Error ? error.message : 'Unknown error',
-    });
+    }, { status: 500 });
   }
 }

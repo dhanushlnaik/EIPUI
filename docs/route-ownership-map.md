@@ -63,10 +63,33 @@ This map is the migration guardrail for incremental routing work. A route can on
   - `src/pages/api/editorAnalytics.ts`
   - `src/pages/api/DownloadCounter/index.tsx`
 
-## Batch 4 (Recommended next)
-- `app` target API routes (Analytics charts/data):
-  - `/api/AnalyticsCharts/*`
-  - `/api/AnalyticsData/*`
+## Batch 4 (Completed in this change)
+- `app` owns API routes (Analytics charts/data):
+  - `/api/AnalyticsCharts/prs/[name]`
+  - `/api/AnalyticsCharts/issues/[name]`
+  - `/api/AnalyticsCharts/labels/[name]`
+  - `/api/AnalyticsCharts/labels/[name]/details`
+  - `/api/AnalyticsCharts/graph2/[name]`
+  - `/api/AnalyticsCharts/graph3/[name]`
+  - `/api/AnalyticsCharts/category-subcategory/[name]`
+  - `/api/AnalyticsCharts/category-subcategory/[name]/details`
+  - `/api/AnalyticsData/prs/[name]`
+  - `/api/AnalyticsData/prs/[name]/[number]`
+  - `/api/AnalyticsData/issues/[name]`
+  - `/api/AnalyticsData/issues/[name]/[number]`
+- `pages` ownership removed:
+  - `src/pages/api/AnalyticsCharts/prs/[name].tsx`
+  - `src/pages/api/AnalyticsCharts/issues/[name].tsx`
+  - `src/pages/api/AnalyticsCharts/labels/[name].tsx`
+  - `src/pages/api/AnalyticsCharts/labels/[name]/details.tsx`
+  - `src/pages/api/AnalyticsCharts/graph2/[name].ts`
+  - `src/pages/api/AnalyticsCharts/graph3/[name].ts`
+  - `src/pages/api/AnalyticsCharts/category-subcategory/[name].ts`
+  - `src/pages/api/AnalyticsCharts/category-subcategory/[name]/details.ts`
+  - `src/pages/api/AnalyticsData/prs/[name]/index.tsx`
+  - `src/pages/api/AnalyticsData/prs/[name]/[number].tsx`
+  - `src/pages/api/AnalyticsData/issues/[name]/index.tsx`
+  - `src/pages/api/AnalyticsData/issues/[name]/[number].tsx`
 
 ## Guardrail
 - Run `npm run check:route-collisions` before merge.
