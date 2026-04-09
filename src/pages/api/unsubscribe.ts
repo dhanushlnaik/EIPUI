@@ -2,7 +2,7 @@
 import { connectToDatabase } from '@/lib/mongodb';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/pages/api/auth/[...nextauth]";
+import { authOptions } from "@/lib/nextAuthOptions";
 import { parseUnsubscribeToken } from '@/utils/subscriptionLinks';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {

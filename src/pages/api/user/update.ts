@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../auth/[...nextauth]';
+import { authOptions } from '@/lib/nextAuthOptions';
 import { connectToDatabase } from '@/lib/mongodb';
 import bcrypt from 'bcryptjs';
 import { getToken } from 'next-auth/jwt';

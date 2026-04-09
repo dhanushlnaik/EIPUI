@@ -1,7 +1,7 @@
 import { addSubscription } from '@/utils/subscriptions';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/pages/api/auth/[...nextauth]";
+import { authOptions } from "@/lib/nextAuthOptions";
 import { connectToDatabase } from '@/lib/mongodb'; // Add this import
 import { sendSubscriptionEmail } from '@/utils/mailer';
 import { buildUnsubscribeUrl } from '@/utils/subscriptionLinks';

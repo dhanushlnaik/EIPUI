@@ -2,8 +2,6 @@
 
 import SlotCountdown from "@/components/OldSlotCountdown";
 
-export default function TestClientError() {
-  return (
-<SlotCountdown/>
-  );
+export default function TestPage() {
+  return <SlotCountdown />;
 }
