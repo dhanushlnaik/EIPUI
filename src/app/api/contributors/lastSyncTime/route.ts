@@ -1,14 +1,7 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextResponse } from "next/server";
 import clientPromise from '@/lib/mongodb';
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method !== 'GET') {
-    return res.status(405).json({ message: 'Method not allowed' });
-  }
-
+export async function GET() {
   try {
     const client = await clientPromise;
     const db = client.db('test');
@@ -21,10 +14,10 @@ export default async function handler(
       .toArray();
 
     if (!syncStates || syncStates.length === 0) {
-      return res.status(404).json({ 
+      return NextResponse.json({ 
         message: 'No sync state found',
         lastSyncAt: null 
-      });
+      }, { status: 404 });
     }
 
     // Find the most recent lastSyncAt across all repositories
@@ -39,7 +32,7 @@ export default async function handler(
       sum + (state.activitiesProcessed || 0), 0
     );
 
-    return res.status(200).json({
+    return NextResponse.json({
       lastSyncAt: mostRecentSync.lastSyncAt,
       totalActivities,
       repositories: syncStates.map(state => ({
@@ -51,9 +44,9 @@ export default async function handler(
     });
   } catch (error: any) {
     console.error('Error fetching sync state:', error);
-    return res.status(500).json({ 
+    return NextResponse.json({ 
       message: 'Error fetching sync state',
       error: error.message 
-    });
+    }, { status: 500 });
   }
 }

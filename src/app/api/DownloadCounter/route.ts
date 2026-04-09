@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import type { NextApiRequest, NextApiResponse } from "next";
+import { NextResponse } from "next/server";
 import { Schema, model, models } from "mongoose";
 
 // Connect to MongoDB using the connection string from the environment variable
@@ -25,7 +25,7 @@ const connectToDatabase = async () => {
   await mongoose.connect(MONGODB_URI!);
 };
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export async function POST() {
   await connectToDatabase();
 
   try {
@@ -36,9 +36,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       { new: true, upsert: true } // Return updated document and upsert if not found
     );
 
-    res.status(200).json({ DownloadCount: result.count });
+    return NextResponse.json({ DownloadCount: result.count });
   } catch (error) {
     console.error("Error updating view count:", error);
-    res.status(500).json({ error: "Error updating view count" });
+    return NextResponse.json({ error: "Error updating view count" }, { status: 500 });
   }
 }

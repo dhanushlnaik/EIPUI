@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import {
   Box,
@@ -28,7 +30,7 @@ import {
   Tab,
   TabPanel,
 } from "@chakra-ui/react";
-import { useRouter } from "next/router";
+import { useParams } from "next/navigation";
 import NextLink from "next/link";
 import { FiGithub, FiTwitter, FiExternalLink, FiArrowLeft, FiTrendingUp, FiActivity, FiCalendar } from "react-icons/fi";
 import type { Contributor, Activity, RepositoryStats } from "@/types/contributors";
@@ -40,8 +42,8 @@ import RepositoryBreakdownChart from "@/components/contributors/RepositoryBreakd
 import { ContributorHeatmap } from "@/components/contributors/ContributorHeatmap";
 
 export default function ContributorDetailPage() {
-  const router = useRouter();
-  const { username } = router.query;
+  const params = useParams<{ username: string }>();
+  const username = params?.username;
 
   const [contributor, setContributor] = useState<Contributor | null>(null);
   const [activities, setActivities] = useState<Activity[]>([]);

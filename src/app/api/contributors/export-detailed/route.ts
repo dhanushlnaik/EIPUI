@@ -1,16 +1,11 @@
-import type { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method !== "GET") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
-
+export async function GET(req: NextRequest) {
   try {
-    const { timeline = "30d", startDate, endDate } = req.query;
+    const timeline = req.nextUrl.searchParams.get("timeline") || "30d";
+    const startDate = req.nextUrl.searchParams.get("startDate") || undefined;
+    const endDate = req.nextUrl.searchParams.get("endDate") || undefined;
 
     const client = await clientPromise;
     const db = client.db("test");
@@ -21,10 +16,10 @@ export default async function handler(
     
     if (timeline === "custom" && startDate && endDate) {
       // Custom date range
-      const start = new Date(startDate as string);
+      const start = new Date(startDate);
       start.setDate(1); // Start of month
       
-      const end = new Date(endDate as string);
+      const end = new Date(endDate);
       end.setMonth(end.getMonth() + 1); // Move to next month
       end.setDate(0); // Last day of the selected month
       end.setHours(23, 59, 59, 999); // End of day
@@ -155,7 +150,7 @@ export default async function handler(
       };
     });
 
-    return res.status(200).json({
+    return NextResponse.json({
       activities: detailedData,
       total: detailedData.length,
       timeline: timeline,
@@ -163,6 +158,6 @@ export default async function handler(
     });
   } catch (error) {
     console.error("Export detailed activities error:", error);
-    return res.status(500).json({ error: "Failed to fetch detailed activities" });
+    return NextResponse.json({ error: "Failed to fetch detailed activities" }, { status: 500 });
   }
 }

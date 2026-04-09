@@ -1,16 +1,14 @@
-import type { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method !== "GET") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
-
+export async function GET(req: NextRequest) {
   try {
-    const { username, repository, timeline, startDate, endDate } = req.query;
+    const searchParams = req.nextUrl.searchParams;
+    const username = searchParams.get("username") || undefined;
+    const repository = searchParams.get("repository") || undefined;
+    const timeline = searchParams.get("timeline") || undefined;
+    const startDate = searchParams.get("startDate") || undefined;
+    const endDate = searchParams.get("endDate") || undefined;
 
     const client = await clientPromise;
     const db = client.db("test");
@@ -21,14 +19,14 @@ export default async function handler(
       });
 
       if (!contributor) {
-        return res.status(404).json({ error: "Contributor not found" });
+        return NextResponse.json({ error: "Contributor not found" }, { status: 404 });
       }
 
       const activities = await db
         .collection("activities")
         .find({
-          username: username as string,
-          ...(repository ? { repository: repository as string } : {}),
+          username,
+          ...(repository ? { repository } : {}),
         })
         .sort({ timestamp: -1 })
         .limit(1000)
@@ -91,7 +89,7 @@ export default async function handler(
         }
       });
 
-      return res.status(200).json({
+      return NextResponse.json({
         activityDistribution: Object.entries(activityByType).map(
           ([activityType, count]) => ({
             activityType,
@@ -239,7 +237,7 @@ export default async function handler(
         (activityTypeCount[activity.activityType] || 0) + 1;
     });
 
-    return res.status(200).json({
+    return NextResponse.json({
       activityTimeline: Object.values(activityByDate).sort((a: any, b: any) =>
         a.date.localeCompare(b.date)
       ),
@@ -254,6 +252,6 @@ export default async function handler(
     });
   } catch (error) {
     console.error("Analytics error:", error);
-    return res.status(500).json({ error: "Failed to fetch analytics" });
+    return NextResponse.json({ error: "Failed to fetch analytics" }, { status: 500 });
   }
 }

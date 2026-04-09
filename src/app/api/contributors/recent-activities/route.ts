@@ -1,25 +1,17 @@
-import type { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method !== "GET") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
-
+export async function GET(req: NextRequest) {
   try {
-    const { limit = "20", repository } = req.query;
-    const limitNum = parseInt(limit as string, 10);
+    const limit = req.nextUrl.searchParams.get("limit") || "20";
+    const repository = req.nextUrl.searchParams.get("repository") || undefined;
+    const limitNum = parseInt(limit, 10);
 
     const client = await clientPromise;
     const db = client.db("test");
 
     const query: any = {};
-    if (repository) {
-      query.repository = repository as string;
-    }
+    if (repository) query.repository = repository;
 
     const activities = await db
       .collection("activities")
@@ -50,12 +42,12 @@ export default async function handler(
       avatarUrl: avatarMap.get(activity.username),
     }));
 
-    return res.status(200).json({
+    return NextResponse.json({
       activities: enrichedActivities,
       total: enrichedActivities.length,
     });
   } catch (error) {
     console.error("Recent activities error:", error);
-    return res.status(500).json({ error: "Failed to fetch recent activities" });
+    return NextResponse.json({ error: "Failed to fetch recent activities" }, { status: 500 });
   }
 }

@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from 'react';
 import {
   Box,
@@ -42,29 +44,48 @@ import {
   FaRedo,
   FaDownload,
   FaFilter,
-  FaCalendarAlt
+  FaCalendarAlt,
+  FaMeh
 } from 'react-icons/fa';
 import AllLayout from '@/components/Layout';
 
-interface Feedback {
+interface EnhancedFeedback {
+  _id: string;
+  rating: 'positive' | 'neutral' | 'negative';
+  comment?: string;
+  page: string;
+  userAgent: string;
+  ip: string;
+  createdAt: string;
+  timestamp: string;
+}
+
+interface SimpleFeedback {
   _id: string;
   type: 'like' | 'dislike';
-  page?: string; // Optional since older entries may not have this
+  page: string;
   comment?: string;
-  userAgent?: string; // Optional since older entries may not have this
-  ip?: string; // Optional since older entries may not have this
+  userAgent: string;
+  ip: string;
   createdAt: string;
 }
+
+type CombinedFeedback = (EnhancedFeedback | SimpleFeedback) & {
+  feedbackType?: 'simple' | 'enhanced';
+  displayType?: 'like' | 'dislike' | 'neutral';
+};
 
 interface FeedbackStats {
   total: number;
   likes: number;
   dislikes: number;
+  neutral?: number;
   likePercentage: number;
+  satisfactionScore?: number;
 }
 
 interface FeedbackResponse {
-  feedbacks: Feedback[];
+  feedbacks: CombinedFeedback[];
   pagination: {
     currentPage: number;
     totalPages: number;
@@ -88,14 +109,74 @@ const FeedbackDashboard = () => {
   const fetchFeedback = async (page = 1) => {
     try {
       setLoading(true);
-      const response = await fetch(`/api/Feedback/getAllFeedback?page=${page}&limit=50`);
       
-      if (!response.ok) {
-        throw new Error('Failed to fetch feedback data');
+      // Fetch both simple and enhanced feedback
+      const [simpleFeedbackRes, enhancedFeedbackRes] = await Promise.allSettled([
+        fetch(`/api/Feedback/getAllFeedback?page=${page}&limit=25`),
+        fetch(`/api/Feedback/getEnhancedFeedback?page=${page}&limit=25`)
+      ]);
+      
+      let combinedData: FeedbackResponse = {
+        feedbacks: [],
+        pagination: { currentPage: page, totalPages: 1, totalCount: 0, limit: 50 },
+        stats: { total: 0, likes: 0, dislikes: 0, neutral: 0, likePercentage: 0, satisfactionScore: 0 }
+      };
+
+      // Process simple feedback
+      if (simpleFeedbackRes.status === 'fulfilled' && simpleFeedbackRes.value.ok) {
+        const simpleData = await simpleFeedbackRes.value.json();
+        const simpleFeedbacks = (simpleData.feedbacks || []).map((f: SimpleFeedback) => ({
+          ...f,
+          feedbackType: 'simple' as const,
+          displayType: f.type,
+          rating: f.type === 'like' ? 'positive' : 'negative'
+        }));
+        
+        combinedData.feedbacks.push(...simpleFeedbacks);
+        combinedData.stats.total += simpleData.stats?.total || 0;
+        combinedData.stats.likes += simpleData.stats?.likes || 0;
+        combinedData.stats.dislikes += simpleData.stats?.dislikes || 0;
       }
-      
-      const result = await response.json();
-      setData(result);
+
+      // Process enhanced feedback
+      if (enhancedFeedbackRes.status === 'fulfilled' && enhancedFeedbackRes.value.ok) {
+        const enhancedData = await enhancedFeedbackRes.value.json();
+        
+        const enhancedFeedbacks = (enhancedData.feedbacks || []).map((f: EnhancedFeedback) => ({
+          ...f,
+          feedbackType: 'enhanced' as const,
+          displayType: f.rating === 'positive' ? 'like' : f.rating === 'negative' ? 'dislike' : 'neutral'
+        }));
+        
+        combinedData.feedbacks.push(...enhancedFeedbacks);
+        combinedData.stats.total += enhancedData.stats?.total || 0;
+        combinedData.stats.likes += enhancedData.stats?.positive || 0;
+        combinedData.stats.dislikes += enhancedData.stats?.negative || 0;
+        combinedData.stats.neutral = (combinedData.stats.neutral || 0) + (enhancedData.stats?.neutral || 0);
+      }
+
+      // Sort combined feedback by date
+      combinedData.feedbacks.sort((a, b) => {
+        const dateA = new Date(a.createdAt || ('timestamp' in a ? a.timestamp : new Date())).getTime();
+        const dateB = new Date(b.createdAt || ('timestamp' in b ? b.timestamp : new Date())).getTime();
+        return dateB - dateA;
+      });
+
+      // Calculate combined stats
+      if (combinedData.stats.total > 0) {
+        combinedData.stats.likePercentage = Math.round(
+          (combinedData.stats.likes / combinedData.stats.total) * 100
+        );
+        
+        // Calculate satisfaction score (positive = 100%, neutral = 50%, negative = 0%)
+        const satisfactionPoints = (combinedData.stats.likes * 100) + ((combinedData.stats.neutral || 0) * 50);
+        combinedData.stats.satisfactionScore = Math.round(satisfactionPoints / combinedData.stats.total);
+      }
+
+      combinedData.pagination.totalCount = combinedData.feedbacks.length;
+      combinedData.pagination.totalPages = Math.ceil(combinedData.feedbacks.length / 50);
+
+      setData(combinedData);
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unknown error');
@@ -116,17 +197,19 @@ const FeedbackDashboard = () => {
     if (!data?.feedbacks) return;
     
     const csvContent = [
-      'Type,Page,Comment,User Agent,IP,Created At',
-      ...data.feedbacks.map(f => 
-        `${f.type},"${f.page || 'N/A'}","${f.comment || 'N/A'}","${f.userAgent || 'N/A'}","${f.ip || 'N/A'}","${f.createdAt}"`
-      )
+      'Type,Rating,Page,Comment,User Agent,IP,Created At,Feedback System',
+      ...data.feedbacks.map(f => {
+        const rating = 'rating' in f ? f.rating : f.type;
+        const displayRating = f.displayType || rating;
+        return `${displayRating},"${rating}","${f.page || 'N/A'}","${f.comment || 'N/A'}","${f.userAgent}","${f.ip}","${f.createdAt}","${f.feedbackType}"`;
+      })
     ].join('\n');
     
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `feedback-export-${new Date().toISOString().split('T')[0]}.csv`;
+    a.download = `combined-feedback-export-${new Date().toISOString().split('T')[0]}.csv`;
     a.click();
     window.URL.revokeObjectURL(url);
   };
@@ -135,15 +218,32 @@ const FeedbackDashboard = () => {
     return new Date(dateString).toLocaleString();
   };
 
-  const getPageName = (url: string | undefined | null) => {
-    if (!url || url === 'Unknown' || url === 'undefined') return 'Unknown Page';
+  const getPageName = (url: string) => {
+    if (!url || url === 'Unknown') return 'Unknown';
     try {
       const pathname = new URL(url).pathname;
-      const pageName = pathname.split('/').pop() || pathname;
-      return pageName === '/' || pageName === '' ? 'Home' : pageName;
+      return pathname.split('/').pop() || pathname;
     } catch {
-      // If URL parsing fails, return a shortened version of the string
-      return url.length > 50 ? url.substring(0, 50) + '...' : url;
+      return url.substring(0, 50) + (url.length > 50 ? '...' : '');
+    }
+  };
+
+  const getBadgeProps = (feedback: CombinedFeedback) => {
+    if (feedback.feedbackType === 'enhanced') {
+      const enhancedFeedback = feedback as EnhancedFeedback;
+      switch (enhancedFeedback.rating) {
+        case 'positive':
+          return { colorScheme: 'green', children: '👍 Positive' };
+        case 'negative':
+          return { colorScheme: 'red', children: '👎 Negative' };
+        case 'neutral':
+          return { colorScheme: 'orange', children: '😐 Neutral' };
+      }
+    } else {
+      const simpleFeedback = feedback as SimpleFeedback;
+      return simpleFeedback.type === 'like' 
+        ? { colorScheme: 'green', children: '👍 Like' }
+        : { colorScheme: 'red', children: '👎 Dislike' };
     }
   };
 
@@ -152,7 +252,7 @@ const FeedbackDashboard = () => {
       <AllLayout>
         <Container maxW="container.xl" py={8}>
           <VStack spacing={8}>
-            <Heading>Feedback Dashboard</Heading>
+            <Heading>📊 Combined Feedback Dashboard</Heading>
             <Spinner size="xl" />
           </VStack>
         </Container>
@@ -181,19 +281,10 @@ const FeedbackDashboard = () => {
           {/* Header */}
           <Flex justify="space-between" align="center" width="100%">
             <VStack align="start" spacing={1}>
-              <Heading size="lg">📊 Feedback Dashboard</Heading>
-              <Text color="gray.600">Monitor user feedback and engagement</Text>
+              <Heading size="lg">📊 Enhanced Feedback Dashboard</Heading>
+              <Text color="gray.600">Monitor user feedback and engagement (Simple + Enhanced)</Text>
             </VStack>
             <HStack>
-              <Tooltip label="Export to CSV">
-                <IconButton
-                  aria-label="Export"
-                  icon={<FaDownload />}
-                  onClick={exportToCSV}
-                  colorScheme="blue"
-                  variant="outline"
-                />
-              </Tooltip>
               <Tooltip label="Test Discord Webhook">
                 <Button
                   leftIcon={<FaCalendarAlt />}
@@ -213,6 +304,15 @@ const FeedbackDashboard = () => {
                   Test Discord
                 </Button>
               </Tooltip>
+              <Tooltip label="Export to CSV">
+                <IconButton
+                  aria-label="Export"
+                  icon={<FaDownload />}
+                  onClick={exportToCSV}
+                  colorScheme="blue"
+                  variant="outline"
+                />
+              </Tooltip>
               <Tooltip label="Refresh Data">
                 <IconButton
                   aria-label="Refresh"
@@ -227,7 +327,7 @@ const FeedbackDashboard = () => {
 
           {/* Statistics Cards */}
           {data?.stats && (
-            <SimpleGrid columns={{ base: 2, md: 4 }} spacing={4} width="100%">
+            <SimpleGrid columns={{ base: 2, md: 5 }} spacing={4} width="100%">
               <Card>
                 <CardBody>
                   <Stat>
@@ -238,7 +338,7 @@ const FeedbackDashboard = () => {
                       <StatLabel>Total Feedback</StatLabel>
                     </HStack>
                     <StatNumber>{data.stats.total}</StatNumber>
-                    <StatHelpText>All time</StatHelpText>
+                    <StatHelpText>All systems</StatHelpText>
                   </Stat>
                 </CardBody>
               </Card>
@@ -250,10 +350,25 @@ const FeedbackDashboard = () => {
                       <Box color="green.500">
                         <FaThumbsUp size={20} />
                       </Box>
-                      <StatLabel>Likes</StatLabel>
+                      <StatLabel>Positive</StatLabel>
                     </HStack>
                     <StatNumber>{data.stats.likes}</StatNumber>
-                    <StatHelpText>{data.stats.likePercentage}% positive</StatHelpText>
+                    <StatHelpText>{data.stats.likePercentage}%</StatHelpText>
+                  </Stat>
+                </CardBody>
+              </Card>
+
+              <Card>
+                <CardBody>
+                  <Stat>
+                    <HStack>
+                      <Box color="orange.500">
+                        <FaMeh size={20} />
+                      </Box>
+                      <StatLabel>Neutral</StatLabel>
+                    </HStack>
+                    <StatNumber>{data.stats.neutral || 0}</StatNumber>
+                    <StatHelpText>Enhanced only</StatHelpText>
                   </Stat>
                 </CardBody>
               </Card>
@@ -265,10 +380,10 @@ const FeedbackDashboard = () => {
                       <Box color="red.500">
                         <FaThumbsDown size={20} />
                       </Box>
-                      <StatLabel>Dislikes</StatLabel>
+                      <StatLabel>Negative</StatLabel>
                     </HStack>
                     <StatNumber>{data.stats.dislikes}</StatNumber>
-                    <StatHelpText>{100 - data.stats.likePercentage}% negative</StatHelpText>
+                    <StatHelpText>{100 - data.stats.likePercentage}%</StatHelpText>
                   </Stat>
                 </CardBody>
               </Card>
@@ -283,11 +398,15 @@ const FeedbackDashboard = () => {
                       <StatLabel>Satisfaction</StatLabel>
                     </HStack>
                     <StatNumber>
-                      {data.stats.likePercentage}%
+                      {data.stats.satisfactionScore || data.stats.likePercentage}%
                     </StatNumber>
                     <StatHelpText>
-                      <Badge colorScheme={data.stats.likePercentage > 70 ? 'green' : data.stats.likePercentage > 50 ? 'yellow' : 'red'}>
-                        {data.stats.likePercentage > 70 ? 'Excellent' : data.stats.likePercentage > 50 ? 'Good' : 'Needs Improvement'}
+                      <Badge colorScheme={
+                        (data.stats.satisfactionScore || data.stats.likePercentage) > 70 ? 'green' : 
+                        (data.stats.satisfactionScore || data.stats.likePercentage) > 50 ? 'yellow' : 'red'
+                      }>
+                        {(data.stats.satisfactionScore || data.stats.likePercentage) > 70 ? 'Excellent' : 
+                         (data.stats.satisfactionScore || data.stats.likePercentage) > 50 ? 'Good' : 'Needs Improvement'}
                       </Badge>
                     </StatHelpText>
                   </Stat>
@@ -305,8 +424,9 @@ const FeedbackDashboard = () => {
               <HStack spacing={4}>
                 <Select value={filterType} onChange={(e) => setFilterType(e.target.value)} maxW="200px">
                   <option value="all">All Feedback</option>
-                  <option value="like">👍 Likes Only</option>
-                  <option value="dislike">👎 Dislikes Only</option>
+                  <option value="like">👍 Positive Only</option>
+                  <option value="neutral">😐 Neutral Only</option>
+                  <option value="dislike">👎 Negative Only</option>
                 </Select>
                 <Input
                   placeholder="Filter by date (YYYY-MM-DD)"
@@ -323,10 +443,9 @@ const FeedbackDashboard = () => {
           <Card width="100%">
             <CardHeader>
               <HStack justify="space-between">
-                <Heading size="md">📝 Recent Feedback</Heading>
+                <Heading size="md">📝 Recent Combined Feedback</Heading>
                 <Text fontSize="sm" color="gray.500">
-                  Page {data?.pagination.currentPage} of {data?.pagination.totalPages} 
-                  ({data?.pagination.totalCount} total)
+                  Showing {data?.feedbacks?.length || 0} items
                 </Text>
               </HStack>
             </CardHeader>
@@ -336,6 +455,7 @@ const FeedbackDashboard = () => {
                   <Thead>
                     <Tr>
                       <Th>Type</Th>
+                      <Th>System</Th>
                       <Th>Page</Th>
                       <Th>Comment</Th>
                       <Th>User Agent</Th>
@@ -345,20 +465,27 @@ const FeedbackDashboard = () => {
                   </Thead>
                   <Tbody>
                     {data?.feedbacks
-                      .filter(f => filterType === 'all' || f.type === filterType)
+                      .filter(f => filterType === 'all' || f.displayType === filterType)
                       .filter(f => !dateFilter || f.createdAt.startsWith(dateFilter))
+                      .slice(0, 50)
                       .map((feedback) => (
                       <Tr key={feedback._id}>
                         <Td>
                           <Badge 
-                            colorScheme={feedback.type === 'like' ? 'green' : 'red'}
+                            {...getBadgeProps(feedback)}
                             variant="solid"
+                          />
+                        </Td>
+                        <Td>
+                          <Badge 
+                            colorScheme={feedback.feedbackType === 'enhanced' ? 'purple' : 'blue'}
+                            variant="outline"
                           >
-                            {feedback.type === 'like' ? '👍 Like' : '👎 Dislike'}
+                            {feedback.feedbackType === 'enhanced' ? 'Enhanced' : 'Simple'}
                           </Badge>
                         </Td>
                         <Td>
-                          <Tooltip label={feedback.page || 'Unknown Page'}>
+                          <Tooltip label={feedback.page}>
                             <Text fontSize="sm" noOfLines={1} maxW="200px">
                               {getPageName(feedback.page)}
                             </Text>
@@ -370,44 +497,19 @@ const FeedbackDashboard = () => {
                           </Text>
                         </Td>
                         <Td>
-                          <Tooltip label={feedback.userAgent || 'Unknown Browser'}>
+                          <Tooltip label={feedback.userAgent}>
                             <Text fontSize="xs" noOfLines={1} maxW="150px">
-                              {feedback.userAgent ? 
-                                feedback.userAgent.substring(0, 30) + '...' : 
-                                'Unknown Browser'}
+                              {feedback.userAgent.substring(0, 30)}...
                             </Text>
                           </Tooltip>
                         </Td>
-                        <Td fontSize="sm">{feedback.ip || 'Unknown IP'}</Td>
+                        <Td fontSize="sm">{feedback.ip}</Td>
                         <Td fontSize="sm">{formatDate(feedback.createdAt)}</Td>
                       </Tr>
                     ))}
                   </Tbody>
                 </Table>
               </Box>
-
-              {/* Pagination */}
-              {data?.pagination && data.pagination.totalPages > 1 && (
-                <HStack justify="center" mt={4}>
-                  <Button
-                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                    disabled={currentPage === 1}
-                    size="sm"
-                  >
-                    Previous
-                  </Button>
-                  <Text fontSize="sm">
-                    Page {currentPage} of {data.pagination.totalPages}
-                  </Text>
-                  <Button
-                    onClick={() => setCurrentPage(prev => Math.min(data.pagination.totalPages, prev + 1))}
-                    disabled={currentPage === data.pagination.totalPages}
-                    size="sm"
-                  >
-                    Next
-                  </Button>
-                </HStack>
-              )}
             </CardBody>
           </Card>
         </VStack>

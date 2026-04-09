@@ -1,5 +1,7 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useColorModeValue } from "@chakra-ui/react";
 import type { Contributor } from "@/types/contributors";
 import AllLayout from "@/components/Layout";

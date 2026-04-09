@@ -1,27 +1,19 @@
-import type { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 import type { ContributorListResponse } from "@/types/contributors";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<ContributorListResponse | { error: string }>
-) {
-  if (req.method !== "GET") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
-
+export async function GET(req: NextRequest) {
   try {
-    const {
-      repository,
-      search,
-      sortBy = "totalScore",
-      sortOrder = "desc",
-      page = "1",
-      limit = "50",
-    } = req.query;
+    const searchParams = req.nextUrl.searchParams;
+    const repository = searchParams.get("repository") || undefined;
+    const search = searchParams.get("search") || undefined;
+    const sortBy = searchParams.get("sortBy") || "totalScore";
+    const sortOrder = searchParams.get("sortOrder") || "desc";
+    const page = searchParams.get("page") || "1";
+    const limit = searchParams.get("limit") || "50";
 
-    const pageNum = parseInt(page as string, 10);
-    const limitNum = parseInt(limit as string, 10);
+    const pageNum = parseInt(page, 10);
+    const limitNum = parseInt(limit, 10);
     const offset = (pageNum - 1) * limitNum;
 
     const client = await clientPromise;
@@ -71,7 +63,7 @@ export default async function handler(
         offset + limitNum
       );
 
-      return res.status(200).json({
+      return NextResponse.json({
         contributors: paginatedContributors.map((c: any) => ({
           ...c,
           _id: c._id.toString(),
@@ -93,7 +85,7 @@ export default async function handler(
       .limit(limitNum)
       .toArray();
 
-    return res.status(200).json({
+    return NextResponse.json({
       contributors: contributors.map((c: any) => ({
         ...c,
         _id: c._id.toString(),
@@ -105,6 +97,9 @@ export default async function handler(
     });
   } catch (error: any) {
     console.error("Error fetching contributors:", error);
-    return res.status(500).json({ error: error.message || "Internal server error" });
+    return NextResponse.json(
+      { error: error.message || "Internal server error" } satisfies { error: string },
+      { status: 500 },
+    );
   }
 }

@@ -1,13 +1,12 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest, NextResponse } from "next/server";
 import clientPromise from '@/lib/mongodb';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'GET') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
+export async function GET(req: NextRequest) {
   try {
-    const { period = 'all', repo = 'all', startDate, endDate } = req.query;
+    const period = req.nextUrl.searchParams.get("period") || "all";
+    const repo = req.nextUrl.searchParams.get("repo") || "all";
+    const startDate = req.nextUrl.searchParams.get("startDate");
+    const endDate = req.nextUrl.searchParams.get("endDate");
 
     const client = await clientPromise;
     const db = client.db('eipDB');
@@ -30,11 +29,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         break;
       case 'custom':
         if (startDate && endDate) {
-          dateFilter = { 
-            monthYear: { 
-              $gte: startDate as string, 
-              $lte: endDate as string 
-            } 
+          dateFilter = {
+            monthYear: {
+              $gte: startDate,
+              $lte: endDate
+            }
           };
         }
         break;
@@ -286,9 +285,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       reviewersRepoData,
     };
 
-    return res.status(200).json(response);
+    return NextResponse.json(response);
   } catch (error) {
     console.error('Error fetching editor analytics:', error);
-    return res.status(500).json({ error: 'Failed to fetch analytics data' });
+    return NextResponse.json({ error: 'Failed to fetch analytics data' }, { status: 500 });
   }
 }

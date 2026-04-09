@@ -1,4 +1,4 @@
-import type { NextApiRequest, NextApiResponse } from "next";
+import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 
 interface ContributorStats {
@@ -23,14 +23,7 @@ interface ContributorStats {
   };
 }
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<ContributorStats | { error: string }>
-) {
-  if (req.method !== "GET") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
-
+export async function GET() {
   try {
     const client = await clientPromise;
     const db = client.db("test");
@@ -131,7 +124,7 @@ export default async function handler(
       })
     );
 
-    return res.status(200).json({
+    return NextResponse.json({
       totalContributors,
       activeContributors,
       totalActivities: totalActivitiesResult,
@@ -150,6 +143,9 @@ export default async function handler(
     });
   } catch (error: any) {
     console.error("Error fetching stats:", error);
-    return res.status(500).json({ error: error.message || "Internal server error" });
+    return NextResponse.json(
+      { error: error.message || "Internal server error" } satisfies { error: string },
+      { status: 500 },
+    );
   }
 }

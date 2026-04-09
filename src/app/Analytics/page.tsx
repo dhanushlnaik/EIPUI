@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useLayoutEffect } from "react";
+"use client";
+
+import React, { useState, useEffect } from "react";
 import CloseableAdCard from "@/components/CloseableAdCard";
 import PlaceYourAdCard from "@/components/PlaceYourAdCard";
 import dynamic from "next/dynamic";
@@ -35,7 +37,7 @@ import AllLayout from "@/components/Layout";
 import { ChevronUpIcon } from "@chakra-ui/icons";
 import axios from "axios";
 import Comments from "@/components/comments";
-import { useRouter } from "next/router";
+import { usePathname, useSearchParams } from "next/navigation";
 import LastUpdatedDateTime from "@/components/LastUpdatedDateTime";
 import EipsLabelChart from "@/components/PrLabelsChart";
 import CopyLink from "@/components/CopyLink";
@@ -1651,7 +1653,8 @@ const GitHubPRTracker: React.FC = () => {
     return <DualAxes {...config} />;
   };
 
-  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   const scrollToHash = () => {
     const hash = window.location.hash;
@@ -1669,12 +1672,9 @@ const GitHubPRTracker: React.FC = () => {
     }
   }, [loading]);
 
-  useLayoutEffect(() => {
-    router.events.on("routeChangeComplete", scrollToHash);
-    return () => {
-      router.events.off("routeChangeComplete", scrollToHash);
-    };
-  }, [router]);
+  useEffect(() => {
+    scrollToHash();
+  }, [pathname, searchParams]);
 
   useScrollSpy([
   "GithubAnalytics",
