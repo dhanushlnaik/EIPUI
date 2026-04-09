@@ -139,6 +139,74 @@ This map is the migration guardrail for incremental routing work. A route can on
   - `src/pages/withdrawn/index.tsx`
   - `src/pages/stagnant/index.tsx`
 
+## Batch 8 (Completed in this change)
+- `app` owns page routes:
+  - `/core`
+  - `/erc`
+  - `/meta`
+  - `/networking`
+  - `/informational`
+- `app` API dependencies used by these routes:
+  - `/api/new/all` (migrated in Batch 5)
+  - `/api/new/graphsv2` (migrated in Batch 6)
+- `pages` ownership removed:
+  - `src/pages/core/index.tsx`
+  - `src/pages/erc/index.tsx`
+  - `src/pages/meta/index.tsx`
+  - `src/pages/networking/index.tsx`
+  - `src/pages/informational/index.tsx`
+
+## Batch 9 (Completed in this change)
+- `app` owns page routes:
+  - `/all`
+  - `/alltable`
+  - `/eiptable`
+  - `/erctable`
+  - `/riptable`
+- `app` API dependencies used by these routes:
+  - `/api/new/all` (migrated in Batch 5)
+  - `/api/DownloadCounter` (migrated in Batch 3)
+- `pages` ownership removed:
+  - `src/pages/all/index.tsx`
+  - `src/pages/alltable/index.tsx`
+  - `src/pages/eiptable/index.tsx`
+  - `src/pages/erctable/index.tsx`
+  - `src/pages/riptable/index.tsx`
+
+## Batch 10 (Completed in this change)
+- `app` owns page routes:
+  - `/FAQs/EIP`
+  - `/FAQs/ERC`
+  - `/FAQs/RIP`
+- `pages` ownership removed:
+  - `src/pages/FAQs/EIP/index.tsx`
+  - `src/pages/FAQs/ERC/index.tsx`
+  - `src/pages/FAQs/RIP/index.tsx`
+
+## Batch 11 (Completed in this change)
+- `app` owns page routes:
+  - `/privacy`
+  - `/About`
+  - `/resources`
+  - `/grants`
+  - `/trivia`
+- `pages` ownership removed:
+  - `src/pages/privacy/index.tsx`
+  - `src/pages/About/index.tsx`
+  - `src/pages/resources/index.tsx`
+  - `src/pages/grants/index.tsx`
+  - `src/pages/trivia/index.tsx`
+
+## Batch 12 (Completed in this change)
+- `app` owns page routes:
+  - `/newsletter`
+  - `/milestones2024`
+  - `/donate`
+- `pages` ownership removed:
+  - `src/pages/newsletter/index.tsx`
+  - `src/pages/milestones2024/index.tsx`
+  - `src/pages/donate.tsx`
+
 ## Guardrail
 - Run `npm run check:route-collisions` before merge.
 - A failing check means the same pathname exists in both routers and must be resolved before shipping.
