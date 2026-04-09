@@ -91,6 +91,54 @@ This map is the migration guardrail for incremental routing work. A route can on
   - `src/pages/api/AnalyticsData/issues/[name]/index.tsx`
   - `src/pages/api/AnalyticsData/issues/[name]/[number].tsx`
 
+## Batch 5 (Completed in this change)
+- `app` owns page routes:
+  - `/boards`
+  - `/eip_board`
+  - `/review`
+- `app` owns API routes:
+  - `/api/all_board`
+  - `/api/new/all`
+- `pages` ownership removed:
+  - `src/pages/boards/index.tsx`
+  - `src/pages/eip_board/index.tsx`
+  - `src/pages/review/index.tsx`
+  - `src/pages/api/all_board/index.tsx`
+  - `src/pages/api/new/all/index.tsx`
+
+## Batch 6 (Completed in this change)
+- `app` owns page routes:
+  - `/boardsnew`
+  - `/interface`
+  - `/status`
+- `app` owns API routes:
+  - `/api/FullBoards`
+  - `/api/new/graphsv2`
+- `pages` ownership removed:
+  - `src/pages/boardsnew/index.tsx`
+  - `src/pages/interface/index.tsx`
+  - `src/pages/status/index.tsx`
+  - `src/pages/api/FullBoards/index.tsx`
+  - `src/pages/api/new/graphsv2/index.tsx`
+
+## Batch 7 (Completed in this change)
+- `app` owns page routes:
+  - `/draft`
+  - `/final`
+  - `/last-call`
+  - `/living`
+  - `/withdrawn`
+  - `/stagnant`
+- `app` API dependency used by these routes:
+  - `/api/new/all` (migrated in Batch 5)
+- `pages` ownership removed:
+  - `src/pages/draft/index.tsx`
+  - `src/pages/final/index.tsx`
+  - `src/pages/last-call/index.tsx`
+  - `src/pages/living/index.tsx`
+  - `src/pages/withdrawn/index.tsx`
+  - `src/pages/stagnant/index.tsx`
+
 ## Guardrail
 - Run `npm run check:route-collisions` before merge.
 - A failing check means the same pathname exists in both routers and must be resolved before shipping.
