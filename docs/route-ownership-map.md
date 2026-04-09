@@ -207,6 +207,52 @@ This map is the migration guardrail for incremental routing work. A route can on
   - `src/pages/milestones2024/index.tsx`
   - `src/pages/donate.tsx`
 
+## Batch 13 (Completed in this change)
+- `app` owns page routes:
+  - `/SearchEip`
+  - `/SearchEipTitle`
+  - `/SearchPRSandISSUES`
+  - `/authors`
+- `pages` ownership removed:
+  - `src/pages/SearchEip/index.tsx`
+  - `src/pages/SearchEipTitle/index.tsx`
+  - `src/pages/SearchPRSandISSUES/index.tsx`
+  - `src/pages/authors/index.tsx`
+
+## Batch 14 (Completed in this change)
+- `app` owns page routes:
+  - `/eips/[eip-number]`
+  - `/ercs/[erc-number]`
+  - `/rips/[rip-number]`
+- `app` owns API routes:
+  - `/api/eips/[number]`
+  - `/api/ercs/[number]`
+  - `/api/rips/[num]`
+- `pages` ownership removed:
+  - `src/pages/eips/[eip-number]/index.tsx`
+  - `src/pages/ercs/[erc-number]/index.tsx`
+  - `src/pages/rips/[rip-number]/index.tsx`
+  - `src/pages/api/eips/[number].tsx`
+  - `src/pages/api/ercs/[number].tsx`
+  - `src/pages/api/rips/[num].tsx`
+
+## Batch 15 (Completed in this change)
+- `app` owns page routes:
+  - `/txtracker`
+- `app` owns API routes:
+  - `/api/txtracker/fetchData`
+  - `/api/txtracker/fetchData1`
+  - `/api/txtracker/fetchData2`
+  - `/api/txtracker/fetchData3`
+  - `/api/txtracker/fetchData4`
+- `pages` ownership removed:
+  - `src/pages/txtracker/index.tsx`
+  - `src/pages/api/txtracker/fetchData/index.tsx`
+  - `src/pages/api/txtracker/fetchData1/index.tsx`
+  - `src/pages/api/txtracker/fetchData2/index.tsx`
+  - `src/pages/api/txtracker/fetchData3/index.tsx`
+  - `src/pages/api/txtracker/fetchData4/index.tsx`
+
 ## Guardrail
 - Run `npm run check:route-collisions` before merge.
 - A failing check means the same pathname exists in both routers and must be resolved before shipping.
