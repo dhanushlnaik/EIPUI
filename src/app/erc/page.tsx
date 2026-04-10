@@ -33,6 +33,7 @@ import CatTable2 from "@/components/CatTable2";
 import ErcTable from "@/components/ErcTable";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import ERCsPRChart from "@/components/Ercsprs";
+import { getStatusTimelineV2Data } from "@/lib/statusTimelineClient";
 
 interface EIP {
   _id: string;
@@ -194,13 +195,12 @@ const ERC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [allRes, graphRes] = await Promise.all([
+        const [allRes, graphJson] = await Promise.all([
           fetch(`/api/new/all`),
-          fetch(`/api/new/graphsv2`),
+          getStatusTimelineV2Data(),
         ]);
 
         const allJson = await allRes.json();
-        const graphJson = await graphRes.json();
 
         setData(allJson.erc || []);
         setData4(allJson.erc || []);

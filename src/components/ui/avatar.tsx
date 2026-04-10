@@ -1,50 +1,34 @@
-"use client"
-
+import {
+  Avatar as ChakraAvatar,
+  AvatarGroup as ChakraAvatarGroup,
+} from "@chakra-ui/react"
 import * as React from "react"
-import * as AvatarPrimitive from "@radix-ui/react-avatar"
 
-import { cn } from "@/lib/utils"
+type ImageProps = React.ImgHTMLAttributes<HTMLImageElement>
 
-const Avatar = React.forwardRef<
-  React.ElementRef<typeof AvatarPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Root>
->(({ className, ...props }, ref) => (
-  <AvatarPrimitive.Root
-    ref={ref}
-    className={cn(
-      "relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full",
-      className
-    )}
-    {...props}
-  />
-))
-Avatar.displayName = AvatarPrimitive.Root.displayName
+export interface AvatarProps extends ChakraAvatar.RootProps {
+  name?: string
+  src?: string
+  srcSet?: string
+  loading?: ImageProps["loading"]
+  icon?: React.ReactElement
+  fallback?: React.ReactNode
+}
 
-const AvatarImage = React.forwardRef<
-  React.ElementRef<typeof AvatarPrimitive.Image>,
-  React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Image>
->(({ className, ...props }, ref) => (
-  <AvatarPrimitive.Image
-    ref={ref}
-    className={cn("aspect-square h-full w-full", className)}
-    {...props}
-  />
-))
-AvatarImage.displayName = AvatarPrimitive.Image.displayName
+export const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>(
+  function Avatar(props, ref) {
+    const { name, src, srcSet, loading, icon, fallback, children, ...rest } =
+      props
+    return (
+      <ChakraAvatar.Root ref={ref} {...rest}>
+        <ChakraAvatar.Fallback name={name}>
+          {icon || fallback}
+        </ChakraAvatar.Fallback>
+        <ChakraAvatar.Image src={src} srcSet={srcSet} loading={loading} />
+        {children}
+      </ChakraAvatar.Root>
+    )
+  },
+)
 
-const AvatarFallback = React.forwardRef<
-  React.ElementRef<typeof AvatarPrimitive.Fallback>,
-  React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Fallback>
->(({ className, ...props }, ref) => (
-  <AvatarPrimitive.Fallback
-    ref={ref}
-    className={cn(
-      "flex h-full w-full items-center justify-center rounded-full bg-muted",
-      className
-    )}
-    {...props}
-  />
-))
-AvatarFallback.displayName = AvatarPrimitive.Fallback.displayName
-
-export { Avatar, AvatarImage, AvatarFallback }
+export const AvatarGroup = ChakraAvatarGroup

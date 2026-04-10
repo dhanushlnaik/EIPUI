@@ -312,6 +312,7 @@ import { useWindowSize } from "react-use";
 import DateTime from "@/components/DateTime";
 import { motion } from "framer-motion";
 import axios from "axios";
+import { getStatusTimelineV2Data } from "@/lib/statusTimelineClient";
 
 const getCat = (cat: string) => {
   switch (cat) {
@@ -381,8 +382,7 @@ const AreaStatus: React.FC<AreaCProps> = ({ type }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`/api/new/graphsv2`);
-        const jsonData = await response.json();
+        const jsonData = await getStatusTimelineV2Data();
         setData(jsonData.eip?.concat(jsonData.erc?.concat(jsonData.rip)));
         if (type === "EIPs" && jsonData.eip) {
           setData(jsonData.eip.filter((item: any) => item.category !== "ERCs"));

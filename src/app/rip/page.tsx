@@ -28,6 +28,7 @@ import NextLink from "next/link";
 import RipTable from "@/components/RipTable";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
+import { getStatusTimelineV2Data } from "@/lib/statusTimelineClient";
 
 interface EIP {
   _id: string;
@@ -202,8 +203,7 @@ const RIP = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`/api/new/graphsv2`);
-        let jsonData = await response.json();
+        const jsonData = await getStatusTimelineV2Data();
         setData2(jsonData);
         console.log("check data:", jsonData);
         setData3(jsonData);

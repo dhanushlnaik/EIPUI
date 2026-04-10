@@ -35,6 +35,7 @@ import AllChart3 from "@/components/AllChart3";
 import { Button, Heading, ButtonGroup, Flex } from "@chakra-ui/react";
 import CatTable from "@/components/CatTable";
 import CatTable2 from "@/components/CatTable2";
+import { getStatusTimelineV2Data } from "@/lib/statusTimelineClient";
 
 interface EIP {
   _id: string;
@@ -270,8 +271,7 @@ const Type = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`/api/new/graphsv2`);
-        const jsonData = await response.json();
+        const jsonData = await getStatusTimelineV2Data();
         setData2(jsonData);
         setData3(jsonData);
         setIsLoading(false); // Set loader state to false after data is fetched

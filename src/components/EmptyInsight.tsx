@@ -24,6 +24,7 @@ import { motion } from "framer-motion";
 import { usePathname } from "next/navigation";
 import DateTime from "@/components/DateTime";
 import NextLink from "next/link";
+import { getStatusTimelineV2Data } from "@/lib/statusTimelineClient";
 
 function getMonthName(monthNumber: number): string {
   const date = new Date();
@@ -60,8 +61,7 @@ const EmptyInsight = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`/api/new/graphsv2`);
-        const jsonData = await response.json();
+        const jsonData = await getStatusTimelineV2Data();
         console.log("rip data:",jsonData.rip);
         setData(jsonData.eip?.concat(jsonData.erc?.concat(jsonData.rip)));
         // setIsLoading(false);

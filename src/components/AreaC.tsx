@@ -14,6 +14,7 @@ import LoaderComponent from "./Loader";
 import DateTime from "@/components/DateTime";
 import NextLink from "next/link";
 import axios from "axios";
+import { getStatusTimelineV2Data } from "@/lib/statusTimelineClient";
 
 interface AreaProps {
   data: MappedDataItem[];
@@ -194,8 +195,7 @@ const AreaC: React.FC<AreaCProps> = ({ type }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`/api/new/graphsv2`);
-        const jsonData = await response.json();
+        const jsonData = await getStatusTimelineV2Data();
         setData(jsonData);
         if (type === "EIPs" && jsonData.eip) {
           setTypeData(jsonData.eip);

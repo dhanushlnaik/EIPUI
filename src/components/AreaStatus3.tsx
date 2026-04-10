@@ -18,6 +18,7 @@ import DateTime from "@/components/DateTime";
 import { motion } from "framer-motion";
 import axios from "axios";
 import { InfoOutlineIcon } from "@chakra-ui/icons";
+import { getStatusTimelineV2Data } from "@/lib/statusTimelineClient";
 
 const getCat = (cat: string) => {
   switch (cat) {
@@ -89,8 +90,7 @@ const StackedColumnChart: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`/api/new/graphsv2`);
-        const jsonData = await response.json();
+        const jsonData = await getStatusTimelineV2Data();
         const combinedData = jsonData.eip?.concat(jsonData.erc?.concat(jsonData.rip));
         setData(combinedData);
         

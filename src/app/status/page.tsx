@@ -31,6 +31,7 @@ import Banner from "@/components/NewsBanner";
 import NextLink from "next/link";
 import AreaC from "@/components/AreaC";
 import { client } from "@/lib/orpc";
+import { getStatusTimelineV2Data } from "@/lib/statusTimelineClient";
 
 interface EIP {
   _id: string;
@@ -88,13 +89,11 @@ const Status = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const graphPromise = fetch(`/api/new/graphsv2`).then((res) => res.json());
         const allPromise = client.home.getAllProposals();
-        const graphRpcPromise = client.home.getStatusTimelineV2();
+        const graphPromise = getStatusTimelineV2Data();
 
-        const [allRpcResult, graphRpcResult, graphJson] = await Promise.allSettled([
+        const [allRpcResult, graphResult] = await Promise.allSettled([
           allPromise,
-          graphRpcPromise,
           graphPromise,
         ]);
 
@@ -106,11 +105,8 @@ const Status = () => {
           setData2(allJson);
         }
 
-        if (graphRpcResult.status === "fulfilled") {
-          const graphData = graphRpcResult.value;
-          setData3(normalizeGraphRows(graphData.eip?.concat(graphData.erc?.concat(graphData.rip)) || []));
-        } else if (graphJson.status === "fulfilled") {
-          const graphData = graphJson.value;
+        if (graphResult.status === "fulfilled") {
+          const graphData = graphResult.value;
           setData3(normalizeGraphRows(graphData.eip?.concat(graphData.erc?.concat(graphData.rip)) || []));
         } else {
           setData3([]);
