@@ -1,4 +1,6 @@
-import { useRouter } from 'next/router';
+"use client";
+
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Box, Spinner, Flex } from '@chakra-ui/react';
 

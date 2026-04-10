@@ -1,5 +1,7 @@
+"use client";
+
 import { useState, FormEvent, useEffect } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import AllLayout from '@/components/Layout';
 import {

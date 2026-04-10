@@ -308,6 +308,44 @@ This map is the migration guardrail for incremental routing work. A route can on
   - `src/pages/api/GetUserStatus/index.tsx`
   - `src/pages/api/stripe/cancel-subscription.ts`
 
+## Batch 19 (Completed in this change)
+- `app` owns page routes:
+  - `/admin`
+  - `/admin/login`
+  - `/admin/dashboard`
+  - `/admin/dashboard/new`
+  - `/admin/dashboard/edit/[id]`
+- `app` API dependencies used by these routes:
+  - `/api/admin/auth/session`
+  - `/api/admin/auth/login`
+  - `/api/admin/auth/logout`
+  - `/api/admin/blogs`
+  - `/api/admin/blogs/[id]`
+  - `/api/admin/blogs/static`
+  - `/api/admin/upload`
+- `pages` ownership removed:
+  - `src/pages/admin/index.tsx`
+  - `src/pages/admin/login.tsx`
+  - `src/pages/admin/dashboard.tsx`
+  - `src/pages/admin/dashboard/new.tsx`
+  - `src/pages/admin/dashboard/edit/[id].tsx`
+
+## Batch 20 (Completed in this change)
+- `app` owns page routes:
+  - `/eip`
+  - `/rip`
+  - `/erc_board`
+  - `/dashboard`
+- `app` API dependencies used by these routes:
+  - `/api/new/all`
+  - `/api/new/graphsv2`
+  - `/api/all_board`
+- `pages` ownership removed:
+  - `src/pages/eip/index.tsx`
+  - `src/pages/rip/index.tsx`
+  - `src/pages/erc_board/index.tsx`
+  - `src/pages/dashboard/index.tsx`
+
 ## Guardrail
 - Run `npm run check:route-collisions` before merge.
 - A failing check means the same pathname exists in both routers and must be resolved before shipping.

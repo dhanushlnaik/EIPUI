@@ -1,3 +1,5 @@
+"use client";
+
 import FlexBetween from "@/components/FlexBetween";
 import StatBox from "@/components/StatBox";
 import CloseableAdCard from "@/components/CloseableAdCard";
@@ -18,7 +20,6 @@ import { mockEIP } from "@/data/eipdata";
 import { useRouter } from "next/navigation";
 import AllLayout from "@/components/Layout";
 import Dashboard from "@/components/Dashboard"
-import Head from "next/head"
 
 const Dasboard = () => {
     const theme = useTheme();
@@ -29,12 +30,6 @@ const Dasboard = () => {
     const router = useRouter()
     return (
         <AllLayout>
-            <Head>
-                <title>
-                    Home
-                </title>
-            </Head>
-            
             {/* EtherWorld Advertisement */}
             <Box my={6} width="100%">
                 {/* <CloseableAdCard /> */}

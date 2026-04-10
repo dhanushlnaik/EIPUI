@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import AllLayout from "@/components/Layout";
 // import Header from "@/components/Header";
@@ -7,7 +9,7 @@ import LoaderComponent from "@/components/Loader";
 import TypeGraphs from "@/components/TypeGraphs";
 import TypeGraphs3 from "@/components/TypeGraphs3";
 import SearchBox from "@/components/SearchBox";
-import { useRouter } from "next/router";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { CopyIcon } from "@chakra-ui/icons";
 import CloseableAdCard from "@/components/CloseableAdCard";
 import {
@@ -139,8 +141,15 @@ const Type = () => {
   const [selectedStatusInner, setSelectedStatusInner] = useState(Status_OPTIONS[0]);
   const [selectedEIP, setSelectedEIP] = useState<string>('all');
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const basePath = typeof window !== "undefined" ? window.location.origin : "";
   const toast = useToast();
+  const pushView = (view: "status" | "category") => {
+    const params = new URLSearchParams(searchParams?.toString());
+    params.set("view", view);
+    router.push(`${pathname}?${params.toString()}`);
+  };
   useScrollSpy([
     "graphs",
     "draftvsfinal",
@@ -250,13 +259,13 @@ const Type = () => {
   }, []);
 
   useEffect(() => {
-    if (router.query.view === "status") {
+    const view = searchParams?.get("view");
+    if (view === "status") {
       setSelected("status");
     } else {
-      // default or if view === "type"
       setSelected("category");
     }
-  }, [router.query.view]);
+  }, [searchParams]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -371,7 +380,7 @@ const Type = () => {
                     variant="outline"
                     onClick={() => {
                       setSelected("category");
-                      router.push("?view=category", undefined, { shallow: true });
+                      pushView("category");
                     }}
                   >
                     Category
@@ -383,7 +392,7 @@ const Type = () => {
                     variant="outline"
                     onClick={() => {
                       setSelected("status");
-                      router.push("?view=status", undefined, { shallow: true });
+                      pushView("status");
                     }}
                   >
                     Status

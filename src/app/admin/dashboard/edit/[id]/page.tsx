@@ -1,5 +1,7 @@
+"use client";
+
 import { useState, useEffect, FormEvent } from 'react';
-import { useRouter } from 'next/router';
+import { useParams, useRouter } from 'next/navigation';
 import AllLayout from '@/components/Layout';
 import {
   Box,
@@ -75,7 +77,8 @@ const AUTHORS = {
 
 export default function EditBlogPost() {
   const router = useRouter();
-  const { id } = router.query;
+  const params = useParams<{ id: string }>();
+  const id = params?.id;
   const toast = useToast();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);

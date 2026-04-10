@@ -1,3 +1,5 @@
+"use client";
+
 ﻿import AllLayout from "@/components/Layout";
 import CloseableAdCard from "@/components/CloseableAdCard";
 import { Box, Button, Grid, Text, useColorModeValue, IconButton, Flex, Collapse, Heading, useDisclosure, Link as LI, ButtonGroup, GridItem, Select, SimpleGrid, Link, useToast } from "@chakra-ui/react";
@@ -24,7 +26,7 @@ import CatTable from "@/components/CatTable";
 import CatTable2 from "@/components/CatTable2";
 import NextLink from "next/link";
 import RipTable from "@/components/RipTable";
-import { useRouter } from "next/router";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
 
 interface EIP {
@@ -119,8 +121,15 @@ const RIP = () => {
   const [selected, setSelected] = useState<"status" | "category">("category");
   const [selectedStatusInner, setSelectedStatusInner] = useState(Status_OPTIONS[0]);
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const basePath = typeof window !== "undefined" ? window.location.origin : "";
   const toast = useToast();
+  const pushView = (view: "status" | "category") => {
+    const params = new URLSearchParams(searchParams?.toString());
+    params.set("view", view);
+    router.push(`${pathname}?${params.toString()}`);
+  };
   const handleCopyOverviewChart = () => {
     const url = `${window.location.origin}/rip?view=${selected}#charts`;
     navigator.clipboard.writeText(url);
@@ -182,11 +191,11 @@ const RIP = () => {
   }, []);
 
   useEffect(() => {
-    const viewParam = router.query.view;
+    const viewParam = searchParams?.get("view");
     if (viewParam === "status" || viewParam === "category") {
       setSelected(viewParam);
     }
-  }, [router.query.view]);
+  }, [searchParams]);
 
 
 
@@ -325,7 +334,7 @@ const RIP = () => {
                     variant="outline"
                     onClick={() => {
                       setSelected("category");
-                      router.push("?view=category", undefined, { shallow: true });
+                      pushView("category");
                     }}
                   >
                     Category
@@ -337,7 +346,7 @@ const RIP = () => {
                     variant="outline"
                     onClick={() => {
                       setSelected("status");
-                      router.push("?view=status", undefined, { shallow: true });
+                      pushView("status");
                     }}
                   >
                     Status
