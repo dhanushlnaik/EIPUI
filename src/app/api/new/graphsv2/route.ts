@@ -1,306 +1,235 @@
 import { NextResponse } from "next/server";
+import { Pool } from "pg";
 
-const mongoose = require("mongoose");
+type StatusBucketItem = {
+  status: string;
+  eips: Array<{
+    category: string;
+    month: number;
+    year: number;
+    date: string;
+    count: number;
+    eips: any[];
+    repo: "eip" | "erc" | "rip";
+  }>;
+};
 
-mongoose
-  .connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => {
-    console.log("Connected to the database");
-  })
-  .catch((error: any) => {
-    console.error("Error connecting to the database:", error.message);
-  });
+let pool: Pool | null = null;
+function getPool() {
+  if (!pool) {
+    const databaseUrl = process.env.DATABASE_URL;
+    if (!databaseUrl) {
+      throw new Error("DATABASE_URL is not set");
+    }
+    pool = new Pool({
+      connectionString: databaseUrl,
+      ssl: databaseUrl.includes("sslmode=disable")
+        ? false
+        : { rejectUnauthorized: false },
+    });
+  }
+  return pool;
+}
 
-// Define the StatusChange schema
-const statusChangeSchema = new mongoose.Schema({
-  eip: {
-    type: String,
-    required: true,
+function pushGrouped(
+  map: Map<string, StatusBucketItem>,
+  row: {
+    status: string;
+    category: string;
+    month: number;
+    year: number;
+    repo: "eip" | "erc" | "rip";
   },
-  fromStatus: {
-    type: String,
-    required: true,
-  },
-  toStatus: {
-    type: String,
-    required: true,
-  },
-  changeDate: {
-    type: Date,
-    required: true,
-  },
-  changedDay: {
-    type: Number,
-    required: true,
-  },
-  changedMonth: {
-    type: Number,
-    required: true,
-  },
-  changedYear: {
-    type: Number,
-    required: true,
-  },
-});
-const EipStatusChange =
-  mongoose.models.EipStatusChange3 ||
-  mongoose.model("EipStatusChange3", statusChangeSchema, "eipstatuschange3");
+  eventPayload: any
+) {
+  const statusKey = row.status || "Unknown";
+  const date = `${row.year}-${row.month}`;
+  let statusBucket = map.get(statusKey);
+  if (!statusBucket) {
+    statusBucket = { status: statusKey, eips: [] };
+    map.set(statusKey, statusBucket);
+  }
 
-const ErcStatusChange =
-  mongoose.models.ErcStatusChange3 ||
-  mongoose.model("ErcStatusChange3", statusChangeSchema, "ercstatuschange3");
+  const existing = statusBucket.eips.find(
+    (item) =>
+      item.category === row.category &&
+      item.month === row.month &&
+      item.year === row.year &&
+      item.repo === row.repo
+  );
 
-const RipStatusChange =
-  mongoose.models.RipStatusChange3 ||
-  mongoose.model("RipStatusChange3", statusChangeSchema, "ripstatuschange3");
+  if (existing) {
+    existing.eips.push(eventPayload);
+    existing.count = existing.eips.length;
+  } else {
+    statusBucket.eips.push({
+      category: row.category,
+      month: row.month,
+      year: row.year,
+      date,
+      count: 1,
+      eips: [eventPayload],
+      repo: row.repo,
+    });
+  }
+}
+
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    const eipResult = await EipStatusChange.aggregate([
-      { $match: { category: { $ne: "ERC" } } },
-      {
-        $group: {
-          _id: {
-            status: "$status",
-            category: "$category",
-            changedYear: { $year: "$changeDate" },
-            changedMonth: { $month: "$changeDate" },
-          },
-          count: { $sum: 1 },
-          eips: { $push: "$$ROOT" },
-        },
-      },
-      {
-        $group: {
-          _id: "$_id.status",
-          eips: {
-            $push: {
-              category: "$_id.category",
-              changedYear: "$_id.changedYear",
-              changedMonth: "$_id.changedMonth",
-              count: "$count",
-              eips: "$eips",
-            },
-          },
-        },
-      },
-      {
-        $sort: {
-          _id: 1,
-        },
-      },
-    ]);
+    const db = getPool();
 
-    const formattedResult = eipResult?.map(
-      (group: { _id: any; eips: any[] }) => ({
-        status: group._id,
-        eips: group.eips
-          ?.reduce((acc, eipGroup) => {
-            const { category, changedYear, changedMonth, count, eips } =
-              eipGroup;
-            acc.push({
-              category,
-              month: changedMonth,
-              year: changedYear,
-              date: `${changedYear}-${changedMonth}`,
-              count,
-              eips,
-              repo: "eip",
-            });
-            return acc;
-          }, [])
-          .sort((a: { date: number }, b: { date: number }) =>
-            a.date > b.date ? 1 : -1
+    const eipErcRows = await db.query<{
+      eip: string;
+      title: string | null;
+      author: string | null;
+      status: string;
+      type: string | null;
+      category: string | null;
+      created: Date | null;
+      deadline: Date | null;
+      discussion: string | null;
+      change_date: Date;
+      changed_year: number;
+      changed_month: number;
+      repo: "eip" | "erc";
+    }>(`
+      SELECT
+        e.eip_number::text AS eip,
+        e.title,
+        e.author,
+        COALESCE(NULLIF(se.to_status, ''), 'Unknown') AS status,
+        s.type,
+        COALESCE(NULLIF(s.category, ''), NULLIF(s.type, ''), 'Other') AS category,
+        e.created_at AS created,
+        s.deadline,
+        NULL::text AS discussion,
+        se.changed_at AS change_date,
+        EXTRACT(YEAR FROM se.changed_at)::int AS changed_year,
+        EXTRACT(MONTH FROM se.changed_at)::int AS changed_month,
+        CASE
+          WHEN LOWER(SPLIT_PART(COALESCE(r.name, ''), '/', 2)) = 'ercs' OR s.category = 'ERC'
+            THEN 'erc'
+          ELSE 'eip'
+        END AS repo
+      FROM eip_status_events se
+      JOIN eips e ON e.id = se.eip_id
+      LEFT JOIN eip_snapshots s ON s.eip_id = e.id
+      LEFT JOIN repositories r ON r.id = COALESCE(se.repository_id, s.repository_id)
+      WHERE e.eip_number NOT IN (2512, 3297, 1047)
+      ORDER BY se.changed_at ASC
+    `);
+
+    const ripRows = await db.query<{
+      eip: string;
+      title: string | null;
+      author: string | null;
+      status: string | null;
+      created: Date | null;
+      category: string;
+      changed_year: number;
+      changed_month: number;
+    }>(`
+      SELECT
+        rp.rip_number::text AS eip,
+        rp.title,
+        rp.author,
+        rp.status,
+        rp.created_at AS created,
+        CASE
+          WHEN COALESCE(rp.title, '') ~* '\\mRRC[-\\s]?[0-9]+' OR COALESCE(rp.title, '') ~* '^RRC\\M'
+            THEN 'RRC'
+          ELSE 'RIP'
+        END AS category,
+        EXTRACT(YEAR FROM rp.created_at)::int AS changed_year,
+        EXTRACT(MONTH FROM rp.created_at)::int AS changed_month
+      FROM rips rp
+      WHERE rp.rip_number <> 0
+        AND rp.created_at IS NOT NULL
+      ORDER BY rp.created_at ASC
+    `);
+
+    const eipMap = new Map<string, StatusBucketItem>();
+    const ercMap = new Map<string, StatusBucketItem>();
+    const ripMap = new Map<string, StatusBucketItem>();
+
+    for (const row of eipErcRows.rows) {
+      const baseRow = {
+        status: row.status || "Unknown",
+        category: row.category || "Other",
+        month: row.changed_month,
+        year: row.changed_year,
+        repo: row.repo,
+      } as const;
+
+      const payload = {
+        eip: row.eip,
+        title: row.title || "",
+        author: row.author || "",
+        status: row.status || "Unknown",
+        type: row.type || "Unknown",
+        category: row.category || "Other",
+        created: row.created,
+        deadline: row.deadline,
+        discussion: row.discussion || "",
+        changeDate: row.change_date,
+        repo: row.repo,
+      };
+
+      if (row.repo === "erc") {
+        pushGrouped(ercMap, baseRow, payload);
+      } else {
+        pushGrouped(eipMap, baseRow, payload);
+      }
+    }
+
+    for (const row of ripRows.rows) {
+      const payload = {
+        eip: row.eip,
+        title: row.title || "",
+        author: row.author || "",
+        status: row.status || "Unknown",
+        type: "RIP",
+        category: row.category,
+        created: row.created,
+        deadline: null,
+        discussion: "",
+        changeDate: row.created,
+        repo: "rip",
+      };
+
+      pushGrouped(
+        ripMap,
+        {
+          status: row.status || "Unknown",
+          category: row.category,
+          month: row.changed_month,
+          year: row.changed_year,
+          repo: "rip",
+        },
+        payload
+      );
+    }
+
+    const toSortedArray = (map: Map<string, StatusBucketItem>) =>
+      Array.from(map.values())
+        .map((item) => ({
+          ...item,
+          eips: item.eips.sort((a, b) =>
+            a.date === b.date ? 0 : a.date > b.date ? 1 : -1
           ),
-      })
-    );
-
-    const frozenErcResult = await EipStatusChange.aggregate([
-      { $match: { category: "ERC" } },
-      {
-        $group: {
-          _id: {
-            status: "$status",
-            category: "$category",
-            changedYear: { $year: "$changeDate" },
-            changedMonth: { $month: "$changeDate" },
-          },
-          count: { $sum: 1 },
-          eips: { $push: "$$ROOT" },
-        },
-      },
-      {
-        $group: {
-          _id: "$_id.status",
-          eips: {
-            $push: {
-              category: "$_id.category",
-              changedYear: "$_id.changedYear",
-              changedMonth: "$_id.changedMonth",
-              count: "$count",
-              eips: "$eips",
-            },
-          },
-        },
-      },
-      {
-        $sort: {
-          _id: 1,
-        },
-      },
-    ]);
-
-    const formattedFrozenErcResult = frozenErcResult?.map(
-      (group: { _id: any; eips: any[] }) => ({
-        status: group._id,
-        eips: group.eips
-          ?.reduce((acc, eipGroup) => {
-            const { category, changedYear, changedMonth, count, eips } =
-              eipGroup;
-            acc.push({
-              category,
-              month: changedMonth,
-              year: changedYear,
-              date: `${changedYear}-${changedMonth}`,
-              count,
-              eips,
-              repo: "erc",
-            });
-            return acc;
-          }, [])
-          .sort((a: { date: number }, b: { date: number }) =>
-            a.date > b.date ? 1 : -1
-          ),
-      })
-    );
-
-    const ercResult = await ErcStatusChange.aggregate([
-      { $match: { changeDate: { $gte: new Date("2023-11-01") } } },
-      {
-        $group: {
-          _id: {
-            status: "$status",
-            category: "$category",
-            changedYear: { $year: "$changeDate" },
-            changedMonth: { $month: "$changeDate" },
-          },
-          count: { $sum: 1 },
-          eips: { $push: "$$ROOT" },
-        },
-      },
-      {
-        $group: {
-          _id: "$_id.status",
-          eips: {
-            $push: {
-              category: "$_id.category",
-              changedYear: "$_id.changedYear",
-              changedMonth: "$_id.changedMonth",
-              count: "$count",
-              eips: "$eips",
-            },
-          },
-        },
-      },
-      {
-        $sort: {
-          _id: 1,
-        },
-      },
-    ]);
-
-    const ERCformattedResult = ercResult?.map(
-      (group: { _id: any; eips: any[] }) => ({
-        status: group._id,
-        eips: group.eips
-          ?.reduce((acc, eipGroup) => {
-            const { category, changedYear, changedMonth, count, eips } =
-              eipGroup;
-            acc.push({
-              category,
-              month: changedMonth,
-              year: changedYear,
-              date: `${changedYear}-${changedMonth}`,
-              count,
-              eips,
-              repo: "erc",
-            });
-            return acc;
-          }, [])
-          .sort((a: { date: number }, b: { date: number }) =>
-            a.date > b.date ? 1 : -1
-          ),
-      })
-    );
-
-    const ripResult = await RipStatusChange.aggregate([
-      { $match: { changeDate: { $gte: new Date("2023-11-01") } } },
-      {
-        $group: {
-          _id: {
-            status: "$status",
-            category: "$category",
-            changedYear: { $year: "$changeDate" },
-            changedMonth: { $month: "$changeDate" },
-          },
-          count: { $sum: 1 },
-          eips: { $push: "$$ROOT" },
-        },
-      },
-      {
-        $group: {
-          _id: "$_id.status",
-          eips: {
-            $push: {
-              category: "$_id.category",
-              changedYear: "$_id.changedYear",
-              changedMonth: "$_id.changedMonth",
-              count: "$count",
-              eips: "$eips",
-            },
-          },
-        },
-      },
-      {
-        $sort: {
-          _id: 1,
-        },
-      },
-    ]);
-
-    const RIPformattedResult = ripResult?.map(
-      (group: { _id: any; eips: any[] }) => ({
-        status: group._id,
-        eips: group.eips
-          ?.reduce((acc, eipGroup) => {
-            const { category,changedYear, changedMonth, count, eips } = eipGroup;
-            acc.push({
-              category,
-              month: changedMonth,
-              year: changedYear,
-              date: `${changedYear}-${changedMonth}`,
-              count,
-              eips,
-              repo: "rip",
-            });
-            return acc;
-          }, [])
-          .sort((a: { date: number }, b: { date: number }) =>
-            a.date > b.date ? 1 : -1
-          ),
-      })
-    );
+        }))
+        .sort((a, b) => a.status.localeCompare(b.status));
 
     return NextResponse.json({
-      eip: formattedResult,
-      erc: [...ERCformattedResult, ...formattedFrozenErcResult],
-      rip: RIPformattedResult,
+      eip: toSortedArray(eipMap),
+      erc: toSortedArray(ercMap),
+      rip: toSortedArray(ripMap),
     });
   } catch (error: any) {
-    console.error("Error retrieving EIPs:", error.message);
+    console.error("Error retrieving status timeline (graphsv2):", error?.message || error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

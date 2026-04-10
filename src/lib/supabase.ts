@@ -1,20 +1,57 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
-// Supabase configuration
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+let browserClient: SupabaseClient | null = null;
+let adminClient: SupabaseClient | null = null;
+
+function requireEnv(name: string): string {
+  const value = process.env[name];
+  if (!value) {
+    throw new Error(`${name} is required.`);
+  }
+  return value;
+}
+
+function getSupabaseClient() {
+  if (!browserClient) {
+    browserClient = createClient(
+      requireEnv('NEXT_PUBLIC_SUPABASE_URL'),
+      requireEnv('NEXT_PUBLIC_SUPABASE_ANON_KEY')
+    );
+  }
+  return browserClient;
+}
+
+function getSupabaseAdminClient() {
+  if (!adminClient) {
+    adminClient = createClient(
+      requireEnv('NEXT_PUBLIC_SUPABASE_URL'),
+      requireEnv('SUPABASE_SERVICE_ROLE_KEY'),
+      {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false,
+        },
+      }
+    );
+  }
+  return adminClient;
+}
+
+function lazyClient(getter: () => SupabaseClient): SupabaseClient {
+  return new Proxy({} as SupabaseClient, {
+    get(_, prop, receiver) {
+      const client = getter() as unknown as Record<PropertyKey, unknown>;
+      const value = Reflect.get(client, prop, receiver);
+      return typeof value === 'function' ? value.bind(client) : value;
+    },
+  });
+}
 
 // Client for browser/client-side operations
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = lazyClient(getSupabaseClient);
 
 // Server client with service role for admin operations (use only server-side)
-export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
-  auth: {
-    autoRefreshToken: false,
-    persistSession: false
-  }
-});
+export const supabaseAdmin = lazyClient(getSupabaseAdminClient);
 
 // Type definitions for our database tables
 export interface TableOfContents {

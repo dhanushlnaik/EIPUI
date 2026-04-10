@@ -16,7 +16,7 @@ import {
   Tooltip
 } from "@chakra-ui/react";
 import { FiThumbsUp, FiThumbsDown, FiMeh, FiX, FiMessageSquare } from "react-icons/fi";
-import { useRouter } from "next/router";
+import { usePathname } from "next/navigation";
 
 // Combined thumbs up/down icon component
 const CombinedThumbsIcon = ({ size = "20px" }: { size?: string }) => (
@@ -52,7 +52,7 @@ const UniversalFeedbackSystem = () => {
   const [showTriggerButton, setShowTriggerButton] = useState(true); // Always show trigger button
   
   const toast = useToast();
-  const router = useRouter();
+  const pathname = usePathname();
 
   // Color mode values
   const bgColor = useColorModeValue("white", "gray.800");
@@ -118,7 +118,7 @@ const UniversalFeedbackSystem = () => {
         body: JSON.stringify({ 
           rating,
           comment: commentText.trim() || null,
-          page: router.pathname,
+          page: pathname,
           timestamp: new Date().toISOString()
         }),
       });

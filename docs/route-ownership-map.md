@@ -346,6 +346,204 @@ This map is the migration guardrail for incremental routing work. A route can on
   - `src/pages/erc_board/index.tsx`
   - `src/pages/dashboard/index.tsx`
 
+## Batch 21 (Completed in this change)
+- `app` owns all API routes under:
+  - `/api/**`
+- Migration strategy for this batch:
+  - Legacy Pages API handlers moved to `src/legacy/pages-api/**`
+  - App Router route handlers created at `src/app/api/**/route.ts`
+  - Route handlers use `src/lib/legacyApiAdapter.ts` as compatibility boundary
+- `pages` ownership removed:
+  - `src/pages/api/**` (entire directory removed)
+
+## Batch 22 (Completed in this change)
+- `app` now natively owns API routes (logic moved out of legacy adapter):
+  - `/api/allercs`
+  - `/api/allissues`
+  - `/api/allprs`
+  - `/api/allcontributors`
+- `legacy` ownership removed:
+  - `src/legacy/pages-api/allercs/index.tsx`
+  - `src/legacy/pages-api/allissues/index.tsx`
+  - `src/legacy/pages-api/allprs/index.tsx`
+  - `src/legacy/pages-api/allcontributors/index.tsx`
+
+## Batch 23 (Completed in this change)
+- `app` now natively owns API routes (logic moved out of legacy adapter):
+  - `/api/health`
+  - `/api/hello`
+  - `/api/stats`
+  - `/api/lastUpdatedTime`
+- `legacy` ownership removed:
+  - `src/legacy/pages-api/health/index.tsx`
+  - `src/legacy/pages-api/hello.tsx`
+  - `src/legacy/pages-api/stats/index.ts`
+  - `src/legacy/pages-api/lastUpdatedTime/index.tsx`
+
+## Batch 24 (Completed in this change)
+- `app` now natively owns API routes (logic moved out of legacy adapter):
+  - `/api/subscribe`
+  - `/api/unsubscribe`
+  - `/api/subscriptions`
+  - `/api/viewCount`
+  - `/api/insight-stats`
+- `legacy` ownership removed:
+  - `src/legacy/pages-api/subscribe.ts`
+  - `src/legacy/pages-api/unsubscribe.ts`
+  - `src/legacy/pages-api/subscriptions.ts`
+  - `src/legacy/pages-api/viewCount/index.tsx`
+  - `src/legacy/pages-api/insight-stats.ts`
+
+## Batch 25 (Completed in this change)
+- `app` now natively owns API routes (logic moved out of legacy adapter):
+  - `/api/pulse/daily`
+  - `/api/pulse/last-week`
+  - `/api/pulse/last-month`
+  - `/api/queue`
+  - `/api/repository-stats`
+  - `/api/pr/[num]`
+  - `/api/merge/[number]`
+  - `/api/time-to-editor-review/[pr]`
+  - `/api/status/[year]/[month]`
+  - `/api/asc/[year]/[month]`
+- `legacy` ownership removed:
+  - `src/legacy/pages-api/pulse/daily.tsx`
+  - `src/legacy/pages-api/pulse/last-week.tsx`
+  - `src/legacy/pages-api/pulse/last-month.tsx`
+  - `src/legacy/pages-api/queue/index.tsx`
+  - `src/legacy/pages-api/repository-stats.tsx`
+  - `src/legacy/pages-api/pr/[num].tsx`
+  - `src/legacy/pages-api/merge/[number].tsx`
+  - `src/legacy/pages-api/time-to-editor-review/[pr].tsx`
+  - `src/legacy/pages-api/status/[year]/[month].tsx`
+  - `src/legacy/pages-api/asc/[year]/[month].tsx`
+
+## Batch 26 (Completed in this change)
+- `app` now natively owns API routes (logic moved out of legacy adapter):
+  - `/api/eipopenprs`
+  - `/api/ercopenprs`
+  - `/api/eipsissuedetails`
+  - `/api/ercsissuedetails`
+  - `/api/ripsissuedetails`
+  - `/api/eipsprdetails`
+  - `/api/ercsprdetails`
+  - `/api/ripsprdetails`
+  - `/api/eipsprdetails2`
+  - `/api/ercsprdetails2`
+- `legacy` ownership removed:
+  - `src/legacy/pages-api/eipopenprs/index.ts`
+  - `src/legacy/pages-api/ercopenprs/index.ts`
+  - `src/legacy/pages-api/eipsissuedetails/index.tsx`
+  - `src/legacy/pages-api/ercsissuedetails/index.tsx`
+  - `src/legacy/pages-api/ripsissuedetails/index.tsx`
+  - `src/legacy/pages-api/eipsprdetails/index.tsx`
+  - `src/legacy/pages-api/ercsprdetails/index.tsx`
+  - `src/legacy/pages-api/ripsprdetails/index.tsx`
+  - `src/legacy/pages-api/eipsprdetails2/index.tsx`
+  - `src/legacy/pages-api/ercsprdetails2/index.tsx`
+
+## Batch 27 (Completed in this change)
+- `app` now natively owns API routes (logic moved out of legacy adapter):
+  - `/api/activeeditorsprsall`
+  - `/api/activeeditorsprseips`
+  - `/api/activeeditorsprsercs`
+  - `/api/activeeditorsprsrips`
+  - `/api/editorsActivity`
+  - `/api/editorsprseips`
+  - `/api/editorsprsercs`
+  - `/api/editorsprsrips`
+  - `/api/ercpr-stats`
+  - `/api/ercseditorsactivity`
+  - `/api/ercsrecentactivity`
+  - `/api/rippr-stats`
+  - `/api/eips-status-count`
+  - `/api/graphs`
+  - `/api/eipslabelchart/[name]`
+- `legacy` ownership removed:
+  - `src/legacy/pages-api/activeeditorsprsall/index.tsx`
+  - `src/legacy/pages-api/activeeditorsprseips/index.tsx`
+  - `src/legacy/pages-api/activeeditorsprsercs/index.tsx`
+  - `src/legacy/pages-api/activeeditorsprsrips/index.tsx`
+  - `src/legacy/pages-api/editorsActivity/index.tsx`
+  - `src/legacy/pages-api/editorsprseips/index.tsx`
+  - `src/legacy/pages-api/editorsprsercs/index.tsx`
+  - `src/legacy/pages-api/editorsprsrips/index.tsx`
+  - `src/legacy/pages-api/ercpr-stats/index.tsx`
+  - `src/legacy/pages-api/ercseditorsactivity/index.tsx`
+  - `src/legacy/pages-api/ercsrecentactivity/index.tsx`
+  - `src/legacy/pages-api/rippr-stats/index.tsx`
+  - `src/legacy/pages-api/eips-status-count/index.tsx`
+  - `src/legacy/pages-api/graphs/index.tsx`
+  - `src/legacy/pages-api/eipslabelchart/[name].tsx`
+
+## Batch 28 (Completed in this change)
+- `app` now natively owns API routes (logic moved out of legacy adapter):
+  - `/api/AnalyticsInfo/[name]`
+  - `/api/Analyticsissueinfo/[name]`
+  - `/api/EIPinfo`
+  - `/api/ERCinfo`
+  - `/api/RIPInfo`
+  - `/api/ValidateEip`
+  - `/api/ReviewersCharts/chart/[name]`
+  - `/api/ReviewersCharts/data/[name]`
+  - `/api/ReviewersCharts/data/[name]/[key]`
+  - `/api/get-issue-details/[Type]/[number]`
+  - `/api/get-pr-details/[Type]/[number]`
+  - `/api/Feedback/feedback`
+  - `/api/Feedback/stats`
+  - `/api/Feedback/enhanced-feedback`
+  - `/api/ai-summary`
+- `legacy` ownership removed:
+  - `src/legacy/pages-api/AnalyticsInfo/[name].tsx`
+  - `src/legacy/pages-api/Analyticsissueinfo/[name].tsx`
+  - `src/legacy/pages-api/EIPinfo.tsx`
+  - `src/legacy/pages-api/ERCinfo.tsx`
+  - `src/legacy/pages-api/RIPInfo.tsx`
+  - `src/legacy/pages-api/ValidateEip/index.ts`
+  - `src/legacy/pages-api/ReviewersCharts/chart/[name].tsx`
+  - `src/legacy/pages-api/ReviewersCharts/data/[name]/index.tsx`
+  - `src/legacy/pages-api/ReviewersCharts/data/[name]/[key].tsx`
+  - `src/legacy/pages-api/get-issue-details/[Type]/[number].tsx`
+  - `src/legacy/pages-api/get-pr-details/[Type]/[number].tsx`
+  - `src/legacy/pages-api/Feedback/feedback.tsx`
+  - `src/legacy/pages-api/Feedback/stats.tsx`
+  - `src/legacy/pages-api/Feedback/enhanced-feedback.tsx`
+  - `src/legacy/pages-api/ai-summary.ts`
+
+## Batch 29 (Completed in this change)
+- `app` now natively owns API routes (logic moved out of legacy adapter):
+  - `/api/auth/session/update`
+  - `/api/auth/force-update/update`
+  - `/api/sync/status`
+  - `/api/sync/trigger`
+  - `/api/cron/sync`
+  - `/api/cron/sync-contributors`
+  - `/api/boards`
+  - `/api/boards/[spec]`
+  - `/api/comments/[page]`
+  - `/api/comments/[page]/[CommentId]/reply`
+  - `/api/contributors/search`
+  - `/api/contributors/top`
+  - `/api/contributors/sync`
+  - `/api/contributors/sync-status`
+  - `/api/contributors/[username]`
+- `legacy` ownership removed:
+  - `src/legacy/pages-api/auth/session/update.ts`
+  - `src/legacy/pages-api/auth/force-update/update.ts`
+  - `src/legacy/pages-api/sync/status.ts`
+  - `src/legacy/pages-api/sync/trigger.ts`
+  - `src/legacy/pages-api/cron/sync.ts`
+  - `src/legacy/pages-api/cron/sync-contributors.ts`
+  - `src/legacy/pages-api/boards/index.ts`
+  - `src/legacy/pages-api/boards/[spec]/index.ts`
+  - `src/legacy/pages-api/comments/[page]/index.tsx`
+  - `src/legacy/pages-api/comments/[page]/[CommentId]/reply.tsx`
+  - `src/legacy/pages-api/contributors/search.ts`
+  - `src/legacy/pages-api/contributors/top.ts`
+  - `src/legacy/pages-api/contributors/sync.ts`
+  - `src/legacy/pages-api/contributors/sync-status.ts`
+  - `src/legacy/pages-api/contributors/[username]/index.ts`
+
 ## Guardrail
 - Run `npm run check:route-collisions` before merge.
 - A failing check means the same pathname exists in both routers and must be resolved before shipping.

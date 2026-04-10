@@ -1,109 +1,97 @@
 import { NextResponse } from "next/server";
-const mongoose = require("mongoose");
+import { Pool } from "pg";
 
-mongoose
-  .connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => {
-    console.log("Connected to the database");
-  })
-  .catch((error: any) => {
-    console.error("Error connecting to the database:", error.message);
-  });
-
-const mdFilesSchema = new mongoose.Schema({
-  eip: { type: String, unique: true },
-  title: { type: String },
-  author: { type: String },
-  status: { type: String },
-  type: { type: String },
-  category: { type: String },
-  created: { type: String },
-  
-});
-
-const EIPMdFiles =
-  mongoose.models.EipMdFiles3 || mongoose.model("EipMdFiles3", mdFilesSchema);
-const ERCMdFiles =
-  mongoose.models.ErcMdFiles3 || mongoose.model("ErcMdFiles3", mdFilesSchema);
-const RIPMdFiles =
-  mongoose.models.RipMdFiles3 || mongoose.model("RipMdFiles3", mdFilesSchema);
-
-// export default async (req: Request, res: Response) => {
-// const EIPResult = await EIPMdFiles.aggregate([
-//   {
-//     $sort: {
-//       _id: 1, // Sort by status in ascending order
-//     },
-//   },
-// ]).catch((error: any) => {
-//   console.error("Error retrieving EIPs:", error);
-//   res.status(500).json({ error: "Internal server error" });
-// });
-
-//   const ERCResult = await ERCMdFiles.aggregate([
-//     {
-//       $sort: {
-//         _id: 1, // Sort by status in ascending order
-//       },
-//     },
-//   ]).catch((error: any) => {
-//     console.error("Error retrieving EIPs:", error);
-//     res.status(500).json({ error: "Internal server error" });
-//   });
-
-//   res.json({ eip: EIPResult, erc: ERCResult });
-// };
+let pool: Pool | null = null;
+function getPool() {
+  if (!pool) {
+    pool = new Pool({
+      connectionString: process.env.DATABASE_URL,
+      ssl: process.env.DATABASE_URL?.includes('sslmode=disable') ? false : { rejectUnauthorized: false }
+    });
+  }
+  return pool;
+}
 
 export async function GET() {
   try {
-    const eipResult = await EIPMdFiles.aggregate([
-      {
-        $match: {
-          eip: { $nin: ["7212"] },
-          category: { $nin: ["ERC", "ERCs"] },
-        },
-      },
-      {
-        $sort: {
-          _id: 1,
-        },
-      },
-    ]);
+    const dbPool = getPool();
 
-    const eipModified = eipResult?.map((item: any) => {
-      return { ...item, repo: "eip" };
+    // Mirror v4 category/source logic for EIP/ERC base rows.
+    const baseResult = await dbPool.query<{
+      eip: string;
+      title: string | null;
+      author: string | null;
+      status: string;
+      type: string;
+      category: string;
+      created: Date | null;
+      deadline: string | null;
+    }>(`
+      SELECT
+        e.eip_number::text AS eip,
+        e.title,
+        e.author,
+        COALESCE(NULLIF(s.status, ''), 'Unknown') AS status,
+        COALESCE(NULLIF(s.type, ''), 'Other') AS type,
+        CASE
+          WHEN s.category IS NOT NULL AND TRIM(s.category) <> '' THEN s.category
+          WHEN TRIM(COALESCE(s.type, '')) <> '' THEN s.type
+          ELSE 'Other'
+        END AS category,
+        e.created_at AS created,
+        s.deadline::text AS deadline
+      FROM eip_snapshots s
+      JOIN eips e ON s.eip_id = e.id
+      LEFT JOIN repositories r ON s.repository_id = r.id
+      WHERE e.eip_number NOT IN (2512, 3297, 1047)
+        AND LOWER(SPLIT_PART(COALESCE(r.name, ''), '/', 2)) IN ('eips', 'ercs')
+      ORDER BY e.eip_number ASC
+    `);
+
+    // Query RIPs
+    const ripResult = await dbPool.query<{
+      eip: string;
+      title: string | null;
+      author: string | null;
+      status: string;
+      type: string;
+      category: string;
+      created: Date | null;
+      deadline: null;
+    }>(`
+      SELECT
+        rp.rip_number::text AS eip,
+        rp.title,
+        rp.author,
+        COALESCE(NULLIF(rp.status, ''), 'Unknown') AS status,
+        'RIP' AS type,
+        CASE
+          WHEN COALESCE(rp.title, '') ~* '\\mRRC[-\\s]?[0-9]+' OR COALESCE(rp.title, '') ~* '^RRC\\M' THEN 'RRC'
+          ELSE 'RIP'
+        END AS category,
+        rp.created_at AS created,
+        'rip' AS repo
+      FROM rips rp
+      WHERE rp.rip_number <> 0
+      ORDER BY rp.rip_number ASC
+    `);
+
+    const mapResults = (rows: any[], repo: string) => rows.map((row: any) => ({
+      ...row,
+      _id: `${repo}-${row.eip}`, // Ensure a unique fake _id is maintained if the frontend uses it as key
+      repo
+    }));
+
+    const eipRows = baseResult.rows.filter((row) => row.category !== "ERC");
+    const ercRows = baseResult.rows.filter((row) => row.category === "ERC");
+
+    return NextResponse.json({
+      eip: mapResults(eipRows, 'eip'),
+      erc: mapResults(ercRows, 'erc'),
+      rip: mapResults(ripResult.rows, 'rip')
     });
-
-    const ercResult = await ERCMdFiles.aggregate([
-      {
-        $sort: {
-          _id: 1, // Sort by status in ascending order
-        },
-      },
-    ]);
-
-    const ercModified = ercResult?.map((item: any) => {
-      return { ...item, repo: "erc" };
-    });
-
-    const ripResult = await RIPMdFiles.aggregate([
-      {
-        $sort: {
-          _id: 1, // Sort by status in ascending order
-        },
-      },
-    ]);
-
-    const ripModified = ripResult?.map((item: any) => {
-      return { ...item, repo: "rip" };
-    });
-
-    return NextResponse.json({ eip: eipModified, erc: ercModified, rip: ripModified });
   } catch (error: any) {
-    console.error("Error retrieving EIPs:", error.message);
+    console.error("Error retrieving standards from Postgres:", error.message);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

@@ -39,6 +39,12 @@ interface EIP {
   __v: number;
 }
 
+interface APIResponse {
+  eip: EIP[];
+  erc: EIP[];
+  rip: EIP[];
+}
+
 const categories = [
   { name: "Core", path: "/core" },
   { name: "Networking", path: "/networking" },
@@ -50,8 +56,9 @@ const categories = [
 
 const Networking = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const bg = useColorModeValue("#f6f6f7", "#171923");
   const [data, setData] = useState<EIP[]>([]);
+  const cardBg = useColorModeValue("white", "gray.800");
+  const cardBorderColor = useColorModeValue("gray.200", "gray.700");
   
   const networkingData = useMemo(() => data.filter(item => item.category === "Networking"), [data]);
   const statusDistribution = useMemo(() => {
@@ -96,24 +103,16 @@ const Networking = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(`/api/new/all`);
-        const jsonData = await response.json();
-        setData(jsonData.eip);
-        setIsLoading(false); 
+        const jsonData: APIResponse = await response.json();
+        setData([...(jsonData.eip || []), ...(jsonData.erc || []), ...(jsonData.rip || [])]);
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
-        setIsLoading(false); 
+        setIsLoading(false);
       }
     };
 
     fetchData();
-  }, []);
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
-
-    return () => clearTimeout(timeout);
   }, []);
 
   return (
@@ -171,11 +170,11 @@ const Networking = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               mt={8}
-              bg={useColorModeValue("white", "gray.800")}
+              bg={cardBg}
               p={6}
               borderRadius="xl"
               border="1px solid"
-              borderColor={useColorModeValue("gray.200", "gray.700")}
+              borderColor={cardBorderColor}
               boxShadow="sm"
               _hover={{
                 boxShadow: "md",

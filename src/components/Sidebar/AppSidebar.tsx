@@ -14,7 +14,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { signOut } from 'next-auth/react';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { IconButton, Tooltip } from "@chakra-ui/react";
 import { Variants } from "framer-motion";
 import {
@@ -49,7 +49,7 @@ import {
   MenuDivider,
   useToast,
 } from "@chakra-ui/react";
-import { useRouter } from "next/router";
+// import { useRouter } from "next/router";
 
 
 

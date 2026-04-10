@@ -76,22 +76,28 @@ export async function GET() {
         `
         WITH CombinedProposals AS (
           SELECT
-            EXTRACT(YEAR FROM e.created_at)::int AS year,
+            EXTRACT(YEAR FROM COALESCE(e.created_at, s.updated_at))::int AS year,
             CASE
-              WHEN s.category IS NOT NULL AND s.category != '' THEN s.category
-              WHEN s.type = 'Meta' THEN 'Meta'
-              WHEN s.type = 'Informational' THEN 'Informational'
-              ELSE 'Core'
+              WHEN s.category IS NOT NULL AND TRIM(s.category) <> '' THEN s.category
+              WHEN TRIM(COALESCE(s.type, '')) <> '' THEN s.type
+              ELSE 'Other'
             END AS category
           FROM eips e
           JOIN eip_snapshots s ON e.id = s.eip_id
-          WHERE e.created_at IS NOT NULL
+          LEFT JOIN repositories r ON s.repository_id = r.id
+          WHERE e.eip_number NOT IN (2512, 3297, 1047)
+            AND LOWER(SPLIT_PART(COALESCE(r.name, ''), '/', 2)) IN ('eips', 'ercs')
           UNION ALL
           SELECT
             EXTRACT(YEAR FROM created_at)::int AS year,
-            'RIP' AS category
+            CASE
+              WHEN COALESCE(title, '') ~* '\\mRRC[-\\s]?[0-9]+' OR COALESCE(title, '') ~* '^RRC\\M'
+                THEN 'RRC'
+              ELSE 'RIP'
+            END AS category
           FROM rips
           WHERE created_at IS NOT NULL
+            AND rip_number <> 0
         )
         SELECT year, category, COUNT(*)::bigint AS count
         FROM CombinedProposals
@@ -107,17 +113,20 @@ export async function GET() {
         `
         WITH CombinedProposals AS (
           SELECT
-            EXTRACT(YEAR FROM e.created_at)::int AS year,
-            s.status AS status
+            EXTRACT(YEAR FROM COALESCE(e.created_at, s.updated_at))::int AS year,
+            COALESCE(NULLIF(s.status, ''), 'Unknown') AS status
           FROM eips e
           JOIN eip_snapshots s ON e.id = s.eip_id
-          WHERE e.created_at IS NOT NULL
+          LEFT JOIN repositories r ON s.repository_id = r.id
+          WHERE e.eip_number NOT IN (2512, 3297, 1047)
+            AND LOWER(SPLIT_PART(COALESCE(r.name, ''), '/', 2)) IN ('eips', 'ercs')
           UNION ALL
           SELECT
             EXTRACT(YEAR FROM created_at)::int AS year,
-            status AS status
+            COALESCE(NULLIF(status, ''), 'Unknown') AS status
           FROM rips
           WHERE created_at IS NOT NULL
+            AND rip_number <> 0
         )
         SELECT year, status, COUNT(*)::bigint AS count
         FROM CombinedProposals

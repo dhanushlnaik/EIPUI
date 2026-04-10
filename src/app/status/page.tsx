@@ -76,11 +76,19 @@ const Status = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`/api/new/all`);
-        const jsonData = await response.json();
-        setData2(jsonData);
+        const [allRes, graphRes] = await Promise.all([
+          fetch(`/api/new/all`),
+          fetch(`/api/new/graphsv2`),
+        ]);
+
+        const allJson: APIResponse = await allRes.json();
+        const graphJson = await graphRes.json();
+        setData2(allJson);
+        setData3(graphJson.eip?.concat(graphJson.erc?.concat(graphJson.rip)));
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
+        setIsLoading(false);
       }
     };
 
@@ -89,67 +97,6 @@ const Status = () => {
 
   const allData: EIP[] = data2?.eip?.concat(data2?.erc?.concat(data2?.rip)) || [];
 
-  const dat = [
-    {
-      status: "Draft",
-      value: allData?.filter((item) => item.status === "Draft")?.length,
-    },
-    {
-      status: "Review",
-      value: allData?.filter((item) => item.status === "Review")?.length,
-    },
-    {
-      status: "Last Call",
-      value: allData?.filter((item) => item.status === "Last Call")?.length,
-    },
-    {
-      status: "Living",
-      value: allData?.filter((item) => item.status === "Living")?.length,
-    },
-    {
-      status: "Stagnant",
-      value: allData?.filter((item) => item.status === "Stagnant")?.length,
-    },
-    {
-      status: "Withdrawn",
-      value: allData?.filter((item) => item.status === "Withdrawn")?.length,
-    },
-    {
-      status: "Final",
-      value: allData?.filter((item) => item.status === "Final")?.length,
-    },
-  ];
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await fetch(`/api/new/alleips`);
-  //       const jsonData = await response.json();
-  //       setData(jsonData);
-  //     } catch (error) {
-  //       console.error("Error fetching data:", error);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, []);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(`/api/new/graphsv2`);
-        const jsonData = await response.json();
-        console.log("rip data:",jsonData.rip);
-        setData3(jsonData.eip?.concat(jsonData.erc?.concat(jsonData.rip)));
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
   let filteredData1 = data3?.filter((item) => item.status === "Draft");
   let filteredData2 = data3?.filter((item) => item.status === "Review");
   let filteredData3 = data3?.filter((item) => item.status === "Last Call");
@@ -157,16 +104,6 @@ const Status = () => {
   let filteredData5 = data3?.filter((item) => item.status === "Final");
   let filteredData6 = data3?.filter((item) => item.status === "Stagnant");
   let filteredData7 = data3?.filter((item) => item.status === "Withdrawn");
-
-  useEffect(() => {
-    // Simulating a loading delay
-    const timeout = setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
-
-    // Cleanup function
-    return () => clearTimeout(timeout);
-  }, []);
   return (
     <AllLayout>
       {isLoading ? ( // Check if the data is still loading

@@ -32,6 +32,12 @@ interface EIP {
   __v: number;
 }
 
+interface APIResponse {
+  eip: EIP[];
+  erc: EIP[];
+  rip: EIP[];
+}
+
 const categories = [
   { name: "Core", path: "/core" },
   { name: "Networking", path: "/networking" },
@@ -44,7 +50,6 @@ const categories = [
 const Interface = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState<EIP[]>([]);
-  const bg = useColorModeValue("#f6f6f7", "#171923");
 
   const interfaceData = useMemo(() => data.filter((item) => item.category === "Interface"), [data]);
   const statusDistribution = useMemo(() => {
@@ -104,9 +109,8 @@ const Interface = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(`/api/new/all`);
-        console.log(response);
-        const jsonData = await response.json();
-        setData(jsonData.eip);
+        const jsonData: APIResponse = await response.json();
+        setData([...(jsonData.eip || []), ...(jsonData.erc || []), ...(jsonData.rip || [])]);
         setIsLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -115,14 +119,6 @@ const Interface = () => {
     };
 
     fetchData();
-  }, []);
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
-
-    return () => clearTimeout(timeout);
   }, []);
 
   return (

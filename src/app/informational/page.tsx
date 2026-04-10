@@ -32,6 +32,12 @@ interface EIP {
   __v: number;
 }
 
+interface APIResponse {
+  eip: EIP[];
+  erc: EIP[];
+  rip: EIP[];
+}
+
 
 const categories = [
   { name: "Core", path: "/core" },
@@ -44,8 +50,9 @@ const categories = [
 
 const Info = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const bg = useColorModeValue("#f6f6f7", "#171923");
   const [data, setData] = useState<EIP[]>([]);
+  const cardBg = useColorModeValue("white", "gray.800");
+  const cardBorderColor = useColorModeValue("gray.200", "gray.700");
   
   const infoData = useMemo(() => data.filter(item => item.type === "Informational"), [data]);
   const statusDistribution = useMemo(() => {
@@ -88,27 +95,16 @@ const Info = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(`/api/new/all`);
-        console.log(response);
-        const jsonData = await response.json();
-        setData(jsonData.eip);
-        setIsLoading(false); // Set loader state to false after data is fetched
+        const jsonData: APIResponse = await response.json();
+        setData([...(jsonData.eip || []), ...(jsonData.erc || []), ...(jsonData.rip || [])]);
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
-        setIsLoading(false); // Set loader state to false even if an error occurs
+        setIsLoading(false);
       }
     };
 
     fetchData();
-  }, []);
-
-  useEffect(() => {
-    // Simulating a loading delay
-    const timeout = setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
-
-    // Cleanup function
-    return () => clearTimeout(timeout);
   }, []);
   return (
     <AllLayout>
@@ -168,11 +164,11 @@ const Info = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.3 } as any}
               mt={8}
-              bg={useColorModeValue("white", "gray.800")}
+              bg={cardBg}
               p={6}
               borderRadius="xl"
               border="1px solid"
-              borderColor={useColorModeValue("gray.200", "gray.700")}
+              borderColor={cardBorderColor}
               boxShadow="sm"
               _hover={{
                 boxShadow: "md",

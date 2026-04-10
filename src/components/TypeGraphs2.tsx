@@ -36,10 +36,13 @@ import { useAllEipsData } from "@/hooks/useAllEipsData";
               whiteSpace="nowrap"
             >
               Core - [
-              {data?.filter(
-                (item) =>
-                  item.type === "Standards Track" && item.category === "Core"
-              )?.length || 0}
+              {
+                new Set(
+                  allData
+                    ?.filter((item) => item.category === "Core")
+                    ?.map((item) => item.eip)
+                ).size
+              }
               ]
             </Text>
           </NextLink>

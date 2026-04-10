@@ -123,7 +123,6 @@ const ERC = () => {
   const [data, setData] = useState<EIP[]>([]);
   const [data4, setData4] = useState<EIP[]>([]);
   const [data2, setData2] = useState<APIResponse>({ eip: [], erc: [], rip: [] });
-  const [data3, setData3] = useState<Data>({ eip: [], erc: [], rip: [] });
   const [isLoading, setIsLoading] = useState(true);
   const [selected, setSelected] = useState<"status" | "category">("category");
   const [selectedStatusInner, setSelectedStatusInner] = useState(Status_OPTIONS[0]);
@@ -132,6 +131,8 @@ const ERC = () => {
   const searchParams = useSearchParams();
   const basePath = typeof window !== "undefined" ? window.location.origin : "";
   const toast = useToast();
+  const bg = useColorModeValue("#f6f6f7", "#171923");
+  const footerPanelBg = useColorModeValue("blue.50", "gray.700");
 
   const pushView = (view: "status" | "category") => {
     const params = new URLSearchParams(searchParams?.toString());
@@ -193,10 +194,17 @@ const ERC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`/api/new/all`);
-        const jsonData = await response.json();
-        setData(jsonData.erc);
-        setData4(jsonData.erc);
+        const [allRes, graphRes] = await Promise.all([
+          fetch(`/api/new/all`),
+          fetch(`/api/new/graphsv2`),
+        ]);
+
+        const allJson = await allRes.json();
+        const graphJson = await graphRes.json();
+
+        setData(allJson.erc || []);
+        setData4(allJson.erc || []);
+        setData2(graphJson);
         setIsLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -213,33 +221,6 @@ useEffect(() => {
   }
 }, [searchParams]);
 
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(`/api/new/graphsv2`);
-        const jsonData = await response.json();
-        setData2(jsonData);
-        setData3(jsonData);
-        setIsLoading(false); // Set loader state to false after data is fetched
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setIsLoading(false); // Set loader state to false even if an error occurs
-      }
-    };
-
-    fetchData();
-  }, []);
-  const bg = useColorModeValue("#f6f6f7", "#171923");
-  useEffect(() => {
-    // Simulating a loading delay
-    const timeout = setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
-
-    // Cleanup function
-    return () => clearTimeout(timeout);
-  }, []);
   return (
     <AllLayout>
       {isLoading ? (
@@ -545,7 +526,7 @@ useEffect(() => {
             </Box>
 
             <Box
-              bg={useColorModeValue("blue.50", "gray.700")}
+              bg={footerPanelBg}
               color="black"
               borderRadius="md"
               padding={4}

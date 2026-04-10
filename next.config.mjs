@@ -28,6 +28,9 @@ const nextConfig = withMDX(
     compiler: {
       styledComponents: true,
     },
+    experimental: {
+      serverComponentsExternalPackages: ["eipw-lint-js"],
+    },
     pageExtensions: ["mdx", "md", "tsx", "ts"],
     poweredByHeader: false,
     reactStrictMode: false,

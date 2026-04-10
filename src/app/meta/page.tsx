@@ -191,6 +191,12 @@ interface EIP {
   __v: number;
 }
 
+interface APIResponse {
+  eip: EIP[];
+  erc: EIP[];
+  rip: EIP[];
+}
+
 const categories = [
   { name: "Core", path: "/core" },
   { name: "Networking", path: "/networking" },
@@ -203,14 +209,15 @@ const categories = [
 const Meta = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState<EIP[]>([]);
-  const bg = useColorModeValue("#f6f6f7", "#171923");
+  const cardBg = useColorModeValue("white", "gray.800");
+  const cardBorderColor = useColorModeValue("gray.200", "gray.700");
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch(`/api/new/all`);
-        const jsonData = await response.json();
-        setData(jsonData.eip?.concat(jsonData.erc));
+        const jsonData: APIResponse = await response.json();
+        setData([...(jsonData.eip || []), ...(jsonData.erc || []), ...(jsonData.rip || [])]);
         setIsLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -259,13 +266,6 @@ const Meta = () => {
       answer: "We track total Meta process documents, Final approved guidelines, Living evolving documents, contributors, status distribution, and proposals with active discussions."
     }
   ];
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
-    return () => clearTimeout(timeout);
-  }, []);
 
   return (
     <AllLayout>
@@ -328,12 +328,12 @@ const Meta = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.3 } as any}
               mt={8}
-              bg={useColorModeValue("white", "gray.800")}
+              bg={cardBg}
               p={6}
               borderRadius="xl"
               border="1px solid"
               sx={{ transition: "all 0.3s" }}
-              borderColor={useColorModeValue("gray.200", "gray.700")}
+              borderColor={cardBorderColor}
               boxShadow="sm"
               _hover={{
                 boxShadow: "md",

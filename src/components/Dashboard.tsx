@@ -32,10 +32,9 @@ import { BsArrowUpRight, BsGraphUp } from "react-icons/bs";
 import StackedColumnChart from "@/components/StackedBarChart";
 import AreaC from "@/components/AreaC";
 import NextLink from "next/link";
-// import { useRouter } from "next/navigation";
-import { useRouter } from "next/router";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
+// import { useRouter } from "next/router";
 import { mockEIP } from "@/data/eipdata";
-import { usePathname } from "next/navigation";
 import FlexBetween from "./FlexBetween";
 import StatBox from "./StatBox";
 import LoaderComponent from "./Loader";
@@ -165,6 +164,8 @@ const linkColor = useColorModeValue("blue.600", "blue.300");
   const bg = useColorModeValue("#f6f6f7", "#171923");
   const text = useColorModeValue("white", "black");
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   useEffect(() => {
     if (bg === "#f6f6f7") {
       setIsDarkMode(false);
@@ -197,11 +198,8 @@ const linkColor = useColorModeValue("blue.600", "blue.300");
   }, [isLoading]);
 
   useLayoutEffect(() => {
-    router.events.on("routeChangeComplete", scrollToHash);
-    return () => {
-      router.events.off("routeChangeComplete", scrollToHash);
-    };
-  }, [router]);
+    scrollToHash();
+  }, [pathname, searchParams]);
 
   //  const [showThumbs, setShowThumbs] = useState(false);
 

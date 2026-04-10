@@ -159,27 +159,34 @@ const AllChart: React.FC<ChartProps> = ({ type }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Primary source: v4 Postgres-backed timeline adapter.
-        const v4Response = await fetch("/api/v4/home-chart");
-        if (v4Response.ok) {
-          const v4JsonData: V4HomeChartResponse = await v4Response.json();
+        // Fetch both sources:
+        // - v4 timeline for chart rendering
+        // - /api/new/all full proposal rows for metadata CSV export
+        const [v4Result, fullRowsResult] = await Promise.allSettled([
+          fetch("/api/v4/home-chart"),
+          fetch("/api/new/all"),
+        ]);
+
+        if (fullRowsResult.status === "fulfilled" && fullRowsResult.value.ok) {
+          const jsonData: APIResponse = await fullRowsResult.value.json();
+          setData(jsonData);
+        }
+
+        if (v4Result.status === "fulfilled" && v4Result.value.ok) {
+          const v4JsonData: V4HomeChartResponse = await v4Result.value.json();
           if (
             Array.isArray(v4JsonData?.categoryTimeline) &&
             Array.isArray(v4JsonData?.statusTimeline) &&
             (v4JsonData.categoryTimeline.length > 0 || v4JsonData.statusTimeline.length > 0)
           ) {
             setV4ChartData(v4JsonData);
-            setCsvData([]);
-            setIsLoading(false);
-            return;
+          } else {
+            setV4ChartData(null);
           }
+        } else {
+          setV4ChartData(null);
         }
 
-        // Fallback source: legacy Mongo payload.
-        const response = await fetch("/api/new/all");
-        const jsonData: APIResponse = await response.json();
-        setV4ChartData(null);
-        setData(jsonData);
         setIsLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -229,7 +236,7 @@ const AllChart: React.FC<ChartProps> = ({ type }) => {
         return acc;
       }, []);
 
-  // Prepare CSV data from /api/new/all (one row per current EIP entry)
+  // Prepare CSV data from full proposal rows (/api/new/all).
   React.useEffect(() => {
     const rows: any[] = [];
     let srNumber = 1;
@@ -543,7 +550,7 @@ return (
                     "Original Category",
                     "Final Status",
                     "Original Status",
-                    "EIP Link"
+                    "EIP Link",
                   ]}
                 >
                   <Button
