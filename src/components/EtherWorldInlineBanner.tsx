@@ -1,17 +1,6 @@
 import React, { useState } from 'react';
-import {
-  Box,
-  Text,
-  Flex,
-  Icon,
-  useColorModeValue,
-  Link,
-  HStack,
-  VStack,
-  IconButton,
-  Badge,
-  Button,
-} from '@chakra-ui/react';
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Text, Flex, Icon, Link, HStack, VStack, IconButton, Badge, Button } from "@chakra-ui/react";
 import { FaGlobe, FaExternalLinkAlt, FaTimes, FaNewspaper, FaRocket } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 
@@ -65,7 +54,7 @@ const EtherWorldInlineBanner: React.FC = () => {
           gap={4}
         >
           {/* Left side - Branding */}
-          <HStack spacing={3} flex={1}>
+          <HStack gap={3} flex={1}>
             <MotionBox
               animate={{ rotate: 360 }}
               transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
@@ -73,8 +62,8 @@ const EtherWorldInlineBanner: React.FC = () => {
               <Icon as={FaGlobe} boxSize={{ base: 6, md: 7 }} color={accentColor} />
             </MotionBox>
             
-            <VStack spacing={0} align="start">
-              <HStack spacing={2}>
+            <VStack gap={0} align="start">
+              <HStack gap={2}>
                 <Text
                   fontSize={{ base: "lg", md: "xl" }}
                   fontWeight="bold"
@@ -107,23 +96,23 @@ const EtherWorldInlineBanner: React.FC = () => {
 
           {/* Center - Key Features (hidden on mobile) */}
           <VStack
-            spacing={1}
+            gap={1}
             display={{ base: "none", lg: "flex" }}
             align="center"
           >
-            <HStack spacing={2}>
+            <HStack gap={2}>
               <Icon as={FaNewspaper} boxSize={4} color={accentColor} />
               <Text fontSize="xs" fontWeight="medium">Latest News</Text>
             </HStack>
-            <HStack spacing={2}>
+            <HStack gap={2}>
               <Icon as={FaRocket} boxSize={4} color={accentColor} />
               <Text fontSize="xs" fontWeight="medium">DeFi Analysis</Text>
             </HStack>
           </VStack>
 
           {/* Right side - CTA */}
-          <HStack spacing={2}>
-            <Link href="https://etherworld.co" isExternal>
+          <HStack gap={2}>
+            <Link href="https://etherworld.co" target='_blank' rel='noopener noreferrer'>
               <MotionBox
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -133,7 +122,6 @@ const EtherWorldInlineBanner: React.FC = () => {
                   color="black"
                   size="md"
                   fontWeight="bold"
-                  rightIcon={<FaExternalLinkAlt />}
                   _hover={{
                     bg: useColorModeValue('yellow.200', 'yellow.100'),
                     transform: 'translateY(-1px)',
@@ -144,22 +132,18 @@ const EtherWorldInlineBanner: React.FC = () => {
                   }}
                   transition="all 0.2s"
                   px={4}
-                  fontSize="sm"
-                >
-                  Explore Now
-                </Button>
+                  fontSize="sm">Explore Now
+                                  <FaExternalLinkAlt /></Button>
               </MotionBox>
             </Link>
             
             <IconButton
               aria-label="Close banner"
-              icon={<FaTimes />}
               size="sm"
               variant="ghost"
               color="white"
               _hover={{ bg: 'whiteAlpha.200' }}
-              onClick={() => setIsVisible(false)}
-            />
+              onClick={() => setIsVisible(false)}><FaTimes /></IconButton>
           </HStack>
         </Flex>
 

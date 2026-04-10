@@ -1,18 +1,14 @@
+/*
+ MIGRATION NOTE: The following Chakra UI hooks have been removed.
+ Please replace them with the suggested alternatives:
+
+//   - usePrefersReducedMotion: Use usehooks-ts: usePrefersReducedMotion
+
+ See: https://chakra-ui.com/docs/get-started/migration#hooks
+*/
 import React, { useState, useEffect } from 'react';
-import {
-  Box,
-  Text,
-  Flex,
-  Icon,
-  useColorModeValue,
-  Link,
-  HStack,
-  VStack,
-  IconButton,
-  Image,
-  Circle,
-  usePrefersReducedMotion,
-} from '@chakra-ui/react';
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Text, Flex, Icon, Link, HStack, VStack, IconButton, Image, Circle } from "@chakra-ui/react";
 import { 
   FaChevronLeft,
   FaChevronRight,
@@ -25,7 +21,7 @@ import {
   FaGlobe,
   FaExternalLinkAlt
 } from 'react-icons/fa';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 
 const MotionBox = motion(Box);
 const MotionFlex = motion(Flex);
@@ -98,7 +94,7 @@ const EtherWorldStoryCarousel: React.FC = () => {
   const [currentScene, setCurrentScene] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false); // reduced: no autoplay by default
   const [direction, setDirection] = useState(1);
-  const prefersReducedMotion = usePrefersReducedMotion();
+  const prefersReducedMotion = useReducedMotion();
 
   const bgBase = useColorModeValue('white', 'gray.800');
   const textColor = useColorModeValue('gray.700', 'gray.200');
@@ -270,7 +266,7 @@ const EtherWorldStoryCarousel: React.FC = () => {
               </Box>
 
               {/* Content */}
-              <HStack spacing={3} flex={1} color="white" zIndex={2}>
+              <HStack gap={3} flex={1} color="white" zIndex={2}>
                 <MotionBox
                   animate={getAnimation(current.animation)}
                   transition={{ 
@@ -284,19 +280,19 @@ const EtherWorldStoryCarousel: React.FC = () => {
                   </Circle>
                 </MotionBox>
                 
-                <VStack align="start" spacing={0}>
+                <VStack align="start" gap={0}>
                   <Text fontSize="md" fontWeight="bold" letterSpacing="wide">
                     {current.title}
                   </Text>
-                  <Text fontSize="xs" opacity={0.9} maxW="250px" noOfLines={1}>
+                  <Text fontSize="xs" opacity={0.9} maxW="250px" lineClamp={1}>
                     {current.description}
                   </Text>
                 </VStack>
               </HStack>
 
               {/* CTA Section */}
-              <HStack spacing={2} zIndex={2}>
-                <Link href="https://etherworld.co" isExternal>
+              <HStack gap={2} zIndex={2}>
+                <Link href="https://etherworld.co" target='_blank' rel='noopener noreferrer'>
                   <MotionBox
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
@@ -330,7 +326,7 @@ const EtherWorldStoryCarousel: React.FC = () => {
           position="absolute"
           bottom={1}
           right={2}
-          spacing={1}
+          gap={1}
           zIndex={10}
         >
           {/* Scene Indicators */}

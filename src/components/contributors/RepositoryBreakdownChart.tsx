@@ -1,5 +1,5 @@
 import React from "react";
-import { useColorModeValue } from '@chakra-ui/react';
+import { useColorModeValue } from "../ui/color-mode";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts";
 import ContributorLastUpdatedDateTime from "@/components/ContributorLastUpdatedDateTime";
 

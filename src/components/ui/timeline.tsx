@@ -1,4 +1,4 @@
-import { Timeline as ChakraTimeline } from "@chakra-ui/react"
+import { Steps, Timeline as ChakraTimeline } from "@chakra-ui/react";
 import * as React from "react"
 
 export const TimelineConnector = React.forwardRef<

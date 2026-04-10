@@ -1,47 +1,28 @@
 "use client";
+import { Divider } from "@/components/ui/compat";
 
+import { InputLeftElement, TableContainer, Thead, Tbody, Tr, Th, Td } from "@/components/ui/compat";
+import { useToast } from "@/components/ui/use-toast";
+;
 import React, { useEffect, useState, useMemo, useRef } from "react";
+import { useColorModeValue } from "../../components/ui/color-mode";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import {
-  Box,
-  Heading,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  TableContainer,
-  Link,
-  Spinner,
-  Text,
-  useColorModeValue,
-  Badge,
-  HStack,
-  Wrap,
-  WrapItem,
-  VStack,
-  Select,
-  Flex,
-  Button,
-  useToast,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  IconButton,
-  Tooltip,
-  Card,
-  CardBody,
-  CardHeader,
-  SimpleGrid,
-  Divider,
-} from "@chakra-ui/react";
+import { Steps, Box, Heading, Table, Link, Spinner, Text, Badge, HStack, Wrap, WrapItem, VStack, NativeSelect, Flex, Button, Input, InputGroup, IconButton, Card, SimpleGrid, Icon } from "@chakra-ui/react";
+import { Tooltip } from '@/components/ui/tooltip';
 import AllLayout from "@/components/Layout";
 import AnimatedHeader from "@/components/AnimatedHeader";
-import { ExternalLinkIcon, SearchIcon, DownloadIcon, ChevronLeftIcon, ChevronRightIcon, CopyIcon, CheckIcon } from "@chakra-ui/icons";
 import { BiGitPullRequest } from "react-icons/bi";
 import { format } from "date-fns";
 import Papa from "papaparse";
+import {
+  LuCheck,
+  LuChevronLeft,
+  LuChevronRight,
+  LuCopy,
+  LuDownload,
+  LuExternalLink,
+  LuSearch,
+} from 'react-icons/lu';
 
 /** Row from /api/AnalyticsCharts/category-subcategory/[name]/details (Graph 3 table). */
 interface DetailsRow {
@@ -475,7 +456,7 @@ export default function EipBoardsPage() {
     return (
       <AllLayout>
         <Box py={20} textAlign="center">
-          <Spinner size="xl" color="purple.500" thickness="3px" />
+          <Spinner size="xl" color="purple.500" borderWidth="3px" />
           <Text mt={4} fontSize="lg" color={mutedColor}>
             Loading open PRs for {formatMonthLabel(selectedMonth)}…
           </Text>
@@ -497,7 +478,7 @@ export default function EipBoardsPage() {
   return (
     <AllLayout>
       <Box padding={{ base: 1, md: 4 }} margin={{ base: 2, md: 4 }}>
-        <VStack align="stretch" spacing={4}>
+        <VStack align="stretch" gap={4}>
           <AnimatedHeader
             title="EIP / ERC / RIP Board"
             description="Open pull requests by type and status for the selected month. Filter by repo, process type, and participant status. Mission control for protocol changes."
@@ -522,16 +503,16 @@ export default function EipBoardsPage() {
           />
 
           {/* Layer A — Scope & Time (What am I looking at?) */}
-          <Card bg={cardBg} borderWidth="1px" borderColor={borderColor} shadow="sm" borderRadius="lg" overflow="hidden">
-            <CardBody py={4} px={5}>
+          <Card.Root bg={cardBg} borderWidth="1px" borderColor={borderColor} shadow="sm" borderRadius="lg" overflow="hidden">
+            <Card.Body py={4} px={5}>
               <Flex justify="space-between" align="center" flexWrap="wrap" gap={4}>
-                <HStack spacing={2}>
+                <HStack gap={2}>
                   <Text fontSize="xs" fontWeight="600" color={mutedColor}>Scope</Text>
                   {REPO_TABS.map((tab) => (
                     <Button
                       key={tab.key}
                       size="sm"
-                      colorScheme={tab.key === activeTab ? "purple" : "gray"}
+                      colorPalette={tab.key === activeTab ? "purple" : "gray"}
                       variant={tab.key === activeTab ? "solid" : "outline"}
                       onClick={() => setActiveTab(tab.key)}
                       fontWeight="600"
@@ -540,56 +521,60 @@ export default function EipBoardsPage() {
                     </Button>
                   ))}
                 </HStack>
-                <HStack spacing={3}>
+                <HStack gap={3}>
                   <Text fontSize="lg" fontWeight="800" color={accent}>
                     Open PRs for {formatMonthLabel(selectedMonth)}
                   </Text>
-                  <Select
-                    value={selectedMonth}
-                    onChange={(e) => setSelectedMonth(e.target.value)}
-                    maxW="140px"
-                    size="sm"
-                    fontWeight="600"
-                  >
-                    {availableMonths.length > 0
-                      ? availableMonths.map((m) => (
-                          <option key={m} value={m}>{formatMonthLabel(m)}</option>
-                        ))
-                      : <option value={selectedMonth}>{formatMonthLabel(selectedMonth)}</option>}
-                  </Select>
+                  <NativeSelect.Root>
+                    <NativeSelect.Field
+                      value={selectedMonth}
+                      onValueChange={(e) => setSelectedMonth(e.target.value)}
+                      maxW="140px"
+                      size="sm"
+                      fontWeight="600">
+                      {availableMonths.length > 0
+                        ? availableMonths.map((m) => (
+                            <option key={m} value={m}>{formatMonthLabel(m)}</option>
+                          ))
+                        : <option value={selectedMonth}>{formatMonthLabel(selectedMonth)}</option>}
+                    </NativeSelect.Field>
+                    <NativeSelect.Indicator />
+                  </NativeSelect.Root>
                 </HStack>
               </Flex>
-            </CardBody>
-          </Card>
+            </Card.Body>
+          </Card.Root>
 
           {/* Layer B — Priority Filters (How urgent is this?) */}
-          <Card bg={cardBg} borderWidth="1px" borderColor={borderColor} shadow="sm" borderRadius="lg" overflow="hidden">
-            <CardBody p={4}>
+          <Card.Root bg={cardBg} borderWidth="1px" borderColor={borderColor} shadow="sm" borderRadius="lg" overflow="hidden">
+            <Card.Body p={4}>
               <Text fontSize="xs" fontWeight="700" color={mutedColor} mb={3} letterSpacing="wider">
                 PRIORITY FILTERS
               </Text>
               <Flex justify="space-between" align="center" flexWrap="wrap" gap={4}>
                 <HStack>
                   <Text fontWeight="600" fontSize="sm">PR Status</Text>
-                  <Select
-                    value={selectedSubcategory}
-                    onChange={(e) => { setSelectedSubcategory(e.target.value); setWaitPresetDays(null); setPage(1); }}
-                    maxW="180px"
-                    size="sm"
-                  >
-                    {SUBCATEGORY_OPTIONS.map((opt) => (
-                      <option key={opt.value || "all"} value={opt.value}>{opt.label}</option>
-                    ))}
-                  </Select>
+                  <NativeSelect.Root>
+                    <NativeSelect.Field
+                      value={selectedSubcategory}
+                      onValueChange={(e) => { setSelectedSubcategory(e.target.value); setWaitPresetDays(null); setPage(1); }}
+                      maxW="180px"
+                      size="sm">
+                      {SUBCATEGORY_OPTIONS.map((opt) => (
+                        <option key={opt.value || "all"} value={opt.value}>{opt.label}</option>
+                      ))}
+                    </NativeSelect.Field>
+                    <NativeSelect.Indicator />
+                  </NativeSelect.Root>
                 </HStack>
                 <HStack gap={2} flexWrap="wrap">
-                  <Button size="sm" colorScheme="red" variant={waitPresetDays?.[0] === 31 ? "solid" : "outline"} onClick={() => applyWaitPreset("critical")}>
+                  <Button size="sm" colorPalette="red" variant={waitPresetDays?.[0] === 31 ? "solid" : "outline"} onClick={() => applyWaitPreset("critical")}>
                     🔴 Critical (&gt;30d)
                   </Button>
-                  <Button size="sm" colorScheme="orange" variant={waitPresetDays?.[0] === 14 ? "solid" : "outline"} onClick={() => applyWaitPreset("backlog")}>
+                  <Button size="sm" colorPalette="orange" variant={waitPresetDays?.[0] === 14 ? "solid" : "outline"} onClick={() => applyWaitPreset("backlog")}>
                     🟡 Backlog (14–30d)
                   </Button>
-                  <Button size="sm" colorScheme="green" variant={waitPresetDays?.[1] === 13 ? "solid" : "outline"} onClick={() => applyWaitPreset("fresh")}>
+                  <Button size="sm" colorPalette="green" variant={waitPresetDays?.[1] === 13 ? "solid" : "outline"} onClick={() => applyWaitPreset("fresh")}>
                     🟢 Fresh (&lt;14d)
                   </Button>
                   {waitPresetDays && (
@@ -597,19 +582,19 @@ export default function EipBoardsPage() {
                   )}
                 </HStack>
               </Flex>
-            </CardBody>
-          </Card>
+            </Card.Body>
+          </Card.Root>
 
           {/* Layer C — Content Filters (What type of work is this?) */}
-          <Card bg={cardBg} borderWidth="1px" borderColor={borderColor} shadow="sm" borderRadius="lg" overflow="hidden">
-            <CardBody p={4}>
+          <Card.Root bg={cardBg} borderWidth="1px" borderColor={borderColor} shadow="sm" borderRadius="lg" overflow="hidden">
+            <Card.Body p={4}>
               <Text fontSize="xs" fontWeight="700" color={mutedColor} mb={3} letterSpacing="wider">
                 CONTENT FILTERS
               </Text>
               <Flex justify="space-between" align="center" flexWrap="wrap" gap={4} mb={2}>
                 <InputGroup maxW="320px">
                   <InputLeftElement pointerEvents="none" height="100%">
-                    <SearchIcon color="gray.400" />
+                    <Icon as={LuSearch} color="gray.400" />
                   </InputLeftElement>
                   <Input
                     placeholder="Search title, author, PR #"
@@ -618,17 +603,17 @@ export default function EipBoardsPage() {
                     size="sm"
                   />
                 </InputGroup>
-                <HStack spacing={2} flexWrap="wrap">
+                <HStack gap={2} flexWrap="wrap">
                   <Text fontWeight="700" fontSize="sm">Process type</Text>
                   <Text fontSize="sm" color={mutedColor}>•</Text>
-                  <Badge colorScheme="purple" fontSize="sm" px={2} py={0.5}>
+                  <Badge colorPalette="purple" fontSize="sm" px={2} py={0.5}>
                     {totalFiltered} matching
                   </Badge>
-                  <Button size="xs" variant="ghost" colorScheme="purple" onClick={selectAllCategories}>All</Button>
+                  <Button size="xs" variant="ghost" colorPalette="purple" onClick={selectAllCategories}>All</Button>
                   <Button size="xs" variant="ghost" onClick={clearCategories}>Clear</Button>
                 </HStack>
               </Flex>
-              <Wrap spacing={3} rowGap={3} justify="flex-start">
+              <Wrap gap={3} rowGap={3} justify="flex-start">
                     {categoriesInData.map((cat) => {
                       const count = totalByCategory.get(cat) ?? 0;
                       const isSelected = selectedCategories.includes(cat);
@@ -636,7 +621,7 @@ export default function EipBoardsPage() {
                         <WrapItem key={cat}>
                           <Badge
                             as="button"
-                            colorScheme={PROCESS_COLORS[cat] ?? "gray"}
+                            colorPalette={PROCESS_COLORS[cat] ?? "gray"}
                             variant={isSelected ? "solid" : "outline"}
                             fontSize="md"
                             px={3}
@@ -651,8 +636,8 @@ export default function EipBoardsPage() {
                             }
                             onClick={() => toggleCategory(cat)}
                           >
-                            <HStack spacing={1} display="inline-flex">
-                              {isSelected && <CheckIcon boxSize={3} />}
+                            <HStack gap={1} display="inline-flex">
+                              {isSelected && <Icon as={LuCheck} boxSize={3} />}
                               <span>{cat} {count > 0 && `(${count})`}</span>
                             </HStack>
                           </Badge>
@@ -660,34 +645,36 @@ export default function EipBoardsPage() {
                       );
                     })}
               </Wrap>
-            </CardBody>
-          </Card>
+            </Card.Body>
+          </Card.Root>
 
           {/* Summary + Download */}
           <Flex justify="space-between" align="center" flexWrap="wrap" gap={3}>
             <HStack gap={2} flexWrap="wrap">
               <Text fontWeight="700" fontSize="lg">
                 Showing{" "}
-                <Badge colorScheme="purple" fontSize="md" px={2}>
+                <Badge colorPalette="purple" fontSize="md" px={2}>
                   {totalFiltered === 0 ? 0 : (currentPage - 1) * pageSize + 1}–{Math.min(currentPage * pageSize, totalFiltered)}
                 </Badge>
                 {" "}of {totalFiltered} PRs
               </Text>
-              <Select
-                value={pageSize}
-                onChange={(e) => { setPageSize(Number(e.target.value)); setPage(1); }}
-                maxW="100px"
-                size="sm"
-              >
-                {PAGE_SIZES.map((n) => (
-                  <option key={n} value={n}>{n} per page</option>
-                ))}
-              </Select>
+              <NativeSelect.Root>
+                <NativeSelect.Field
+                  value={pageSize}
+                  onValueChange={(e) => { setPageSize(Number(e.target.value)); setPage(1); }}
+                  maxW="100px"
+                  size="sm">
+                  {PAGE_SIZES.map((n) => (
+                    <option key={n} value={n}>{n} per page</option>
+                  ))}
+                </NativeSelect.Field>
+                <NativeSelect.Indicator />
+              </NativeSelect.Root>
             </HStack>
             <HStack gap={2} flexWrap="wrap">
               <Button
                 size="md"
-                colorScheme="purple"
+                colorPalette="purple"
                 variant="outline"
                 onClick={copyLinkToFilters}
                 title="Copy link to current filters"
@@ -695,48 +682,42 @@ export default function EipBoardsPage() {
                 Copy link
               </Button>
               <Button
-                leftIcon={<CopyIcon />}
                 size="md"
-                colorScheme="teal"
+                colorPalette="teal"
                 variant="outline"
                 onClick={copyAsMarkdown}
-                isDisabled={totalFiltered === 0}
-              >
-                Copy as MD
-              </Button>
+                disabled={totalFiltered === 0}><LuCopy />Copy as MD
+                              </Button>
               <Button
-                leftIcon={<DownloadIcon />}
                 size="md"
-                colorScheme="teal"
+                colorPalette="teal"
                 variant="outline"
                 onClick={downloadCSV}
-                isDisabled={totalFiltered === 0}
-              >
-                Download CSV
-              </Button>
+                disabled={totalFiltered === 0}><LuDownload />Download CSV
+                              </Button>
             </HStack>
           </Flex>
 
           {/* Table */}
-          <Card bg={cardBg} borderWidth="1px" borderColor={borderColor} shadow="sm" borderRadius="lg" overflow="hidden">
-            <TableContainer>
-              <Table size="md" variant="simple">
-                <Thead bg={headerBg}>
-                  <Tr>
-                    <Th fontWeight="700">#</Th>
-                    {activeTab === "all" && <Th fontWeight="700">Repo</Th>}
-                    <Th fontWeight="700">🔥</Th>
-                    <Th fontWeight="700">PR</Th>
-                    <Th fontWeight="700">Title</Th>
-                    <Th fontWeight="700">Created</Th>
-                    <Th fontWeight="700">Wait</Th>
-                    <Th fontWeight="700">Process</Th>
-                    <Th fontWeight="700">PR Status</Th>
-                    <Th fontWeight="700">Labels</Th>
-                    <Th fontWeight="700">Link</Th>
-                  </Tr>
-                </Thead>
-                <Tbody>
+          <Card.Root bg={cardBg} borderWidth="1px" borderColor={borderColor} shadow="sm" borderRadius="lg" overflow="hidden">
+            <Table.ScrollArea>
+              <Table.Root size="md" variant="simple">
+                <Table.Header bg={headerBg}>
+                  <Table.Row>
+                    <Table.ColumnHeader fontWeight="700">#</Table.ColumnHeader>
+                    {activeTab === "all" && <Table.ColumnHeader fontWeight="700">Repo</Table.ColumnHeader>}
+                    <Table.ColumnHeader fontWeight="700">🔥</Table.ColumnHeader>
+                    <Table.ColumnHeader fontWeight="700">PR</Table.ColumnHeader>
+                    <Table.ColumnHeader fontWeight="700">Title</Table.ColumnHeader>
+                    <Table.ColumnHeader fontWeight="700">Created</Table.ColumnHeader>
+                    <Table.ColumnHeader fontWeight="700">Wait</Table.ColumnHeader>
+                    <Table.ColumnHeader fontWeight="700">Process</Table.ColumnHeader>
+                    <Table.ColumnHeader fontWeight="700">PR Status</Table.ColumnHeader>
+                    <Table.ColumnHeader fontWeight="700">Labels</Table.ColumnHeader>
+                    <Table.ColumnHeader fontWeight="700">Link</Table.ColumnHeader>
+                  </Table.Row>
+                </Table.Header>
+                <Table.Body>
                   {paginatedRows.map((row, idx) => {
                     const createdAt = row.CreatedAt ?? "";
                     const labels = row.Labels ? row.Labels.split("; ").filter(Boolean) : [];
@@ -745,88 +726,105 @@ export default function EipBoardsPage() {
                     const attentionColor = row.attentionScore > 12 ? "red" : row.attentionScore > 6 ? "orange" : "green";
                     const titleTooltip = [row.Title ?? "", row.Repo ?? "", labels.join(", ")].filter(Boolean).join(" · ");
                     return (
-                      <Tr
+                      <Table.Row
                         key={`${row.PRNumber}-${row.Repo ?? ""}-${idx}`}
                         _hover={{ bg: hoverBg }}
                         borderBottomWidth="1px"
                         borderColor={borderColor}
                       >
-                        <Td fontWeight="600">{(currentPage - 1) * pageSize + idx + 1}</Td>
+                        <Table.Cell fontWeight="600">{(currentPage - 1) * pageSize + idx + 1}</Table.Cell>
                         {activeTab === "all" && (
-                          <Td>
-                            <Badge colorScheme={REPO_BADGE_COLORS[repoShort] ?? "gray"} fontSize="sm" px={2} py={0.5}>
+                          <Table.Cell>
+                            <Badge colorPalette={REPO_BADGE_COLORS[repoShort] ?? "gray"} fontSize="sm" px={2} py={0.5}>
                               {repoShort}
                             </Badge>
-                          </Td>
+                          </Table.Cell>
                         )}
-                        <Td>
-                          <Badge colorScheme={attentionColor} fontSize="sm" px={2} py={0.5}>
+                        <Table.Cell>
+                          <Badge colorPalette={attentionColor} fontSize="sm" px={2} py={0.5}>
                             {attentionLabel}
                           </Badge>
-                        </Td>
-                        <Td>
-                          <Link href={row.PRLink ?? "#"} isExternal color="blue.500" fontWeight="600" display="inline-flex" alignItems="center" gap={1}>
+                        </Table.Cell>
+                        <Table.Cell>
+                          <Link
+                            href={row.PRLink ?? "#"}
+                            color="blue.500"
+                            fontWeight="600"
+                            display="inline-flex"
+                            alignItems="center"
+                            gap={1}
+                            target='_blank'
+                            rel='noopener noreferrer'>
                             <BiGitPullRequest /> #{row.PRNumber ?? "—"}
                           </Link>
-                        </Td>
-                        <Td maxW="320px" noOfLines={1} fontSize="md">
-                          <Tooltip label={titleTooltip} placement="top" maxW="400px">
+                        </Table.Cell>
+                        <Table.Cell maxW="320px" lineClamp={1} fontSize="md">
+                          <Tooltip content={titleTooltip} maxW="400px" positioning={{
+                            placement: "top"
+                          }}>
                             <span>{row.Title ?? "—"}</span>
                           </Tooltip>
-                        </Td>
-                        <Td whiteSpace="nowrap" fontSize="md">
+                        </Table.Cell>
+                        <Table.Cell whiteSpace="nowrap" fontSize="md">
                           {createdAt ? format(new Date(createdAt), "MMM d, yyyy") : "—"}
-                        </Td>
-                        <Td>
+                        </Table.Cell>
+                        <Table.Cell>
                           <Badge
-                            colorScheme={row.waitDays != null && row.waitDays > 30 ? "red" : row.waitDays != null && row.waitDays > 14 ? "orange" : "green"}
+                            colorPalette={row.waitDays != null && row.waitDays > 30 ? "red" : row.waitDays != null && row.waitDays > 14 ? "orange" : "green"}
                             fontSize="sm"
                             px={2}
                             py={0.5}
                           >
                             {formatWaitTimeDisplay(row.waitDays)}
                           </Badge>
-                        </Td>
-                        <Td>
-                          <Badge colorScheme={PROCESS_COLORS[row.ProcessNorm] ?? "gray"} fontSize="sm" px={2} py={0.5}>
+                        </Table.Cell>
+                        <Table.Cell>
+                          <Badge colorPalette={PROCESS_COLORS[row.ProcessNorm] ?? "gray"} fontSize="sm" px={2} py={0.5}>
                             {row.ProcessNorm || "—"}
                           </Badge>
-                        </Td>
-                        <Td>
-                          <Badge colorScheme={PARTICIPANT_COLORS[row.ParticipantsNorm] ?? "gray"} fontSize="sm" px={2} py={0.5}>
+                        </Table.Cell>
+                        <Table.Cell>
+                          <Badge colorPalette={PARTICIPANT_COLORS[row.ParticipantsNorm] ?? "gray"} fontSize="sm" px={2} py={0.5}>
                             {row.ParticipantsNorm || "—"}
                           </Badge>
-                        </Td>
-                        <Td maxW="200px">
-                          <Wrap spacing={1}>
+                        </Table.Cell>
+                        <Table.Cell maxW="200px">
+                          <Wrap gap={1}>
                             {labels.slice(0, 3).map((l, i) => (
                               <WrapItem key={i}>
-                                <Badge colorScheme="gray" fontSize="xs" px={1.5} py={0}>
+                                <Badge colorPalette="gray" fontSize="xs" px={1.5} py={0}>
                                   {l}
                                 </Badge>
                               </WrapItem>
                             ))}
                             {labels.length > 3 && (
                               <WrapItem>
-                                <Badge colorScheme="gray" fontSize="xs">+{labels.length - 3}</Badge>
+                                <Badge colorPalette="gray" fontSize="xs">+{labels.length - 3}</Badge>
                               </WrapItem>
                             )}
                             {labels.length === 0 && <Text color={mutedColor}>—</Text>}
                           </Wrap>
-                        </Td>
-                        <Td>
-                          <Tooltip label="Open PR on GitHub">
-                            <Link href={row.PRLink ?? "#"} isExternal display="inline-flex" alignItems="center" fontWeight="600" color={accent2}>
-                              Open <ExternalLinkIcon ml={1} />
+                        </Table.Cell>
+                        <Table.Cell>
+                          <Tooltip content="Open PR on GitHub">
+                            <Link
+                              href={row.PRLink ?? "#"}
+                              display="inline-flex"
+                              alignItems="center"
+                              fontWeight="600"
+                              color={accent2}
+                              target='_blank'
+                              rel='noopener noreferrer'>
+                              Open <Icon as={LuExternalLink} ml={1} />
                             </Link>
                           </Tooltip>
-                        </Td>
-                      </Tr>
+                        </Table.Cell>
+                      </Table.Row>
                     );
                   })}
-                </Tbody>
-              </Table>
-            </TableContainer>
+                </Table.Body>
+              </Table.Root>
+            </Table.ScrollArea>
 
             {filteredRows.length === 0 && (
               <Box py={12} textAlign="center">
@@ -845,11 +843,9 @@ export default function EipBoardsPage() {
                 <HStack gap={1}>
                   <IconButton
                     aria-label="Previous page"
-                    icon={<ChevronLeftIcon />}
                     size="md"
                     onClick={() => setPage((p) => Math.max(1, p - 1))}
-                    isDisabled={currentPage <= 1}
-                  />
+                    disabled={currentPage <= 1}><LuChevronLeft /></IconButton>
                   {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                     let pageNum: number;
                     if (totalPages <= 5) pageNum = i + 1;
@@ -860,7 +856,7 @@ export default function EipBoardsPage() {
                       <Button
                         key={pageNum}
                         size="md"
-                        colorScheme={pageNum === currentPage ? "purple" : "gray"}
+                        colorPalette={pageNum === currentPage ? "purple" : "gray"}
                         variant={pageNum === currentPage ? "solid" : "outline"}
                         onClick={() => setPage(pageNum)}
                       >
@@ -870,15 +866,13 @@ export default function EipBoardsPage() {
                   })}
                   <IconButton
                     aria-label="Next page"
-                    icon={<ChevronRightIcon />}
                     size="md"
                     onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                    isDisabled={currentPage >= totalPages}
-                  />
+                    disabled={currentPage >= totalPages}><LuChevronRight /></IconButton>
                 </HStack>
               </Flex>
             )}
-          </Card>
+          </Card.Root>
         </VStack>
       </Box>
     </AllLayout>

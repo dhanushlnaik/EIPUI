@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { useColorModeValue } from "./ui/color-mode";
 import dynamic from "next/dynamic";
-import { Box, Flex, Heading, useColorModeValue, Spinner, Link, Button, Text  } from "@chakra-ui/react";
+import { Steps, Box, Flex, Heading, Spinner, Link, Button, Text } from "@chakra-ui/react";
 import { CSVLink } from "react-csv";
 import LoaderComponent from "@/components/Loader";
 import DateTime from "@/components/DateTime";
@@ -18,7 +19,7 @@ const API_ENDPOINTS = {
   rips: '/api/editorsprsrips'
 };
 
-type ShowReviewerType = { [key: string]: boolean }; 
+type ShowReviewerType = { [key: string]: boolean };
 
 const InsightsLeaderboard = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -359,62 +360,62 @@ const renderCharts = (data: PRData[], selectedYear: string | null, selectedMonth
     }
 
     return (
-        <Box maxHeight="150px" padding="0.5rem">
-            {selectedYear && selectedMonth && monthlyChartData && (
-                <Flex direction={{ base: "column", md: "row" }} justifyContent="center">
-                    {/* Monthly Leaderboard Chart */}
-                    <Box width={{ base: "100%", md: "100%" }} minHeight="250px" paddingTop={10}>
-                    <Flex 
-  justifyContent="center" // Center items horizontally
-  alignItems="center" // Align items vertically
-  marginBottom="0.5rem" 
-  gap={4} // Add some space between the items
+      <Box maxHeight="150px" padding="0.5rem">
+        {selectedYear && selectedMonth && monthlyChartData && (
+            <Flex direction={{ base: "column", md: "row" }} justifyContent="center">
+                {/* Monthly Leaderboard Chart */}
+                <Box width={{ base: "100%", md: "100%" }} minHeight="250px" paddingTop={10}>
+                <Flex 
+justifyContent="center" // Center items horizontally
+alignItems="center" // Align items vertically
+marginBottom="0.5rem" 
+gap={4} // Add some space between the items
 >
-  <Text
-    color="#30A0E0"
-    fontSize="2xl"
-    fontWeight="bold"
-    textAlign="center"
-    marginBottom="0.5rem"
-  >
-    {`Editors Leaderboard`}
-  </Text>
+<Text
+color="#30A0E0"
+fontSize="2xl"
+fontWeight="bold"
+textAlign="center"
+marginBottom="0.5rem"
+>
+{`Editors Leaderboard`}
+</Text>
 
-  {/* Download button next to the text */}
-  <CSVLink 
-    data={csvData?.length ? csvData : []} 
-    filename={`reviews_data.csv`} 
-    onClick={async (e: any) => {
-      try {
-        // Generate the CSV data
-        generateCSVData();
-  
-        // Check if CSV data is empty and prevent default behavior
-        if (csvData?.length === 0) {
-          e.preventDefault();
-          console.error("CSV data is empty or not generated correctly.");
-          return;
-        }
-  
-        // Trigger the API call to update the download counter
-        await axios.post("/api/DownloadCounter");
-      } catch (error) {
-        console.error("Error triggering download counter:", error);
-      }
-    }}
-  >
-    <Button fontSize={{ base: "0.6rem", md: "md" }} colorScheme="blue">
-      {loading2 ? <Spinner size="sm" /> : "Download CSV"}
-    </Button>
-  </CSVLink>
+{/* Download button next to the text */}
+<CSVLink 
+data={csvData?.length ? csvData : []} 
+filename={`reviews_data.csv`} 
+onClick={async (e: any) => {
+  try {
+    // Generate the CSV data
+    generateCSVData();
+
+    // Check if CSV data is empty and prevent default behavior
+    if (csvData?.length === 0) {
+      e.preventDefault();
+      console.error("CSV data is empty or not generated correctly.");
+      return;
+    }
+
+    // Trigger the API call to update the download counter
+    await axios.post("/api/DownloadCounter");
+  } catch (error) {
+    console.error("Error triggering download counter:", error);
+  }
+}}
+>
+<Button fontSize={{ base: "0.6rem", md: "md" }} colorPalette="blue">
+  {loading2 ? <Spinner size="sm" /> : "Download CSV"}
+</Button>
+</CSVLink>
 </Flex>
 
-        <br/>
-                        <Bar {...getBarChartConfig(monthlyChartData)} />
-                    </Box>
-                </Flex>
-            )}
-        </Box>
+    <br/>
+                    <Bar {...getBarChartConfig(monthlyChartData)} />
+                </Box>
+            </Flex>
+        )}
+      </Box>
     );
 };
 

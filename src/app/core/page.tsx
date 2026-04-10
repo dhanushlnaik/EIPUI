@@ -1,9 +1,10 @@
 "use client";
-
+;
 import React, { useEffect, useState, useMemo } from "react";
+import { useColorModeValue } from "../../components/ui/color-mode";
 import CloseableAdCard from "@/components/CloseableAdCard";
 import AllLayout from "@/components/Layout";
-import { Box, useColorModeValue, SimpleGrid, Grid } from "@chakra-ui/react";
+import { Steps, Box, SimpleGrid, Grid } from "@chakra-ui/react";
 import FlexBetween from "@/components/FlexBetween";
 import Header from "@/components/Header";
 import { motion } from "framer-motion";
@@ -146,7 +147,7 @@ const Core = () => {
                 description="These EIPs are essential for protocol upgrades and consensus changes."
               />
             </FlexBetween>
-            <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={6} mb={8}>
+            <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} gap={6} mb={8}>
               <AnalyticsStatCard label="Core EIPs" value={coreData.length} icon={FiCpu} colorScheme="blue" helpText="Protocol proposals" />
               <AnalyticsStatCard label="Final" value={coreData.filter(item => item.status === "Final").length} icon={FiCheckCircle} colorScheme="green" helpText="Implemented" />
               <AnalyticsStatCard label="With Discussions" value={withDiscussions} icon={FiGitPullRequest} colorScheme="cyan" helpText="Community engaged" />
@@ -175,7 +176,9 @@ const Core = () => {
               border="1px solid"
               borderColor={cardBorderColor}
               boxShadow="sm"
-              sx={{ transition: "all 0.3s" }}
+              css={{
+                transition: "all 0.3s"
+              }}
               _hover={{
                 boxShadow: "md",
                 borderColor: "#30A0E0",

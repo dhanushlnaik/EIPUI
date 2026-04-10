@@ -1,6 +1,5 @@
-"use client"
-
-import { For, SegmentGroup } from "@chakra-ui/react"
+"use client";
+import { Steps, For, SegmentGroup } from "@chakra-ui/react";
 import * as React from "react"
 
 interface Item {

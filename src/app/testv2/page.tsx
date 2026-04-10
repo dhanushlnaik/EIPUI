@@ -1,7 +1,8 @@
 "use client";
-
+;
 import { useState, useEffect } from 'react';
-import { Flex, Box, Text, useColorMode, Spinner } from '@chakra-ui/react';
+import { useColorMode } from "../../components/ui/color-mode";
+import { Steps, Flex, Box, Text, Spinner } from "@chakra-ui/react";
 import Sidebar from '@/components/Sidebar';
 import BlockInfo from '@/components/BlockInfo';
 import TransactionFeeChart from '@/components/TransactionFeeChart';

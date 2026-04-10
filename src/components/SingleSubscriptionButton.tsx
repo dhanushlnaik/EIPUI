@@ -1,4 +1,5 @@
-// "use client";
+"use client";
+// 
 // import { useState } from "react";
 // import { useSession } from "next-auth/react";
 
@@ -128,7 +129,7 @@
 //     </button>
 //   );
 // }
-"use client";
+
 import { useState, useEffect } from "react";
 import { useSession, signIn } from "next-auth/react";
 

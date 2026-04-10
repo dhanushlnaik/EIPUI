@@ -1,15 +1,6 @@
 import React from "react";
-import {
-  Box,
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  AccordionIcon,
-  Heading,
-  Text,
-  useColorModeValue,
-} from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Accordion, Heading, Text } from "@chakra-ui/react";
 
 interface FAQ {
   question: string;
@@ -38,10 +29,10 @@ const FAQSection: React.FC<FAQSectionProps> = ({ title = "Frequently Asked Quest
       <Heading size="md" mb={4}>
         {title}
       </Heading>
-      <Accordion allowToggle>
+      <Accordion.Root collapsible>
         {faqs.map((faq, index) => (
-          <AccordionItem key={index} border="none" mb={2}>
-            <AccordionButton
+          <Accordion.Item key={index} border="none" mb={2} value='item-0'>
+            <Accordion.ItemTrigger
               _hover={{ bg: hoverBg }}
               borderRadius="md"
               py={3}
@@ -49,16 +40,16 @@ const FAQSection: React.FC<FAQSectionProps> = ({ title = "Frequently Asked Quest
               <Box flex="1" textAlign="left" fontWeight="semibold">
                 {faq.question}
               </Box>
-              <AccordionIcon />
-            </AccordionButton>
-            <AccordionPanel pb={4} pt={2}>
-              <Text color={useColorModeValue("gray.600", "gray.400")}>
-                {faq.answer}
-              </Text>
-            </AccordionPanel>
-          </AccordionItem>
+              <Accordion.ItemIndicator />
+            </Accordion.ItemTrigger>
+            <Accordion.ItemContent pb={4} pt={2}><Accordion.ItemBody>
+                <Text color={useColorModeValue("gray.600", "gray.400")}>
+                  {faq.answer}
+                </Text>
+              </Accordion.ItemBody></Accordion.ItemContent>
+          </Accordion.Item>
         ))}
-      </Accordion>
+      </Accordion.Root>
     </Box>
   );
 };

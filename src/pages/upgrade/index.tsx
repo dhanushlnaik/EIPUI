@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from "react";
+import { useColorModeValue } from "../../components/ui/color-mode";
 import AllLayout from "@/components/Layout";
 import CloseableAdCard from "@/components/CloseableAdCard";
 import AnimatedHeader from "@/components/AnimatedHeader";
 import CopyLink from "@/components/CopyLink";
 import {
+  Steps,
   Box,
   Spinner,
-  useColorModeValue,
   Text,
   List,
-  UnorderedList,
-  ListItem,
   Heading,
   Flex,
   Image,
@@ -19,14 +18,11 @@ import {
   AspectRatio,
   Grid,
   GridItem,
-  Select,
+  NativeSelect,
   VStack,
   HStack,
   Icon,
   Stat,
-  StatLabel,
-  StatNumber,
-  StatHelpText
 } from "@chakra-ui/react";
 import { FaProjectDiagram } from 'react-icons/fa';
 import ZoomableTimeline from "@/components/ZoomableTimeline";
@@ -2213,7 +2209,7 @@ return (
             mb={5}
             p={4}
           >
-            <VStack align="stretch" spacing={3}>
+            <VStack align="stretch" gap={3}>
               {/* <HStack spacing={2}>
                 <Icon as={FaProjectDiagram} boxSize={4} color="blue.500" />
                 <Heading 
@@ -2253,7 +2249,7 @@ return (
 
             {/* Left: Stats Cards */}
             <GridItem display="flex" h="100%">
-              <VStack spacing={4} w="100%" h="100%" justify="flex-start">
+              <VStack gap={4} w="100%" h="100%" justify="flex-start">
                 <Box
                   as={motion.div}
                   whileHover={{ y: -4, scale: 1.02 }}
@@ -2270,23 +2266,23 @@ return (
                   }}
                   w="100%"
                 >
-                  <Stat>
-                    <HStack spacing={2} mb={2}>
+                  <Stat.Root>
+                    <HStack gap={2} mb={2}>
                       <Icon as={FaRocket} boxSize={5} color="blue.500" />
-                      <StatLabel fontSize="18px" fontWeight="medium" color={useColorModeValue('gray.600', 'gray.400')} >
+                      <Stat.Label fontSize="18px" fontWeight="medium" color={useColorModeValue('gray.600', 'gray.400')} >
                         Total Network Upgrades
-                      </StatLabel>
+                      </Stat.Label>
                     </HStack>
-                    <StatNumber fontSize="3xl" fontWeight="bold" color={useColorModeValue('gray.800', 'white')} >
+                    <Stat.ValueText fontSize="3xl" fontWeight="bold" color={useColorModeValue('gray.800', 'white')} >
                       21
-                    </StatNumber>
-                    <StatHelpText fontSize="sm" color={useColorModeValue('gray.500', 'gray.500')} mt={1} >
+                    </Stat.ValueText>
+                    <Stat.HelpText fontSize="sm" color={useColorModeValue('gray.500', 'gray.500')} mt={1} >
                       Since Frontier Thawing (2015)
-                    </StatHelpText>
-                  </Stat>
+                    </Stat.HelpText>
+                  </Stat.Root>
                 </Box>
 
-                <SimpleGrid columns={2} spacing={4} w="100%">
+                <SimpleGrid columns={2} gap={4} w="100%">
                   <Box
                     as={motion.div}
                     whileHover={{ y: -4, scale: 1.02 }}
@@ -2302,20 +2298,20 @@ return (
                       boxShadow: 'xl'
                     }}
                   >
-                    <Stat>
-                      <HStack spacing={2} mb={2}>
+                    <Stat.Root>
+                      <HStack gap={2} mb={2}>
                         <Icon as={FaCode} boxSize={5} color="green.500" />
-                        <StatLabel fontSize="18px" fontWeight="medium" color={useColorModeValue('gray.600', 'gray.400')} >
+                        <Stat.Label fontSize="18px" fontWeight="medium" color={useColorModeValue('gray.600', 'gray.400')} >
                           Execution Layer
-                        </StatLabel>
+                        </Stat.Label>
                       </HStack>
-                      <StatNumber fontSize="3xl" fontWeight="bold" color={useColorModeValue('gray.800', 'white')} >
+                      <Stat.ValueText fontSize="3xl" fontWeight="bold" color={useColorModeValue('gray.800', 'white')} >
                         19
-                      </StatNumber>
-                      <StatHelpText fontSize="sm" color={useColorModeValue('gray.500', 'gray.500')} mt={1} >
+                      </Stat.ValueText>
+                      <Stat.HelpText fontSize="sm" color={useColorModeValue('gray.500', 'gray.500')} mt={1} >
                         Protocol & EVM
-                      </StatHelpText>
-                    </Stat>
+                      </Stat.HelpText>
+                    </Stat.Root>
                   </Box>
 
                   <Box
@@ -2333,20 +2329,20 @@ return (
                       boxShadow: 'xl'
                     }}
                   >
-                    <Stat>
-                      <HStack spacing={2} mb={2}>
+                    <Stat.Root>
+                      <HStack gap={2} mb={2}>
                         <Icon as={FaLayerGroup} boxSize={5} color="purple.500" />
-                        <StatLabel fontSize="18px" fontWeight="medium" color={useColorModeValue('gray.600', 'gray.400')} >
+                        <Stat.Label fontSize="18px" fontWeight="medium" color={useColorModeValue('gray.600', 'gray.400')} >
                           Consensus Layer
-                        </StatLabel>
+                        </Stat.Label>
                       </HStack>
-                      <StatNumber fontSize="3xl" fontWeight="bold" color={useColorModeValue('gray.800', 'white')} >
+                      <Stat.ValueText fontSize="3xl" fontWeight="bold" color={useColorModeValue('gray.800', 'white')} >
                         6
-                      </StatNumber>
-                      <StatHelpText fontSize="sm" color={useColorModeValue('gray.500', 'gray.500')} mt={1} >
+                      </Stat.ValueText>
+                      <Stat.HelpText fontSize="sm" color={useColorModeValue('gray.500', 'gray.500')} mt={1} >
                         Beacon Chain
-                      </StatHelpText>
-                    </Stat>
+                      </Stat.HelpText>
+                    </Stat.Root>
                   </Box>
                 </SimpleGrid>
 
@@ -2366,20 +2362,20 @@ return (
                   }}
                   w="100%"
                 >
-                  <Stat>
-                    <HStack spacing={2} mb={2}>
+                  <Stat.Root>
+                    <HStack gap={2} mb={2}>
                       <Icon as={FaNetworkWired} boxSize={5} color="orange.500" />
-                      <StatLabel fontSize="18px" fontWeight="medium" color={useColorModeValue('gray.600', 'gray.400')} >
+                      <Stat.Label fontSize="18px" fontWeight="medium" color={useColorModeValue('gray.600', 'gray.400')} >
                         Total Core EIPs
-                      </StatLabel>
+                      </Stat.Label>
                     </HStack>
-                    <StatNumber fontSize="3xl" fontWeight="bold" color={useColorModeValue('gray.800', 'white')} >
+                    <Stat.ValueText fontSize="3xl" fontWeight="bold" color={useColorModeValue('gray.800', 'white')} >
                       62
-                    </StatNumber>
-                    <StatHelpText fontSize="sm" color={useColorModeValue('gray.500', 'gray.500')} mt={1} >
+                    </Stat.ValueText>
+                    <Stat.HelpText fontSize="sm" color={useColorModeValue('gray.500', 'gray.500')} mt={1} >
                       Implemented in upgrades
-                    </StatHelpText>
-                  </Stat>
+                    </Stat.HelpText>
+                  </Stat.Root>
                 </Box>
               </VStack>
             </GridItem>
@@ -2465,18 +2461,20 @@ return (
               justify="space-between"
             >
               <Box flex={{ base: '1', lg: '0 0 auto' }}>
-                <Select
-                  value={selectedOption}
-                  onChange={handleSelectChange}
-                  size="md"
-                  maxW="300px"
-                  borderRadius="md"
-                >
-                  <option value="hegota">Hegotá</option>
-                  <option value="glamsterdam">Glamsterdam</option>
-                  <option value="fusaka">Fusaka</option>
-                  <option value="pectra">Pectra</option>
-                </Select>
+                <NativeSelect.Root>
+                  <NativeSelect.Field
+                    value={selectedOption}
+                    onValueChange={handleSelectChange}
+                    size="md"
+                    maxW="300px"
+                    borderRadius="md">
+                    <option value="hegota">Hegotá</option>
+                    <option value="glamsterdam">Glamsterdam</option>
+                    <option value="fusaka">Fusaka</option>
+                    <option value="pectra">Pectra</option>
+                  </NativeSelect.Field>
+                  <NativeSelect.Indicator />
+                </NativeSelect.Root>
               </Box>
               
             </Flex>
@@ -2575,8 +2573,8 @@ return (
                 </NLink>{" "}(Peer Data Availability Sampling), enabling significant blob throughput scaling. Fusaka also raises the L1 gas limit to 60M and introduces "Blob Parameter Only" (BPO) forks to safely scale blob capacity. Scheduled for Mainnet activation at slot <Text as="span" fontWeight="bold">13,164,544</Text> (Dec 3, 2025), it includes optimizations for L1 performance and UX improvements.
               </Text>
             ) : selectedOption === 'hegota' ? (
-              <VStack spacing={4} align="stretch">
-                <Badge colorScheme="orange" fontSize="md" px={3} py={1} alignSelf="flex-start" borderRadius="full" >
+              <VStack gap={4} align="stretch">
+                <Badge colorPalette="orange" fontSize="md" px={3} py={1} alignSelf="flex-start" borderRadius="full" >
                   Early Planning Stage
                 </Badge>
                 <Text fontSize="md" lineHeight="1.75" textAlign="justify" >
@@ -2673,7 +2671,7 @@ return (
                 >
                   {Array.from({ length: Math.max(1, currentPosts.length - 3) }).map((_, slideIndex) => (
                     <Box key={slideIndex} px={2}>
-                      <SimpleGrid columns={{ base: 1, sm: 2, lg: 4 }} spacing={3}>
+                      <SimpleGrid columns={{ base: 1, sm: 2, lg: 4 }} gap={3}>
                         {[0, 1, 2, 3].map((offset) => {
                           const postIndex = slideIndex + offset;
                           if (postIndex >= currentPosts.length) return null;
@@ -2708,7 +2706,7 @@ return (
                                 />
                               </AspectRatio>
                               <Box p={2.5} flex="1">
-                                <Text fontSize="sm" fontWeight="semibold" noOfLines={2} lineHeight="1.3">
+                                <Text fontSize="sm" fontWeight="semibold" lineClamp={2} lineHeight="1.3">
                                   {post.title}
                                 </Text>
                               </Box>
@@ -2740,7 +2738,7 @@ return (
                 <CopyLink link={`${typeof window !== 'undefined' ? window.location.origin : ''}/upgrade#eip-status`} />
               </Flex>
               {selectedOption === 'glamsterdam' ? (
-                <VStack spacing={6} align="stretch">
+                <VStack gap={6} align="stretch">
                   {/* SFI Section */}
                   <UpgradeEIPsShowcase
                     upgradeName={upgradeName}

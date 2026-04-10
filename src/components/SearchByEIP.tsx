@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Box, useColorModeValue, Text, Input, SimpleGrid, Button, Flex,IconButton, Tooltip, Spinner, Avatar, Menu, MenuItem, MenuList, MenuButton} from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Text, Input, SimpleGrid, Button, Flex, IconButton, Spinner, Avatar, Menu, Portal } from "@chakra-ui/react";
+import { Tooltip } from '@/components/ui/tooltip';
 import { saveAs } from 'file-saver';
 import AllLayout from './Layout';
 import NextLink from 'next/link';
-// import AuthorEIPCounter from './AuthorBoard';
-import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
-import { SearchIcon } from "@chakra-ui/icons";
 import axios from 'axios';
+
+import { LuChevronDown, LuChevronUp, LuSearch } from 'react-icons/lu';
 
 interface EIP {
   _id: string;
@@ -225,80 +226,79 @@ const SearchByEip: React.FC<AuthorProps> = ({ defaultQuery }) => {
               boxShadow: '0 0 0 2px rgba(66, 153, 225, 0.6)',
             }}
           />
-          <Menu>
-      <MenuButton
-        as={Button}
-        rightIcon={<ChevronDownIcon />}
-        colorScheme="blue"
-        size="md"
-        width="200px" // Fixed width
-      >
-        EIP
-      </MenuButton>
-      <MenuList>
-        <MenuItem onClick={() => window.location.href = '/authors'}>
-        Authors
-        </MenuItem>
-        <MenuItem onClick={() => window.location.href = '/SearchEipTitle'}>
-          Title
-        </MenuItem>
-        <MenuItem onClick={() => window.location.href = '/SearchPRSandISSUES'}>
-        PR/ISSUE
-        </MenuItem>
-      </MenuList>
-    </Menu>
+          <Menu.Root>
+      <Menu.Trigger asChild><Button
+          colorPalette="blue"
+          size="md"
+          // Fixed width
+          width="200px">EIP
+                <LuChevronDown /></Button></Menu.Trigger>
+      <Portal><Menu.Positioner><Menu.Content>
+            <Menu.Item onSelect={() => window.location.href = '/authors'} value='item-0'>
+            Authors
+            </Menu.Item>
+            <Menu.Item onSelect={() => window.location.href = '/SearchEipTitle'} value='item-1'>
+              Title
+            </Menu.Item>
+            <Menu.Item
+              onSelect={() => window.location.href = '/SearchPRSandISSUES'}
+              value='item-2'>
+            PR/ISSUE
+            </Menu.Item>
+          </Menu.Content></Menu.Positioner></Portal>
+    </Menu.Root>
         </Flex>
         </Box>
-        <Box p={4}>
+      <Box p={4}>
 
-        
+      
 
-          {/* <AuthorEIPCounter eips={data}/> */}
+        {/* <AuthorEIPCounter eips={data}/> */}
 
-        {isLoading ? (
-          <Text textAlign="center">Loading...</Text>
-        ) : (
-          <>
-          {/* <Flex
-      wrap="wrap"
-      alignItems="center"
-      justifyContent="center"
-      p={4}
-      mb={2}
-      borderRadius="lg"
-      overflowX="auto"
-    > */}
-      {/* {filteredAuthors.slice(0, visibleCount)?.map((author) => (
-  <Box
-  key={author.name}
-  bg={selectedAuthor === author.name ? "blue.600" : "blue.500"}
-  color="white"
-  px={2} // Reduced padding
-  py={1} // Reduced padding
-  borderRadius="full"
-  m={1} // Reduced margin
-  border="1px solid"
-  borderColor="blue.500"
-  whiteSpace="nowrap"
-  transform={selectedAuthor === author.name ? "scale(1.1)" : "scale(1.0)"}
-  transition="all 0.2s ease"
-  _hover={{
-    bg: "blue.400",
-    transform: "scale(1.05)",
-    cursor: "pointer",
-  }}
-  onClick={() => setSelectedAuthor(author.name)}
-  display="flex"
-  alignItems="center"
+      {isLoading ? (
+        <Text textAlign="center">Loading...</Text>
+      ) : (
+        <>
+        {/* <Flex
+    wrap="wrap"
+    alignItems="center"
+    justifyContent="center"
+    p={4}
+    mb={2}
+    borderRadius="lg"
+    overflowX="auto"
+  > */}
+    {/* {filteredAuthors.slice(0, visibleCount)?.map((author) => (
+<Box
+key={author.name}
+bg={selectedAuthor === author.name ? "blue.600" : "blue.500"}
+color="white"
+px={2} // Reduced padding
+py={1} // Reduced padding
+borderRadius="full"
+m={1} // Reduced margin
+border="1px solid"
+borderColor="blue.500"
+whiteSpace="nowrap"
+transform={selectedAuthor === author.name ? "scale(1.1)" : "scale(1.0)"}
+transition="all 0.2s ease"
+_hover={{
+  bg: "blue.400",
+  transform: "scale(1.05)",
+  cursor: "pointer",
+}}
+onClick={() => setSelectedAuthor(author.name)}
+display="flex"
+alignItems="center"
 >
-  <Avatar
-    size="sm"
-    src={author.name.startsWith('@') ? `https://github.com/${author.name.slice(1)}.png` : ''}
-    bg={author.name.startsWith('@') ? undefined : 'black'}
-  />
-  <Text fontSize="xs" fontWeight="bold" ml={1} mr={1}>
-    {author.name} ({author.count})
-  </Text>
+<Avatar
+  size="sm"
+  src={author.name.startsWith('@') ? `https://github.com/${author.name.slice(1)}.png` : ''}
+  bg={author.name.startsWith('@') ? undefined : 'black'}
+/>
+<Text fontSize="xs" fontWeight="bold" ml={1} mr={1}>
+  {author.name} ({author.count})
+</Text>
 </Box>
 
 ))} */}
@@ -306,226 +306,231 @@ const SearchByEip: React.FC<AuthorProps> = ({ defaultQuery }) => {
 
 
 
-      {/* {visibleCount < authorCounts?.length && (
-        <Tooltip label="Expand" fontSize="md">
-          <IconButton
-          icon={<ChevronDownIcon fontWeight="bold" />}
+    {/* {visibleCount < authorCounts?.length && (
+      <Tooltip label="Expand" fontSize="md">
+        <IconButton
+        icon={<ChevronDownIcon fontWeight="bold" />}
+        aria-label="View More"
+        onClick={handleExpand}
+        variant="ghost"
+        bg="blue.500"
+        color="white"
+        ml={2}
+        fontSize="xl"
+        borderRadius="full" // Corrected the property for rounded circle
+        w="40px" // Added fixed width
+        h="40px" // Added fixed height
+        _hover={{ bg: "blue.400", transform: "scale(1.1)" }} // Adjusted hover behavior
+      />
+
+      </Tooltip>
+    )}
+
+    {visibleCount > 20 && (
+      <Tooltip label="Collapse" fontSize="md">
+        <IconButton
+          icon={<ChevronUpIcon fontWeight="bold" />}
           aria-label="View More"
-          onClick={handleExpand}
-          variant="ghost"
-          bg="blue.500"
-          color="white"
-          ml={2}
-          fontSize="xl"
-          borderRadius="full" // Corrected the property for rounded circle
-          w="40px" // Added fixed width
-          h="40px" // Added fixed height
-          _hover={{ bg: "blue.400", transform: "scale(1.1)" }} // Adjusted hover behavior
-        />
+        onClick={handleCollapse}
+        variant="ghost"
+        bg="blue.500"
+        color="white"
+        ml={2}
+        fontSize="xl"
+        borderRadius="full" // Corrected the property for rounded circle
+        w="40px" // Added fixed width
+        h="40px" // Added fixed height
+        _hover={{ bg: "blue.400", transform: "scale(1.1)" }} // Adjusted hover behavior
+      />
+      </Tooltip>
+    )}
+  </Flex> */}
 
-        </Tooltip>
-      )}
-
-      {visibleCount > 20 && (
-        <Tooltip label="Collapse" fontSize="md">
-          <IconButton
-            icon={<ChevronUpIcon fontWeight="bold" />}
-            aria-label="View More"
-          onClick={handleCollapse}
-          variant="ghost"
-          bg="blue.500"
-          color="white"
-          ml={2}
-          fontSize="xl"
-          borderRadius="full" // Corrected the property for rounded circle
-          w="40px" // Added fixed width
-          h="40px" // Added fixed height
-          _hover={{ bg: "blue.400", transform: "scale(1.1)" }} // Adjusted hover behavior
-        />
-        </Tooltip>
-      )}
-    </Flex> */}
-
-                  {/* <Box mt={8}>
-                  
-                    <Box padding={4} bg="blue.50" borderRadius="md" marginBottom={8}>
-                    <Text fontSize="lg"
-                    marginBottom={2}
-                    color="black">
-                        You can download the data here:
-                      </Text>
-                      <Button colorScheme="blue" 
-                      onClick={async () => {
-                        try {
-                         
-                          handleDownload();
-                    
-                         
-                          await axios.post("/api/DownloadCounter");
-                        } catch (error) {
-                          console.error("Error triggering download counter:", error);
-                        }
-                      }}
-                      disabled={isLoading}>
-                        {isLoading ? <Spinner size="sm" /> : "Download CSV"}
-                      </Button>
-                    </Box>
-                  </Box> */}
-            
-            <Box
-  display="flex"
-  justifyContent="flex-end" // Align items to the start (left)
-  alignItems="center"
-  mb={4}
-  ml={2}
-  gap={4}
->
-<Button colorScheme="blue" onClick={async () => {
+                {/* <Box mt={8}>
+                
+                  <Box padding={4} bg="blue.50" borderRadius="md" marginBottom={8}>
+                  <Text fontSize="lg"
+                  marginBottom={2}
+                  color="black">
+                      You can download the data here:
+                    </Text>
+                    <Button colorScheme="blue" 
+                    onClick={async () => {
                       try {
-                        // Trigger the CSV conversion and download
-                        handleDownload()
-
-                        // Trigger the API call
+                       
+                        handleDownload();
+                  
+                       
                         await axios.post("/api/DownloadCounter");
                       } catch (error) {
                         console.error("Error triggering download counter:", error);
                       }
-                    }} disabled={isLoading}>
-                        {isLoading ? <Spinner size="sm" /> : "Download CSV"}
-                      </Button>
-  {/* Filter Button on the left */}
-  
+                    }}
+                    disabled={isLoading}>
+                      {isLoading ? <Spinner size="sm" /> : "Download CSV"}
+                    </Button>
+                  </Box>
+                </Box> */}
+          
+          <Box
+display="flex"
+justifyContent="flex-end" // Align items to the start (left)
+alignItems="center"
+mb={4}
+ml={2}
+gap={4}
+>
+<Button colorPalette="blue" onClick={async () => {
+                    try {
+                      // Trigger the CSV conversion and download
+                      handleDownload()
+
+                      // Trigger the API call
+                      await axios.post("/api/DownloadCounter");
+                    } catch (error) {
+                      console.error("Error triggering download counter:", error);
+                    }
+                  }} disabled={isLoading}>
+                      {isLoading ? <Spinner size="sm" /> : "Download CSV"}
+                    </Button>
+{/* Filter Button on the left */}
+
 </Box>
 
-                  
-            {/* Display Cards */}
-            <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 5 }} spacing={6}>
-              {paginatedData?.map((item) => (
-                <NextLink
-                  key={item._id}
-                  href={`/${item.repo === "erc" ? "ercs/erc" : item.repo === "rip" ? "rips/rip" : "eips/eip"}-${item.eip}`}
-                  target="_blank"
-                  passHref
-                >
-                  {/* <a target="_blank" rel="noopener noreferrer">  */}
-                  <Box
-  bg={bg}
-  paddingX="0.5rem"
-  borderRadius="0.55rem"
-  _hover={{
-    transform: "scale(1.05)",
-    outline: "2px solid #30A0E0",
-    outlineOffset: "-2px",
-    transition: "transform 0.2s ease, outline 0.2s ease",
-  }}
-  transition="transform 0.2s ease, outline 0.2s ease"
-  width="100%"
-  padding="1rem"
-  display="flex"
-  flexDirection="column"
-  minHeight="300px" // Fixed height for uniformity
-  justifyContent="space-between" // Align items evenly
+                
+          {/* Display Cards */}
+          <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 5 }} gap={6}>
+            {paginatedData?.map((item) => (
+              <NextLink
+                key={item._id}
+                href={`/${item.repo === "erc" ? "ercs/erc" : item.repo === "rip" ? "rips/rip" : "eips/eip"}-${item.eip}`}
+                target="_blank"
+                passHref
+              >
+                {/* <a target="_blank" rel="noopener noreferrer">  */}
+                <Box
+bg={bg}
+paddingX="0.5rem"
+borderRadius="0.55rem"
+_hover={{
+  transform: "scale(1.05)",
+  outline: "2px solid #30A0E0",
+  outlineOffset: "-2px",
+  transition: "transform 0.2s ease, outline 0.2s ease",
+}}
+transition="transform 0.2s ease, outline 0.2s ease"
+width="100%"
+padding="1rem"
+display="flex"
+flexDirection="column"
+minHeight="300px" // Fixed height for uniformity
+justifyContent="space-between" // Align items evenly
 >
-  {/* Repo-EIP Title Section */}
-  <Text
-    fontSize="xl"
-    fontWeight="extrabold"
-    color={useColorModeValue('blue.500', 'blue.300')}
-    mb={3}
-    wordBreak="break-word"
-  >
-    {item.repo.toUpperCase()}-{item.eip}
-  </Text>
+{/* Repo-EIP Title Section */}
+<Text
+  fontSize="xl"
+  fontWeight="extrabold"
+  color={useColorModeValue('blue.500', 'blue.300')}
+  mb={3}
+  wordBreak="break-word"
+>
+  {item.repo.toUpperCase()}-{item.eip}
+</Text>
 
-  {/* Title Section */}
-  <Text
-    fontSize="sm"
-    fontWeight="bold"
-    color={useColorModeValue('gray.700', 'gray.300')}
-    isTruncated
-    maxWidth="100%"
-    marginBottom="0.5rem"
-  >
-    {item.title}
-  </Text>
-
-  {/* Type Section */}
-  <Text fontSize="sm" color={useColorModeValue('gray.700', 'gray.300')} mb={1}>
-    <b>Type:</b> {item.type}
-  </Text>
-
-  {/* Category Section */}
-  <Text fontSize="sm" color={useColorModeValue('gray.700', 'gray.300')} mb={1}>
-    <b>Category:</b> {item.category}
-  </Text>
-  <Text fontSize="sm" color={useColorModeValue('gray.700', 'gray.300')} mb={1}>
-    <b>Status:</b> {item.status}
-  </Text>
-
-  {/* Authors Section */}
-  <Text
-    fontSize="xs"
-    fontWeight="bold"
-    color={useColorModeValue('gray.700', 'gray.300')}
-    marginBottom="0.5rem"
-  >
-    Authors:
-  </Text>
-  <Box
-  display="flex"
-  alignItems="center"
-  gap="0.5rem"
-  marginBottom="1rem"
+{/* Title Section */}
+<Text
+  fontSize="sm"
+  fontWeight="bold"
+  color={useColorModeValue('gray.700', 'gray.300')}
+  isTruncated
   maxWidth="100%"
+  marginBottom="0.5rem"
 >
-  {(() => {
-    const authors = item.author.split(",")?.map((author) =>
-      author.replace(/<.*?>/g, "").trim()
+  {item.title}
+</Text>
+
+{/* Type Section */}
+<Text fontSize="sm" color={useColorModeValue('gray.700', 'gray.300')} mb={1}>
+  <b>Type:</b> {item.type}
+</Text>
+
+{/* Category Section */}
+<Text fontSize="sm" color={useColorModeValue('gray.700', 'gray.300')} mb={1}>
+  <b>Category:</b> {item.category}
+</Text>
+<Text fontSize="sm" color={useColorModeValue('gray.700', 'gray.300')} mb={1}>
+  <b>Status:</b> {item.status}
+</Text>
+
+{/* Authors Section */}
+<Text
+  fontSize="xs"
+  fontWeight="bold"
+  color={useColorModeValue('gray.700', 'gray.300')}
+  marginBottom="0.5rem"
+>
+  Authors:
+</Text>
+<Box
+display="flex"
+alignItems="center"
+gap="0.5rem"
+marginBottom="1rem"
+maxWidth="100%"
+>
+{(() => {
+  const authors = item.author.split(",")?.map((author) =>
+    author.replace(/<.*?>/g, "").trim()
+  );
+
+  const sortedAuthors = authors.sort((a, b) => {
+    const aIsSelected = !!(
+      selectedAuthor &&
+      a.toLowerCase().includes(selectedAuthor.toLowerCase())
     );
+    const bIsSelected = !!(
+      selectedAuthor &&
+      b.toLowerCase().includes(selectedAuthor.toLowerCase())
+    );
+    return Number(bIsSelected) - Number(aIsSelected);
+  });
 
-    const sortedAuthors = authors.sort((a, b) => {
-      const aIsSelected = !!(
-        selectedAuthor &&
-        a.toLowerCase().includes(selectedAuthor.toLowerCase())
-      );
-      const bIsSelected = !!(
-        selectedAuthor &&
-        b.toLowerCase().includes(selectedAuthor.toLowerCase())
-      );
-      return Number(bIsSelected) - Number(aIsSelected);
-    });
+  // Show only the first author with ...more if applicable
+  const firstAuthor = sortedAuthors[0];
+  const hasMoreAuthors = sortedAuthors?.length > 1;
 
-    // Show only the first author with ...more if applicable
-    const firstAuthor = sortedAuthors[0];
-    const hasMoreAuthors = sortedAuthors?.length > 1;
-
-    return (
-      <Box
-        display="flex"
-        alignItems="center"
-        gap="0.5rem"
-        maxWidth="100%"
-        bg="blue.500"
-        color="white"
-        px={2}
-        py={1}
-        borderRadius="full"
-        border="1px solid"
-        borderColor="blue.500"
-        wordBreak="break-word" // Allow wrapping
-        whiteSpace="normal"    // Ensure text can wrap
-        overflow="hidden"      // Prevent overflow
-        flexWrap="nowrap"      // Prevent splitting of content
-        transition="all 0.2s ease"
-        _hover={{
-          bg: "blue.400",
-          transform: "scale(1.05)",
-          cursor: "pointer",
-        }}
-        onClick={() => setSelectedAuthor(firstAuthor)} // Set selected author
-      >
-        <Avatar
-          size="xs"
+  return (
+    <Box
+      display="flex"
+      alignItems="center"
+      gap="0.5rem"
+      maxWidth="100%"
+      bg="blue.500"
+      color="white"
+      px={2}
+      py={1}
+      borderRadius="full"
+      border="1px solid"
+      borderColor="blue.500"
+      wordBreak="break-word" // Allow wrapping
+      whiteSpace="normal"    // Ensure text can wrap
+      overflow="hidden"      // Prevent overflow
+      flexWrap="nowrap"      // Prevent splitting of content
+      transition="all 0.2s ease"
+      _hover={{
+        bg: "blue.400",
+        transform: "scale(1.05)",
+        cursor: "pointer",
+      }}
+      onClick={() => setSelectedAuthor(firstAuthor)} // Set selected author
+    >
+      <Avatar.Root
+        size="xs"
+        bg={
+          firstAuthor.includes("@") && firstAuthor.includes(")")
+            ? undefined
+            : "black"
+        }><Avatar.Fallback /><Avatar.Image
           src={
             firstAuthor.includes("@") && firstAuthor.includes(")")
               ? `https://github.com/${firstAuthor.slice(
@@ -533,62 +538,56 @@ const SearchByEip: React.FC<AuthorProps> = ({ defaultQuery }) => {
                   firstAuthor.indexOf(")")
                 )}.png`
               : ""
-          }
-          bg={
-            firstAuthor.includes("@") && firstAuthor.includes(")")
-              ? undefined
-              : "black"
-          }
-        />
-        <Box
-          display="flex"
-          alignItems="center"
-          gap="0.25rem"
-          flexWrap="wrap"  // Allow wrapping of the text
-        >
-          <Text fontSize="xs" fontWeight="bold" isTruncated>
-            {firstAuthor}
+          } /></Avatar.Root>
+      <Box
+        display="flex"
+        alignItems="center"
+        gap="0.25rem"
+        flexWrap="wrap"  // Allow wrapping of the text
+      >
+        <Text fontSize="xs" fontWeight="bold" isTruncated>
+          {firstAuthor}
+        </Text>
+        {hasMoreAuthors && (
+          <Text fontSize="xs" fontWeight="bold" ml={1} whiteSpace="nowrap">
+            ...more
           </Text>
-          {hasMoreAuthors && (
-            <Text fontSize="xs" fontWeight="bold" ml={1} whiteSpace="nowrap">
-              ...more
-            </Text>
-          )}
-        </Box>
-      </Box>
-    );
-  })()}
-</Box>
-
-</Box>
-
-
-                 
-                </NextLink>
-              ))}
-            </SimpleGrid>
-
-            {/* Pagination */}
-            <Box mt={8} display="flex" justifyContent="center" alignItems="center" gap={4}>
-              <Button
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
-              >
-                Previous
-              </Button>
-              <Text>
-                Page {currentPage} of {totalPages}
-              </Text>
-              <Button
-                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                disabled={currentPage === totalPages}
-              >
-                Next
-              </Button>
-            </Box>
-          </>
         )}
       </Box>
+    </Box>
+  );
+})()}
+</Box>
+
+</Box>
+
+
+               
+              </NextLink>
+            ))}
+          </SimpleGrid>
+
+          {/* Pagination */}
+          <Box mt={8} display="flex" justifyContent="center" alignItems="center" gap={4}>
+            <Button
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </Button>
+            <Text>
+              Page {currentPage} of {totalPages}
+            </Text>
+            <Button
+              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+              disabled={currentPage === totalPages}
+            >
+              Next
+            </Button>
+          </Box>
+        </>
+      )}
+    </Box>
     </>
   );
 };

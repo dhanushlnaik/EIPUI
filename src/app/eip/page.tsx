@@ -1,6 +1,8 @@
 "use client";
-
+import { useToast } from "@/components/ui/use-toast";
+;
 import React from "react";
+import { useColorModeValue } from "../../components/ui/color-mode";
 import AllLayout from "@/components/Layout";
 // import Header from "@/components/Header";
 import { useEffect, useState } from "react";
@@ -10,20 +12,8 @@ import TypeGraphs from "@/components/TypeGraphs";
 import TypeGraphs3 from "@/components/TypeGraphs3";
 import SearchBox from "@/components/SearchBox";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { CopyIcon } from "@chakra-ui/icons";
 import CloseableAdCard from "@/components/CloseableAdCard";
-import {
-  Box,
-  Grid,
-  Text,
-  useColorModeValue,
-  Link as LI,
-  SimpleGrid,
-  Select,
-  GridItem,
-  Link,
-  useToast,
-} from "@chakra-ui/react";
+import { Steps, Box, Grid, Text, Link as LI, SimpleGrid, NativeSelect, GridItem, Link } from "@chakra-ui/react";
 import CBoxStatus from "@/components/CBoxStatus";
 import StackedColumnChart from "@/components/StackedBarChart";
 import AreaStatus from "@/components/AreaStatus";
@@ -123,6 +113,9 @@ import { useScrollSpy } from "@/hooks/useScrollSpy";
 import Header from "@/components/Header";
 
 
+import { LuCopy } from 'react-icons/lu';
+
+
 const ALL_OPTIONS = ["Core", "Networking", "Interface", "Meta", "Informational"];
 const Status_OPTIONS = ["Draft", "Review", "Last Call", "Living", "Final", "Stagnant", "Withdrawn"];
 
@@ -130,12 +123,12 @@ const Status_OPTIONS = ["Draft", "Review", "Last Call", "Living", "Final", "Stag
 const Type = () => {
   const [data, setData] = useState<EIP[]>([]);
   const [data4, setData4] = useState<EIP[]>([]);
-  const [data2, setData2] = useState<APIResponse>({
+  const [data2, setData2] = useState<any>({
     eip: [],
     erc: [],
     rip: [],
   });
-  const [data3, setData3] = useState<Data>({ eip: [], erc: [], rip: [] });
+  const [data3, setData3] = useState<any>({ eip: [], erc: [], rip: [] });
   const [isLoading, setIsLoading] = useState(true);
   const [selected, setSelected] = useState<"status" | "category">("category");
   const [selectedInner, setSelectedInner] = useState(ALL_OPTIONS[0]);
@@ -348,8 +341,8 @@ const Type = () => {
                     </Text>
                     <Button
                       size="sm"
-                      colorScheme="blue"
-                      variant="link"
+                      colorPalette="blue"
+                      variant='plain'
                       as={Link}
                       href="/FAQs/EIP"
                     >
@@ -372,7 +365,7 @@ const Type = () => {
                 </Box>
 
                 {/* Right: Category/Status Buttons */}
-                <ButtonGroup size="md" isAttached>
+                <ButtonGroup size="md" attached>
                   <Button
                     bg={selected === "category" ? "#40E0D0" : "white"}
                     color={selected === "category" ? "white" : "#40E0D0"}
@@ -420,12 +413,9 @@ const Type = () => {
                   <Button
                     onClick={handleCopyOverviewChart}
                     size="sm"
-                    leftIcon={<CopyIcon />}
-                    colorScheme="blue"
-                    variant="ghost"
-                  >
-                    Copy Link
-                  </Button>
+                    colorPalette="blue"
+                    variant="ghost"><LuCopy />Copy Link
+                                      </Button>
                 </Box>
                 <Box className="w-full h-full">
                   {selected === "status" ? (
@@ -461,28 +451,28 @@ const Type = () => {
                     <Button
                       onClick={handleCopyTypeDetail}
                       size="md"
-                      leftIcon={<CopyIcon />}
-                      colorScheme="blue"
+                      colorPalette="blue"
                       variant="ghost"
-                      ml={2}
-                    />
+                      ml={2} />
                   </Heading>
 
                   <Flex mb={4} gap={4} wrap="wrap">
-                    <Select
-                      maxW={{ base: "100%", md: "320px" }}  // Responsive width
-                      value={selectedInner}
-                      onChange={(e) => setSelectedInner(e.target.value)}
-                      borderColor="blue.400"
-                      _hover={{ borderColor: "blue.500" }}
-                      focusBorderColor="blue.500"
-                    >
-                      {ALL_OPTIONS.map((option) => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </Select>
+                    <NativeSelect.Root>
+                      <NativeSelect.Field
+                        // Responsive width
+                        maxW={{ base: "100%", md: "320px" }}
+                        value={selectedInner}
+                        onValueChange={(e) => setSelectedInner(e.target.value)}
+                        borderColor="blue.400"
+                        _hover={{ borderColor: "blue.500" }}>
+                        {ALL_OPTIONS.map((option) => (
+                          <option key={option} value={option}>
+                            {option}
+                          </option>
+                        ))}
+                      </NativeSelect.Field>
+                      <NativeSelect.Indicator />
+                    </NativeSelect.Root>
                   </Flex>
 
                   <Flex direction={{ base: "column", md: "row" }} gap={6} w="full" align="stretch">
@@ -531,12 +521,9 @@ const Type = () => {
                       <Button
                         onClick={handleCopyAreaChart}
                         size="sm"
-                        leftIcon={<CopyIcon />}
-                        colorScheme="blue"
-                        variant="ghost"
-                      >
-                        Copy Link
-                      </Button>
+                        colorPalette="blue"
+                        variant="ghost"><LuCopy />Copy Link
+                                              </Button>
                     </Flex>
                     <AreaStatus type="EIPs" />
                   </Box>
@@ -558,30 +545,28 @@ const Type = () => {
                       direction={{ base: "column", sm: "row" }}
                       align={{ base: "stretch", sm: "center" }}
                     >
-                      <Select
-                        maxW={{ base: "100%", sm: "320px" }}
-                        value={selectedStatusInner}
-                        onChange={(e) => setSelectedStatusInner(e.target.value)}
-                        borderColor="blue.400"
-                        _hover={{ borderColor: "blue.500" }}
-                        focusBorderColor="blue.500"
-                      >
-                        {Status_OPTIONS.map((status) => (
-                          <option key={status} value={status}>
-                            {status} ({data.filter((item) => item.status === status).length})
-                          </option>
-                        ))}
-                      </Select>
+                      <NativeSelect.Root>
+                        <NativeSelect.Field
+                          maxW={{ base: "100%", sm: "320px" }}
+                          value={selectedStatusInner}
+                          onValueChange={(e) => setSelectedStatusInner(e.target.value)}
+                          borderColor="blue.400"
+                          _hover={{ borderColor: "blue.500" }}>
+                          {Status_OPTIONS.map((status) => (
+                            <option key={status} value={status}>
+                              {status} ({data.filter((item) => item.status === status).length})
+                            </option>
+                          ))}
+                        </NativeSelect.Field>
+                        <NativeSelect.Indicator />
+                      </NativeSelect.Root>
 
                       <Button
                         onClick={handleCopyStatusDetail}
                         size="sm"
-                        leftIcon={<CopyIcon />}
-                        colorScheme="blue"
-                        variant="ghost"
-                      >
-                        Copy Link
-                      </Button>
+                        colorPalette="blue"
+                        variant="ghost"><LuCopy />Copy Link
+                                              </Button>
                     </Flex>
 
                     <Flex
@@ -653,11 +638,11 @@ const Type = () => {
             >
               <Text>
                 Also checkout{' '}
-                <LI href="/erc" color="blue" isExternal>
+                <LI href="/erc" color="blue" target='_blank' rel='noopener noreferrer'>
                   ERCs
                 </LI>{' '}
                 and{' '}
-                <LI href="/rip" color="blue" isExternal>
+                <LI href="/rip" color="blue" target='_blank' rel='noopener noreferrer'>
                   RIPs
                 </LI>.
               </Text>

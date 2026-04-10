@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Box, Text, Button, Flex, useColorModeValue } from '@chakra-ui/react';
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Text, Button, Flex } from "@chakra-ui/react";
 import dynamic from 'next/dynamic';
 
 // Dynamically import the Column chart to avoid SSR issues

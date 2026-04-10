@@ -1,21 +1,10 @@
 import React, { useState } from 'react';
-import {
-  Box,
-  Heading,
-  Text,
-  SimpleGrid,
-  Badge,
-  VStack,
-  HStack,
-  useColorModeValue,
-  Flex,
-  Icon,
-  Tooltip,
-  Button,
-} from '@chakra-ui/react';
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Heading, Text, SimpleGrid, Badge, VStack, HStack, Flex, Icon, Button } from "@chakra-ui/react";
+import { Tooltip } from '@/components/ui/tooltip';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/router';
-import { ExternalLinkIcon, ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
+import { LuChevronDown, LuChevronUp, LuExternalLink } from 'react-icons/lu';
 
 interface EIPData {
   eip: string;
@@ -121,11 +110,11 @@ const UpgradeEIPsShowcase: React.FC<UpgradeEIPsShowcaseProps> = ({
         opacity={hoveredEip === eip.eip ? 1 : 0.3}
       />
       
-      <VStack align="stretch" spacing={2} mt={1}>
+      <VStack align="stretch" gap={2} mt={1}>
         <Flex justify="space-between" align="flex-start">
-          <HStack spacing={2}>
+          <HStack gap={2}>
             <Badge
-              colorScheme={getCategoryColor(eip.category, eip.type)}
+              colorPalette={getCategoryColor(eip.category, eip.type)}
               fontSize="xs"
               px={2}
               py={0.5}
@@ -137,7 +126,7 @@ const UpgradeEIPsShowcase: React.FC<UpgradeEIPsShowcaseProps> = ({
             {eip.category && (
               <Badge
                 variant="subtle"
-                colorScheme={getCategoryColor(eip.category, eip.type)}
+                colorPalette={getCategoryColor(eip.category, eip.type)}
                 fontSize="2xs"
                 px={1.5}
                 py={0.5}
@@ -156,13 +145,13 @@ const UpgradeEIPsShowcase: React.FC<UpgradeEIPsShowcaseProps> = ({
             fontWeight="bold"
             color={textColor}
             lineHeight="1.3"
-            noOfLines={2}
+            lineClamp={2}
           >
             {eip.title}
           </Text>
         </Box>
 
-        <Text fontSize="2xs" color={subtextColor} noOfLines={1}>
+        <Text fontSize="2xs" color={subtextColor} lineClamp={1}>
           {eip.author.split(',')[0]}
           {eip.author.split(',').length > 1 && ' et al.'}
         </Text>
@@ -170,7 +159,7 @@ const UpgradeEIPsShowcase: React.FC<UpgradeEIPsShowcaseProps> = ({
         {eip.type && eip.type !== 'Standards Track' && (
           <Badge
             variant="outline"
-            colorScheme={getCategoryColor(eip.category, eip.type)}
+            colorPalette={getCategoryColor(eip.category, eip.type)}
             fontSize="xs"
             alignSelf="flex-start"
           >
@@ -183,7 +172,7 @@ const UpgradeEIPsShowcase: React.FC<UpgradeEIPsShowcaseProps> = ({
 
   return (
     <Box>
-      <VStack align="stretch" spacing={8}>
+      <VStack align="stretch" gap={8}>
         <Box>
           <Flex align="center" gap={4} mb={2}>
             <Heading
@@ -219,11 +208,11 @@ const UpgradeEIPsShowcase: React.FC<UpgradeEIPsShowcaseProps> = ({
               <Heading size="md" color={textColor}>
                 Core EIPs
               </Heading>
-              <Badge colorScheme="green" fontSize="md" px={3} py={1} borderRadius="full">
+              <Badge colorPalette="green" fontSize="md" px={3} py={1} borderRadius="full">
                 {coreEIPs.length}
               </Badge>
             </Flex>
-            <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={3}>
+            <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={3}>
               {visibleCoreEIPs.map((eip) => (
                 <EIPCard key={eip.eip} eip={eip} />
               ))}
@@ -237,14 +226,14 @@ const UpgradeEIPsShowcase: React.FC<UpgradeEIPsShowcaseProps> = ({
               <Heading size="md" color={textColor}>
                 Other EIPs
               </Heading>
-              <Badge colorScheme="blue" fontSize="md" px={3} py={1} borderRadius="full">
+              <Badge colorPalette="blue" fontSize="md" px={3} py={1} borderRadius="full">
                 {otherEIPs.length}
               </Badge>
               <Text fontSize="xs" color={subtextColor} fontStyle="italic">
                 (Networking, Interface, Informational, Meta)
               </Text>
             </Flex>
-            <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={3}>
+            <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={3}>
               {visibleOtherEIPs.map((eip) => (
                 <EIPCard key={eip.eip} eip={eip} />
               ))}
@@ -256,13 +245,9 @@ const UpgradeEIPsShowcase: React.FC<UpgradeEIPsShowcaseProps> = ({
           <Flex justify="center" mt={4}>
             <Button
               onClick={() => setShowAll(!showAll)}
-              colorScheme="teal"
+              colorPalette="teal"
               variant="outline"
-              size="md"
-              rightIcon={showAll ? <ChevronUpIcon /> : <ChevronDownIcon />}
-            >
-              {showAll ? 'Show Less' : 'Show More'}
-            </Button>
+              size="md">{showAll ? 'Show Less' : 'Show More'}{showAll ? <LuChevronUp /> : <LuChevronDown />}</Button>
           </Flex>
         )}
 
@@ -273,7 +258,7 @@ const UpgradeEIPsShowcase: React.FC<UpgradeEIPsShowcaseProps> = ({
           border="1px solid"
           borderColor={borderColor}
         >
-          <HStack spacing={4} fontSize="sm" color={subtextColor} justify="center">
+          <HStack gap={4} fontSize="sm" color={subtextColor} justify="center">
             <Text>
               <strong>{coreEIPs.length}</strong> Core EIPs
             </Text>

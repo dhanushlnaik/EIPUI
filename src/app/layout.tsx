@@ -1,9 +1,8 @@
-'use client';
-
+"use client";
 import './globals.css';
 import { Rajdhani } from 'next/font/google';
 import { Providers } from './providers';
-import { Box, Flex } from '@chakra-ui/react';
+import { Steps, Box, Flex } from "@chakra-ui/react";
 import dynamic from 'next/dynamic';
 import { Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';

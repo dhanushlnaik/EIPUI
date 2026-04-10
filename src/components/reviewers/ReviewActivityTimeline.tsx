@@ -1,22 +1,11 @@
 import React, { useMemo } from 'react';
-import {
-  Box,
-  Button,
-  Flex,
-  Heading,
-  HStack,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  Spinner,
-  useColorModeValue,
-} from '@chakra-ui/react';
-import { ChevronDownIcon } from '@chakra-ui/icons';
+import { useColorModeValue } from "../ui/color-mode";
+import { Steps, Box, Button, Flex, Heading, HStack, Menu, Spinner, Portal } from "@chakra-ui/react";
 import { FiFilter } from 'react-icons/fi';
 import { AiOutlineClose } from 'react-icons/ai';
 import dynamic from 'next/dynamic';
 import CopyLink from '@/components/CopyLink';
+import { LuChevronDown } from 'react-icons/lu';
 
 const Scatter = dynamic(() => import('@ant-design/plots').then((mod) => mod.Scatter), {
   ssr: false,
@@ -141,15 +130,10 @@ const ReviewActivityTimeline: React.FC<ReviewActivityTimelineProps> = ({
           <CopyLink link="https://eipsinsight.com/Reviewers#ActivityTimeline" />
         </Heading>
         <Button
-          colorScheme="blue"
+          colorPalette="blue"
           onClick={() => setShowFilters(!showFilters)}
-          leftIcon={showFilters ? <AiOutlineClose /> : <FiFilter />}
-          size="md"
-        >
-          {showFilters ? 'Hide Filters' : 'Show Filters'}
-        </Button>
+          size="md">{showFilters ? <AiOutlineClose /> : <FiFilter />}{showFilters ? 'Hide Filters' : 'Show Filters'}</Button>
       </Flex>
-
       {showFilters && (
         <Box bg={useColorModeValue('blue.50', 'gray.700')} borderRadius="md" p={4} mb={4}>
           <Flex flexDirection={{ base: 'column', md: 'row' }} gap={4}>
@@ -159,30 +143,33 @@ const ReviewActivityTimeline: React.FC<ReviewActivityTimelineProps> = ({
                 Start Date
               </Heading>
               <HStack>
-                <Menu>
-                  <MenuButton as={Button} rightIcon={<ChevronDownIcon />} colorScheme="blue" size="sm">
-                    {selectedStartYear || 'Year'}
-                  </MenuButton>
-                  <MenuList maxH="200px" overflowY="auto">
-                    {years.map((year) => (
-                      <MenuItem key={year} onClick={() => setSelectedStartYear(year)}>
-                        {year}
-                      </MenuItem>
-                    ))}
-                  </MenuList>
-                </Menu>
-                <Menu>
-                  <MenuButton as={Button} rightIcon={<ChevronDownIcon />} colorScheme="blue" size="sm">
-                    {months.find((m) => m.value === selectedStartMonth)?.name || 'Month'}
-                  </MenuButton>
-                  <MenuList maxH="200px" overflowY="auto">
-                    {months.map((month) => (
-                      <MenuItem key={month.value} onClick={() => setSelectedStartMonth(month.value)}>
-                        {month.name}
-                      </MenuItem>
-                    ))}
-                  </MenuList>
-                </Menu>
+                <Menu.Root>
+                  <Menu.Trigger asChild><Button colorPalette="blue" size="sm">
+                      {selectedStartYear || 'Year'}
+                      <LuChevronDown /></Button></Menu.Trigger>
+                  <Portal><Menu.Positioner><Menu.Content>
+                        {years.map((year) => (
+                          <Menu.Item key={year} onSelect={() => setSelectedStartYear(year)} value='item-0'>
+                            {year}
+                          </Menu.Item>
+                        ))}
+                      </Menu.Content></Menu.Positioner></Portal>
+                </Menu.Root>
+                <Menu.Root>
+                  <Menu.Trigger asChild><Button colorPalette="blue" size="sm">
+                      {months.find((m) => m.value === selectedStartMonth)?.name || 'Month'}
+                      <LuChevronDown /></Button></Menu.Trigger>
+                  <Portal><Menu.Positioner><Menu.Content>
+                        {months.map((month) => (
+                          <Menu.Item
+                            key={month.value}
+                            onSelect={() => setSelectedStartMonth(month.value)}
+                            value='item-1'>
+                            {month.name}
+                          </Menu.Item>
+                        ))}
+                      </Menu.Content></Menu.Positioner></Portal>
+                </Menu.Root>
               </HStack>
             </Box>
 
@@ -192,36 +179,38 @@ const ReviewActivityTimeline: React.FC<ReviewActivityTimelineProps> = ({
                 End Date
               </Heading>
               <HStack>
-                <Menu>
-                  <MenuButton as={Button} rightIcon={<ChevronDownIcon />} colorScheme="blue" size="sm">
-                    {selectedEndYear || 'Year'}
-                  </MenuButton>
-                  <MenuList maxH="200px" overflowY="auto">
-                    {years.map((year) => (
-                      <MenuItem key={year} onClick={() => setSelectedEndYear(year)}>
-                        {year}
-                      </MenuItem>
-                    ))}
-                  </MenuList>
-                </Menu>
-                <Menu>
-                  <MenuButton as={Button} rightIcon={<ChevronDownIcon />} colorScheme="blue" size="sm">
-                    {months.find((m) => m.value === selectedEndMonth)?.name || 'Month'}
-                  </MenuButton>
-                  <MenuList maxH="200px" overflowY="auto">
-                    {months.map((month) => (
-                      <MenuItem key={month.value} onClick={() => setSelectedEndMonth(month.value)}>
-                        {month.name}
-                      </MenuItem>
-                    ))}
-                  </MenuList>
-                </Menu>
+                <Menu.Root>
+                  <Menu.Trigger asChild><Button colorPalette="blue" size="sm">
+                      {selectedEndYear || 'Year'}
+                      <LuChevronDown /></Button></Menu.Trigger>
+                  <Portal><Menu.Positioner><Menu.Content>
+                        {years.map((year) => (
+                          <Menu.Item key={year} onSelect={() => setSelectedEndYear(year)} value='item-2'>
+                            {year}
+                          </Menu.Item>
+                        ))}
+                      </Menu.Content></Menu.Positioner></Portal>
+                </Menu.Root>
+                <Menu.Root>
+                  <Menu.Trigger asChild><Button colorPalette="blue" size="sm">
+                      {months.find((m) => m.value === selectedEndMonth)?.name || 'Month'}
+                      <LuChevronDown /></Button></Menu.Trigger>
+                  <Portal><Menu.Positioner><Menu.Content>
+                        {months.map((month) => (
+                          <Menu.Item
+                            key={month.value}
+                            onSelect={() => setSelectedEndMonth(month.value)}
+                            value='item-3'>
+                            {month.name}
+                          </Menu.Item>
+                        ))}
+                      </Menu.Content></Menu.Positioner></Portal>
+                </Menu.Root>
               </HStack>
             </Box>
           </Flex>
         </Box>
       )}
-
       {loading ? (
         <Flex justify="center" align="center" height="400px">
           <Spinner size="xl" />

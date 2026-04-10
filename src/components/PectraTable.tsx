@@ -1,18 +1,8 @@
-import {
-  Box,
-  Text,
-  useColorModeValue,
-  Wrap,
-  WrapItem,
-  Badge,
-  Link,
-  Button,
-  Select,
-} from "@chakra-ui/react";
+import { Box, Text, Wrap, WrapItem, Badge, Link, Button, Select, Icon } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
 import React, { useEffect, useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Spinner } from "@chakra-ui/react";
-import { DownloadIcon } from "@chakra-ui/icons";
 import axios from "axios";
 import {
   Column,
@@ -43,6 +33,7 @@ interface EIP {
 }
 
 import "@coreui/coreui/dist/css/coreui.min.css";
+import { LuDownload } from 'react-icons/lu';
 interface TabProps {
   cat: string;
 }
@@ -98,7 +89,7 @@ const PectraTable: React.FC<TableProps> = ({ PectraData, title }) => {
   });
   const [selectedStatus, setSelectedStatus] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
-  const yearsArr = [];
+  const yearsArr: number[] = [];
 
   useEffect(() => {
     setInterval(() => {
@@ -220,7 +211,7 @@ const PectraTable: React.FC<TableProps> = ({ PectraData, title }) => {
                     }
                   }}
                 >
-                  <DownloadIcon marginEnd={"1.5"} />
+                  <Icon as={LuDownload} marginEnd={"1.5"} />
                   Download Reports
                 </Button>
               </div>

@@ -1,42 +1,20 @@
 "use client";
+import { useDisclosure } from "@/components/ui/compat";
 
+import { InputRightElement } from "@/components/ui/compat";
+import { useToast } from "@/components/ui/use-toast";
+;
 import { useState, useEffect } from 'react';
+import { useColorModeValue } from "../../components/ui/color-mode";
 import { useRouter } from 'next/navigation';
 import CloseableAdCard from "@/components/CloseableAdCard";
-import {
-  Box,
-  Avatar,
-  Heading,
-  Text,
-  Input,
-  Button,
-  InputGroup,
-  InputRightElement,
-  IconButton,
-  useToast,
-  FormControl,
-  FormLabel,
-  Stack,
-  HStack,
-  Flex,
-  Spinner,
-  Center,
-  useDisclosure,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  useColorModeValue
-} from '@chakra-ui/react';
+import { Steps, Box, Avatar, Heading, Text, Input, Button, InputGroup, IconButton, Stack, HStack, Flex, Spinner, Center, Field, Dialog, Portal } from "@chakra-ui/react";
 import { FaEye, FaEyeSlash, FaSignOutAlt, FaUserEdit, FaArrowLeft } from 'react-icons/fa';
 import AllLayout from '@/components/LoginLayout';
-import { RepeatIcon } from '@chakra-ui/icons';
 import { useSession, signOut } from 'next-auth/react';
 import { useUserStore } from '@/stores/userStore';
 import SessionWrapper from '@/components/SessionWrapper';
+import { LuRepeat } from 'react-icons/lu';
 interface UserData {
   id: string;
   name: string;
@@ -50,7 +28,7 @@ export default function ProfilePage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const toast = useToast();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { open, onOpen, onClose } = useDisclosure();
   const [userData, setUserData] = useState<UserData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -349,25 +327,22 @@ const handleCancel = async () => {
       {/* Absolute positioned navigation buttons */}
       <IconButton
         aria-label="Go back"
-        icon={<FaArrowLeft />}
         size="lg"
         position="fixed"
         top={4}
         left={4}
         zIndex={10}
         variant="ghost"
-        colorScheme="teal"
+        colorPalette="teal"
         onClick={() => router.push("/")}
         fontSize="24px"
         _hover={{
           transform: "scale(1.1)",
           bg: "transparent"
-        }}
-      />
+        }}><FaArrowLeft /></IconButton>
       
       <Button
-        colorScheme="red"
-        leftIcon={<FaSignOutAlt />}
+        colorPalette="red"
         onClick={onOpen}
         size="sm"
         position="fixed"
@@ -376,22 +351,13 @@ const handleCancel = async () => {
         zIndex={10}
         _hover={{
           transform: "scale(1.05)"
-        }}
-      >
-        Logout
-      </Button>
+        }}><FaSignOutAlt />Logout
+              </Button>
 
       <Box maxW="md" mx="auto" py={20} px={4}>
         {/* Profile Header */}
         <Flex direction="column" align="center" mb={8}>
-          <Avatar
-            size="2xl"
-            src={userData.image}
-            name={userData.name}
-            mb={4}
-            border="4px solid"
-            borderColor="black"
-          />
+          <Avatar.Root size="2xl" mb={4} border="4px solid" borderColor="black"><Avatar.Fallback name={userData.name} /><Avatar.Image src={userData.image} /></Avatar.Root>
           <Heading size="lg" mb={2} color="black">
             {userData.name}
           </Heading>
@@ -404,10 +370,10 @@ const handleCancel = async () => {
         </Flex>
 
         {/* Profile Details */}
-        <Stack spacing={6}>
+        <Stack gap={6}>
           {/* Name Field */}
-          <FormControl>
-            <FormLabel color="black">Username</FormLabel>
+          <Field.Root>
+            <Field.Label color="black">Username</Field.Label>
             {isEditingName ? (
               <Flex>
                 <Input
@@ -419,9 +385,9 @@ const handleCancel = async () => {
                   borderColor="black"
                 />
                 <Button
-                  colorScheme="teal"
+                  colorPalette="teal"
                   onClick={handleNameUpdate}
-                  isLoading={isUpdating}
+                  loading={isUpdating}
                 >
                   Save
                 </Button>
@@ -454,34 +420,31 @@ const handleCancel = async () => {
                   borderColor="black"
                   color="black"
                   bg="gray.100"
-                  leftIcon={<FaUserEdit />}
                   _hover={{ bg: "gray.200" }}
-                  onClick={() => setIsEditingName(true)}
-                >
-                  Edit
-                </Button>
+                  onClick={() => setIsEditingName(true)}><FaUserEdit />Edit
+                                  </Button>
               </Flex>
             )}
-          </FormControl>
+          </Field.Root>
 
           {/* Email Field */}
-          <FormControl>
-            <FormLabel color="black">Email</FormLabel>
+          <Field.Root>
+            <Field.Label color="black">Email</Field.Label>
             <Input 
               value={userData.email} 
-              isReadOnly 
+              readOnly 
               bg={inputBg} 
               color="black"
               borderColor="black"
             />
-          </FormControl>
+          </Field.Root>
 
-          <FormControl>
-            <FormLabel color="black">Tier</FormLabel>
-            <HStack spacing={4} align="center">
+          <Field.Root>
+            <Field.Label color="black">Tier</Field.Label>
+            <HStack gap={4} align="center">
               <Input 
                 value={userData.tier} 
-                isReadOnly 
+                readOnly 
                 bg="white" 
                 color="black"
                 borderColor="black"
@@ -490,19 +453,17 @@ const handleCancel = async () => {
               
               <IconButton
                 aria-label="Refresh status"
-                icon={<RepeatIcon />}
-                colorScheme="blue"
+                colorPalette="blue"
                 onClick={handleRefresh}
-                isLoading={isLoading}
-              />
+                loading={isLoading}><LuRepeat /></IconButton>
             </HStack>
-          </FormControl>
+          </Field.Root>
 
           {/* Password Field */}
-          <FormControl>
-            <FormLabel color="black">Password</FormLabel>
+          <Field.Root>
+            <Field.Label color="black">Password</Field.Label>
             <Button
-              colorScheme="teal"
+              colorPalette="teal"
               variant="outline"
               borderColor="black"
               color="black"
@@ -512,7 +473,7 @@ const handleCancel = async () => {
             </Button>
             {showPasswordForm && (
               <Box mt={4} p={4} borderWidth="1px" borderRadius="md" bg={inputBg} borderColor="black">
-                <Stack spacing={4}>
+                <Stack gap={4}>
                   <InputGroup>
                     <Input
                       type={showPassword ? 'text' : 'password'}
@@ -526,11 +487,9 @@ const handleCancel = async () => {
                     <InputRightElement>
                       <IconButton
                         aria-label={showPassword ? 'Hide password' : 'Show password'}
-                        icon={showPassword ? <FaEyeSlash /> : <FaEye />}
                         variant="ghost"
                         color={iconColor}
-                        onClick={() => setShowPassword(!showPassword)}
-                      />
+                        onClick={() => setShowPassword(!showPassword)}>{showPassword ? <FaEyeSlash /> : <FaEye />}</IconButton>
                     </InputRightElement>
                   </InputGroup>
                   <Input
@@ -544,9 +503,9 @@ const handleCancel = async () => {
                   />
                   <Flex>
                     <Button
-                      colorScheme="teal"
+                      colorPalette="teal"
                       onClick={handlePasswordUpdate}
-                      isLoading={isUpdating}
+                      loading={isUpdating}
                     >
                       Save Password
                     </Button>
@@ -568,7 +527,7 @@ const handleCancel = async () => {
                 </Stack>
               </Box>
             )}
-          </FormControl>
+          </Field.Root>
 
           {userData.tier === 'Free' && (
             <Button 
@@ -576,7 +535,7 @@ const handleCancel = async () => {
               href="https://buy.stripe.com/test_7sI7sXdHu9SL8JG001"
               target="_blank"
               rel="noopener noreferrer"
-              colorScheme="green" 
+              colorPalette="green" 
               mt={4}
               w="full"
             >
@@ -585,10 +544,10 @@ const handleCancel = async () => {
           )}
           {userData.tier === 'Premium' && (
             <Button
-              colorScheme="red"
+              colorPalette="red"
               variant="outline"
               onClick={handleCancel}
-              isLoading={isCancelling}
+              loading={isCancelling}
               loadingText="Cancelling..."
               mt={2}
             >
@@ -598,24 +557,34 @@ const handleCancel = async () => {
         </Stack>
 
         {/* Logout Confirmation Modal */}
-        <Modal isOpen={isOpen} onClose={onClose}>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Confirm Logout</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
-              Are you sure you want to logout?
-            </ModalBody>
-            <ModalFooter>
-              <Button variant="ghost" mr={3} onClick={onClose}>
-                Cancel
-              </Button>
-              <Button colorScheme="red" onClick={handleLogout}>
-                Logout
-              </Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
+        <Dialog.Root open={open} onOpenChange={e => {
+          if (!e.open) {
+            onClose();
+          }
+        }}>
+          <Portal>
+
+            <Dialog.Backdrop />
+            <Dialog.Positioner>
+              <Dialog.Content>
+                <Dialog.Header>Confirm Logout</Dialog.Header>
+                <Dialog.CloseTrigger />
+                <Dialog.Body>
+                  Are you sure you want to logout?
+                </Dialog.Body>
+                <Dialog.Footer>
+                  <Button variant="ghost" mr={3} onClick={onClose}>
+                    Cancel
+                  </Button>
+                  <Button colorPalette="red" onClick={handleLogout}>
+                    Logout
+                  </Button>
+                </Dialog.Footer>
+              </Dialog.Content>
+            </Dialog.Positioner>
+
+          </Portal>
+        </Dialog.Root>
       </Box>
     </Box>
       </SessionWrapper>

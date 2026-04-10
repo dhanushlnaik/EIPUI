@@ -1,8 +1,9 @@
-'use client';
-
+"use client";
+;
 import React, { useEffect, useState } from 'react';
+import { useColorModeValue } from "./ui/color-mode";
 import axios from 'axios';
-import { Box, Flex, Text, useColorModeValue, } from '@chakra-ui/react';
+import { Steps, Box, Flex, Text } from "@chakra-ui/react";
 import { InfiniteMovingCards } from './InfiniteMovingCards';
 import { slideInFromLeft, slideInFromRight } from "@/lib/utils";
 import { motion } from 'framer-motion';

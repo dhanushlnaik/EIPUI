@@ -1,27 +1,14 @@
-'use client';
-
+"use client";
+import { useToast } from "@/components/ui/use-toast";
+;
 import React, { useEffect } from 'react';
-import { 
-  Box, 
-  useColorModeValue, 
-  Grid, 
-  VStack, 
-  Link, 
-  Text, 
-  Flex,
-  Icon,
-  Badge,
-  Heading,
-  Container,
-  HStack,
-  IconButton,
-  useToast
-} from '@chakra-ui/react';
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Grid, VStack, Link, Text, Flex, Icon, Badge, Heading, Container, HStack, IconButton } from "@chakra-ui/react";
 import { FaTwitter, FaLinkedin, FaGlobe, FaExternalLinkAlt } from 'react-icons/fa';
 import { FaXTwitter } from 'react-icons/fa6';
-import { CopyIcon } from '@chakra-ui/icons';
 import Header from './Header';
 import NextLink from 'next/link';
+import { LuCopy } from 'react-icons/lu';
 
 const TwitterTimeline: React.FC = () => {
   const scrollbarBg = useColorModeValue('gray.100', 'gray.700');
@@ -113,7 +100,7 @@ const TwitterTimeline: React.FC = () => {
 
   return (
     <Container maxW="100vw" px={0} pt={6}>
-      <VStack spacing={8} align="stretch" w="100%">
+      <VStack gap={8} align="stretch" w="100%">
         {/* Standard Header with Link */}
         <Header
           title="Latest Updates"
@@ -136,7 +123,7 @@ const TwitterTimeline: React.FC = () => {
               <Heading size="md" color={headingColor} textAlign="left">
                 Latest Tweets
               </Heading>
-              <Badge ml={2} colorScheme="blue" variant="subtle">
+              <Badge ml={2} colorPalette="blue" variant="subtle">
                 Live Feed
               </Badge>
             </Flex>
@@ -464,20 +451,20 @@ const TwitterTimeline: React.FC = () => {
             <Heading size="md" color={headingColor} textAlign="left">
               Connect With Us
             </Heading>
-            <Badge ml={2} colorScheme="green" variant="subtle">
+            <Badge ml={2} colorPalette="green" variant="subtle">
               Social
             </Badge>
           </Flex>
           
-          <VStack spacing={4} align="stretch">
+          <VStack gap={4} align="stretch">
             {socialLinks.map((social, index) => (
               <Box key={index}>
                 <Link
                   href={social.url}
-                  isExternal
                   textDecoration="none"
                   _hover={{ textDecoration: 'none' }}
-                >
+                  target='_blank'
+                  rel='noopener noreferrer'>
                   <Box
                     p={5}
                     bg={cardBg}
@@ -507,7 +494,7 @@ const TwitterTimeline: React.FC = () => {
                     
                     <Flex justify="space-between" align="center">
                       <Box flex="1">
-                        <HStack spacing={3} mb={2}>
+                        <HStack gap={3} mb={2}>
                           <Icon 
                             as={social.icon} 
                             color={social.color} 
@@ -542,17 +529,15 @@ const TwitterTimeline: React.FC = () => {
                           {social.description}
                         </Text>
                       </Box>
-                      <VStack spacing={2}>
+                      <VStack gap={2}>
                         <IconButton
                           size="sm"
-                          colorScheme="teal"
+                          colorPalette="teal"
                           aria-label="Copy link"
-                          icon={<CopyIcon />}
                           onClick={(e) => {
                             e.preventDefault();
                             handleCopyLink(social.url);
-                          }}
-                        />
+                          }}><LuCopy /></IconButton>
                         <Icon 
                           as={FaExternalLinkAlt} 
                           color={textColor} 

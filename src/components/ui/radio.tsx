@@ -1,4 +1,4 @@
-import { RadioGroup as ChakraRadioGroup } from "@chakra-ui/react"
+import { Steps, RadioGroup as ChakraRadioGroup } from "@chakra-ui/react";
 import * as React from "react"
 
 export interface RadioProps extends ChakraRadioGroup.ItemProps {

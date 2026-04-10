@@ -1,5 +1,14 @@
+/*
+ MIGRATION NOTE: The following Chakra UI hooks have been removed.
+ Please replace them with the suggested alternatives:
+
+//   - usePrefersReducedMotion: Use usehooks-ts: usePrefersReducedMotion
+
+ See: https://chakra-ui.com/docs/get-started/migration#hooks
+*/
 import React, { useState } from "react";
-import { Box, Flex, Text, Badge, Image, useColorModeValue, Icon, CloseButton, usePrefersReducedMotion } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Flex, Text, Badge, Image, Icon, CloseButton } from "@chakra-ui/react";
 import { motion } from 'framer-motion';
 import { keyframes } from "@emotion/react";
 import { FiExternalLink, FiClock, FiShield, FiTrendingUp } from "react-icons/fi";
@@ -46,47 +55,49 @@ const CloseableAdCard: React.FC = () => {
   );
 
   return (
-      <MotionBox
-      as="aside"
-      role="complementary"
-      aria-label="EtherWorld sponsor promotion"
-      position="relative"
-      overflow="visible" /* allow glow to escape */
-      bg={primaryBg}
-      borderRadius="lg"
-      borderWidth="1px"
-      borderColor={primaryBorder}
-      p={1}
-      w="100%"
-      maxW="500px"
-      minH="50px"
-      mx="auto"
-      cursor="pointer"
-      onClick={handleClick}
-      _hover={{
-        transform: "translateY(-3px) scale(1.01)",
-        boxShadow: useColorModeValue('0 8px 24px rgba(0,0,0,0.08)', '0 8px 24px rgba(0,0,0,0.4)'),
-      }}
-  boxShadow={boxShadowVal}
-  sx={{ transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)' }}
-      tabIndex={0}
-      onKeyDown={(e: React.KeyboardEvent) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          handleClick();
-        }
-      }}
-      _focusVisible={{
-        outline: "3px solid",
-        outlineColor: useColorModeValue("green.500", "green.400"),
-        outlineOffset: "2px",
-      }}
-  initial={{ scale: 1 }}
-  // Permanently reduced: no idle pulsing, keep only hover feedback
-  animate={{ scale: 1 }}
-  transition={{ duration: 0 }}
-      style={{ willChange: 'transform' }}
-    >
+    <MotionBox
+    as="aside"
+    role="complementary"
+    aria-label="EtherWorld sponsor promotion"
+    position="relative"
+    overflow="visible" /* allow glow to escape */
+    bg={primaryBg}
+    borderRadius="lg"
+    borderWidth="1px"
+    borderColor={primaryBorder}
+    p={1}
+    w="100%"
+    maxW="500px"
+    minH="50px"
+    mx="auto"
+    cursor="pointer"
+    onClick={handleClick}
+    _hover={{
+      transform: "translateY(-3px) scale(1.01)",
+      boxShadow: useColorModeValue('0 8px 24px rgba(0,0,0,0.08)', '0 8px 24px rgba(0,0,0,0.4)'),
+    }}
+boxShadow={boxShadowVal}
+css={{
+  transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+}}
+    tabIndex={0}
+    onKeyDown={(e: React.KeyboardEvent) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        handleClick();
+      }
+    }}
+    _focusVisible={{
+      outline: "3px solid",
+      outlineColor: useColorModeValue("green.500", "green.400"),
+      outlineOffset: "2px",
+    }}
+initial={{ scale: 1 }}
+// Permanently reduced: no idle pulsing, keep only hover feedback
+animate={{ scale: 1 }}
+transition={{ duration: 0 }}
+    style={{ willChange: 'transform' }}
+  >
       {/* glow removed per request */}
       {/* Close Button */}
       <CloseButton
@@ -105,9 +116,7 @@ const CloseableAdCard: React.FC = () => {
           bg: useColorModeValue("gray.100", "gray.700"),
         }}
       />
-
       {/* No sheen/gradient overlay — using solid stagnant color per theme */}
-
       {/* Ultra-Compact Information Dense Layout */}
       <Flex
         align="center"
@@ -121,28 +130,11 @@ const CloseableAdCard: React.FC = () => {
       >
         {/* Left: Micro Logo + Brand */}
         <Flex align="center" gap={1.5} minW="fit-content" flexShrink={0}>
-          <Image 
-            src={etherWorldLogo} 
-            alt="EtherWorld logo" 
-            boxSize={{ base: "14px", md: "18px" }} 
-            borderRadius="sm"
-            fallback={
-              <Box
-                bg="green.500"
-                color="white"
-                fontSize="10px"
-                fontWeight="bold"
-                w={{ base: "14px", md: "18px" }}
-                h={{ base: "14px", md: "18px" }}
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                borderRadius="sm"
-                >
-                  EW
-                </Box>
-              }
-            />
+          <Image
+            src={etherWorldLogo}
+            alt="EtherWorld logo"
+            boxSize={{ base: "14px", md: "18px" }}
+            borderRadius="sm" />
           <Text 
             fontSize={{ base: "xs", md: "sm" }}
             fontWeight="bold"
@@ -192,7 +184,7 @@ const CloseableAdCard: React.FC = () => {
         <Flex direction="column" align="flex-end" gap={0.5} minW="fit-content" flexShrink={0}>
           <Flex gap={0.5}>
             <Badge 
-              colorScheme="orange"
+              colorPalette="orange"
               variant="solid"
               fontSize={{ base: "6px", md: "7px" }}
               px={1}
@@ -204,7 +196,7 @@ const CloseableAdCard: React.FC = () => {
               LIVE
             </Badge>
             <Badge 
-              colorScheme="red"
+              colorPalette="red"
               variant="solid"
               fontSize={{ base: "6px", md: "7px" }}
               px={1}

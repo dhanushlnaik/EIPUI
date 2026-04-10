@@ -1,22 +1,8 @@
+import { Progress } from "@/components/ui/compat";
 import React, { useState, useMemo } from 'react';
-import {
-  Box,
-  Button,
-  Flex,
-  Grid,
-  Heading,
-  Text,
-  useColorModeValue,
-  Avatar,
-  Badge,
-  HStack,
-  VStack,
-  Progress,
-  ButtonGroup,
-  IconButton,
-  Tooltip,
-  Spinner,
-} from '@chakra-ui/react';
+import { useColorModeValue } from "../ui/color-mode";
+import { Steps, Box, Button, Flex, Grid, Heading, Text, Avatar, Badge, HStack, VStack, ButtonGroup, IconButton, Spinner } from "@chakra-ui/react";
+import { Tooltip } from '@/components/ui/tooltip';
 import { BsListUl, BsGraphUp } from 'react-icons/bs';
 import dynamic from 'next/dynamic';
 import CopyLink from '@/components/CopyLink';
@@ -177,22 +163,16 @@ const EditorReviewerRepoGrid: React.FC<EditorReviewerRepoGridProps> = ({
         _hover={{ transform: 'translateY(-2px)', shadow: 'md' }}
       >
         <Flex align="center" mb={4}>
-          <Avatar
-            size="md"
-            name={item.reviewer}
-            src={`https://github.com/${item.reviewer}.png?size=40`}
-            mr={3}
-          />
-          <VStack align="start" spacing={0} flex={1}>
+          <Avatar.Root size="md" mr={3}><Avatar.Fallback name={item.reviewer} /><Avatar.Image src={`https://github.com/${item.reviewer}.png?size=40`} /></Avatar.Root>
+          <VStack align="start" gap={0} flex={1}>
             <Text fontWeight="bold" fontSize="lg">
               {item.reviewer}
             </Text>
-            <Badge colorScheme="blue" fontSize="sm">
+            <Badge colorPalette="blue" fontSize="sm">
               {item.total} total reviews
             </Badge>
           </VStack>
         </Flex>
-
         {/* Time Series Line Chart */}
         {cardLineConfig && (
           <Box mb={4} p={2} bg={cardBg} borderRadius="md">
@@ -202,63 +182,71 @@ const EditorReviewerRepoGrid: React.FC<EditorReviewerRepoGridProps> = ({
             <Line {...cardLineConfig} />
           </Box>
         )}
-
-        <VStack spacing={3} align="stretch">
+        <VStack gap={3} align="stretch">
           {/* EIPs */}
           <Box>
             <Flex justify="space-between" mb={1}>
               <HStack>
-                <Badge colorScheme="blue" fontSize="xs">EIPs</Badge>
+                <Badge colorPalette="blue" fontSize="xs">EIPs</Badge>
                 <Text fontSize="sm" fontWeight="medium">{item.eips}</Text>
               </HStack>
               <Text fontSize="xs" color="gray.500">
                 {maxValue > 0 ? Math.round((item.eips / maxValue) * 100) : 0}%
               </Text>
             </Flex>
-            <Progress 
-              value={maxValue > 0 ? (item.eips / maxValue) * 100 : 0} 
-              size="sm" 
-              colorScheme="blue" 
-              borderRadius="full"
-            />
+            <Progress.Root
+              value={maxValue > 0 ? (item.eips / maxValue) * 100 : 0}
+              size="sm"
+              colorPalette="blue"
+              borderRadius="full">
+              <Progress.Track>
+                <Progress.Range />
+              </Progress.Track>
+            </Progress.Root>
           </Box>
 
           {/* ERCs */}
           <Box>
             <Flex justify="space-between" mb={1}>
               <HStack>
-                <Badge colorScheme="green" fontSize="xs">ERCs</Badge>
+                <Badge colorPalette="green" fontSize="xs">ERCs</Badge>
                 <Text fontSize="sm" fontWeight="medium">{item.ercs}</Text>
               </HStack>
               <Text fontSize="xs" color="gray.500">
                 {maxValue > 0 ? Math.round((item.ercs / maxValue) * 100) : 0}%
               </Text>
             </Flex>
-            <Progress 
-              value={maxValue > 0 ? (item.ercs / maxValue) * 100 : 0} 
-              size="sm" 
-              colorScheme="green" 
-              borderRadius="full"
-            />
+            <Progress.Root
+              value={maxValue > 0 ? (item.ercs / maxValue) * 100 : 0}
+              size="sm"
+              colorPalette="green"
+              borderRadius="full">
+              <Progress.Track>
+                <Progress.Range />
+              </Progress.Track>
+            </Progress.Root>
           </Box>
 
           {/* RIPs */}
           <Box>
             <Flex justify="space-between" mb={1}>
               <HStack>
-                <Badge colorScheme="red" fontSize="xs">RIPs</Badge>
+                <Badge colorPalette="red" fontSize="xs">RIPs</Badge>
                 <Text fontSize="sm" fontWeight="medium">{item.rips}</Text>
               </HStack>
               <Text fontSize="xs" color="gray.500">
                 {maxValue > 0 ? Math.round((item.rips / maxValue) * 100) : 0}%
               </Text>
             </Flex>
-            <Progress 
-              value={maxValue > 0 ? (item.rips / maxValue) * 100 : 0} 
-              size="sm" 
-              colorScheme="red" 
-              borderRadius="full"
-            />
+            <Progress.Root
+              value={maxValue > 0 ? (item.rips / maxValue) * 100 : 0}
+              size="sm"
+              colorPalette="red"
+              borderRadius="full">
+              <Progress.Track>
+                <Progress.Range />
+              </Progress.Track>
+            </Progress.Root>
           </Box>
         </VStack>
       </Box>
@@ -279,24 +267,20 @@ const EditorReviewerRepoGrid: React.FC<EditorReviewerRepoGridProps> = ({
             Editors Repository Distribution
             <CopyLink link="https://eipsinsight.com/EditorAnalytics#EditorsRepo" />
           </Heading>
-          <ButtonGroup size="sm" isAttached variant="outline">
-            <Tooltip label="Card View">
+          <ButtonGroup size="sm" attached variant="outline">
+            <Tooltip content="Card View">
               <IconButton
                 aria-label="Card view"
-                icon={<BsListUl />}
                 onClick={() => setEditorsViewMode('cards')}
-                colorScheme={editorsViewMode === 'cards' ? 'blue' : 'gray'}
-                variant={editorsViewMode === 'cards' ? 'solid' : 'outline'}
-              />
+                colorPalette={editorsViewMode === 'cards' ? 'blue' : 'gray'}
+                variant={editorsViewMode === 'cards' ? 'solid' : 'outline'}><BsListUl /></IconButton>
             </Tooltip>
-            <Tooltip label="Line Chart View">
+            <Tooltip content="Line Chart View">
               <IconButton
                 aria-label="Chart view"
-                icon={<BsGraphUp />}
                 onClick={() => setEditorsViewMode('chart')}
-                colorScheme={editorsViewMode === 'chart' ? 'blue' : 'gray'}
-                variant={editorsViewMode === 'chart' ? 'solid' : 'outline'}
-              />
+                colorPalette={editorsViewMode === 'chart' ? 'blue' : 'gray'}
+                variant={editorsViewMode === 'chart' ? 'solid' : 'outline'}><BsGraphUp /></IconButton>
             </Tooltip>
           </ButtonGroup>
         </Flex>
@@ -313,7 +297,7 @@ const EditorReviewerRepoGrid: React.FC<EditorReviewerRepoGridProps> = ({
             {editorsData.length > 6 && (
               <Flex justify="center">
                 <Button
-                  colorScheme="blue"
+                  colorPalette="blue"
                   variant="outline"
                   onClick={() => setShowAllEditors(!showAllEditors)}
                   size="md"
@@ -337,7 +321,6 @@ const EditorReviewerRepoGrid: React.FC<EditorReviewerRepoGridProps> = ({
           </Box>
         )}
       </Box>
-
       {/* Reviewers Section */}
       <Box>
         <Flex justify="space-between" align="center" mb={4} flexWrap="wrap" gap={2}>
@@ -350,24 +333,20 @@ const EditorReviewerRepoGrid: React.FC<EditorReviewerRepoGridProps> = ({
             Reviewers Repository Distribution
             <CopyLink link="https://eipsinsight.com/EditorAnalytics#ReviewersRepo" />
           </Heading>
-          <ButtonGroup size="sm" isAttached variant="outline">
-            <Tooltip label="Card View">
+          <ButtonGroup size="sm" attached variant="outline">
+            <Tooltip content="Card View">
               <IconButton
                 aria-label="Card view"
-                icon={<BsListUl />}
                 onClick={() => setReviewersViewMode('cards')}
-                colorScheme={reviewersViewMode === 'cards' ? 'blue' : 'gray'}
-                variant={reviewersViewMode === 'cards' ? 'solid' : 'outline'}
-              />
+                colorPalette={reviewersViewMode === 'cards' ? 'blue' : 'gray'}
+                variant={reviewersViewMode === 'cards' ? 'solid' : 'outline'}><BsListUl /></IconButton>
             </Tooltip>
-            <Tooltip label="Line Chart View">
+            <Tooltip content="Line Chart View">
               <IconButton
                 aria-label="Chart view"
-                icon={<BsGraphUp />}
                 onClick={() => setReviewersViewMode('chart')}
-                colorScheme={reviewersViewMode === 'chart' ? 'blue' : 'gray'}
-                variant={reviewersViewMode === 'chart' ? 'solid' : 'outline'}
-              />
+                colorPalette={reviewersViewMode === 'chart' ? 'blue' : 'gray'}
+                variant={reviewersViewMode === 'chart' ? 'solid' : 'outline'}><BsGraphUp /></IconButton>
             </Tooltip>
           </ButtonGroup>
         </Flex>
@@ -384,7 +363,7 @@ const EditorReviewerRepoGrid: React.FC<EditorReviewerRepoGridProps> = ({
             {reviewersData.length > 6 && (
               <Flex justify="center">
                 <Button
-                  colorScheme="blue"
+                  colorPalette="blue"
                   variant="outline"
                   onClick={() => setShowAllReviewers(!showAllReviewers)}
                   size="md"

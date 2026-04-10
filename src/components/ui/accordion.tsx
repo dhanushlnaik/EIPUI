@@ -1,20 +1,22 @@
-import { Accordion, HStack } from "@chakra-ui/react"
-import * as React from "react"
-import { LuChevronDown } from "react-icons/lu"
+import { Accordion, HStack } from "@chakra-ui/react";
+import * as React from "react";
+import { LuChevronDown } from "react-icons/lu";
 
-interface AccordionItemTriggerProps extends Accordion.ItemTriggerProps {
-  indicatorPlacement?: "start" | "end"
-}
+type AccordionItemTriggerProps = {
+  indicatorPlacement?: "start" | "end";
+  children?: React.ReactNode;
+  [key: string]: any;
+};
 
 export const AccordionItemTrigger = React.forwardRef<
   HTMLButtonElement,
   AccordionItemTriggerProps
 >(function AccordionItemTrigger(props, ref) {
-  const { children, indicatorPlacement = "end", ...rest } = props
+  const { children, indicatorPlacement = "end", ...rest } = props;
   return (
-    <Accordion.ItemTrigger {...rest} ref={ref}>
+    <Accordion.ItemTrigger {...rest} ref={ref as any}>
       {indicatorPlacement === "start" && (
-        <Accordion.ItemIndicator rotate={{ base: "-90deg", _open: "0deg" }}>
+        <Accordion.ItemIndicator>
           <LuChevronDown />
         </Accordion.ItemIndicator>
       )}
@@ -27,21 +29,25 @@ export const AccordionItemTrigger = React.forwardRef<
         </Accordion.ItemIndicator>
       )}
     </Accordion.ItemTrigger>
-  )
-})
+  );
+});
 
-interface AccordionItemContentProps extends Accordion.ItemContentProps {}
+type AccordionItemContentProps = {
+  children?: React.ReactNode;
+  [key: string]: any;
+};
 
 export const AccordionItemContent = React.forwardRef<
   HTMLDivElement,
   AccordionItemContentProps
 >(function AccordionItemContent(props, ref) {
+  const { children, ...rest } = props;
   return (
-    <Accordion.ItemContent>
-      <Accordion.ItemBody {...props} ref={ref} />
+    <Accordion.ItemContent {...rest} ref={ref as any}>
+      <Accordion.ItemBody>{children}</Accordion.ItemBody>
     </Accordion.ItemContent>
-  )
-})
+  );
+});
 
-export const AccordionRoot = Accordion.Root
-export const AccordionItem = Accordion.Item
+export const AccordionRoot = Accordion.Root;
+export const AccordionItem = Accordion.Item;

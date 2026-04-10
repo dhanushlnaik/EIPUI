@@ -1,12 +1,7 @@
 // Improved version of NetworkUpgradesChart with refined styling, fixed color mapping, and better rendering
 import React, { useState, useRef, useEffect } from 'react';
-import {
-  Box, Button, Flex, Heading, HStack, IconButton, Text, VStack, Wrap, WrapItem,
-  useColorModeValue,
-  Badge,
-  Collapse
-} from '@chakra-ui/react';
-import { AddIcon, MinusIcon, RepeatIcon, ChevronDownIcon, ChevronUpIcon, InfoIcon } from '@chakra-ui/icons';
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Button, Flex, Heading, HStack, IconButton, Text, VStack, Wrap, WrapItem, Badge, Collapsible } from "@chakra-ui/react";
 import { AxisBottom, AxisLeft } from '@visx/axis';
 import { scaleBand, scaleLinear } from '@visx/scale';
 import { Group } from '@visx/group';
@@ -14,6 +9,7 @@ import { saveAs } from 'file-saver';
 import { useRouter } from 'next/router';
 import CopyLink from './CopyLink'; // Ensure this component exists
 import DateTime from "@/components/DateTime";
+import { LuChevronDown, LuChevronUp, LuInfo, LuMinus, LuPlus, LuRepeat } from 'react-icons/lu';
 
 
 interface UpgradeData {
@@ -400,7 +396,7 @@ const upgradeRows = rawData
       eip === "NO-EIP" || eip === "CONSENSUS" ? eip : eip.replace("EIP-", "")
     );
     
-    const rows = [];
+    const rows: any[] = [];
     // Add main EIPs row
     if (processedEips.length > 0) {
       rows.push({
@@ -741,10 +737,25 @@ const NetworkUpgradesChart: React.FC = () => {
                 borderColor={useColorModeValue('gray.200', 'gray.600')}
                 width={{ base: '100%', sm: 'auto' }}
               >
-                <HStack spacing={2} justify={{ base: 'center', sm: 'flex-start' }}>
-                  <IconButton aria-label="Zoom In" icon={<AddIcon />} size="sm" onClick={() => setZoomLevel(z => Math.min(z * 1.2, 3))} variant="ghost" colorScheme="gray" />
-                  <IconButton aria-label="Zoom Out" icon={<MinusIcon />} size="sm" onClick={() => setZoomLevel(z => Math.max(z / 1.2, 0.5))} variant="ghost" colorScheme="gray" />
-                  <IconButton aria-label="Reset Zoom" icon={<RepeatIcon />} size="sm" onClick={resetZoom} variant="ghost" colorScheme="gray" />
+                <HStack gap={2} justify={{ base: 'center', sm: 'flex-start' }}>
+                  <IconButton
+                    aria-label="Zoom In"
+                    size="sm"
+                    onClick={() => setZoomLevel(z => Math.min(z * 1.2, 3))}
+                    variant="ghost"
+                    colorPalette="gray"><LuPlus /></IconButton>
+                  <IconButton
+                    aria-label="Zoom Out"
+                    size="sm"
+                    onClick={() => setZoomLevel(z => Math.max(z / 1.2, 0.5))}
+                    variant="ghost"
+                    colorPalette="gray"><LuMinus /></IconButton>
+                  <IconButton
+                    aria-label="Reset Zoom"
+                    size="sm"
+                    onClick={resetZoom}
+                    variant="ghost"
+                    colorPalette="gray"><LuRepeat /></IconButton>
                 </HStack>
               </Box>
               <Button 
@@ -770,85 +781,83 @@ const NetworkUpgradesChart: React.FC = () => {
               size={{ base: 'xs', md: 'sm' }}
               variant="ghost"
               onClick={() => setShowLayerInfo(!showLayerInfo)}
-              rightIcon={showLayerInfo ? <ChevronUpIcon /> : <ChevronDownIcon />}
-              leftIcon={<InfoIcon />}
-              colorScheme="blue"
+              colorPalette="blue"
               fontWeight="500"
-              fontSize={{ base: 'xs', md: 'sm' }}
-            >
-              {showLayerInfo ? 'Hide' : 'Show'} Layer Information
-            </Button>
+              fontSize={{ base: 'xs', md: 'sm' }}><LuInfo />{showLayerInfo ? 'Hide' : 'Show'}Layer Information
+                          {showLayerInfo ? <LuChevronUp /> : <LuChevronDown />}</Button>
             
-            <Collapse in={showLayerInfo} animateOpacity>
-              <Box
-                mt={3}
-                p={{ base: 3, md: 5 }}
-                bg={useColorModeValue('blue.50', 'gray.700')}
-                borderRadius="lg"
-                border="1px solid"
-                borderColor={useColorModeValue('blue.200', 'blue.600')}
-                boxShadow="sm"
-              >
-                <VStack align="start" spacing={{ base: 3, md: 4 }}>
-                  <Box>
-                    <Heading size={{ base: 'xs', md: 'sm' }} mb={2} color={useColorModeValue('gray.900', 'white')}>
-                      Understanding Layer Badges
-                    </Heading>
-                    <Text fontSize={{ base: 'xs', md: 'sm' }} color={useColorModeValue('gray.600', 'gray.300')} lineHeight="1.7">
-                      Network upgrades are categorized by the layer of the Ethereum protocol they modify:
-                    </Text>
-                  </Box>
-
-                  <VStack spacing={{ base: 3, md: 4 }} align="stretch" width="100%">
+            <Collapsible.Root open={showLayerInfo}>
+              <Collapsible.Content>
+                <Box
+                  mt={3}
+                  p={{ base: 3, md: 5 }}
+                  bg={useColorModeValue('blue.50', 'gray.700')}
+                  borderRadius="lg"
+                  border="1px solid"
+                  borderColor={useColorModeValue('blue.200', 'blue.600')}
+                  boxShadow="sm"
+                >
+                  <VStack align="start" gap={{ base: 3, md: 4 }}>
                     <Box>
-                      <HStack mb={2}>
-                        <Badge colorScheme="teal" fontSize={{ base: 'xs', md: 'sm' }} px={2} py={1}>⚙️ Execution Layer</Badge>
-                      </HStack>
+                      <Heading size={{ base: 'xs', md: 'sm' }} mb={2} color={useColorModeValue('gray.900', 'white')}>
+                        Understanding Layer Badges
+                      </Heading>
                       <Text fontSize={{ base: 'xs', md: 'sm' }} color={useColorModeValue('gray.600', 'gray.300')} lineHeight="1.7">
-                        Protocol changes implemented through Ethereum Improvement Proposals (EIPs). These affect transaction execution, gas mechanics, smart contracts, and the Ethereum Virtual Machine (EVM).
-                      </Text>
-                      <Text fontSize="2xs" color={useColorModeValue('gray.500', 'gray.400')} mt={1} fontStyle="italic">
-                        Examples: London (EIP-1559), Shanghai (EIP-3651, EIP-3855)
+                        Network upgrades are categorized by the layer of the Ethereum protocol they modify:
                       </Text>
                     </Box>
 
-                    <Box>
-                      <HStack mb={2}>
-                        <Badge colorScheme="purple" fontSize={{ base: 'xs', md: 'sm' }} px={2} py={1}>⛓️ Consensus Layer</Badge>
-                      </HStack>
-                      <Text fontSize={{ base: 'xs', md: 'sm' }} color={useColorModeValue('gray.600', 'gray.300')} lineHeight="1.7">
-                        Beacon Chain upgrades that don't have formal EIP numbers. These affect proof-of-stake consensus, validators, attestations, and the beacon chain protocol. The consensus layer has had 6 upgrades total.
+                    <VStack gap={{ base: 3, md: 4 }} align="stretch" width="100%">
+                      <Box>
+                        <HStack mb={2}>
+                          <Badge colorPalette="teal" fontSize={{ base: 'xs', md: 'sm' }} px={2} py={1}>⚙️ Execution Layer</Badge>
+                        </HStack>
+                        <Text fontSize={{ base: 'xs', md: 'sm' }} color={useColorModeValue('gray.600', 'gray.300')} lineHeight="1.7">
+                          Protocol changes implemented through Ethereum Improvement Proposals (EIPs). These affect transaction execution, gas mechanics, smart contracts, and the Ethereum Virtual Machine (EVM).
+                        </Text>
+                        <Text fontSize="2xs" color={useColorModeValue('gray.500', 'gray.400')} mt={1} fontStyle="italic">
+                          Examples: London (EIP-1559), Shanghai (EIP-3651, EIP-3855)
+                        </Text>
+                      </Box>
+
+                      <Box>
+                        <HStack mb={2}>
+                          <Badge colorPalette="purple" fontSize={{ base: 'xs', md: 'sm' }} px={2} py={1}>⛓️ Consensus Layer</Badge>
+                        </HStack>
+                        <Text fontSize={{ base: 'xs', md: 'sm' }} color={useColorModeValue('gray.600', 'gray.300')} lineHeight="1.7">
+                          Beacon Chain upgrades that don't have formal EIP numbers. These affect proof-of-stake consensus, validators, attestations, and the beacon chain protocol. The consensus layer has had 6 upgrades total.
+                        </Text>
+                        <Text fontSize="2xs" color={useColorModeValue('gray.500', 'gray.400')} mt={1} fontStyle="italic">
+                          All 6 upgrades: Altair, Bellatrix, Capella, Deneb, Electra, Fulu
+                        </Text>
+                      </Box>
+                    </VStack>
+
+                    <Box 
+                      bg={useColorModeValue('yellow.50', 'gray.600')} 
+                      p={{ base: 2, md: 3 }} 
+                      borderRadius="md"
+                      border="1px solid"
+                      borderColor={useColorModeValue('yellow.200', 'yellow.700')}
+                    >
+                      <Text fontSize={{ base: '2xs', md: 'xs' }} color={useColorModeValue('gray.700', 'gray.200')} lineHeight="1.6" mb={2}>
+                        <strong>Evolution of Ethereum Upgrades:</strong>
                       </Text>
-                      <Text fontSize="2xs" color={useColorModeValue('gray.500', 'gray.400')} mt={1} fontStyle="italic">
-                        All 6 upgrades: Altair, Bellatrix, Capella, Deneb, Electra, Fulu
+                      <Text fontSize={{ base: '2xs', md: 'xs' }} color={useColorModeValue('gray.700', 'gray.200')} lineHeight="1.6">
+                        • <strong>Pre-Merge (2021-2022):</strong> Standalone consensus upgrades — <strong>Altair</strong> (Oct 2021, first Beacon Chain upgrade) and <strong>Bellatrix</strong> (Sept 2022, Merge preparation)
+                      </Text>
+                      <Text fontSize={{ base: '2xs', md: 'xs' }} color={useColorModeValue('gray.700', 'gray.200')} lineHeight="1.6" mt={1}>
+                        • <strong>Post-Merge (2023+):</strong> Coordinated paired upgrades affecting both layers simultaneously:
+                        <br />  - <strong>Shanghai/Capella</strong> ("Shapella") — Apr 2023
+                        <br />  - <strong>Cancun/Deneb</strong> ("Dencun") — Mar 2024
+                        <br />  - <strong>Prague/Electra</strong> ("Pectra") — May 2025
+                        <br />  - <strong>Osaka/Fulu</strong> ("Fusaka") — Dec 2025
                       </Text>
                     </Box>
                   </VStack>
-
-                  <Box 
-                    bg={useColorModeValue('yellow.50', 'gray.600')} 
-                    p={{ base: 2, md: 3 }} 
-                    borderRadius="md"
-                    border="1px solid"
-                    borderColor={useColorModeValue('yellow.200', 'yellow.700')}
-                  >
-                    <Text fontSize={{ base: '2xs', md: 'xs' }} color={useColorModeValue('gray.700', 'gray.200')} lineHeight="1.6" mb={2}>
-                      <strong>Evolution of Ethereum Upgrades:</strong>
-                    </Text>
-                    <Text fontSize={{ base: '2xs', md: 'xs' }} color={useColorModeValue('gray.700', 'gray.200')} lineHeight="1.6">
-                      • <strong>Pre-Merge (2021-2022):</strong> Standalone consensus upgrades — <strong>Altair</strong> (Oct 2021, first Beacon Chain upgrade) and <strong>Bellatrix</strong> (Sept 2022, Merge preparation)
-                    </Text>
-                    <Text fontSize={{ base: '2xs', md: 'xs' }} color={useColorModeValue('gray.700', 'gray.200')} lineHeight="1.6" mt={1}>
-                      • <strong>Post-Merge (2023+):</strong> Coordinated paired upgrades affecting both layers simultaneously:
-                      <br />  - <strong>Shanghai/Capella</strong> ("Shapella") — Apr 2023
-                      <br />  - <strong>Cancun/Deneb</strong> ("Dencun") — Mar 2024
-                      <br />  - <strong>Prague/Electra</strong> ("Pectra") — May 2025
-                      <br />  - <strong>Osaka/Fulu</strong> ("Fusaka") — Dec 2025
-                    </Text>
-                  </Box>
-                </VStack>
-              </Box>
-            </Collapse>
+                </Box>
+              </Collapsible.Content>
+            </Collapsible.Root>
           </Box>
         </Box>
 
@@ -1189,9 +1198,9 @@ const NetworkUpgradesChart: React.FC = () => {
             maxHeight="280px"
             overflow="auto"
           >
-            <VStack align="start" spacing={1} width="100%">
+            <VStack align="start" gap={1} width="100%">
               {/* EIP Badge and Layer - Compact */}
-              <HStack spacing={1} align="center" wrap="wrap">
+              <HStack gap={1} align="center" wrap="wrap">
                 <Box
                   bg={isRemoved ? "red.500" : (hoveredData.eip === "CONSENSUS" ? "purple.500" : hoveredData.eip === "NO-EIP" ? "orange.500" : "teal.500")}
                   color="white"
@@ -1205,7 +1214,7 @@ const NetworkUpgradesChart: React.FC = () => {
                 </Box>
                 {currentUpgradeData?.layer && (
                   <Badge
-                    colorScheme={currentUpgradeData.layer === "consensus" ? "purple" : "blue"}
+                    colorPalette={currentUpgradeData.layer === "consensus" ? "purple" : "blue"}
                     fontSize="2xs"
                     px={1.5}
                     py={0.5}
@@ -1216,7 +1225,7 @@ const NetworkUpgradesChart: React.FC = () => {
                 )}
                 {eipInfo && (
                   <Badge
-                    colorScheme="green"
+                    colorPalette="green"
                     fontSize="2xs"
                     px={1.5}
                     py={0.5}
@@ -1242,7 +1251,7 @@ const NetworkUpgradesChart: React.FC = () => {
                     fontWeight="600"
                     color={useColorModeValue('gray.900', 'white')}
                     lineHeight="1.2"
-                    noOfLines={2}
+                    lineClamp={2}
                   >
                     {eipInfo.title}
                   </Text>
@@ -1251,8 +1260,8 @@ const NetworkUpgradesChart: React.FC = () => {
               
               {/* Meta EIP Badge - Show after title */}
               {isMetaEIP && (
-                <HStack spacing={1} fontSize="2xs">
-                  <Badge colorScheme="purple" fontSize="2xs" px={1.5} py={0.5}>📋 Hardfork Meta EIP</Badge>
+                <HStack gap={1} fontSize="2xs">
+                  <Badge colorPalette="purple" fontSize="2xs" px={1.5} py={0.5}>📋 Hardfork Meta EIP</Badge>
                   <Text color={useColorModeValue('gray.600', 'gray.400')}>Documentation & coordination</Text>
                 </HStack>
               )}
@@ -1273,7 +1282,7 @@ const NetworkUpgradesChart: React.FC = () => {
                     color={useColorModeValue('gray.600', 'gray.300')}
                     lineHeight="1.2"
                     mt={0.5}
-                    noOfLines={2}
+                    lineClamp={2}
                   >
                     {upgradeDescriptions[pairedUpgradeNames[hoveredData.date] || hoveredData.upgrade] || upgradeDescriptions[hoveredData.upgrade]}
                   </Text>
@@ -1287,8 +1296,8 @@ const NetworkUpgradesChart: React.FC = () => {
                 borderTop="1px solid"
                 borderColor={useColorModeValue('gray.200', 'gray.600')}
               >
-                <HStack spacing={2} wrap="wrap" fontSize="2xs">
-                  <HStack spacing={0.5}>
+                <HStack gap={2} wrap="wrap" fontSize="2xs">
+                  <HStack gap={0.5}>
                     <Text fontWeight="600" color={useColorModeValue('gray.700', 'gray.300')}>📅</Text>
                     <Text color={useColorModeValue('gray.600', 'gray.400')}>
                       {new Date(hoveredData.date).toLocaleDateString('en-US', { 
@@ -1300,7 +1309,7 @@ const NetworkUpgradesChart: React.FC = () => {
                   </HStack>
                   
                   {currentUpgradeData?.blockNumber && (
-                    <HStack spacing={0.5}>
+                    <HStack gap={0.5}>
                       <Text fontWeight="600" color={useColorModeValue('gray.700', 'gray.300')}>🧱</Text>
                       <Text color={useColorModeValue('gray.600', 'gray.400')}>
                         {currentUpgradeData.blockNumber.toLocaleString()}
@@ -1309,7 +1318,7 @@ const NetworkUpgradesChart: React.FC = () => {
                   )}
                   
                   {currentUpgradeData?.forkEpoch && (
-                    <HStack spacing={0.5}>
+                    <HStack gap={0.5}>
                       <Text fontWeight="600" color={useColorModeValue('gray.700', 'gray.300')}>🔱</Text>
                       <Text color={useColorModeValue('gray.600', 'gray.400')}>
                         {currentUpgradeData.forkEpoch.toLocaleString()}
@@ -1317,7 +1326,7 @@ const NetworkUpgradesChart: React.FC = () => {
                     </HStack>
                   )}
                   
-                  <HStack spacing={0.5}>
+                  <HStack gap={0.5}>
                     <Text fontWeight="600" color={useColorModeValue('gray.700', 'gray.300')}>📊</Text>
                     <Text color={useColorModeValue('gray.600', 'gray.400')}>
                       {coreEipsCount} Core
@@ -1334,7 +1343,7 @@ const NetworkUpgradesChart: React.FC = () => {
                     borderTop="1px solid"
                     borderColor={useColorModeValue('gray.200', 'gray.600')}
                   >
-                    <HStack spacing={1} mb={1}>
+                    <HStack gap={1} mb={1}>
                       <Text fontWeight="600" color={useColorModeValue('gray.700', 'gray.300')} fontSize="2xs">
                         Other EIPs
                       </Text>
@@ -1345,9 +1354,9 @@ const NetworkUpgradesChart: React.FC = () => {
                     <Text fontSize="2xs" color={useColorModeValue('gray.600', 'gray.400')} lineHeight="1.4">
                       ({Object.keys(otherEipsByCategory).join(', ')})
                     </Text>
-                    <VStack align="start" spacing={0.5} mt={1}>
+                    <VStack align="start" gap={0.5} mt={1}>
                       {Object.entries(otherEipsByCategory).map(([category, eipNumbers]) => (
-                        <HStack key={category} spacing={1}>
+                        <HStack key={category} gap={1}>
                           <Text fontSize="2xs" fontWeight="600" color={useColorModeValue('gray.700', 'gray.300')}>
                             {category}:
                           </Text>

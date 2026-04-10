@@ -1,12 +1,5 @@
-import {
-    Box,
-    Text,
-    useColorModeValue,
-    Wrap,
-    WrapItem,
-    Badge,
-    Link,
-} from "@chakra-ui/react";
+import { Steps, Box, Text, Wrap, WrapItem, Badge, Link } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
 import React, { useEffect, useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { CCardBody, CSmartTable } from "@coreui/react-pro";
@@ -194,7 +187,7 @@ const StatusTable: React.FC<AreaCProps> = ({ cat, dataset, status }) => {
                                                 <Link href={`/${item.repo === 'erc' ? "ercs/erc" : item.repo === 'rip' ? "rips/rip" : "eips/eip"}-${item.eip}`}>
                                                     <Wrap>
                                                         <WrapItem>
-                                                            <Badge colorScheme={getStatusColor(item.status)}>
+                                                            <Badge colorPalette={getStatusColor(item.status)}>
                                                                 {item["#"]}
                                                             </Badge>
                                                         </WrapItem>
@@ -207,7 +200,7 @@ const StatusTable: React.FC<AreaCProps> = ({ cat, dataset, status }) => {
                                                 <Link href={`/${item.repo === 'erc' ? "ercs/erc" : item.repo === 'rip' ? "rips/rip" : "eips/eip"}-${item.eip}`}>
                                                     <Wrap>
                                                         <WrapItem>
-                                                            <Badge colorScheme={getStatusColor(item.status)}>
+                                                            <Badge colorPalette={getStatusColor(item.status)}>
                                                                 {item.eip}
                                                             </Badge>
                                                         </WrapItem>
@@ -291,7 +284,7 @@ const StatusTable: React.FC<AreaCProps> = ({ cat, dataset, status }) => {
                                             <td key={item.eip} style={{ backgroundColor: isDarkMode ? '#2D3748' : '#F7FAFC' }}>
                                                 <Wrap>
                                                     <WrapItem>
-                                                        <Badge colorScheme={getStatusColor(item.status)}>
+                                                        <Badge colorPalette={getStatusColor(item.status)}>
                                                             {item.status}
                                                         </Badge>
                                                     </WrapItem>

@@ -1,8 +1,7 @@
 "use client";
-
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { Box, Spinner, Flex } from '@chakra-ui/react';
+import { Steps, Box, Spinner, Flex } from "@chakra-ui/react";
 
 const AdminRedirect: React.FC = () => {
   const router = useRouter();
@@ -36,7 +35,7 @@ const AdminRedirect: React.FC = () => {
   return (
     <Flex minH="100vh" align="center" justify="center">
       <Box textAlign="center">
-        <Spinner size="xl" color="blue.500" thickness="4px" />
+        <Spinner size="xl" color="blue.500" borderWidth="4px" />
       </Box>
     </Flex>
   );

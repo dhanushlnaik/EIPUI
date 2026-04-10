@@ -1,4 +1,5 @@
-// "use client";
+"use client";
+// 
 // import { useState } from "react";
 
 // interface SubscribeFormProps {
@@ -89,7 +90,7 @@
 // }
 
 
-"use client";
+
 import { useState, useEffect } from "react";
 import { signIn, useSession } from "next-auth/react";
 

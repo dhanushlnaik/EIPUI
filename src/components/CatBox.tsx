@@ -1,5 +1,14 @@
 
-import { Box, Link, Text, useColorModeValue, useTheme } from "@chakra-ui/react";
+/*
+ MIGRATION NOTE: The following Chakra UI hooks have been removed.
+ Please replace them with the suggested alternatives:
+
+//   - useTheme: Use Import from system or use useChakraContext
+
+ See: https://chakra-ui.com/docs/get-started/migration#hooks
+*/
+import { Steps, Box, Link, Text } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
 import React from "react";
 import FlexBetween from "./FlexBetween";
 import { motion } from 'framer-motion';
@@ -22,7 +31,6 @@ const CatBox: React.FC<CatBoxProps> = ({
   icon,
   url, percent,
 }) => {
-  const theme = useTheme();
   const bg = useColorModeValue("#f6f6f7", "#171923");
   const router = useRouter();
   const getBgColor = (title: string) => {

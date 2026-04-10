@@ -1,6 +1,7 @@
-import { Box, Text, VStack, useColorModeValue } from '@chakra-ui/react';
+import { Steps, Box, Text, VStack } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
 import React from 'react';
-import { keyframes } from '@chakra-ui/system';
+import { keyframes } from '@emotion/react';
 
 interface SlotDetailsProps {
   epochNumber: number;
@@ -70,16 +71,15 @@ export const SlotDetails: React.FC<SlotDetailsProps> = ({
         bottom={0}
         style={shinyStyle}
       />
-
       {/* Content */}
-      <VStack align="center" spacing={4} color={textColor}>
+      <VStack align="center" gap={4} color={textColor}>
         {/* Centered Title */}
         <Text fontSize="2xl" fontWeight="bold" textAlign="center">
           Slot Details
         </Text>
 
         {/* Details - One per row */}
-        <VStack align="start" spacing={3} width="100%">
+        <VStack align="start" gap={3} width="100%">
           <Box>
             <Text fontWeight="semibold" fontSize="lg">Epoch Number: {epochNumber}</Text>
             {/* <Text fontSize="lg">{epochNumber}</Text> */}

@@ -1,13 +1,5 @@
-// // // // // import {
-// // // // //   Box,
-// // // // //   Text,
-// // // // //   useColorModeValue,
-// // // // //   Wrap,
-// // // // //   WrapItem,
-// // // // //   Badge,
-// // // // //   Link,
-
-// // // // // } from "@chakra-ui/react";
+import { useToast } from "@/components/ui/use-toast";
+// // // // // import { // // // // //   Box, // // // // //   Text, // // // // //   useColorModeValue, // // // // //   Wrap, // // // // //   WrapItem, // // // // //   Badge, // // // // //   Link, // // // // // } from "@chakra-ui/react";
 // // // // // import React, { useEffect, useState, useMemo } from "react";
 // // // // // import { motion } from "framer-motion";
 // // // // // import { DownloadIcon } from "@chakra-ui/icons";
@@ -401,20 +393,7 @@
 // // // // // export default CatTable;
 
 
-// // // // import {
-// // // //   Box,
-// // // //   Text,
-// // // //   useColorModeValue,
-// // // //   Badge,
-// // // //   Link,
-// // // //   VStack,
-// // // //   HStack,
-// // // //   SimpleGrid,
-// // // //   Wrap,
-// // // //   WrapItem,
-// // // //   Divider,
-// // // //   Icon,
-// // // // } from "@chakra-ui/react";
+// // // // import { // // // //   Box, // // // //   Text, // // // //   useColorModeValue, // // // //   Badge, // // // //   Link, // // // //   VStack, // // // //   HStack, // // // //   SimpleGrid, // // // //   Wrap, // // // //   WrapItem, // // // //   Divider, // // // //   Icon, // // // // } from "@chakra-ui/react";
 // // // // import React, { useEffect, useState } from "react";
 // // // // import { motion } from "framer-motion";
 // // // // import { FaRegClock } from "react-icons/fa";
@@ -596,20 +575,7 @@
 
 // // // // export default CatTable;
 
-// // // import {
-// // //   Box,
-// // //   Text,
-// // //   useColorModeValue,
-// // //   Badge,
-// // //   Link,
-// // //   VStack,
-// // //   HStack,
-// // //   Wrap,
-// // //   WrapItem,
-// // //   Icon,
-// // //   Button,
-// // //   SimpleGrid,
-// // // } from "@chakra-ui/react";
+// // // import { // // //   Box, // // //   Text, // // //   useColorModeValue, // // //   Badge, // // //   Link, // // //   VStack, // // //   HStack, // // //   Wrap, // // //   WrapItem, // // //   Icon, // // //   Button, // // //   SimpleGrid, // // // } from "@chakra-ui/react";
 // // // import React, { useEffect, useState } from "react";
 // // // import { motion } from "framer-motion";
 // // // import { FaRegClock } from "react-icons/fa";
@@ -806,19 +772,7 @@
 
 // // // export default CatTable;
 
-// // import {
-// //   Box,
-// //   Text,
-// //   useColorModeValue,
-// //   Badge,
-// //   Link,
-// //   VStack,
-// //   HStack,
-// //   Wrap,
-// //   WrapItem,
-// //   Icon,
-// //   Button,
-// // } from "@chakra-ui/react";
+// // import { // //   Box, // //   Text, // //   useColorModeValue, // //   Badge, // //   Link, // //   VStack, // //   HStack, // //   Wrap, // //   WrapItem, // //   Icon, // //   Button, // // } from "@chakra-ui/react";
 // // import React, { useEffect, useState } from "react";
 // // import { motion } from "framer-motion";
 // // import { FaRegClock } from "react-icons/fa";
@@ -998,19 +952,7 @@
 
 // // export default CatTable;
 
-// import {
-//   Box,
-//   Text,
-//   useColorModeValue,
-//   Badge,
-//   Link,
-//   VStack,
-//   HStack,
-//   Wrap,
-//   WrapItem,
-//   Icon,
-//   Button,
-// } from "@chakra-ui/react";
+// import { //   Box, //   Text, //   useColorModeValue, //   Badge, //   Link, //   VStack, //   HStack, //   Wrap, //   WrapItem, //   Icon, //   Button, // } from "@chakra-ui/react";
 // import React, { useState } from "react";
 // import { motion } from "framer-motion";
 // import { FaRegClock } from "react-icons/fa";
@@ -1196,21 +1138,8 @@
 
 // export default CatTable;
 
-import {
-  Box,
-  Text,
-  useColorModeValue,
-  Badge,
-  Link,
-  VStack,
-  HStack,
-  Wrap,
-  WrapItem,
-  Icon,
-  useToast,
-  Button,
-  Stack
-} from "@chakra-ui/react";
+import { Steps, Box, Text, Badge, Link, VStack, HStack, Wrap, WrapItem, Icon, Button, Stack } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
 import React from "react";
 import { motion } from "framer-motion";
 import { FaRegClock } from "react-icons/fa";
@@ -1376,20 +1305,22 @@ const CatTable: React.FC<AreaCProps> = ({ cat, dataset, status }) => {
             maxH="500px"
             overflowY="auto"
             pr={2}
-            sx={{
-              "&::-webkit-scrollbar": {
+            css={{
+              '& &::-webkit-scrollbar': {
                 width: "6px",
               },
-              "&::-webkit-scrollbar-thumb": {
+
+              '& &::-webkit-scrollbar-thumb': {
                 background: useColorModeValue("#cbd5e0", "#4A5568"),
                 borderRadius: "12px",
               },
-              "&::-webkit-scrollbar-track": {
+
+              '& &::-webkit-scrollbar-track': {
                 background: "transparent",
-              },
+              }
             }}
           >
-            <VStack spacing={4} align="stretch">
+            <VStack gap={4} align="stretch">
               {filteredData.map((item, idx) => (
                 <Box
                   key={idx}
@@ -1400,19 +1331,19 @@ const CatTable: React.FC<AreaCProps> = ({ cat, dataset, status }) => {
                   _hover={{ boxShadow: "md" }}
                 >
                   <HStack justify="space-between" wrap="wrap">
-                    <HStack spacing={2} wrap="wrap">
-                      <Badge colorScheme="blue" px={2} py={1} borderRadius="full">
+                    <HStack gap={2} wrap="wrap">
+                      <Badge colorPalette="blue" px={2} py={1} borderRadius="full">
                         eip-{item.eip}
                       </Badge>
-                      <Badge colorScheme={getColorByType(item.type)} borderRadius="full" fontSize="2xs">
+                      <Badge colorPalette={getColorByType(item.type)} borderRadius="full" fontSize="2xs">
                         {item.type}
                       </Badge>
-                      <Badge colorScheme={getColorByType(item.category)} variant="subtle" borderRadius="full" fontSize="2xs">
+                      <Badge colorPalette={getColorByType(item.category)} variant="subtle" borderRadius="full" fontSize="2xs">
                         {item.category}
                       </Badge>
                     </HStack>
 
-                    <HStack spacing={2} align="center">
+                    <HStack gap={2} align="center">
                       <Icon as={FaRegClock} fontSize="sm" />
                       <Text fontSize="xs" color="gray.500">
                         {item.created?.split("T")[0]}
@@ -1436,7 +1367,7 @@ const CatTable: React.FC<AreaCProps> = ({ cat, dataset, status }) => {
                     <Text fontSize="xs" fontWeight="bold" color="gray.500" mr={2}>
                       By:
                     </Text>
-                    <Wrap spacing={1}>
+                    <Wrap gap={1}>
                       {factorAuthor(item.author).map((a, i) => (
                         <WrapItem key={i}>
                           <Link

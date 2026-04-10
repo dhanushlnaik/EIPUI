@@ -1,15 +1,15 @@
 import React from 'react'
 import AllLayout from "@/components/Layout";
-import { Box, Button } from '@chakra-ui/react'
+import { Steps, Box, Button, Icon } from '@chakra-ui/react';
 import FlexBetween from '@/components/FlexBetween'
 import Header from '@/components/Header'
-import { DownloadIcon } from '@chakra-ui/icons'
 import TableCatStat from '@/components/TableCatStat'
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion';
 import LoaderComponent from '@/components/Loader';
 import { usePathname } from 'next/navigation';
 import axios from 'axios';
+import { LuDownload } from 'react-icons/lu';
 
 const StatTab = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -39,7 +39,7 @@ const StatTab = () => {
             <FlexBetween>
               <Header title={pathname[2]} subtitle={pathname[3]} description={""} />
               <Box>
-                <Button colorScheme="blue" variant="outline" fontSize={'14px'} fontWeight={'bold'} 
+                <Button colorPalette="blue" variant="outline" fontSize={'14px'} fontWeight={'bold'} 
                 onClick={async () => {
                   try {
                     await axios.post("/api/DownloadCounter");
@@ -48,7 +48,7 @@ const StatTab = () => {
                   }
                 }}
                 padding={'10px 20px'}>
-                  <DownloadIcon marginEnd={'1.5'} />
+                  <Icon as={LuDownload} marginEnd={'1.5'} />
                   Download Reports
                 </Button>
               </Box>
@@ -60,7 +60,7 @@ const StatTab = () => {
         <div>Invalid URL</div>
       )}
     </AllLayout>
-  )
+  );
 }
 
 export default StatTab

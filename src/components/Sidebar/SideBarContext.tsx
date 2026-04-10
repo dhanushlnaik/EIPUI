@@ -1,4 +1,5 @@
-// // // 'use client';
+"use client";
+// // // 
 // // // import React, { createContext, useContext, useState } from 'react';
 
 // // // export interface SidebarItem {
@@ -34,7 +35,7 @@
 // // //   );
 // // // };
 
-// // // // // 'use client';
+// // // // // 
 
 // // // // // import React, { createContext, useContext, useState, useMemo } from 'react';
 // // // // // import { sidebarConfig } from './slidebarConfig';   // ← your existing file
@@ -113,7 +114,7 @@
 
 
 // // // // // SideBarContext.tsx
-// // // // 'use client';
+// // // // 
 // // // // import React, { createContext, useContext, useState, useMemo } from 'react';
 // // // // import { sidebarConfig } from './slidebarConfig';
 
@@ -181,7 +182,7 @@
 // // // //   return ctx;
 // // // // };
 
-// // // 'use client';
+// // // 
 // // // import React, { createContext, useContext, useState, useMemo } from 'react';
 // // // import { sidebarConfig } from './slidebarConfig';
 
@@ -286,7 +287,7 @@
 // // // };
 
 // // // components/Sidebar/SideBarContext.tsx
-// // 'use client';
+// // 
 // // import React, { createContext, useContext, useState, useMemo } from 'react';
 // // import { sidebarConfig } from './slidebarConfig';
 
@@ -382,7 +383,7 @@
 // // };
 
 // // components/Sidebar/SideBarContext.tsx
-// 'use client';
+// 
 // import React, { createContext, useContext, useState, useMemo } from 'react';
 // import { sidebarConfig } from './slidebarConfig';
 
@@ -474,7 +475,7 @@
 //   return ctx;
 // };
 
-'use client';
+
 
 import React, { createContext, useContext, useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';

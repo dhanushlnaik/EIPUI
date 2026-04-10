@@ -1,41 +1,12 @@
 "use client";
+import { Stat } from "@/components/ui/compat";
 
+import { Thead, Tbody, Tr, Th, Td } from "@/components/ui/compat";
+;
 import React, { useState, useEffect } from 'react';
-import {
-  Box,
-  Container,
-  Heading,
-  Text,
-  VStack,
-  HStack,
-  Stat,
-  StatLabel,
-  StatNumber,
-  StatHelpText,
-  Table,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
-  Badge,
-  Button,
-  useColorModeValue,
-  Spinner,
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  AlertDescription,
-  SimpleGrid,
-  Card,
-  CardHeader,
-  CardBody,
-  IconButton,
-  Tooltip,
-  Flex,
-  Select,
-  Input
-} from '@chakra-ui/react';
+import { useColorModeValue } from "../../components/ui/color-mode";
+import { Steps, Box, Container, Heading, Text, VStack, HStack, Table, Badge, Button, Spinner, Alert, SimpleGrid, Card, IconButton, Flex, NativeSelect, Input } from "@chakra-ui/react";
+import { Tooltip } from '@/components/ui/tooltip';
 import { 
   FaThumbsUp, 
   FaThumbsDown, 
@@ -251,7 +222,7 @@ const FeedbackDashboard = () => {
     return (
       <AllLayout>
         <Container maxW="container.xl" py={8}>
-          <VStack spacing={8}>
+          <VStack gap={8}>
             <Heading>📊 Combined Feedback Dashboard</Heading>
             <Spinner size="xl" />
           </VStack>
@@ -264,11 +235,11 @@ const FeedbackDashboard = () => {
     return (
       <AllLayout>
         <Container maxW="container.xl" py={8}>
-          <Alert status="error">
-            <AlertIcon />
-            <AlertTitle>Error loading feedback data:</AlertTitle>
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
+          <Alert.Root status="error">
+            <Alert.Indicator />
+            <Alert.Title>Error loading feedback data:</Alert.Title>
+            <Alert.Description>{error}</Alert.Description>
+          </Alert.Root>
         </Container>
       </AllLayout>
     );
@@ -277,17 +248,16 @@ const FeedbackDashboard = () => {
   return (
     <AllLayout>
       <Container maxW="container.xl" py={8}>
-        <VStack spacing={6}>
+        <VStack gap={6}>
           {/* Header */}
           <Flex justify="space-between" align="center" width="100%">
-            <VStack align="start" spacing={1}>
+            <VStack align="start" gap={1}>
               <Heading size="lg">📊 Enhanced Feedback Dashboard</Heading>
               <Text color="gray.600">Monitor user feedback and engagement (Simple + Enhanced)</Text>
             </VStack>
             <HStack>
-              <Tooltip label="Test Discord Webhook">
+              <Tooltip content="Test Discord Webhook">
                 <Button
-                  leftIcon={<FaCalendarAlt />}
                   onClick={async () => {
                     try {
                       const res = await fetch('/api/test-discord-webhook', { method: 'POST' });
@@ -297,137 +267,137 @@ const FeedbackDashboard = () => {
                       alert('❌ Test failed: Network error');
                     }
                   }}
-                  colorScheme="purple"
+                  colorPalette="purple"
                   size="sm"
-                  variant="outline"
-                >
-                  Test Discord
-                </Button>
+                  variant="outline"><FaCalendarAlt />Test Discord
+                                  </Button>
               </Tooltip>
-              <Tooltip label="Export to CSV">
+              <Tooltip content="Export to CSV">
                 <IconButton
                   aria-label="Export"
-                  icon={<FaDownload />}
                   onClick={exportToCSV}
-                  colorScheme="blue"
-                  variant="outline"
-                />
+                  colorPalette="blue"
+                  variant="outline"><FaDownload /></IconButton>
               </Tooltip>
-              <Tooltip label="Refresh Data">
+              <Tooltip content="Refresh Data">
                 <IconButton
                   aria-label="Refresh"
-                  icon={<FaRedo />}
                   onClick={handleRefresh}
-                  isLoading={loading}
-                  colorScheme="green"
-                />
+                  loading={loading}
+                  colorPalette="green"><FaRedo /></IconButton>
               </Tooltip>
             </HStack>
           </Flex>
 
           {/* Statistics Cards */}
           {data?.stats && (
-            <SimpleGrid columns={{ base: 2, md: 5 }} spacing={4} width="100%">
-              <Card>
-                <CardBody>
-                  <Stat>
+            <SimpleGrid columns={{ base: 2, md: 5 }} gap={4} width="100%">
+              <Card.Root>
+                <Card.Body>
+                  <Stat.Root>
                     <HStack>
                       <Box color="blue.500">
                         <FaUsers size={20} />
                       </Box>
-                      <StatLabel>Total Feedback</StatLabel>
+                      <Stat.Label>Total Feedback</Stat.Label>
                     </HStack>
-                    <StatNumber>{data.stats.total}</StatNumber>
-                    <StatHelpText>All systems</StatHelpText>
-                  </Stat>
-                </CardBody>
-              </Card>
+                    <Stat.ValueText>{data.stats.total}</Stat.ValueText>
+                    <Stat.HelpText>All systems</Stat.HelpText>
+                  </Stat.Root>
+                </Card.Body>
+              </Card.Root>
 
-              <Card>
-                <CardBody>
-                  <Stat>
+              <Card.Root>
+                <Card.Body>
+                  <Stat.Root>
                     <HStack>
                       <Box color="green.500">
                         <FaThumbsUp size={20} />
                       </Box>
-                      <StatLabel>Positive</StatLabel>
+                      <Stat.Label>Positive</Stat.Label>
                     </HStack>
-                    <StatNumber>{data.stats.likes}</StatNumber>
-                    <StatHelpText>{data.stats.likePercentage}%</StatHelpText>
-                  </Stat>
-                </CardBody>
-              </Card>
+                    <Stat.ValueText>{data.stats.likes}</Stat.ValueText>
+                    <Stat.HelpText>{data.stats.likePercentage}%</Stat.HelpText>
+                  </Stat.Root>
+                </Card.Body>
+              </Card.Root>
 
-              <Card>
-                <CardBody>
-                  <Stat>
+              <Card.Root>
+                <Card.Body>
+                  <Stat.Root>
                     <HStack>
                       <Box color="orange.500">
                         <FaMeh size={20} />
                       </Box>
-                      <StatLabel>Neutral</StatLabel>
+                      <Stat.Label>Neutral</Stat.Label>
                     </HStack>
-                    <StatNumber>{data.stats.neutral || 0}</StatNumber>
-                    <StatHelpText>Enhanced only</StatHelpText>
-                  </Stat>
-                </CardBody>
-              </Card>
+                    <Stat.ValueText>{data.stats.neutral || 0}</Stat.ValueText>
+                    <Stat.HelpText>Enhanced only</Stat.HelpText>
+                  </Stat.Root>
+                </Card.Body>
+              </Card.Root>
 
-              <Card>
-                <CardBody>
-                  <Stat>
+              <Card.Root>
+                <Card.Body>
+                  <Stat.Root>
                     <HStack>
                       <Box color="red.500">
                         <FaThumbsDown size={20} />
                       </Box>
-                      <StatLabel>Negative</StatLabel>
+                      <Stat.Label>Negative</Stat.Label>
                     </HStack>
-                    <StatNumber>{data.stats.dislikes}</StatNumber>
-                    <StatHelpText>{100 - data.stats.likePercentage}%</StatHelpText>
-                  </Stat>
-                </CardBody>
-              </Card>
+                    <Stat.ValueText>{data.stats.dislikes}</Stat.ValueText>
+                    <Stat.HelpText>{100 - data.stats.likePercentage}%</Stat.HelpText>
+                  </Stat.Root>
+                </Card.Body>
+              </Card.Root>
 
-              <Card>
-                <CardBody>
-                  <Stat>
+              <Card.Root>
+                <Card.Body>
+                  <Stat.Root>
                     <HStack>
                       <Box color="purple.500">
                         <FaChartLine size={20} />
                       </Box>
-                      <StatLabel>Satisfaction</StatLabel>
+                      <Stat.Label>Satisfaction</Stat.Label>
                     </HStack>
-                    <StatNumber>
+                    <Stat.ValueText>
                       {data.stats.satisfactionScore || data.stats.likePercentage}%
-                    </StatNumber>
-                    <StatHelpText>
-                      <Badge colorScheme={
+                    </Stat.ValueText>
+                    <Stat.HelpText>
+                      <Badge colorPalette={
                         (data.stats.satisfactionScore || data.stats.likePercentage) > 70 ? 'green' : 
                         (data.stats.satisfactionScore || data.stats.likePercentage) > 50 ? 'yellow' : 'red'
                       }>
                         {(data.stats.satisfactionScore || data.stats.likePercentage) > 70 ? 'Excellent' : 
                          (data.stats.satisfactionScore || data.stats.likePercentage) > 50 ? 'Good' : 'Needs Improvement'}
                       </Badge>
-                    </StatHelpText>
-                  </Stat>
-                </CardBody>
-              </Card>
+                    </Stat.HelpText>
+                  </Stat.Root>
+                </Card.Body>
+              </Card.Root>
             </SimpleGrid>
           )}
 
           {/* Filters */}
-          <Card width="100%">
-            <CardHeader>
+          <Card.Root width="100%">
+            <Card.Header>
               <Heading size="md">🔍 Filters</Heading>
-            </CardHeader>
-            <CardBody>
-              <HStack spacing={4}>
-                <Select value={filterType} onChange={(e) => setFilterType(e.target.value)} maxW="200px">
-                  <option value="all">All Feedback</option>
-                  <option value="like">👍 Positive Only</option>
-                  <option value="neutral">😐 Neutral Only</option>
-                  <option value="dislike">👎 Negative Only</option>
-                </Select>
+            </Card.Header>
+            <Card.Body>
+              <HStack gap={4}>
+                <NativeSelect.Root>
+                  <NativeSelect.Field
+                    value={filterType}
+                    onValueChange={(e) => setFilterType(e.target.value)}
+                    maxW="200px">
+                    <option value="all">All Feedback</option>
+                    <option value="like">👍 Positive Only</option>
+                    <option value="neutral">😐 Neutral Only</option>
+                    <option value="dislike">👎 Negative Only</option>
+                  </NativeSelect.Field>
+                  <NativeSelect.Indicator />
+                </NativeSelect.Root>
                 <Input
                   placeholder="Filter by date (YYYY-MM-DD)"
                   type="date"
@@ -436,82 +406,82 @@ const FeedbackDashboard = () => {
                   maxW="200px"
                 />
               </HStack>
-            </CardBody>
-          </Card>
+            </Card.Body>
+          </Card.Root>
 
           {/* Feedback Table */}
-          <Card width="100%">
-            <CardHeader>
+          <Card.Root width="100%">
+            <Card.Header>
               <HStack justify="space-between">
                 <Heading size="md">📝 Recent Combined Feedback</Heading>
                 <Text fontSize="sm" color="gray.500">
                   Showing {data?.feedbacks?.length || 0} items
                 </Text>
               </HStack>
-            </CardHeader>
-            <CardBody>
+            </Card.Header>
+            <Card.Body>
               <Box overflowX="auto">
-                <Table variant="simple">
-                  <Thead>
-                    <Tr>
-                      <Th>Type</Th>
-                      <Th>System</Th>
-                      <Th>Page</Th>
-                      <Th>Comment</Th>
-                      <Th>User Agent</Th>
-                      <Th>IP</Th>
-                      <Th>Date</Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody>
+                <Table.Root variant="simple">
+                  <Table.Header>
+                    <Table.Row>
+                      <Table.ColumnHeader>Type</Table.ColumnHeader>
+                      <Table.ColumnHeader>System</Table.ColumnHeader>
+                      <Table.ColumnHeader>Page</Table.ColumnHeader>
+                      <Table.ColumnHeader>Comment</Table.ColumnHeader>
+                      <Table.ColumnHeader>User Agent</Table.ColumnHeader>
+                      <Table.ColumnHeader>IP</Table.ColumnHeader>
+                      <Table.ColumnHeader>Date</Table.ColumnHeader>
+                    </Table.Row>
+                  </Table.Header>
+                  <Table.Body>
                     {data?.feedbacks
                       .filter(f => filterType === 'all' || f.displayType === filterType)
                       .filter(f => !dateFilter || f.createdAt.startsWith(dateFilter))
                       .slice(0, 50)
                       .map((feedback) => (
-                      <Tr key={feedback._id}>
-                        <Td>
+                      <Table.Row key={feedback._id}>
+                        <Table.Cell>
                           <Badge 
                             {...getBadgeProps(feedback)}
                             variant="solid"
                           />
-                        </Td>
-                        <Td>
+                        </Table.Cell>
+                        <Table.Cell>
                           <Badge 
-                            colorScheme={feedback.feedbackType === 'enhanced' ? 'purple' : 'blue'}
+                            colorPalette={feedback.feedbackType === 'enhanced' ? 'purple' : 'blue'}
                             variant="outline"
                           >
                             {feedback.feedbackType === 'enhanced' ? 'Enhanced' : 'Simple'}
                           </Badge>
-                        </Td>
-                        <Td>
-                          <Tooltip label={feedback.page}>
-                            <Text fontSize="sm" noOfLines={1} maxW="200px">
+                        </Table.Cell>
+                        <Table.Cell>
+                          <Tooltip content={feedback.page}>
+                            <Text fontSize="sm" lineClamp={1} maxW="200px">
                               {getPageName(feedback.page)}
                             </Text>
                           </Tooltip>
-                        </Td>
-                        <Td>
-                          <Text fontSize="sm" noOfLines={2} maxW="150px">
+                        </Table.Cell>
+                        <Table.Cell>
+                          <Text fontSize="sm" lineClamp={2} maxW="150px">
                             {feedback.comment || '-'}
                           </Text>
-                        </Td>
-                        <Td>
-                          <Tooltip label={feedback.userAgent}>
-                            <Text fontSize="xs" noOfLines={1} maxW="150px">
+                        </Table.Cell>
+                        <Table.Cell>
+                          <Tooltip content={feedback.userAgent}>
+                            <Text fontSize="xs" lineClamp={1} maxW="150px">
                               {feedback.userAgent.substring(0, 30)}...
                             </Text>
                           </Tooltip>
-                        </Td>
-                        <Td fontSize="sm">{feedback.ip}</Td>
-                        <Td fontSize="sm">{formatDate(feedback.createdAt)}</Td>
-                      </Tr>
+                        </Table.Cell>
+                        <Table.Cell fontSize="sm">{feedback.ip}</Table.Cell>
+                        <Table.Cell fontSize="sm">{formatDate(feedback.createdAt)}</Table.Cell>
+                      </Table.Row>
                     ))}
-                  </Tbody>
-                </Table>
+                  </Table.Body>
+                </Table.Root>
               </Box>
-            </CardBody>
-          </Card>
+            </Card.Body>
+          </Card.Root>
         </VStack>
       </Container>
     </AllLayout>

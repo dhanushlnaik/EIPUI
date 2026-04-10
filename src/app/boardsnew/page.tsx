@@ -1,46 +1,12 @@
 "use client";
-
-import {
-  Box,
-  Heading,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  TableContainer,
-  Link,
-  Spinner,
-  Text,
-  Flex,
-  Button,
-  useColorModeValue,
-  Badge,
-  Input,
-  Select,
-  HStack,
-  VStack,
-  Icon,
-  Tooltip,
-  Tag,
-  TagLabel,
-  Wrap,
-  WrapItem,
-  InputGroup,
-  InputLeftElement,
-  IconButton,
-  Collapse,
-  useToast,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  MenuDivider,
-} from "@chakra-ui/react";
+import { InputLeftElement, TableContainer, Thead, Tbody, Tr, Th, Td } from "@/components/ui/compat";
+import { useToast } from "@/components/ui/use-toast";
+;
+import { Steps, Box, Heading, Table, Link, Spinner, Text, Flex, Button, Badge, Input, NativeSelect, HStack, VStack, Icon, Tag, TagLabel, Wrap, WrapItem, InputGroup, IconButton, Collapsible, Menu, Portal } from "@chakra-ui/react";
+import { Tooltip } from '@/components/ui/tooltip';
+import { useColorModeValue } from "../../components/ui/color-mode";
 import React, { useEffect, useState, useMemo } from "react";
 import AllLayout from "@/components/Layout";
-import { ExternalLinkIcon, SearchIcon, DownloadIcon, ChevronUpIcon, ChevronDownIcon, CopyIcon, ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { BiGitPullRequest } from "react-icons/bi";
 import { format } from "date-fns";
 import axios from "axios";
@@ -60,6 +26,16 @@ import {
   ColumnDef,
   SortingState,
 } from "@tanstack/react-table";
+import {
+  LuChevronDown,
+  LuChevronLeft,
+  LuChevronRight,
+  LuChevronUp,
+  LuCopy,
+  LuDownload,
+  LuExternalLink,
+  LuSearch,
+} from 'react-icons/lu';
 
 // Helper function to extract PR number from URL
 const extractPrNumber = (url: string) => {
@@ -421,8 +397,12 @@ const DashboardPage = () => {
         cell: (info) => {
           const row = info.row.original;
           return (
-            <Link href={row.prLink} isExternal _hover={{ textDecoration: 'none' }}>
-              <HStack justify="center" spacing={1}>
+            <Link
+              href={row.prLink}
+              _hover={{ textDecoration: 'none' }}
+              target='_blank'
+              rel='noopener noreferrer'>
+              <HStack justify="center" gap={1}>
                 <Icon as={BiGitPullRequest} color="blue.500" boxSize={5} />
                 <Text 
                   fontSize="md" 
@@ -448,10 +428,16 @@ const DashboardPage = () => {
         cell: (info) => {
           const row = info.row.original;
           return (
-            <Link href={row.prLink} isExternal _hover={{ textDecoration: 'none' }}>
-              <Tooltip label={info.getValue()} placement="top" hasArrow>
+            <Link
+              href={row.prLink}
+              _hover={{ textDecoration: 'none' }}
+              target='_blank'
+              rel='noopener noreferrer'>
+              <Tooltip content={info.getValue()} showArrow positioning={{
+                placement: "top"
+              }}>
                 <Text
-                  noOfLines={1}
+                  lineClamp={1}
                   fontWeight="medium"
                   fontSize="md"
                   color={useColorModeValue("blue.600", "blue.300")}
@@ -490,13 +476,13 @@ const DashboardPage = () => {
             allowedLabels.includes(label.toLowerCase())
           );
           return (
-            <Wrap justify="center" spacing={1}>
+            <Wrap justify="center" gap={1}>
               {itemLabels.length > 0 ? (
                 itemLabels.slice(0, 3).map((label, idx) => {
                   const { color } = labelColors[label.toLowerCase()] || { color: "gray.400" };
                   return (
                     <WrapItem key={idx}>
-                      <Tag
+                      <Tag.Root
                         size="md"
                         bg={color}
                         color="white"
@@ -505,8 +491,8 @@ const DashboardPage = () => {
                         px={2}
                         py={1}
                       >
-                        <TagLabel fontSize="sm">{label}</TagLabel>
-                      </Tag>
+                        <Tag.Label fontSize="sm">{label}</Tag.Label>
+                      </Tag.Root>
                     </WrapItem>
                   );
                 })
@@ -514,10 +500,12 @@ const DashboardPage = () => {
                 <Text fontSize="sm" color="gray.400">-</Text>
               )}
               {itemLabels.length > 3 && (
-                <Tooltip label={itemLabels.slice(3).join(', ')} placement="top">
-                  <Tag size="md" bg="gray.500" color="white" borderRadius="md" px={2} py={1}>
-                    <TagLabel fontSize="sm">+{itemLabels.length - 3}</TagLabel>
-                  </Tag>
+                <Tooltip content={itemLabels.slice(3).join(', ')} positioning={{
+                  placement: "top"
+                }}>
+                  <Tag.Root size="md" bg="gray.500" color="white" borderRadius="md" px={2} py={1}>
+                    <Tag.Label fontSize="sm">+{itemLabels.length - 3}</Tag.Label>
+                  </Tag.Root>
                 </Tooltip>
               )}
             </Wrap>
@@ -765,10 +753,10 @@ const DashboardPage = () => {
             gap={4}
             my={6}
           >
-            <HStack spacing={4}>
+            <HStack gap={4}>
               <Button
                 id="EIPsBOARD"
-                colorScheme="blue"
+                colorPalette="blue"
                 onClick={() => {
                   setActiveTab("EIPs");
                   if (typeof window !== "undefined") window.history.replaceState(null, "", `${window.location.pathname}#EIPsBOARD`);
@@ -780,7 +768,7 @@ const DashboardPage = () => {
               </Button>
               <Button
                 id="ERCsBOARD"
-                colorScheme="blue"
+                colorPalette="blue"
                 onClick={() => {
                   setActiveTab("ERCs");
                   if (typeof window !== "undefined") window.history.replaceState(null, "", `${window.location.pathname}#ERCsBOARD`);
@@ -799,7 +787,7 @@ const DashboardPage = () => {
             {/* Search Bar */}
             <InputGroup maxW={{ base: "100%", md: "350px" }} minW="250px">
               <InputLeftElement pointerEvents="none">
-                <SearchIcon color="gray.400" />
+                <Icon as={LuSearch} color="gray.400" />
               </InputLeftElement>
               <Input
                 placeholder="Search by title or PR#..."
@@ -823,57 +811,46 @@ const DashboardPage = () => {
               </Heading>
               
               {/* Filters and Actions */}
-              <HStack spacing={2} flexWrap="wrap">
+              <HStack gap={2} flexWrap="wrap">
                 <LabelFilter
                   labels={allLabels}
                   selectedLabels={selectedLabels}
                   onLabelToggle={handleLabelToggle}
                   labelDisplayNames={labelDisplayNames}
                 />
-                <Menu>
-                  <MenuButton
-                    as={Button}
-                    size="sm"
-                    colorScheme="purple"
-                    variant="outline"
-                    rightIcon={<ChevronDownIcon />}
-                  >
-                    Label Actions
-                  </MenuButton>
-                  <MenuList>
-                    <MenuItem
-                      onClick={handleSelectAll}
-                      isDisabled={selectedLabels.length === allLabels.length}
-                      icon={<Icon as={BiGitPullRequest} />}
-                    >
-                      Select All Labels
-                    </MenuItem>
-                    <MenuItem
-                      onClick={handleRemoveAll}
-                      isDisabled={selectedLabels.length === 0}
-                      color="red.500"
-                    >
-                      Clear All Labels
-                    </MenuItem>
-                  </MenuList>
-                </Menu>
+                <Menu.Root>
+                  <Menu.Trigger asChild><Button size="sm" colorPalette="purple" variant="outline">Label Actions
+                                        <LuChevronDown /></Button></Menu.Trigger>
+                  <Portal><Menu.Positioner><Menu.Content>
+                        <Menu.Item
+                          onSelect={handleSelectAll}
+                          disabled={selectedLabels.length === allLabels.length}
+                          icon={<Icon as={BiGitPullRequest} />}
+                          value='item-0'>
+                          Select All Labels
+                        </Menu.Item>
+                        <Menu.Item
+                          onSelect={handleRemoveAll}
+                          disabled={selectedLabels.length === 0}
+                          color="red.500"
+                          value='item-1'>
+                          Clear All Labels
+                        </Menu.Item>
+                      </Menu.Content></Menu.Positioner></Portal>
+                </Menu.Root>
                 
                 <Button
-                  colorScheme="teal"
+                  colorPalette="teal"
                   variant="outline"
                   fontSize={{ base: "xs", md: "md" }}
                   fontWeight={"bold"}
-                  leftIcon={<CopyIcon />}
-                  onClick={handleCopyAsMarkdown}
-                >
-                  Copy as MD
-                </Button>
+                  onClick={handleCopyAsMarkdown}><LuCopy />Copy as MD
+                                  </Button>
                 <Button
-                  colorScheme="blue"
+                  colorPalette="blue"
                   variant="outline"
                   fontSize={{ base: "xs", md: "md" }}
                   fontWeight={"bold"}
-                  leftIcon={<DownloadIcon />}
                   onClick={async () => {
                     try {
                       handleDownload();
@@ -881,10 +858,8 @@ const DashboardPage = () => {
                     } catch (error) {
                       console.error("Error triggering download counter:", error);
                     }
-                  }}
-                >
-                  Download Reports
-                </Button>
+                  }}><LuDownload />Download Reports
+                                  </Button>
               </HStack>
             </Flex>
           </Box>
@@ -903,8 +878,8 @@ const DashboardPage = () => {
               maxH="calc(100vh - 400px)"
               position="relative"
             >
-              <Table variant="simple" size="md" width="100%">
-                <Thead 
+              <Table.Root variant="simple" size="md" width="100%">
+                <Table.Header 
                   bg={useColorModeValue("blue.600", "gray.700")}
                   position="sticky"
                   top={0}
@@ -912,9 +887,9 @@ const DashboardPage = () => {
                   boxShadow="md"
                 >
                   {table.getHeaderGroups().map((headerGroup) => (
-                    <Tr key={headerGroup.id}>
+                    <Table.Row key={headerGroup.id}>
                       {headerGroup.headers.map((header) => (
-                        <Th
+                        <Table.ColumnHeader
                           key={header.id}
                           color="white"
                           fontSize="sm"
@@ -930,26 +905,26 @@ const DashboardPage = () => {
                                 header.column.columnDef.header,
                                 header.getContext()
                               )}
-                        </Th>
+                        </Table.ColumnHeader>
                       ))}
-                    </Tr>
+                    </Table.Row>
                   ))}
-                </Thead>
-                <Tbody>
+                </Table.Header>
+                <Table.Body>
                   {table.getRowModel().rows.length === 0 ? (
-                  <Tr>
-                    <Td colSpan={6} textAlign="center" py={8}>
-                      <VStack spacing={2}>
+                  <Table.Row>
+                    <Table.Cell colSpan={6} textAlign="center" py={8}>
+                      <VStack gap={2}>
                         <Icon as={BiGitPullRequest} boxSize={12} color="gray.400" />
                         <Text color="gray.500" fontSize="lg">No PRs found</Text>
                       </VStack>
-                    </Td>
-                  </Tr>
+                    </Table.Cell>
+                  </Table.Row>
                 ) : (
                     table.getRowModel().rows.map((row) => {
                       const item = row.original;
                       return (
-                        <Tr
+                        <Table.Row
                           key={row.id}
                           bg={item.labels.includes("s-withdrawn") ? useColorModeValue("red.50", "red.900") : undefined}
                           opacity={item.labels.includes("s-withdrawn") ? 0.7 : 1}
@@ -959,20 +934,20 @@ const DashboardPage = () => {
                           }}
                         >
                           {row.getVisibleCells().map((cell) => (
-                            <Td
+                            <Table.Cell
                               key={cell.id}
                               py={3}
                               textAlign={cell.column.id === 'prTitle' ? 'left' : 'center'}
                             >
                               {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                            </Td>
+                            </Table.Cell>
                           ))}
-                        </Tr>
+                        </Table.Row>
                       );
                     })
                   )}
-                </Tbody>
-              </Table>
+                </Table.Body>
+              </Table.Root>
             </Box>
             
             {/* Pagination Controls */}
@@ -985,40 +960,34 @@ const DashboardPage = () => {
               flexWrap="wrap"
               gap={4}
             >
-              <HStack spacing={2}>
+              <HStack gap={2}>
                 <Button
                   size="sm"
                   onClick={() => table.setPageIndex(0)}
-                  isDisabled={!table.getCanPreviousPage()}
-                  leftIcon={<ChevronLeftIcon />}
-                >
-                  First
-                </Button>
+                  disabled={!table.getCanPreviousPage()}><LuChevronLeft />First
+                                  </Button>
                 <Button
                   size="sm"
                   onClick={() => table.previousPage()}
-                  isDisabled={!table.getCanPreviousPage()}
+                  disabled={!table.getCanPreviousPage()}
                 >
                   Previous
                 </Button>
                 <Button
                   size="sm"
                   onClick={() => table.nextPage()}
-                  isDisabled={!table.getCanNextPage()}
+                  disabled={!table.getCanNextPage()}
                 >
                   Next
                 </Button>
                 <Button
                   size="sm"
                   onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                  isDisabled={!table.getCanNextPage()}
-                  rightIcon={<ChevronRightIcon />}
-                >
-                  Last
-                </Button>
+                  disabled={!table.getCanNextPage()}>Last
+                                  <LuChevronRight /></Button>
               </HStack>
               
-              <HStack spacing={2}>
+              <HStack gap={2}>
                 <Text fontSize="sm" color={useColorModeValue("gray.600", "gray.400")}>
                   Go to page:
                 </Text>
@@ -1054,7 +1023,7 @@ const DashboardPage = () => {
                 {table.getPageCount()} ({filteredData.length} total PRs)
               </Text>
               
-              <HStack spacing={4}>
+              <HStack gap={4}>
                 <Box fontSize="sm">
                   <LastUpdatedDateTime name="Boards" />
                 </Box>
@@ -1073,11 +1042,11 @@ const DashboardPage = () => {
           >
             <Text>
               For other details, check{" "}
-              <Link href="/Analytics" color="blue" isExternal>
+              <Link href="/Analytics" color="blue" target='_blank' rel='noopener noreferrer'>
                 PRs Analytics
               </Link>{" "}
               and{" "}
-              <Link href="/Reviewers" color="blue" isExternal>
+              <Link href="/Reviewers" color="blue" target='_blank' rel='noopener noreferrer'>
                 Editors Leaderboard
               </Link>
               .

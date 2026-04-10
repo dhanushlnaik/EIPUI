@@ -1,5 +1,6 @@
 import React from "react";
-import { Box, Text, SimpleGrid, Flex, useColorModeValue, Icon, Divider } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Text, SimpleGrid, Flex, Icon, Separator } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { FiTrendingUp, FiClock, FiUsers, FiFileText } from "react-icons/fi";
 
@@ -37,8 +38,7 @@ const StatusInsightsCard: React.FC<StatusInsightsCardProps> = ({ insights, title
       <Text fontSize="lg" fontWeight="bold" mb={6} color={textColor}>
         {title}
       </Text>
-      
-      <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
+      <SimpleGrid columns={{ base: 1, md: 2 }} gap={6}>
         {insights.map((insight, index) => (
           <Box key={index}>
             <Flex align="center" gap={3}>
@@ -64,7 +64,7 @@ const StatusInsightsCard: React.FC<StatusInsightsCardProps> = ({ insights, title
                 </Text>
               </Box>
             </Flex>
-            {index < insights.length - 1 && index % 2 === 1 && <Divider mt={6} />}
+            {index < insights.length - 1 && index % 2 === 1 && <Separator mt={6} />}
           </Box>
         ))}
       </SimpleGrid>

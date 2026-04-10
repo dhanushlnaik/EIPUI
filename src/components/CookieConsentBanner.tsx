@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useColorMode } from "./ui/color-mode";
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiX, FiCopy } from 'react-icons/fi';
 import { FaLock, FaEthereum } from 'react-icons/fa';
 import NextLink from 'next/link';
-import { useColorMode } from '@chakra-ui/react';
 
 const CookieConsentBanner: React.FC = () => {
   const [showBanner, setShowBanner] = useState(false);

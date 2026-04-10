@@ -1,3 +1,4 @@
+"use client";
 // import React, { useEffect, useState } from "react";
 // import { Box, Icon, useColorModeValue, Text, Spinner, Button, Flex, Heading } from "@chakra-ui/react";
 // import DateTime from "@/components/DateTime";
@@ -248,17 +249,10 @@
 
 // export default EIPStatusDonut;
 
-"use client";
+;
 import React, { useEffect, useState, useMemo } from "react";
-import {
-  Box,
-  Button,
-  Flex,
-  Text,
-  useColorModeValue,
-  Spinner,
-  SimpleGrid,
-} from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Button, Flex, Text, Spinner, SimpleGrid } from "@chakra-ui/react";
 import axios from "axios";
 import NextLink from "next/link";
 import DateTime from "@/components/DateTime";
@@ -375,13 +369,12 @@ const ERCStatusDonut = () => {
       boxShadow="md"
       _hover={{ border: "1px solid", borderColor: "#30A0E0" }}
     >
-
       {isLoading ? (
         <Flex justify="center" align="center" minH="300px">
           <Spinner size="xl" />
         </Flex>
       ) : (
-        <SimpleGrid columns={{ base: 1, sm: 2, md: 2, lg: 4 }} spacing={6}>
+        <SimpleGrid columns={{ base: 1, sm: 2, md: 2, lg: 4 }} gap={6}>
           {chartData.map(({ status, count, percent, description, color }) => (
             <Box
               key={status}
@@ -430,7 +423,6 @@ const ERCStatusDonut = () => {
           </Box>
         </SimpleGrid>
       )}
-
       <Box overflowX={{ base: "auto", md: "visible" }} mt={6}>
         <DateTime />
       </Box>

@@ -1,7 +1,9 @@
 "use client";
+;
 import React, { useEffect, useRef, useState, WheelEventHandler } from "react";
+import { useColorModeValue } from "./ui/color-mode";
 import { usePathname } from "next/navigation";
-import { Box, useColorModeValue } from "@chakra-ui/react";
+import { Steps, Box } from "@chakra-ui/react";
 
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";

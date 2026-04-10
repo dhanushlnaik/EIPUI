@@ -1,6 +1,6 @@
 // import React, { useEffect, useState } from "react";
 // import dynamic from "next/dynamic";
-// import { Box, useColorModeValue, Spinner, Text,Button, Flex, Heading } from "@chakra-ui/react";
+// import { Box, useColorModeValue, Spinner, Text, Button, Flex, Heading } from "@chakra-ui/react";
 // import { motion } from "framer-motion";
 // import DateTime from "@/components/DateTime";
 // import NextLink from "next/link";
@@ -274,17 +274,9 @@
 // export default AllChart;
 
 import React, { useEffect, useState } from "react";
+import { useColorModeValue } from "./ui/color-mode";
 import dynamic from "next/dynamic";
-import {
-  Box,
-  useColorModeValue,
-  Spinner,
-  Text,
-  Button,
-  Flex,
-  Heading,
-  useBreakpointValue,
-} from "@chakra-ui/react";
+import { Steps, Box, Spinner, Text, Button, Flex, Heading, useBreakpointValue } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import DateTime from "@/components/DateTime";
 import NextLink from "next/link";

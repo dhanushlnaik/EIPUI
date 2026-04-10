@@ -1,4 +1,4 @@
-import { RadioCard } from "@chakra-ui/react"
+import { Steps, RadioCard } from "@chakra-ui/react";
 import * as React from "react"
 
 interface RadioCardItemProps extends RadioCard.ItemProps {

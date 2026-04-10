@@ -1,4 +1,8 @@
-import { Box, Text, Table, Thead, Tbody, Tr, Th, Td, useColorModeValue, Icon, Tooltip, useToast } from '@chakra-ui/react';
+import { Thead, Tbody, Tr, Th, Td } from "@/components/ui/compat";
+import { useToast } from "@/components/ui/use-toast";
+import { Steps, Box, Text, Table, Icon } from "@chakra-ui/react";
+import { Tooltip } from '@/components/ui/tooltip';
+import { useColorModeValue } from "./ui/color-mode";
 import { convertEthToUSD, convertGweiToUSD } from "./ethereumService";
 import { FaList, FaCopy } from 'react-icons/fa';
 
@@ -90,52 +94,51 @@ const RecentTransactions = ({ transactions, ethPriceInUSD, timestamp }: { transa
         <Icon as={FaList} color={"white"} mr={2} /> Recent Transactions
       </Text>
       <br />
-
-      <Table variant="simple" colorScheme="whiteAlpha" width="100%">
-        <Thead bg={tableHeaderBg}>
-          <Tr>
-            <Th color={textColor} textAlign="center">Hash</Th>
-            <Th color={textColor} textAlign="center">From</Th>
-            <Th color={textColor} textAlign="center">To</Th>
-            <Th color={textColor} textAlign="center">Age</Th>
-            <Th color={textColor} textAlign="center">Value</Th>
-            <Th color={textColor} textAlign="center">Gas</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
+      <Table.Root variant="simple" colorPalette="whiteAlpha" width="100%">
+        <Table.Header bg={tableHeaderBg}>
+          <Table.Row>
+            <Table.ColumnHeader color={textColor} textAlign="center">Hash</Table.ColumnHeader>
+            <Table.ColumnHeader color={textColor} textAlign="center">From</Table.ColumnHeader>
+            <Table.ColumnHeader color={textColor} textAlign="center">To</Table.ColumnHeader>
+            <Table.ColumnHeader color={textColor} textAlign="center">Age</Table.ColumnHeader>
+            <Table.ColumnHeader color={textColor} textAlign="center">Value</Table.ColumnHeader>
+            <Table.ColumnHeader color={textColor} textAlign="center">Gas</Table.ColumnHeader>
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
           {transactions?.map((tx, index) => {
             const valueInWei = hexToDecimal(tx.value); // Convert hex to decimal wei
             const valueInEth = weiToEth(valueInWei); // Convert wei to ETH
             const age = calculateAge(timestamp); // Calculate age using the provided timestamp
 
             return (
-              <Tr key={index} bg={tableRowBg} _hover={{ bg: 'rgba(255, 255, 255, 0.1)' }}>
-                <Td color={textColor} textAlign="center" textShadow="0 0 30px rgba(159, 122, 234, 0.8), 0 0 30px rgba(159, 122, 234, 0.8), 0 0 30px rgba(159, 122, 234, 0.8)">
-                  <Tooltip label="Copy to clipboard" aria-label="Copy to clipboard">
+              <Table.Row key={index} bg={tableRowBg} _hover={{ bg: 'rgba(255, 255, 255, 0.1)' }}>
+                <Table.Cell color={textColor} textAlign="center" textShadow="0 0 30px rgba(159, 122, 234, 0.8), 0 0 30px rgba(159, 122, 234, 0.8), 0 0 30px rgba(159, 122, 234, 0.8)">
+                  <Tooltip content="Copy to clipboard" aria-label="Copy to clipboard">
                     <Box display="flex" alignItems="center" justifyContent="center">
                       <Text>{tx.hash.slice(0, 10)}...</Text>
                       <Icon as={FaCopy} ml={2} cursor="pointer" onClick={()=>copyToClipboard(tx.hash)} />
                     </Box>
                   </Tooltip>
-                </Td>
-                <Td color={textColor} textAlign="center">
-                  <Tooltip label="Copy to clipboard" aria-label="Copy to clipboard">
+                </Table.Cell>
+                <Table.Cell color={textColor} textAlign="center">
+                  <Tooltip content="Copy to clipboard" aria-label="Copy to clipboard">
                     <Box display="flex" alignItems="center" justifyContent="center">
                       <Text>{tx.from.slice(0, 10)}...</Text>
                       <Icon as={FaCopy} ml={2} cursor="pointer" onClick={() => copyToClipboard(tx.from)} />
                     </Box>
                   </Tooltip>
-                </Td>
-                <Td color={textColor} textAlign="center">
-                  <Tooltip label="Copy to clipboard" aria-label="Copy to clipboard">
+                </Table.Cell>
+                <Table.Cell color={textColor} textAlign="center">
+                  <Tooltip content="Copy to clipboard" aria-label="Copy to clipboard">
                     <Box display="flex" alignItems="center" justifyContent="center">
                       <Text>{tx.to.slice(0, 10)}...</Text>
                       <Icon as={FaCopy} ml={2} cursor="pointer" onClick={() => copyToClipboard(tx.to)} />
                     </Box>
                   </Tooltip>
-                </Td>
-                <Td color={textColor} textAlign="center">{age}</Td>
-                <Td textAlign="center">
+                </Table.Cell>
+                <Table.Cell color={textColor} textAlign="center">{age}</Table.Cell>
+                <Table.Cell textAlign="center">
                   <Box
                     bg={valueBg}
                     borderRadius="md"
@@ -146,8 +149,8 @@ const RecentTransactions = ({ transactions, ethPriceInUSD, timestamp }: { transa
                       {valueInEth.toFixed(6)} ETH (${convertEthToUSD(valueInEth, ethPriceInUSD)})
                     </Text>
                   </Box>
-                </Td>
-                <Td textAlign="center">
+                </Table.Cell>
+                <Table.Cell textAlign="center">
                   <Box
                     bg={gasBg}
                     borderRadius="md"
@@ -158,12 +161,12 @@ const RecentTransactions = ({ transactions, ethPriceInUSD, timestamp }: { transa
                       {hexToDecimal(tx.gas)} Gwei (${convertGweiToUSD(hexToDecimal(tx.gas), ethPriceInUSD)})
                     </Text>
                   </Box>
-                </Td>
-              </Tr>
+                </Table.Cell>
+              </Table.Row>
             );
           })}
-        </Tbody>
-      </Table>
+        </Table.Body>
+      </Table.Root>
     </Box>
   );
 };

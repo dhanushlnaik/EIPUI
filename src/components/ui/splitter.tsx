@@ -1,4 +1,4 @@
-import { Splitter as ChakraSplitter } from "@chakra-ui/react"
+import { Steps, Splitter as ChakraSplitter } from "@chakra-ui/react";
 import * as React from "react"
 
 export interface SplitterProps extends ChakraSplitter.RootProps {

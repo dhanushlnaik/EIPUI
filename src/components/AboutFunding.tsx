@@ -1,21 +1,7 @@
 import React from 'react';
-import {
-  Box,
-  Heading,
-  Text,
-  Grid,
-  GridItem,
-  VStack,
-  Icon,
-  SimpleGrid,
-  useColorModeValue,
-  Button,
-  HStack,
-  Stack,
-  Tooltip,
-  Flex,
-  Container,
-} from '@chakra-ui/react';
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Heading, Text, Grid, GridItem, VStack, Icon, SimpleGrid, Button, HStack, Stack, Flex, Container } from "@chakra-ui/react";
+import { Tooltip } from '@/components/ui/tooltip';
 import Image from 'next/image';
 import { FaHeart } from 'react-icons/fa';
 
@@ -40,7 +26,7 @@ export default function AboutFunding() {
         >
           <Grid templateColumns={{ base: '1fr', md: '3fr 1fr' }} gap={6} alignItems="flex-start">
             <GridItem>
-              <VStack align="start" spacing={4}>
+              <VStack align="start" gap={4}>
                 <Heading as="h2" size="lg" color={textColor}>Funding</Heading>
                 <Text color={textColor} fontSize="md" maxW={{ md: '60ch' }}>
                   EIPs Insight is an open-source public good. We receive support from grants and community sponsors for hosting, development, and outreach. Below are organizations that have supported the project.
@@ -48,7 +34,7 @@ export default function AboutFunding() {
                 <Box width="100%">
                   <Text fontSize="sm" fontWeight="600" color={textColor} mb={3}>Supported by</Text>
                   <Box bg={useColorModeValue('gray.50','transparent')} p={3} borderRadius="md" border={useColorModeValue('1px solid rgba(2,6,23,0.03)','1px solid rgba(255,255,255,0.02)')}>
-                    <SimpleGrid columns={{ base: 1, sm: 3 }} spacing={4} alignItems="center">
+                    <SimpleGrid columns={{ base: 1, sm: 3 }} gap={4} alignItems="center">
                       <Box textAlign="center">
                         <a href="https://ethereum.org/" target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', cursor: 'pointer' }}>
                           <Box position="relative" height={{ base: "40px", md: "56px" }} width="auto" display="inline-block" transition="transform 160ms" _hover={{ transform: 'translateY(-4px)' }}>
@@ -86,17 +72,17 @@ export default function AboutFunding() {
             </GridItem>
 
             <GridItem>
-              <Stack spacing={3} align="stretch">
+              <Stack gap={3} align="stretch">
                 <Flex align="center" justify="space-between">
                   <Text fontWeight="600">Support & Acknowledgements</Text>
-                  <Tooltip label="Organizations and community supporters" aria-label="Supported by tooltip">
+                  <Tooltip content="Organizations and community supporters" aria-label="Supported by tooltip">
                     <Icon as={FaHeart} color="red.400" />
                   </Tooltip>
                 </Flex>
 
                 <Text color={textColor} fontSize="sm">We are grateful to the organizations and community members who have supported EIPs Insight. The logos above acknowledge past and present support.</Text>
 
-                <VStack spacing={2} pt={2}>
+                <VStack gap={2} pt={2}>
                   <a href="https://gap.karmahq.xyz/project/eipsinsight" target="_blank" rel="noopener noreferrer" style={{ width: '100%' }}>
                     <Button variant="outline" width="100%" _hover={{ transform: 'translateY(-3px)' }} transition="transform 150ms">
                       <Box position="relative" height="18px" width="18px" marginRight="12px" display="inline-block">
@@ -106,7 +92,7 @@ export default function AboutFunding() {
                     </Button>
                   </a>
                   <a href="https://giveth.io/project/eipsinsight" target="_blank" rel="noopener noreferrer" style={{ width: '100%' }}>
-                    <Button colorScheme="green" width="100%" _hover={{ transform: 'translateY(-3px)' }} transition="transform 150ms">
+                    <Button colorPalette="green" width="100%" _hover={{ transform: 'translateY(-3px)' }} transition="transform 150ms">
                       <Box position="relative" height="18px" width="18px" marginRight="12px" display="inline-block">
                         <Image src="/logos/giveth.svg" alt="giveth" height={18} width={18} style={{ height: '100%', width: '100%' }} unoptimized />
                       </Box>
@@ -114,7 +100,7 @@ export default function AboutFunding() {
                     </Button>
                   </a>
                   <a href="https://discuss.octant.app/t/eipsinsight-analytics-for-ethereum-improvement-proposals/659" target="_blank" rel="noopener noreferrer" style={{ width: '100%' }}>
-                    <Button colorScheme="cyan" width="100%" _hover={{ transform: 'translateY(-3px)' }} transition="transform 150ms">
+                    <Button colorPalette="cyan" width="100%" _hover={{ transform: 'translateY(-3px)' }} transition="transform 150ms">
                       <Box position="relative" height="18px" width="18px" marginRight="12px" display="inline-block">
                         <Image src="/logos/octant.svg" alt="octant" height={18} width={18} style={{ height: '100%', width: '100%' }} unoptimized />
                       </Box>

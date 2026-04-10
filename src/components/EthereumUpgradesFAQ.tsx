@@ -1,20 +1,7 @@
+import { Stat } from "@/components/ui/compat";
 import React, { useState } from 'react';
-import {
-  Box,
-  Heading,
-  Text,
-  SimpleGrid,
-  VStack,
-  HStack,
-  useColorModeValue,
-  Stat,
-  StatLabel,
-  StatNumber,
-  StatHelpText,
-  Icon,
-  Collapse,
-  Image,
-} from '@chakra-ui/react';
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Heading, Text, SimpleGrid, VStack, HStack, Icon, Collapsible, Image } from "@chakra-ui/react";
 import { FaNetworkWired, FaCode, FaRocket, FaLayerGroup, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import NetworkUpgradesChart from './NetworkUpgradesChart';
@@ -69,7 +56,7 @@ const EthereumUpgradesFAQ: React.FC = () => {
       borderColor={borderColor}
       boxShadow="md"
     >
-      <VStack align="stretch" spacing={4}>
+      <VStack align="stretch" gap={4}>
         {/* Header */}
         <Box>
           <Heading size="lg" color={textColor} mb={2} fontWeight="700">
@@ -82,7 +69,7 @@ const EthereumUpgradesFAQ: React.FC = () => {
         </Box>
 
         {/* Stats Grid */}
-        <SimpleGrid columns={{ base: 2, md: 4 }} spacing={3}>
+        <SimpleGrid columns={{ base: 2, md: 4 }} gap={3}>
           {stats.map((stat, index) => (
             <MotionBox
               key={stat.label}
@@ -97,20 +84,20 @@ const EthereumUpgradesFAQ: React.FC = () => {
                 borderColor={borderColor}
                 boxShadow="sm"
               >
-                <Stat>
-                  <HStack spacing={2} mb={2}>
+                <Stat.Root>
+                  <HStack gap={2} mb={2}>
                     <Icon as={stat.icon} boxSize={4} color={stat.color} />
-                    <StatLabel fontSize="xs" fontWeight="600" color={subtextColor}>
+                    <Stat.Label fontSize="xs" fontWeight="600" color={subtextColor}>
                       {stat.label}
-                    </StatLabel>
+                    </Stat.Label>
                   </HStack>
-                  <StatNumber fontSize="2xl" fontWeight="bold" color={textColor}>
+                  <Stat.ValueText fontSize="2xl" fontWeight="bold" color={textColor}>
                     {stat.value}
-                  </StatNumber>
-                  <StatHelpText fontSize="2xs" color={subtextColor} mt={0.5}>
+                  </Stat.ValueText>
+                  <Stat.HelpText fontSize="2xs" color={subtextColor} mt={0.5}>
                     {stat.helpText}
-                  </StatHelpText>
-                </Stat>
+                  </Stat.HelpText>
+                </Stat.Root>
               </Box>
             </MotionBox>
           ))}
@@ -118,7 +105,7 @@ const EthereumUpgradesFAQ: React.FC = () => {
 
         {/* EIP Inclusion Process Flowchart */
         <Box>
-          <HStack spacing={2} mb={2}>
+          <HStack gap={2} mb={2}>
             <Icon as={FaNetworkWired} boxSize={4} color="teal.500" />
             <Text fontWeight="600" fontSize="md" color={textColor}>
               EIP Inclusion Process
@@ -133,43 +120,27 @@ const EthereumUpgradesFAQ: React.FC = () => {
             />
           </HStack>
 
-          <Collapse in={isFlowchartOpen} animateOpacity>
-            <Box
-              p={3}
-              bg={useColorModeValue('gray.50', 'gray.700')}
-              borderRadius="md"
-              border="1px solid"
-              borderColor={borderColor}
-              display="flex"
-              justifyContent="center"
-            >
-              <Image
-                src="/stages/eip-incl.png"
-                alt="EIP Inclusion Process Flowchart"
-                width="40%"
-                height="auto"
+          <Collapsible.Root open={isFlowchartOpen}>
+            <Collapsible.Content>
+              <Box
+                p={3}
+                bg={useColorModeValue('gray.50', 'gray.700')}
                 borderRadius="md"
-                objectFit="contain"
-                fallback={
-                  <Box
-                    width="40%"
-                    minHeight="120px"
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    borderRadius="md"
-                    border="1px dashed"
-                    borderColor={borderColor}
-                    bg={useColorModeValue('white', 'gray.800')}
-                  >
-                    <Text fontSize="sm" color={subtextColor} textAlign="center">
-                      EIP inclusion flowchart is currently unavailable.
-                    </Text>
-                  </Box>
-                }
-              />
-            </Box>
-          </Collapse>
+                border="1px solid"
+                borderColor={borderColor}
+                display="flex"
+                justifyContent="center"
+              >
+                <Image
+                  src="/stages/eip-incl.png"
+                  alt="EIP Inclusion Process Flowchart"
+                  width="40%"
+                  height="auto"
+                  borderRadius="md"
+                  objectFit="contain" />
+              </Box>
+            </Collapsible.Content>
+          </Collapsible.Root>
         </Box>
 }
         {/* Network Upgrades Chart */}

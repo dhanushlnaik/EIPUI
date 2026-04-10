@@ -1,20 +1,11 @@
-import {
-  Box,
-  Flex,
-  Text,
-  Button,
-  useColorModeValue,
-  Collapse,
-  IconButton,
-  Heading,
-  Tooltip as ChakraTooltip,
-  Divider,
-} from "@chakra-ui/react";
+import { Steps, Box, Flex, Text, Button, Collapsible, IconButton, Heading, Separator } from "@chakra-ui/react";
+import { Tooltip as ChakraTooltip } from '@/components/ui/tooltip';
+import { useColorModeValue } from "../ui/color-mode";
 import React, { useState, useMemo } from "react";
 import dynamic from "next/dynamic";
-import { ChevronUpIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import { convertGweiToUSD } from "./ethereumService";
 import { MdTimeline } from "react-icons/md";
+import { LuChevronDown, LuChevronUp } from 'react-icons/lu';
 
 // Lazy load plot
 const Line = dynamic(() => import("@ant-design/plots").then(m => m.Line), { ssr: false });
@@ -210,33 +201,35 @@ const TransactionFeeChart = ({
   }, [merged, metric, meta, sliderStart, ethPriceInUSD]);
 
   const FAQ = (
-    <Collapse in={showFAQ} animateOpacity>
-      <Box
-        mt={4}
-        border="1px solid"
-        borderColor={borderColor}
-        borderRadius="lg"
-        p={5}
-        bg={useColorModeValue("whiteAlpha.800", "whiteAlpha.100")}
-        backdropFilter="blur(6px)"
-      >
-        <Heading as="h4" size="sm" mb={3} color={textPrimary}>
-          How is total gas cost calculated?
-        </Heading>
-        <Text fontSize="sm" color={subColor} mb={4}>
-          Total Gas Cost = (Base Fee + Priority Fee) * Gas Limit.
-          Example: (10 gwei + 2 gwei) * 21,000 = 252,000 gwei = 0.000252 ETH.
-        </Text>
+    <Collapsible.Root open={showFAQ}>
+      <Collapsible.Content>
+        <Box
+          mt={4}
+          border="1px solid"
+          borderColor={borderColor}
+          borderRadius="lg"
+          p={5}
+          bg={useColorModeValue("whiteAlpha.800", "whiteAlpha.100")}
+          backdropFilter="blur(6px)"
+        >
+          <Heading as="h4" size="sm" mb={3} color={textPrimary}>
+            How is total gas cost calculated?
+          </Heading>
+          <Text fontSize="sm" color={subColor} mb={4}>
+            Total Gas Cost = (Base Fee + Priority Fee) * Gas Limit.
+            Example: (10 gwei + 2 gwei) * 21,000 = 252,000 gwei = 0.000252 ETH.
+          </Text>
 
-        <Heading as="h4" size="sm" mb={3} color={textPrimary}>
-          Why do some transactions cost more?
-        </Heading>
-        <Text fontSize="sm" color={subColor}>
-          Higher complexity (contract calls), congestion (base fee spikes), and larger tips for
-          faster inclusion raise total cost.
-        </Text>
-      </Box>
-    </Collapse>
+          <Heading as="h4" size="sm" mb={3} color={textPrimary}>
+            Why do some transactions cost more?
+          </Heading>
+          <Text fontSize="sm" color={subColor}>
+            Higher complexity (contract calls), congestion (base fee spikes), and larger tips for
+            faster inclusion raise total cost.
+          </Text>
+        </Box>
+      </Collapsible.Content>
+    </Collapsible.Root>
   );
 
   return (
@@ -317,12 +310,9 @@ const TransactionFeeChart = ({
             onClick={() => setShowFAQ(s => !s)}
             bg="whiteAlpha.300"
             _hover={{ bg: "whiteAlpha.400" }}
-            icon={showFAQ ? <ChevronUpIcon /> : <ChevronDownIcon />}
-            borderRadius="full"
-          />
+            borderRadius="full">{showFAQ ? <LuChevronUp /> : <LuChevronDown />}</IconButton>
         </Flex>
       </Flex>
-
       {/* Metric Title */}
       <Box px={{ base: 5, md: 8 }} pt={6} pb={2}>
         <Text
@@ -347,14 +337,11 @@ const TransactionFeeChart = ({
           Values plotted oldest → newest (adjust with slider if available).
         </Text>
       </Box>
-
       {/* Chart */}
       <Box px={{ base: 5, md: 8 }} py={4} w="100%" h={{ base: 320, md: 360 }}>
         <Line {...chartConfig} />
       </Box>
-
-      <Divider opacity={0.4} />
-
+      <Separator opacity={0.4} />
       {/* FAQ */}
       <Box px={{ base: 5, md: 8 }} pb={8} pt={2}>
         {FAQ}

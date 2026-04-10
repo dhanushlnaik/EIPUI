@@ -1,21 +1,20 @@
 import React, { useState, useEffect, useLayoutEffect } from "react";
+import { useColorModeValue } from "../../components/ui/color-mode";
 import AllLayout from "@/components/Layout";
 import CloseableAdCard from "@/components/CloseableAdCard";
 import {
+  Steps,
   Box,
   Spinner,
-  useColorModeValue,
   Wrap,
   WrapItem,
   Text,
   List,
-  UnorderedList,
-  ListItem,
   Heading,
   Flex,
   Image,
   SimpleGrid,
-  Grid
+  Grid,
 } from "@chakra-ui/react";
 import NLink from "next/link";
 import EipTemplateEditor from "@/components/eiptemplate";

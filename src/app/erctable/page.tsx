@@ -1,9 +1,8 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
 import CloseableAdCard from "@/components/CloseableAdCard";
 import Table from "@/components/Table";
-import { Box } from "@chakra-ui/react";
+import { Steps, Box } from "@chakra-ui/react";
 import Header from "@/components/Header";
 import AllLayout from "@/components/Layout";
 

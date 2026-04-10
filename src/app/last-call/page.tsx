@@ -1,9 +1,10 @@
 "use client";
-
+;
 import React, { useEffect, useState, useMemo } from "react";
+import { useColorModeValue } from "../../components/ui/color-mode";
 import CloseableAdCard from "@/components/CloseableAdCard";
 import AllLayout from "@/components/Layout";
-import { Box, useColorModeValue, SimpleGrid, Grid } from "@chakra-ui/react";
+import { Steps, Box, SimpleGrid, Grid } from "@chakra-ui/react";
 import FlexBetween from "@/components/FlexBetween";
 import Header from "@/components/Header";
 import { motion } from "framer-motion";
@@ -122,7 +123,7 @@ const LastCall = () => {
                 description="These proposals are in the final review period before becoming final."
               />
             </FlexBetween>
-            <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={6} mb={8}>
+            <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} gap={6} mb={8}>
               <AnalyticsStatCard label="In Last Call" value={lastCallData.length} icon={FiAlertCircle} colorScheme="yellow" helpText="Final review" />
               <AnalyticsStatCard label="With Deadlines" value={withDeadlines} icon={FiClock} colorScheme="orange" helpText="Review ending soon" />
               <AnalyticsStatCard label="Core Proposals" value={lastCallData.filter(item => item.category === "Core").length} icon={FiFileText} colorScheme="blue" helpText="Protocol changes" />

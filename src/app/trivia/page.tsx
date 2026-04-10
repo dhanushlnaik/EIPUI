@@ -1,6 +1,5 @@
 "use client";
-
-import { Box, Heading, Text, Button } from "@chakra-ui/react";
+import { Steps, Box, Heading, Text, Button } from "@chakra-ui/react";
 import AllLayout from "@/components/Layout";
 import FactsSection from "@/components/TriviaContents";
 import CloseableAdCard from "@/components/CloseableAdCard";

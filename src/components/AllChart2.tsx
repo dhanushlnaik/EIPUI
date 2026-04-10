@@ -1,23 +1,15 @@
 import React, { useEffect, useState } from "react";
+import { useColorModeValue } from "./ui/color-mode";
 import dynamic from "next/dynamic";
-import {
-  Box,
-  useColorModeValue,
-  Spinner,
-  Text,
-  Select,
-  Flex,
-  Link,
-  Button,
-} from "@chakra-ui/react";
+import { Steps, Box, Spinner, Text, NativeSelect, Flex, Link, Button } from "@chakra-ui/react";
 import { useWindowSize } from "react-use";
 import { motion } from "framer-motion";
 import DateTime from "@/components/DateTime";
 import Dashboard from "./Dashboard";
 import NextLink from "next/link";
-import { ChevronDownIcon } from "@chakra-ui/icons";
 import { CSVLink } from "react-csv";
 import { client } from "@/lib/orpc";
+import { LuChevronDown } from 'react-icons/lu';
 
 const getCat = (cat: string) => {
   switch (cat) {
@@ -142,7 +134,7 @@ const fallbackColors: string[] = [
   "rgb(249, 115, 22)", // Orange 500
 ];
 
- 
+
 
 interface ChartProps {
   type: string;
@@ -562,7 +554,7 @@ return (
                 >
                   <Button
                     size="sm"
-                    colorScheme="blue"
+                    colorPalette="blue"
                     variant="solid"
                     _hover={{
                       transform: "translateY(-1px)",
@@ -574,26 +566,28 @@ return (
                   </Button>
                 </CSVLink>
               ) : (
-                <Button size="sm" colorScheme="blue" variant="outline" isDisabled>
+                <Button size="sm" colorPalette="blue" variant="outline" disabled>
                   CSV Unavailable
                 </Button>
               )}
 
-              <Select
-                variant="outline"
-                value={chart}
-                size="md"
-                bg="#30A0E0"
-                color="black"
-                border="2px solid black"
-                borderRadius="0.5rem"
-                onChange={(e) => setchart(e.target.value)}
-                _hover={{ borderColor: "black" }}
-                width={{ base: "100%", md: "auto" }}
-              >
-                <option value="category">Category</option>
-                <option value="status">Status</option>
-              </Select>
+              <NativeSelect.Root>
+                <NativeSelect.Field
+                  variant="outline"
+                  value={chart}
+                  size="md"
+                  bg="#30A0E0"
+                  color="black"
+                  border="2px solid black"
+                  borderRadius="0.5rem"
+                  onValueChange={(e) => setchart(e.target.value)}
+                  _hover={{ borderColor: "black" }}
+                  width={{ base: "100%", md: "auto" }}>
+                  <option value="category">Category</option>
+                  <option value="status">Status</option>
+                </NativeSelect.Field>
+                <NativeSelect.Indicator />
+              </NativeSelect.Root>
             </Flex>
           </Flex>
 

@@ -1,8 +1,8 @@
 import React from "react";
-import logoLight from '@/../public/EIPsInsightsDark.gif'; // for light mode
+import { useColorModeValue } from "./ui/color-mode";
+import logoLight from '@/../public/EIPsInsightsDark.gif';     // for light mode
 import logoDark from '@/../public/EIPsInsights.gif';     // for dark mode
 import Image from 'next/image';
-import { useColorModeValue } from "@chakra-ui/react";
 
 function Logo() {
   const logoSrc = useColorModeValue(logoLight, logoDark); // use the imported image objects

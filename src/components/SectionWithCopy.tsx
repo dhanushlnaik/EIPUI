@@ -1,7 +1,15 @@
 "use client";
-import { Box, Flex, IconButton, Text, useClipboard } from "@chakra-ui/react";
-import { CheckIcon, CopyIcon } from "@chakra-ui/icons";
+/*
+ MIGRATION NOTE: The following Chakra UI hooks have been removed.
+ Please replace them with the suggested alternatives:
+
+//   - useClipboard: Use react-use: useCopyToClipboard
+
+ See: https://chakra-ui.com/docs/get-started/migration#hooks
+*/
+import { Steps, Box, Flex, IconButton, Text, useClipboard } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import { LuCheck, LuCopy } from 'react-icons/lu';
 
 interface SectionWithCopyProps {
   id: string;
@@ -40,12 +48,10 @@ const SectionWithCopy = ({ id, label, href, count }: SectionWithCopyProps) => {
       <IconButton
         size="sm"
         aria-label="Copy section link"
-        icon={copied ? <CheckIcon /> : <CopyIcon />}
         onClick={onCopy}
         variant="ghost"
-        colorScheme="blue"
-        _hover={{ bg: "blue.100" }}
-      />
+        colorPalette="blue"
+        _hover={{ bg: "blue.100" }}>{copied ? <LuCheck /> : <LuCopy />}</IconButton>
       <Text className="hidden group-hover:block text-lg text-red-500">
         {copied ? "Copied!" : "* Count as on date"}
       </Text>

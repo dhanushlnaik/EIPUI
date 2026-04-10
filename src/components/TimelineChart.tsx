@@ -1,14 +1,12 @@
 import React, { useState, useRef } from 'react';
+import { useColorModeValue } from "./ui/color-mode";
 import { Group } from '@visx/group';
 import { scaleLinear } from '@visx/scale';
-import {
-  Box, Button, Flex, HStack,
-  IconButton, Heading, useColorModeValue, Text
-} from '@chakra-ui/react';
-import { AddIcon, MinusIcon, RepeatIcon } from '@chakra-ui/icons';
+import { Steps, Box, Button, Flex, HStack, IconButton, Heading, Text } from "@chakra-ui/react";
 import { saveAs } from 'file-saver';
 import Link from "next/link";
 import DateTime from './DateTime';
+import { LuMinus, LuPlus, LuRepeat } from 'react-icons/lu';
 
 type StatusType = 'included' | 'scheduled' | 'declined' | 'considered' | 'proposed';
 
@@ -170,9 +168,12 @@ const linkHref =
     <Box bg={bg} p={4} borderRadius="lg" boxShadow="lg">
       <Flex justify="space-between" align="center" flexWrap="wrap" gap={3}>
         <HStack>
-          <IconButton aria-label="Zoom In" icon={<AddIcon />} size="sm" onClick={() => setZoomLevel(z => z * 1.2)} />
-          <IconButton aria-label="Zoom Out" icon={<MinusIcon />} size="sm" onClick={() => setZoomLevel(z => z / 1.2)} />
-          <IconButton aria-label="Reset Zoom" icon={<RepeatIcon />} size="sm" onClick={resetZoom} />
+          <IconButton aria-label="Zoom In" size="sm" onClick={() => setZoomLevel(z => z * 1.2)}><LuPlus /></IconButton>
+          <IconButton
+            aria-label="Zoom Out"
+            size="sm"
+            onClick={() => setZoomLevel(z => z / 1.2)}><LuMinus /></IconButton>
+          <IconButton aria-label="Reset Zoom" size="sm" onClick={resetZoom}><LuRepeat /></IconButton>
           <Button size="sm" bg="#40E0D0"
             color="white"
             _hover={{ bg: "#30c9c9" }}
@@ -286,54 +287,50 @@ const linkHref =
           </Group>
         </svg>
       </Flex>
-
       {/* Tooltip */}
-{hoveredEip && (
-  <Box
-    position="fixed"
-    left={tooltipPos.x + 10}
-    top={tooltipPos.y + 10}
-    zIndex={999}
-    bg="gray.800"
-    color="white"
-    px={4}
-    py={3}
-    borderRadius="md"
-    fontSize="md"
-    fontWeight="normal"
-    pointerEvents="none"
-    boxShadow="lg"
-    maxW="260px"
-    minW="185px"
-  >
-    <Text fontSize="lg" fontWeight="bold">{hoveredEip.eip}</Text>
-    <Text>
-      Status: <b>{changeStatus(hoveredEip.type)}</b>
-    </Text>
-    <Text>Date: {hoveredEip.date}</Text>
-    <Box mt={2}>
-      <Text fontWeight="bold" mb={1}>EIP Counts for this date:</Text>
-      <Text fontSize="sm" color="green.200">
-        INCLUDED: {hoveredEip.statusCounts.included}
-      </Text>
-      <Text fontSize="sm" color="blue.200">
-        SFI: {hoveredEip.statusCounts.scheduled}
-      </Text>
-      <Text fontSize="sm" color="orange.200">
-        CFI: {hoveredEip.statusCounts.considered}
-      </Text>
-      <Text fontSize="sm" color="red.200">
-        DFI: {hoveredEip.statusCounts.declined}
-      </Text>
-      <Text fontSize="sm" color="purple.200">
-        PFI: {hoveredEip.statusCounts.proposed}
-      </Text>
-    </Box>
-  </Box>
-)}
-
-
-
+      {hoveredEip && (
+        <Box
+          position="fixed"
+          left={tooltipPos.x + 10}
+          top={tooltipPos.y + 10}
+          zIndex={999}
+          bg="gray.800"
+          color="white"
+          px={4}
+          py={3}
+          borderRadius="md"
+          fontSize="md"
+          fontWeight="normal"
+          pointerEvents="none"
+          boxShadow="lg"
+          maxW="260px"
+          minW="185px"
+        >
+          <Text fontSize="lg" fontWeight="bold">{hoveredEip.eip}</Text>
+          <Text>
+            Status: <b>{changeStatus(hoveredEip.type)}</b>
+          </Text>
+          <Text>Date: {hoveredEip.date}</Text>
+          <Box mt={2}>
+            <Text fontWeight="bold" mb={1}>EIP Counts for this date:</Text>
+            <Text fontSize="sm" color="green.200">
+              INCLUDED: {hoveredEip.statusCounts.included}
+            </Text>
+            <Text fontSize="sm" color="blue.200">
+              SFI: {hoveredEip.statusCounts.scheduled}
+            </Text>
+            <Text fontSize="sm" color="orange.200">
+              CFI: {hoveredEip.statusCounts.considered}
+            </Text>
+            <Text fontSize="sm" color="red.200">
+              DFI: {hoveredEip.statusCounts.declined}
+            </Text>
+            <Text fontSize="sm" color="purple.200">
+              PFI: {hoveredEip.statusCounts.proposed}
+            </Text>
+          </Box>
+        </Box>
+      )}
       <DateTime />
     </Box>
   );

@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { useColorModeValue } from "./ui/color-mode";
 import { useWindowSize } from "react-use";
-import {
-  Box,
-  useColorModeValue,
-  Button,
-  Flex,
-  Heading,
-} from "@chakra-ui/react";
+import { Steps, Box, Button, Flex, Heading } from "@chakra-ui/react";
 import dynamic from "next/dynamic";
 import axios from "axios";
 
@@ -271,7 +266,7 @@ const StatusChart2: React.FC<AreaCProps> = ({ category, type }) => {
           {category}
         </Heading>
         <Button
-          colorScheme="blue"
+          colorPalette="blue"
           onClick={async () => {
             try {
               // Trigger the CSV conversion and download

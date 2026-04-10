@@ -1,11 +1,15 @@
-'use client';
-import {
-  Box,
-  Link,
-  Text,
-  useColorModeValue,
-  useTheme,
-} from "@chakra-ui/react";
+"use client";
+/*
+ MIGRATION NOTE: The following Chakra UI hooks have been removed.
+ Please replace them with the suggested alternatives:
+
+//   - useTheme: Use Import from system or use useChakraContext
+
+ See: https://chakra-ui.com/docs/get-started/migration#hooks
+*/
+
+import { Steps, Box, Link, Text } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
 import React from "react";
 import FlexBetween from "./FlexBetween";
 import { motion } from "framer-motion";

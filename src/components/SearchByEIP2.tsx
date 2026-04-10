@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Box, useColorModeValue, Text, Input, SimpleGrid, Button, Flex,IconButton, Tooltip, Spinner, Avatar, Menu, MenuItem, MenuList, MenuButton} from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Text, Input, SimpleGrid, Button, Flex, IconButton, Spinner, Avatar, Menu } from "@chakra-ui/react";
+import { Tooltip } from '@/components/ui/tooltip';
 import { saveAs } from 'file-saver';
 import AllLayout from './Layout';
 import NextLink from 'next/link';
-// import AuthorEIPCounter from './AuthorBoard';
-import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
-import { SearchIcon } from "@chakra-ui/icons";
 import axios from 'axios';
+
+import { LuChevronDown, LuChevronUp, LuSearch } from 'react-icons/lu';
 
 interface EIP {
   _id: string;
@@ -255,159 +256,164 @@ const findNetworkUpgrade = (eip: number): string | undefined => {
           />
         </Flex>
         </Box>
-        <Box p={4}>
+      <Box p={4}>
 
+      
+
+        {/* <AuthorEIPCounter eips={data}/> */}
+
+      {isLoading ? (
+        <Text textAlign="center">Loading...</Text>
+      ) : (
+        <>
         
 
-          {/* <AuthorEIPCounter eips={data}/> */}
+                
+          {/* Display Cards */}
+          <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 5 }} gap={6}>
+{paginatedData?.map((item) => {
+  // Find the network upgrade for the current item's EIP
+  const networkUpgrade = Object.entries(networkUpgrades).find(([_, eips]) =>
+    eips.includes(Number(item.eip))
+  )?.[0]; // Get the upgrade name if a match is found
 
-        {isLoading ? (
-          <Text textAlign="center">Loading...</Text>
-        ) : (
-          <>
-          
-
-                  
-            {/* Display Cards */}
-            <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 5 }} spacing={6}>
-  {paginatedData?.map((item) => {
-    // Find the network upgrade for the current item's EIP
-    const networkUpgrade = Object.entries(networkUpgrades).find(([_, eips]) =>
-      eips.includes(Number(item.eip))
-    )?.[0]; // Get the upgrade name if a match is found
-
-    return (
-      <NextLink
-        key={item._id}
-        href={`/${item.repo === "erc" ? "ercs/erc" : item.repo === "rip" ? "rips/rip" : "eips/eip"}-${item.eip}`}
-        target="_blank"
-        passHref
+  return (
+    <NextLink
+      key={item._id}
+      href={`/${item.repo === "erc" ? "ercs/erc" : item.repo === "rip" ? "rips/rip" : "eips/eip"}-${item.eip}`}
+      target="_blank"
+      passHref
+    >
+      <Box
+        bg={bg}
+        paddingX="0.5rem"
+        borderRadius="0.55rem"
+        _hover={{
+          transform: "scale(1.05)",
+          outline: "2px solid #30A0E0",
+          outlineOffset: "-2px",
+          transition: "transform 0.2s ease, outline 0.2s ease",
+        }}
+        transition="transform 0.2s ease, outline 0.2s ease"
+        width="100%"
+        padding="1rem"
+        display="flex"
+        flexDirection="column"
+        minHeight="300px" // Fixed height for uniformity
+        justifyContent="space-between" // Align items evenly
       >
-        <Box
-          bg={bg}
-          paddingX="0.5rem"
-          borderRadius="0.55rem"
-          _hover={{
-            transform: "scale(1.05)",
-            outline: "2px solid #30A0E0",
-            outlineOffset: "-2px",
-            transition: "transform 0.2s ease, outline 0.2s ease",
-          }}
-          transition="transform 0.2s ease, outline 0.2s ease"
-          width="100%"
-          padding="1rem"
-          display="flex"
-          flexDirection="column"
-          minHeight="300px" // Fixed height for uniformity
-          justifyContent="space-between" // Align items evenly
+        {/* Repo-EIP Title Section */}
+        <Text
+          fontSize="xl"
+          fontWeight="extrabold"
+          color={useColorModeValue('blue.500', 'blue.300')}
+          mb={3}
+          wordBreak="break-word"
         >
-          {/* Repo-EIP Title Section */}
-          <Text
-            fontSize="xl"
-            fontWeight="extrabold"
-            color={useColorModeValue('blue.500', 'blue.300')}
-            mb={3}
-            wordBreak="break-word"
-          >
-            {item.repo.toUpperCase()}-{item.eip}
-          </Text>
+          {item.repo.toUpperCase()}-{item.eip}
+        </Text>
 
-          {/* Title Section */}
-          <Text
-            fontSize="sm"
-            fontWeight="bold"
-            color={useColorModeValue('gray.700', 'gray.300')}
-            isTruncated
-            maxWidth="100%"
-            marginBottom="0.5rem"
-          >
-            {item.title}
-          </Text>
+        {/* Title Section */}
+        <Text
+          fontSize="sm"
+          fontWeight="bold"
+          color={useColorModeValue('gray.700', 'gray.300')}
+          isTruncated
+          maxWidth="100%"
+          marginBottom="0.5rem"
+        >
+          {item.title}
+        </Text>
 
-          {/* Type Section */}
+        {/* Type Section */}
+        <Text fontSize="sm" color={useColorModeValue('gray.700', 'gray.300')} mb={1}>
+          <b>Type:</b> {item.type}
+        </Text>
+
+        {/* Category Section */}
+        <Text fontSize="sm" color={useColorModeValue('gray.700', 'gray.300')} mb={1}>
+          <b>Category:</b> {item.category}
+        </Text>
+        <Text fontSize="sm" color={useColorModeValue('gray.700', 'gray.300')} mb={1}>
+          <b>Status:</b> {item.status}
+        </Text>
+
+        {/* Network Upgrade Section */}
+        {networkUpgrade && (
           <Text fontSize="sm" color={useColorModeValue('gray.700', 'gray.300')} mb={1}>
-            <b>Type:</b> {item.type}
+            <b>Network Upgrade:</b> {networkUpgrade}
           </Text>
+        )}
 
-          {/* Category Section */}
-          <Text fontSize="sm" color={useColorModeValue('gray.700', 'gray.300')} mb={1}>
-            <b>Category:</b> {item.category}
-          </Text>
-          <Text fontSize="sm" color={useColorModeValue('gray.700', 'gray.300')} mb={1}>
-            <b>Status:</b> {item.status}
-          </Text>
+        {/* Authors Section */}
+        <Text
+          fontSize="xs"
+          fontWeight="bold"
+          color={useColorModeValue('gray.700', 'gray.300')}
+          marginBottom="0.5rem"
+        >
+          Authors:
+        </Text>
+        <Box
+          display="flex"
+          alignItems="center"
+          gap="0.5rem"
+          marginBottom="1rem"
+          maxWidth="100%"
+        >
+          {(() => {
+            const authors = item.author.split(",")?.map((author) =>
+              author.replace(/<.*?>/g, "").trim()
+            );
 
-          {/* Network Upgrade Section */}
-          {networkUpgrade && (
-            <Text fontSize="sm" color={useColorModeValue('gray.700', 'gray.300')} mb={1}>
-              <b>Network Upgrade:</b> {networkUpgrade}
-            </Text>
-          )}
-
-          {/* Authors Section */}
-          <Text
-            fontSize="xs"
-            fontWeight="bold"
-            color={useColorModeValue('gray.700', 'gray.300')}
-            marginBottom="0.5rem"
-          >
-            Authors:
-          </Text>
-          <Box
-            display="flex"
-            alignItems="center"
-            gap="0.5rem"
-            marginBottom="1rem"
-            maxWidth="100%"
-          >
-            {(() => {
-              const authors = item.author.split(",")?.map((author) =>
-                author.replace(/<.*?>/g, "").trim()
+            const sortedAuthors = authors.sort((a, b) => {
+              const aIsSelected = !!(
+                selectedAuthor &&
+                a.toLowerCase().includes(selectedAuthor.toLowerCase())
               );
+              const bIsSelected = !!(
+                selectedAuthor &&
+                b.toLowerCase().includes(selectedAuthor.toLowerCase())
+              );
+              return Number(bIsSelected) - Number(aIsSelected);
+            });
 
-              const sortedAuthors = authors.sort((a, b) => {
-                const aIsSelected = !!(
-                  selectedAuthor &&
-                  a.toLowerCase().includes(selectedAuthor.toLowerCase())
-                );
-                const bIsSelected = !!(
-                  selectedAuthor &&
-                  b.toLowerCase().includes(selectedAuthor.toLowerCase())
-                );
-                return Number(bIsSelected) - Number(aIsSelected);
-              });
+            // Show only the first author with ...more if applicable
+            const firstAuthor = sortedAuthors[0];
+            const hasMoreAuthors = sortedAuthors?.length > 1;
 
-              // Show only the first author with ...more if applicable
-              const firstAuthor = sortedAuthors[0];
-              const hasMoreAuthors = sortedAuthors?.length > 1;
-
-              return (
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  gap="0.5rem"
-                  maxWidth="100%"
-                  bg="blue.500"
-                  color="white"
-                  px={2}
-                  py={1}
-                  borderRadius="full"
-                  border="1px solid"
-                  borderColor="blue.500"
-                  wordBreak="break-word" // Allow wrapping
-                  whiteSpace="normal"    // Ensure text can wrap
-                  overflow="hidden"      // Prevent overflow
-                  flexWrap="nowrap"      // Prevent splitting of content
-                  transition="all 0.2s ease"
-                  _hover={{
-                    bg: "blue.400",
-                    transform: "scale(1.05)",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => setSelectedAuthor(firstAuthor)} // Set selected author
-                >
-                  <Avatar
-                    size="xs"
+            return (
+              <Box
+                display="flex"
+                alignItems="center"
+                gap="0.5rem"
+                maxWidth="100%"
+                bg="blue.500"
+                color="white"
+                px={2}
+                py={1}
+                borderRadius="full"
+                border="1px solid"
+                borderColor="blue.500"
+                wordBreak="break-word" // Allow wrapping
+                whiteSpace="normal"    // Ensure text can wrap
+                overflow="hidden"      // Prevent overflow
+                flexWrap="nowrap"      // Prevent splitting of content
+                transition="all 0.2s ease"
+                _hover={{
+                  bg: "blue.400",
+                  transform: "scale(1.05)",
+                  cursor: "pointer",
+                }}
+                onClick={() => setSelectedAuthor(firstAuthor)} // Set selected author
+              >
+                <Avatar.Root
+                  size="xs"
+                  bg={
+                    firstAuthor.includes("@") && firstAuthor.includes(")")
+                      ? undefined
+                      : "black"
+                  }><Avatar.Fallback /><Avatar.Image
                     src={
                       firstAuthor.includes("@") && firstAuthor.includes(")")
                         ? `https://github.com/${firstAuthor.slice(
@@ -415,59 +421,53 @@ const findNetworkUpgrade = (eip: number): string | undefined => {
                             firstAuthor.indexOf(")")
                           )}.png`
                         : ""
-                    }
-                    bg={
-                      firstAuthor.includes("@") && firstAuthor.includes(")")
-                        ? undefined
-                        : "black"
-                    }
-                  />
-                  <Box
-                    display="flex"
-                    alignItems="center"
-                    gap="0.25rem"
-                    flexWrap="wrap"  // Allow wrapping of the text
-                  >
-                    <Text fontSize="xs" fontWeight="bold" isTruncated>
-                      {firstAuthor}
+                    } /></Avatar.Root>
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  gap="0.25rem"
+                  flexWrap="wrap"  // Allow wrapping of the text
+                >
+                  <Text fontSize="xs" fontWeight="bold" isTruncated>
+                    {firstAuthor}
+                  </Text>
+                  {hasMoreAuthors && (
+                    <Text fontSize="xs" fontWeight="bold" ml={1} whiteSpace="nowrap">
+                      ...more
                     </Text>
-                    {hasMoreAuthors && (
-                      <Text fontSize="xs" fontWeight="bold" ml={1} whiteSpace="nowrap">
-                        ...more
-                      </Text>
-                    )}
-                  </Box>
+                  )}
                 </Box>
-              );
-            })()}
-          </Box>
+              </Box>
+            );
+          })()}
         </Box>
-      </NextLink>
-    );
-  })}
+      </Box>
+    </NextLink>
+  );
+})}
 </SimpleGrid>
 
-            {/* Pagination */}
-            <Box mt={8} display="flex" justifyContent="center" alignItems="center" gap={4}>
-              <Button
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
-              >
-                Previous
-              </Button>
-              <Text>
-                Page {currentPage} of {totalPages}
-              </Text>
-              <Button
-                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                disabled={currentPage === totalPages}
-              >
-                Next
-              </Button>
-            </Box>
-          </>
-        )}
-      </Box>
+          {/* Pagination */}
+          <Box mt={8} display="flex" justifyContent="center" alignItems="center" gap={4}>
+            <Button
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </Button>
+            <Text>
+              Page {currentPage} of {totalPages}
+            </Text>
+            <Button
+              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+              disabled={currentPage === totalPages}
+            >
+              Next
+            </Button>
+          </Box>
+        </>
+      )}
+    </Box>
     </>
   );
 };

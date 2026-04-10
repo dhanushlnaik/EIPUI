@@ -1,9 +1,10 @@
 "use client";
-
+;
 import React, { useEffect, useState, useMemo } from "react";
+import { useColorModeValue } from "../../components/ui/color-mode";
 import CloseableAdCard from "@/components/CloseableAdCard";
 import AllLayout from "@/components/Layout";
-import { Box, useColorModeValue, SimpleGrid, Grid } from "@chakra-ui/react";
+import { Steps, Box, SimpleGrid, Grid } from "@chakra-ui/react";
 import FlexBetween from "@/components/FlexBetween";
 import Header from "@/components/Header";
 import TableStatus from "@/components/TableStatus";
@@ -16,12 +17,12 @@ import CategoryDistributionChart from "@/components/CategoryDistributionChart";
 import StatusInsightsCard from "@/components/StatusInsightsCard";
 import FAQSection from "@/components/FAQSection";
 import { FiFileText, FiCheckCircle, FiUsers, FiWifi, FiGitPullRequest } from "react-icons/fi";
-import { DownloadIcon } from "@chakra-ui/icons";
 import Table from "@/components/Table";
 import LineChart from "@/components/LineChart";
 import LineStatus from "@/components/LineStatus";
 import AreaStatus from "@/components/AreaStatus";
 import Link from "next/link";
+import { LuDownload } from 'react-icons/lu';
 
 interface EIP {
   _id: string;
@@ -148,7 +149,7 @@ const Networking = () => {
                 description="This section lists all Networking EIPs, which propose changes to the Ethereum network protocol."
               />
             </FlexBetween>
-            <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={6} mb={8}>
+            <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} gap={6} mb={8}>
               <AnalyticsStatCard label="Networking EIPs" value={networkingData.length} icon={FiWifi} colorScheme="green" helpText="Network proposals" />
               <AnalyticsStatCard label="Final" value={networkingData.filter(item => item.status === "Final").length} icon={FiCheckCircle} colorScheme="teal" helpText="Implemented" />
               <AnalyticsStatCard label="With Discussions" value={withDiscussions} icon={FiGitPullRequest} colorScheme="cyan" helpText="Community input" />
@@ -180,7 +181,9 @@ const Networking = () => {
                 boxShadow: "md",
                 borderColor: "#30A0E0",
               }}
-                            sx={{ transition: "all 0.3s" }}
+                            css={{
+                              transition: "all 0.3s"
+                            }}
             >
               <StatusColumnChart category={"Networking"} type={"EIPs"} />
             </Box>

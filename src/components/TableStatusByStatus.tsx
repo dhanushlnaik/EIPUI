@@ -1,19 +1,9 @@
-import {
-  Box,
-  Text,
-  useColorModeValue,
-  Wrap,
-  WrapItem,
-  Badge,
-  Link,
-  Button,
-  Flex,
-  Select,
-} from "@chakra-ui/react";
+import { Box, Text, Wrap, WrapItem, Badge, Link, Button, Flex, Select, Icon } from "@chakra-ui/react";
+import { useColorModeValue, useColorMode } from "./ui/color-mode";
 import { CCardBody, CSmartTable } from "@coreui/react-pro";
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Spinner, useColorMode } from "@chakra-ui/react";
+import { Spinner } from "@chakra-ui/react";
 import { Popover, PopoverContent, PopoverTrigger } from "@chakra-ui/react";
 
 const statusArr = [
@@ -54,7 +44,7 @@ interface EIP {
 
 import "@coreui/coreui/dist/css/coreui.min.css";
 import LoaderComponent from "./Loader";
-import { DownloadIcon } from "@chakra-ui/icons";
+import { LuDownload } from 'react-icons/lu';
 
 interface TabProps {
   status: string;
@@ -203,14 +193,14 @@ const TableStatusByStatus: React.FC<TabProps> = ({ status }) => {
                 </Select>
 
                 <Button
-                  colorScheme="blue"
+                  colorPalette="blue"
                   onClick={convertAndDownloadCSV}
                   variant="outline"
                   fontSize={{ lg: "14px", md: "12px", sm: "12px", base: "10px" }}
                   fontWeight="bold"
                   padding={{ lg: "10px 20px", md: "5px 10px", sm: "5px 10px", base: "5px 10px" }}
                 >
-                  <DownloadIcon marginEnd="1.5" />
+                  <Icon as={LuDownload} marginEnd="1.5" />
                   Download CSV
                 </Button>
               </Flex>
@@ -276,7 +266,7 @@ const TableStatusByStatus: React.FC<TabProps> = ({ status }) => {
                             <Button
                               size={"xs"}
                               variant="ghost"
-                              colorScheme="blue"
+                              colorPalette="blue"
                             >
                               Show
                             </Button>

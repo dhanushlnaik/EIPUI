@@ -1,5 +1,7 @@
 "use client";
+import { TabList } from "@/components/ui/compat";
 
+;
 // import React from "react";
 // import AllLayout from "@/components/Layout";
 // import { Box, Button, useColorModeValue } from "@chakra-ui/react";
@@ -15,7 +17,7 @@
 // import LoaderComponent from "@/components/Loader";
 // import StatusColumnChart from "@/components/StatusColumnChart";
 
-// import {TabList, Tabs } from "@chakra-ui/react";
+// import { Tabs } from "@chakra-ui/react";
 // import Link from "next/link";
 
 // const categories = [
@@ -154,14 +156,10 @@
 // export default Meta;
 
 import React, { useEffect, useState, useMemo } from "react";
+import { useColorModeValue } from "../../components/ui/color-mode";
 import CloseableAdCard from "@/components/CloseableAdCard";
 import AllLayout from "@/components/Layout";
-import {
-  Box,
-  useColorModeValue,
-  SimpleGrid,
-  Grid
-} from "@chakra-ui/react";
+import { Steps, Box, SimpleGrid, Grid } from "@chakra-ui/react";
 import FlexBetween from "@/components/FlexBetween";
 import Header from "@/components/Header";
 import TableStatus from "@/components/TableStatus";
@@ -305,7 +303,7 @@ const Meta = () => {
                 * EIP-1 is available both on EIP GitHub and ERC GitHub, so the count can vary by 1.
               </p>
             </Box>
-            <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={6} mb={8}>
+            <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} gap={6} mb={8}>
               <AnalyticsStatCard label="Meta EIPs" value={metaData.length} icon={FiSettings} colorScheme="cyan" helpText="Process docs" />
               <AnalyticsStatCard label="Final" value={metaData.filter(item => item.status === "Final").length} icon={FiCheckCircle} colorScheme="green" helpText="Approved" />
               <AnalyticsStatCard label="Living" value={metaData.filter(item => item.status === "Living").length} icon={FiFileText} colorScheme="teal" helpText="Evolving docs" />
@@ -332,7 +330,9 @@ const Meta = () => {
               p={6}
               borderRadius="xl"
               border="1px solid"
-              sx={{ transition: "all 0.3s" }}
+              css={{
+                transition: "all 0.3s"
+              }}
               borderColor={cardBorderColor}
               boxShadow="sm"
               _hover={{

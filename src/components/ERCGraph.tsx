@@ -1,7 +1,8 @@
 import React from "react";
+import { useColorModeValue } from "./ui/color-mode";
 import { motion } from "framer-motion";
 import StatusColumnChart from "@/components/StatusColumnChart";
-import { Box, useColorModeValue } from "@chakra-ui/react";
+import { Steps, Box } from "@chakra-ui/react";
 import DateTime from "@/components/DateTime";
 
 const ERCGraph = () => {

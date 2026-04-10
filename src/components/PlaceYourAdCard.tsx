@@ -1,5 +1,6 @@
 import React from "react";
-import { Box, Heading, Text, Button, Stack, useColorModeValue, useColorMode } from "@chakra-ui/react";
+import { useColorModeValue, useColorMode } from "./ui/color-mode";
+import { Steps, Box, Heading, Text, Button, Stack } from "@chakra-ui/react";
 
 type Props = {
   title?: string;
@@ -44,7 +45,7 @@ export default function PlaceYourAdCard({
         boxShadow="0 18px 45px rgba(0,0,0,0.55)"
         _hover={{ transform: "translateY(-3px)", boxShadow: "0 22px 55px rgba(15,118,110,0.35)" }}
       >
-        <Stack spacing={4} align="center" textAlign="center" position="relative" zIndex={1}>
+        <Stack gap={4} align="center" textAlign="center" position="relative" zIndex={1}>
           <Box position="relative">
             <Heading
               size={{ base: "sm", md: "md", lg: "lg" }}
@@ -63,7 +64,7 @@ export default function PlaceYourAdCard({
           >
             {subtitle}
           </Text>
-          <Stack direction={{ base: "column", sm: "row" }} spacing={3} pt={1}>
+          <Stack direction={{ base: "column", sm: "row" }} gap={3} pt={1}>
             <Button
               as="a"
               href={ctaHref}
@@ -134,7 +135,7 @@ export default function PlaceYourAdCard({
         ),
       }}
     >
-      <Stack spacing={4} align="center" textAlign="center" position="relative" zIndex={1}>
+      <Stack gap={4} align="center" textAlign="center" position="relative" zIndex={1}>
         <Box position="relative">
           <Heading 
             size={{ base: "sm", md: "md", lg: "lg" }} 
@@ -156,7 +157,7 @@ export default function PlaceYourAdCard({
         > 
           {subtitle}
         </Text>
-        <Stack direction={{ base: "column", sm: "row" }} spacing={3} pt={2}>
+        <Stack direction={{ base: "column", sm: "row" }} gap={3} pt={2}>
           <Button 
             as="a" 
             href={ctaHref} 

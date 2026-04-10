@@ -1,22 +1,12 @@
 "use client";
+import { PopoverCloseButton } from "@/components/ui/compat";
+
 
 import React from "react";
 import CloseableAdCard from "@/components/CloseableAdCard";
 import AllLayout from "@/components/Layout";
 import Header from "@/components/Header";
-import {
-  Box,
-  Flex,
-  Grid,
-  Popover,
-  PopoverArrow,
-  PopoverBody,
-  PopoverCloseButton,
-  PopoverContent,
-  PopoverHeader,
-  PopoverTrigger,
-  Text,
-} from "@chakra-ui/react";
+import { Steps, Box, Flex, Grid, Popover, PopoverArrow, PopoverBody, PopoverContent, PopoverHeader, PopoverTrigger, Text } from "@chakra-ui/react";
 import CBoxStatus from "@/components/CBoxStatus2";
 import Donut from "@/components/Donut";
 import DonutStatus from "@/components/DonutStatus";
@@ -135,7 +125,7 @@ const Status = () => {
     <AllLayout>
       {isLoading ? ( // Check if the data is still loading
         // Show loader if data is loading
-        <Box
+        (<Box
           display="flex"
           justifyContent="center"
           alignItems="center"
@@ -149,7 +139,7 @@ const Status = () => {
             {/* Your loader component */}
             <LoaderComponent />
           </motion.div>
-        </Box>
+        </Box>)
       ) : (
         <motion.div
           initial={{ opacity: 0 }}

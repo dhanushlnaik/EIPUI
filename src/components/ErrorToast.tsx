@@ -1,4 +1,4 @@
-import { Box, Text, Link } from "@chakra-ui/react";
+import { Steps, Box, Text, Link } from "@chakra-ui/react";
 
 interface ErrorListProps {
   errors: string[];
@@ -15,7 +15,12 @@ export const ErrorList: React.FC<ErrorListProps> = ({ errors }) => {
       if (part.match(urlRegex)) {
         // If the part is a URL, wrap it in a Link component
         return (
-          <Link key={index} href={part} color="blue.500" isExternal>
+          <Link
+            key={index}
+            href={part}
+            color="blue.500"
+            target='_blank'
+            rel='noopener noreferrer'>
             {part}
           </Link>
         );

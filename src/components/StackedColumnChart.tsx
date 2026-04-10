@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import { useColorModeValue } from "./ui/color-mode";
 import dynamic from 'next/dynamic';
-import { Box, useColorModeValue, Spinner } from '@chakra-ui/react';
+import { Steps, Box, Spinner } from "@chakra-ui/react";
 import { useWindowSize } from 'react-use';
 import DateTime from "@/components/DateTime";
 

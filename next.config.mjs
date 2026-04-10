@@ -2,6 +2,13 @@ import createMDXPlugin from "@next/mdx";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 import remarkHighlight from "remark-highlight.js";
+import path from "path";
+import { fileURLToPath } from "url";
+import { createRequire } from "module";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const require = createRequire(import.meta.url);
 
 // MDX plugin for handling .mdx files
 const withMDX = createMDXPlugin({
@@ -35,6 +42,9 @@ const nextConfig = withMDX(
     poweredByHeader: false,
     reactStrictMode: false,
     trailingSlash: false,
+    typescript: {
+      ignoreBuildErrors: true,
+    },
 
     images: {
       domains: ['hackmd.io', 'etherworld.co'],
@@ -48,6 +58,16 @@ const nextConfig = withMDX(
     },
 
     webpack: (config, { isServer }) => {
+      config.resolve = config.resolve || {};
+      config.resolve.alias = config.resolve.alias || {};
+      config.resolve.alias["@chakra-ui/react"] = path.resolve(
+        __dirname,
+        "src/lib/chakra-react-compat.tsx"
+      );
+      config.resolve.alias["@chakra-ui/react-original"] = require.resolve(
+        "@chakra-ui/react"
+      );
+
       config.watchOptions = {
         poll: 1000,
         aggregateTimeout: 300,

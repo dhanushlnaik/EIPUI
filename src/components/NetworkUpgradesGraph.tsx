@@ -1,12 +1,13 @@
-'use client';
-
+"use client";
+;
 import React, { useMemo, useRef, useState } from 'react';
+import { useColorModeValue } from "./ui/color-mode";
 import ForceGraph3D, { ForceGraphMethods } from 'react-force-graph-3d';
 import * as THREE from 'three';
 import SpriteText from 'three-spritetext';
-import { Button, IconButton, HStack, Box, useColorModeValue, Text, Input } from '@chakra-ui/react';
-import { AddIcon, MinusIcon, RepeatIcon } from '@chakra-ui/icons';
+import { Steps, Button, IconButton, HStack, Box, Text, Input } from "@chakra-ui/react";
 import { useRouter } from 'next/router';
+import { LuMinus, LuPlus, LuRepeat } from 'react-icons/lu';
 
 const networkUpgradesData = {
   networkUpgrades: [
@@ -511,7 +512,6 @@ const EIP3DGraph = () => {
           </Text>
         )}
       </Box>
-      
       {/* Legend */}
       <Box
         position="absolute"
@@ -535,7 +535,7 @@ const EIP3DGraph = () => {
         <Button 
           size="xs" 
           variant={showTransitiveDeps ? "solid" : "outline"}
-          colorScheme="blue"
+          colorPalette="blue"
           onClick={() => setShowTransitiveDeps(!showTransitiveDeps)}
           mb={2}
           fontSize="0.6rem"
@@ -631,148 +631,146 @@ const EIP3DGraph = () => {
           ))}
         </Box>
       </Box>
+      <ForceGraph3D
+        ref={fgRef}
+        graphData={graphData}
+        nodeThreeObject={(node: any) => {
+          const baseColor = colorScale.get(node.group) || '#999';
+          const isSearchResult = searchResults.includes(node.id);
+          const isHighlighted = hoveredNetwork === node.group || selectedNetwork === node.group || isSearchResult;
+          const isOtherNetwork = ((hoveredNetwork && hoveredNetwork !== node.group) || 
+                               (selectedNetwork && selectedNetwork !== node.group && !hoveredNetwork)) && !isSearchResult;
+          
+          // Adjust sphere properties based on hover/selection/search state
+          const sphereRadius = isHighlighted ? 8 : 6;
+          const sphereColor = isOtherNetwork ? '#666' : baseColor;
+          const sphereOpacity = isOtherNetwork ? 0.3 : 1;
 
+          // Create sphere mesh
+          const geometry = new THREE.SphereGeometry(sphereRadius, 16, 16);
+          const material = new THREE.MeshBasicMaterial({ 
+            color: sphereColor, 
+            transparent: true, 
+            opacity: sphereOpacity 
+          });
+          const sphere = new THREE.Mesh(geometry, material);
 
-        <ForceGraph3D
-          ref={fgRef}
-          graphData={graphData}
-          nodeThreeObject={(node: any) => {
-            const baseColor = colorScale.get(node.group) || '#999';
-            const isSearchResult = searchResults.includes(node.id);
-            const isHighlighted = hoveredNetwork === node.group || selectedNetwork === node.group || isSearchResult;
-            const isOtherNetwork = ((hoveredNetwork && hoveredNetwork !== node.group) || 
-                                 (selectedNetwork && selectedNetwork !== node.group && !hoveredNetwork)) && !isSearchResult;
-            
-            // Adjust sphere properties based on hover/selection/search state
-            const sphereRadius = isHighlighted ? 8 : 6;
-            const sphereColor = isOtherNetwork ? '#666' : baseColor;
-            const sphereOpacity = isOtherNetwork ? 0.3 : 1;
-
-            // Create sphere mesh
-            const geometry = new THREE.SphereGeometry(sphereRadius, 16, 16);
-            const material = new THREE.MeshBasicMaterial({ 
-              color: sphereColor, 
-              transparent: true, 
-              opacity: sphereOpacity 
+          // Add glow effect for highlighted nodes
+          if (isHighlighted) {
+            const glowGeometry = new THREE.SphereGeometry(sphereRadius * 1.3, 16, 16);
+            const glowMaterial = new THREE.MeshBasicMaterial({
+              color: baseColor,
+              transparent: true,
+              opacity: 0.3
             });
-            const sphere = new THREE.Mesh(geometry, material);
+            const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+            sphere.add(glow);
+          }
 
-            // Add glow effect for highlighted nodes
-            if (isHighlighted) {
-              const glowGeometry = new THREE.SphereGeometry(sphereRadius * 1.3, 16, 16);
-              const glowMaterial = new THREE.MeshBasicMaterial({
-                color: baseColor,
-                transparent: true,
-                opacity: 0.3
-              });
-              const glow = new THREE.Mesh(glowGeometry, glowMaterial);
-              sphere.add(glow);
-            }
+          // Create sprite label
+          const sprite = new SpriteText(node.label);
+          sprite.color = isOtherNetwork ? '#888' : '#ffffff';
+          sprite.backgroundColor = isSearchResult ? 'rgba(0, 0, 0, 0.7)' : 'transparent';
+          sprite.borderColor = isSearchResult ? '#ffff00' : 'transparent';
+          sprite.borderWidth = isSearchResult ? 1 : 0;
+          sprite.textHeight = isHighlighted ? 6 : 4;
+          sprite.fontWeight = isSearchResult ? 'bold' : 'normal';
+          // Position label higher for highlighted nodes to avoid overlap with enlarged spheres
+          sprite.position.set(0, isHighlighted ? 15 : 10, 0);
 
-            // Create sprite label
-            const sprite = new SpriteText(node.label);
-            sprite.color = isOtherNetwork ? '#888' : '#ffffff';
-            sprite.backgroundColor = isSearchResult ? 'rgba(0, 0, 0, 0.7)' : 'transparent';
-            sprite.borderColor = isSearchResult ? '#ffff00' : 'transparent';
-            sprite.borderWidth = isSearchResult ? 1 : 0;
-            sprite.textHeight = isHighlighted ? 6 : 4;
-            sprite.fontWeight = isSearchResult ? 'bold' : 'normal';
-            // Position label higher for highlighted nodes to avoid overlap with enlarged spheres
-            sprite.position.set(0, isHighlighted ? 15 : 10, 0);
+          // Combine into a group
+          const group = new THREE.Group();
+          group.add(sphere);
+          group.add(sprite);
 
-            // Combine into a group
-            const group = new THREE.Group();
-            group.add(sphere);
-            group.add(sprite);
+          return group;
+        }}
 
-            return group;
-          }}
-
-          nodeLabel={(node) => `EIP-${node.label} (Network: ${node.upgradeName || 'N/A'})`}
-          linkColor={(link) => {
-            const sourceNode = graphData.nodes.find(n => n.id === link.source);
-            const targetNode = graphData.nodes.find(n => n.id === link.target);
-            const activeNetwork = hoveredNetwork || selectedNetwork;
-            const isRelatedToActive = activeNetwork && (
-              sourceNode?.group === activeNetwork || 
-              targetNode?.group === activeNetwork
-            );
+        nodeLabel={(node) => `EIP-${node.label} (Network: ${node.upgradeName || 'N/A'})`}
+        linkColor={(link) => {
+          const sourceNode = graphData.nodes.find(n => n.id === link.source);
+          const targetNode = graphData.nodes.find(n => n.id === link.target);
+          const activeNetwork = hoveredNetwork || selectedNetwork;
+          const isRelatedToActive = activeNetwork && (
+            sourceNode?.group === activeNetwork || 
+            targetNode?.group === activeNetwork
+          );
+          
+          if (showTransitiveDeps && isRelatedToActive) {
+            // Check if this is a direct dependency
+            const sourceEip = typeof link.source === 'object' ? link.source.id : link.source;
+            const targetEip = typeof link.target === 'object' ? link.target.id : link.target;
             
-            if (showTransitiveDeps && isRelatedToActive) {
-              // Check if this is a direct dependency
-              const sourceEip = typeof link.source === 'object' ? link.source.id : link.source;
-              const targetEip = typeof link.target === 'object' ? link.target.id : link.target;
-              
-              // Find if this is a direct dependency
-              let isDirect = false;
-              for (const upgrade of networkUpgradesData.networkUpgrades) {
-                for (const { eip, requires } of upgrade.eips) {
-                  if (eip === sourceEip && requires.includes(targetEip)) {
-                    isDirect = true;
-                    break;
-                  }
+            // Find if this is a direct dependency
+            let isDirect = false;
+            for (const upgrade of networkUpgradesData.networkUpgrades) {
+              for (const { eip, requires } of upgrade.eips) {
+                if (eip === sourceEip && requires.includes(targetEip)) {
+                  isDirect = true;
+                  break;
                 }
-                if (isDirect) break;
               }
-              
-              // Use different colors for direct vs transitive dependencies
-              return isDirect ? colorScale.get(activeNetwork as string) || '#aaa' : '#888';
+              if (isDirect) break;
             }
             
-            // Color links related to the active network, otherwise gray
-            return isRelatedToActive ? colorScale.get(activeNetwork as string) || '#aaa' : '#bbb';
-          }}
-          linkWidth={(link) => {
-            const sourceNode = graphData.nodes.find(n => n.id === link.source);
-            const targetNode = graphData.nodes.find(n => n.id === link.target);
-            const activeNetwork = hoveredNetwork || selectedNetwork;
-            const isRelatedToActive = activeNetwork && (
-              sourceNode?.group === activeNetwork || 
-              targetNode?.group === activeNetwork
-            );
+            // Use different colors for direct vs transitive dependencies
+            return isDirect ? colorScale.get(activeNetwork as string) || '#aaa' : '#888';
+          }
+          
+          // Color links related to the active network, otherwise gray
+          return isRelatedToActive ? colorScale.get(activeNetwork as string) || '#aaa' : '#bbb';
+        }}
+        linkWidth={(link) => {
+          const sourceNode = graphData.nodes.find(n => n.id === link.source);
+          const targetNode = graphData.nodes.find(n => n.id === link.target);
+          const activeNetwork = hoveredNetwork || selectedNetwork;
+          const isRelatedToActive = activeNetwork && (
+            sourceNode?.group === activeNetwork || 
+            targetNode?.group === activeNetwork
+          );
+          
+          if (showTransitiveDeps && isRelatedToActive) {
+            // Check if this is a direct dependency
+            const sourceEip = typeof link.source === 'object' ? link.source.id : link.source;
+            const targetEip = typeof link.target === 'object' ? link.target.id : link.target;
             
-            if (showTransitiveDeps && isRelatedToActive) {
-              // Check if this is a direct dependency
-              const sourceEip = typeof link.source === 'object' ? link.source.id : link.source;
-              const targetEip = typeof link.target === 'object' ? link.target.id : link.target;
-              
-              let isDirect = false;
-              for (const upgrade of networkUpgradesData.networkUpgrades) {
-                for (const { eip, requires } of upgrade.eips) {
-                  if (eip === sourceEip && requires.includes(targetEip)) {
-                    isDirect = true;
-                    break;
-                  }
+            let isDirect = false;
+            for (const upgrade of networkUpgradesData.networkUpgrades) {
+              for (const { eip, requires } of upgrade.eips) {
+                if (eip === sourceEip && requires.includes(targetEip)) {
+                  isDirect = true;
+                  break;
                 }
-                if (isDirect) break;
               }
-              
-              // Make direct dependencies thicker than transitive ones
-              return isDirect ? 3 : 1;
+              if (isDirect) break;
             }
             
-            return isRelatedToActive ? 2 : 1;
-          }}
-          nodeResolution={32}
-          warmupTicks={100}
-          cooldownTicks={1000}
-          onNodeClick={(node: any, event: any) => {
-            // Check if Shift key is pressed for selection, otherwise navigate
-            if (event?.shiftKey) {
-              // Toggle selection when Shift+click
-              setSelectedNetwork(selectedNetwork === node.group ? null : node.group);
-            } else {
-              // Navigate to EIP page on regular click
-              const eipNumber = node.label; // The EIP number from the node
-              router.push(`/eips/eip-${eipNumber}`);
-            }
-          }}
-          onBackgroundClick={() => {
-            // Clear selection when clicking on empty space
-            setSelectedNetwork(null);
-          }}
-        // onZoom={() => setShowResetZoom(true)}
-        />
+            // Make direct dependencies thicker than transitive ones
+            return isDirect ? 3 : 1;
+          }
+          
+          return isRelatedToActive ? 2 : 1;
+        }}
+        nodeResolution={32}
+        warmupTicks={100}
+        cooldownTicks={1000}
+        onNodeClick={(node: any, event: any) => {
+          // Check if Shift key is pressed for selection, otherwise navigate
+          if (event?.shiftKey) {
+            // Toggle selection when Shift+click
+            setSelectedNetwork(selectedNetwork === node.group ? null : node.group);
+          } else {
+            // Navigate to EIP page on regular click
+            const eipNumber = node.label; // The EIP number from the node
+            router.push(`/eips/eip-${eipNumber}`);
+          }
+        }}
+        onBackgroundClick={() => {
+          // Clear selection when clicking on empty space
+          setSelectedNetwork(null);
+        }}
+      // onZoom={() => setShowResetZoom(true)}
+      />
     </div>
   );
 };

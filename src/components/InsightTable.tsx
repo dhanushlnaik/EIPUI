@@ -1,14 +1,5 @@
-import {
-  Box,
-  Text,
-  useColorModeValue,
-  Wrap,
-  WrapItem,
-  Badge,
-  Flex,
-  Link,
-  Button,
-} from "@chakra-ui/react";
+import { Box, Text, Wrap, WrapItem, Badge, Flex, Link, Button, Icon } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
 import { CCardBody, CSmartTable } from "@coreui/react-pro";
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
@@ -57,7 +48,7 @@ interface DataObject {
 
 import "@coreui/coreui/dist/css/coreui.min.css";
 import LoaderComponent from "./Loader";
-import { DownloadIcon } from "@chakra-ui/icons";
+import { LuDownload } from 'react-icons/lu';
 interface TabProps {
   month: string;
   year: string;
@@ -336,20 +327,20 @@ const InsightTable: React.FC<TabProps> = ({
         className="scrollbarDesign"
       >
         {isLoading ? ( // Show loader while data is loading
-          <Box
+          (<Box
             display="flex"
             justifyContent="center"
             alignItems="center"
             height="200px"
           >
             <LoaderComponent />
-          </Box>
+          </Box>)
         ) : (
           <>
             <Box>
               <Flex justifyContent="flex-end">
               <Button
-                colorScheme="blue"
+                colorPalette="blue"
                 variant="outline"
                 fontSize={"14px"}
                 fontWeight={"bold"}
@@ -366,7 +357,7 @@ const InsightTable: React.FC<TabProps> = ({
                   }
                 }}
               >
-                <DownloadIcon marginEnd={"1.5"} />
+                <Icon as={LuDownload} marginEnd={"1.5"} />
                 Download Reports
               </Button>
               </Flex>

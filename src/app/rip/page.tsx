@@ -1,8 +1,12 @@
 "use client";
+import { useDisclosure } from "@/components/ui/compat";
 
-﻿import AllLayout from "@/components/Layout";
+import { useToast } from "@/components/ui/use-toast";
+;
+import AllLayout from "@/components/Layout";
+import { useColorModeValue } from "../../components/ui/color-mode";
 import CloseableAdCard from "@/components/CloseableAdCard";
-import { Box, Button, Grid, Text, useColorModeValue, IconButton, Flex, Collapse, Heading, useDisclosure, Link as LI, ButtonGroup, GridItem, Select, SimpleGrid, Link, useToast } from "@chakra-ui/react";
+import { Steps, Box, Button, Grid, Text, IconButton, Flex, Collapsible, Heading, Link as LI, ButtonGroup, GridItem, NativeSelect, SimpleGrid, Link, Icon } from "@chakra-ui/react";
 import FlexBetween from "@/components/FlexBetween";
 import Header from "@/components/Header";
 import React, { useEffect, useState } from "react";
@@ -18,8 +22,6 @@ import AllChart3 from "@/components/AllChart3";
 import AreaC from "@/components/AreaC";
 import RIPStatusGraph from "@/components/RIPStatusGraph";
 import OtherBox from "@/components/OtherStats";
-import { ChevronDownIcon, CopyIcon } from "@chakra-ui/icons";
-import { ChevronUpIcon } from "@chakra-ui/icons";
 import RipCatTable from "@/components/RipCatTable";
 import AreaStatus from "@/components/AreaStatus";
 import CatTable from "@/components/CatTable";
@@ -29,6 +31,8 @@ import RipTable from "@/components/RipTable";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
 import { getStatusTimelineV2Data } from "@/lib/statusTimelineClient";
+
+import { LuChevronDown, LuChevronUp, LuCopy } from 'react-icons/lu';
 
 interface EIP {
   _id: string;
@@ -116,8 +120,8 @@ const Status_OPTIONS = ["Draft", "Review", "Last Call", "Living", "Final", "Stag
 const RIP = () => {
   const [data, setData] = useState<EIP[]>([]);
   const [data4, setData4] = useState<EIP[]>([]);
-  const [data2, setData2] = useState<APIResponse>({ eip: [], erc: [], rip: [] });
-  const [data3, setData3] = useState<Data>({ eip: [], erc: [], rip: [] });
+  const [data2, setData2] = useState<any>({ eip: [], erc: [], rip: [] });
+  const [data3, setData3] = useState<any>({ eip: [], erc: [], rip: [] });
   const [isLoading, setIsLoading] = useState(true);
   const [selected, setSelected] = useState<"status" | "category">("category");
   const [selectedStatusInner, setSelectedStatusInner] = useState(Status_OPTIONS[0]);
@@ -217,7 +221,7 @@ const RIP = () => {
     fetchData();
   }, []);
 
-  const { isOpen: showDropdown, onToggle: toggleDropdown } = useDisclosure();
+  const { open: showDropdown, onToggle: toggleDropdown } = useDisclosure();
 
   const [show, setShow] = useState(false);
 
@@ -256,7 +260,7 @@ const RIP = () => {
     <AllLayout>
       {isLoading ? ( // Check if the data is still loading
         // Show loader if data is loading
-        <Box
+        (<Box
           display="flex"
           justifyContent="center"
           alignItems="center"
@@ -270,7 +274,7 @@ const RIP = () => {
             {/* Your loader component */}
             <LoaderComponent />
           </motion.div>
-        </Box>
+        </Box>)
       ) : (
         <motion.div
           initial={{ opacity: 0 }}
@@ -296,8 +300,8 @@ const RIP = () => {
                     </Text>
                     <Button
                       size="sm"
-                      colorScheme="blue"
-                      variant="link"
+                      colorPalette="blue"
+                      variant='plain'
                       as={Link}
                       href="/FAQs/RIP"
                     >
@@ -326,7 +330,7 @@ const RIP = () => {
                 </Box>
 
                 {/* Right: Category / Status Toggle Buttons */}
-                <ButtonGroup size="md" isAttached>
+                <ButtonGroup size="md" attached>
                   <Button
                     bg={selected === "category" ? "#40E0D0" : "white"}
                     color={selected === "category" ? "white" : "#40E0D0"}
@@ -386,87 +390,87 @@ const RIP = () => {
                 >
                   <IconButton
                     onClick={toggleCollapse}
-                    icon={show ? <ChevronUpIcon boxSize={8} color="white" /> : <ChevronDownIcon boxSize={8} color="white" />}
                     variant="ghost"
                     mt={1}
-                    h="24px" // Smaller height
+                    // Smaller height
+                    h="24px"
                     w="20px"
                     aria-label="Toggle Instructions"
-                    _hover={{ bg: 'blue' }} // Maintain background color on hover
-                    _active={{ bg: 'blue' }} // Maintain background color when active
-                    _focus={{ boxShadow: 'none' }} // Remove focus outline
-
-                  />
+                    // Maintain background color on hover
+                    _hover={{ bg: 'blue' }}
+                    // Maintain background color when active
+                    _active={{ bg: 'blue' }}
+                    // Remove focus outline
+                    _focus={{ boxShadow: 'none' }}>{show ? <Icon as={LuChevronUp} boxSize={8} color="white" /> : <Icon as={LuChevronDown} boxSize={8} color="white" />}</IconButton>
                 </Box>
 
 
               </Flex>
 
-              <Collapse in={show}>
-                <Heading
-                  as="h4"
-                  size="md"
-                  marginBottom={4}
-                  color={useColorModeValue("#3182CE", "blue.300")}
-                >
-                  What is a Rollup Improvement Proposal (RIP)?
-                </Heading>
-                <Text
-                  fontSize="md"
-                  marginBottom={2}
-                  color={useColorModeValue("gray.800", "gray.200")}
-                  className="text-justify"
-                >
-                  A Rollup Improvement Proposal (RIP) is a formal document that outlines new features, processes, or optimizations for rollup solutions in the Ethereum ecosystem. RIPs act as specifications to improve rollups, enhance interoperability, and standardize development processes.
-
-                  All RIPs are optional. RIPs are and will always remain optional standards for Rollups and participants in the larger EVM ecosystem.</Text>
-                {/* <br/> */}
-                <Heading
-                  as="h4"
-                  size="md"
-                  marginBottom={4}
-                  color={useColorModeValue("#3182CE", "blue.300")}
-                >
-                  Why are RIPs Important?
-                </Heading>
-                <Text
-                  fontSize="md"
-                  marginBottom={2}
-                  color={useColorModeValue("gray.800", "gray.200")}
-                  className="text-justify"
-                >
-                  A Rollup Improvement Proposal (RIP) is a formal document that outlines new features, processes, or optimizations for rollup solutions in the Ethereum ecosystem. RIPs act as specifications to improve rollups, enhance interoperability, and standardize development processes.
-
-                  All RIPs are optional. RIPs are and will always remain optional standards for Rollups and participants in the larger EVM ecosystem.</Text>
-                
-                {/* EtherWorld Advertisement */}
-                <Box my={6} width="100%">
-                  {/* <CloseableAdCard /> */}
-                </Box>
-
-                <Text fontSize="md" mt={4} textAlign="justify">
-                  RIPs help coordinate technical improvements for rollups in a transparent, collaborative way. They:
-                </Text>
-                <ul >
-                  <li>Propose new features and optimizations.</li>
-                  <li>Collect community feedback on rollup-related issues.</li>
-                  <li>Serve as a historical record of design decisions.</li>
-                  <li>Help rollups track progress, especially for multi-client implementations.</li>
-                </ul>
-
-                <Box mt={2}>
-                  <LI
-                    href="/FAQs/RIP"
-                    fontSize="md"
-                    color="blue.500"
-                    fontWeight="semibold"
-                    _hover={{ textDecoration: 'underline' }}
+              <Collapsible.Root open={show}>
+                <Collapsible.Content>
+                  <Heading
+                    as="h4"
+                    size="md"
+                    marginBottom={4}
+                    color={useColorModeValue("#3182CE", "blue.300")}
                   >
-                    Continue Reading {'>>'}
-                  </LI>
-                </Box>
-                <br />
-              </Collapse>
+                    What is a Rollup Improvement Proposal (RIP)?
+                  </Heading>
+                  <Text
+                    fontSize="md"
+                    marginBottom={2}
+                    color={useColorModeValue("gray.800", "gray.200")}
+                    className="text-justify"
+                  >
+                    A Rollup Improvement Proposal (RIP) is a formal document that outlines new features, processes, or optimizations for rollup solutions in the Ethereum ecosystem. RIPs act as specifications to improve rollups, enhance interoperability, and standardize development processes.
+
+                    All RIPs are optional. RIPs are and will always remain optional standards for Rollups and participants in the larger EVM ecosystem.</Text>
+                  {/* <br/> */}
+                  <Heading
+                    as="h4"
+                    size="md"
+                    marginBottom={4}
+                    color={useColorModeValue("#3182CE", "blue.300")}
+                  >
+                    Why are RIPs Important?
+                  </Heading>
+                  <Text
+                    fontSize="md"
+                    marginBottom={2}
+                    color={useColorModeValue("gray.800", "gray.200")}
+                    className="text-justify"
+                  >
+                    A Rollup Improvement Proposal (RIP) is a formal document that outlines new features, processes, or optimizations for rollup solutions in the Ethereum ecosystem. RIPs act as specifications to improve rollups, enhance interoperability, and standardize development processes.
+
+                    All RIPs are optional. RIPs are and will always remain optional standards for Rollups and participants in the larger EVM ecosystem.</Text>
+                  {/* EtherWorld Advertisement */}
+                  <Box my={6} width="100%">
+                    {/* <CloseableAdCard /> */}
+                  </Box>
+                  <Text fontSize="md" mt={4} textAlign="justify">
+                    RIPs help coordinate technical improvements for rollups in a transparent, collaborative way. They:
+                  </Text>
+                  <ul >
+                    <li>Propose new features and optimizations.</li>
+                    <li>Collect community feedback on rollup-related issues.</li>
+                    <li>Serve as a historical record of design decisions.</li>
+                    <li>Help rollups track progress, especially for multi-client implementations.</li>
+                  </ul>
+                  <Box mt={2}>
+                    <LI
+                      href="/FAQs/RIP"
+                      fontSize="md"
+                      color="blue.500"
+                      fontWeight="semibold"
+                      _hover={{ textDecoration: 'underline' }}
+                    >
+                      Continue Reading {'>>'}
+                    </LI>
+                  </Box>
+                  <br />
+                </Collapsible.Content>
+              </Collapsible.Root>
 
             </Box>
 
@@ -483,12 +487,9 @@ const RIP = () => {
                   <Button
                     onClick={handleCopyOverviewChart}
                     size="sm"
-                    leftIcon={<CopyIcon />}
-                    colorScheme="blue"
-                    variant="ghost"
-                  >
-                    Copy Link
-                  </Button>
+                    colorPalette="blue"
+                    variant="ghost"><LuCopy />Copy Link
+                                      </Button>
                 </Box>
                 <Box className="w-full h-full">
                   {selected === "status" ? (
@@ -528,12 +529,9 @@ const RIP = () => {
                     <Button
                       onClick={handleCopyAreaChart}
                       size="sm"
-                      leftIcon={<CopyIcon />}
-                      colorScheme="blue"
-                      variant="ghost"
-                    >
-                      Copy Link
-                    </Button>
+                      colorPalette="blue"
+                      variant="ghost"><LuCopy />Copy Link
+                                          </Button>
                   </Flex>
                   <AreaStatus type="RIPs" />
                 </Box>
@@ -556,30 +554,28 @@ const RIP = () => {
                     direction={{ base: "column", sm: "row" }}
                     align={{ base: "stretch", sm: "center" }}
                   >
-                    <Select
-                      maxW={{ base: "100%", sm: "320px" }}
-                      value={selectedStatusInner}
-                      onChange={(e) => setSelectedStatusInner(e.target.value)}
-                      borderColor="blue.400"
-                      _hover={{ borderColor: "blue.500" }}
-                      focusBorderColor="blue.500"
-                    >
-                      {["Draft", "Living", "Final"].map((status) => (
-                        <option key={status} value={status}>
-                          {status} ({data.filter((item) => item.status === status).length})
-                        </option>
-                      ))}
-                    </Select>
+                    <NativeSelect.Root>
+                      <NativeSelect.Field
+                        maxW={{ base: "100%", sm: "320px" }}
+                        value={selectedStatusInner}
+                        onValueChange={(e) => setSelectedStatusInner(e.target.value)}
+                        borderColor="blue.400"
+                        _hover={{ borderColor: "blue.500" }}>
+                        {["Draft", "Living", "Final"].map((status) => (
+                          <option key={status} value={status}>
+                            {status} ({data.filter((item) => item.status === status).length})
+                          </option>
+                        ))}
+                      </NativeSelect.Field>
+                      <NativeSelect.Indicator />
+                    </NativeSelect.Root>
 
                     <Button
                       onClick={handleCopyStatusDetail}
                       size="sm"
-                      leftIcon={<CopyIcon />}
-                      colorScheme="blue"
-                      variant="ghost"
-                    >
-                      Copy Link
-                    </Button>
+                      colorPalette="blue"
+                      variant="ghost"><LuCopy />Copy Link
+                                          </Button>
                   </Flex>
 
                   <Flex
@@ -651,11 +647,11 @@ const RIP = () => {
             >
               <Text>
                 Also checkout{' '}
-                <LI href="/eip" color="blue" isExternal>
+                <LI href="/eip" color="blue" target='_blank' rel='noopener noreferrer'>
                   EIPs
                 </LI>{' '}
                 and{' '}
-                <LI href="/erc" color="blue" isExternal>
+                <LI href="/erc" color="blue" target='_blank' rel='noopener noreferrer'>
                   ERCs
                 </LI>.
               </Text>

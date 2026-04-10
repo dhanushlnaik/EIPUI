@@ -1,6 +1,4 @@
 "use client";
-
-
 import React, { useEffect } from "react";
 import AllLayout from "@/components/Layout";
 import Dashboard from "@/components/Dashboard"

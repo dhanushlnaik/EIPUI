@@ -1,18 +1,6 @@
 "use client";
-
 import React from 'react'
-import {
-  Container,
-  SimpleGrid,
-  Heading,
-  Text,
-  Box,
-  HStack,
-  Button,
-  Tag,
-  VStack,
-  Link as ChakraLink,
-} from '@chakra-ui/react'
+import { Steps, Container, SimpleGrid, Heading, Text, Box, HStack, Button, Tag, VStack, Link as ChakraLink } from "@chakra-ui/react";
 import GrantCard from '@/components/GrantCard'
 import NextLink from 'next/link'
 
@@ -77,7 +65,7 @@ const grants = [
 const GrantsPage = () => {
   return (
     <Container maxW="7xl" py={10}>
-      <VStack spacing={4} align="start" mb={6}>
+      <VStack gap={4} align="start" mb={6}>
         <Heading>EIPsInsight — Grants</Heading>
         <Text color="gray.600">
           EIPsInsight gratefully acknowledges funding that keeps this project
@@ -85,13 +73,11 @@ const GrantsPage = () => {
         </Text>
         {/* ESP will be shown inline in the grants grid below (logo + Awarded tag) */}
       </VStack>
-
-      <SimpleGrid columns={[1, 2]} spacing={6}>
+      <SimpleGrid columns={[1, 2]} gap={6}>
         {grants.map((g) => (
           <GrantCard key={g.id} grant={g} />
         ))}
       </SimpleGrid>
-
       <Box mt={8}>
         <Heading size="md" mb={3}>
           How to apply / contribute
@@ -101,13 +87,13 @@ const GrantsPage = () => {
           data improvements, please open an issue on our GitHub repository or
           reach out to the team via the contact links in the footer.
         </Text>
-        <HStack spacing={3}>
+        <HStack gap={3}>
           <Button
             as={NextLink}
             href="https://github.com/AyuShetty/EIPsInsight/issues"
             target="_blank"
             rel="noopener noreferrer"
-            colorScheme="teal"
+            colorPalette="teal"
           >
             Open a GitHub issue
           </Button>
@@ -117,7 +103,7 @@ const GrantsPage = () => {
         </HStack>
       </Box>
     </Container>
-  )
+  );
 }
 
 export default GrantsPage

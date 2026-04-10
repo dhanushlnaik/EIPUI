@@ -1,6 +1,6 @@
 import React from "react";
 import AllLayout from "@/components/Layout";
-import { Box, Button } from "@chakra-ui/react";
+import { Steps, Box, Button } from "@chakra-ui/react";
 import FlexBetween from "@/components/FlexBetween";
 import Header from "@/components/Header";
 import { useEffect, useState } from "react";

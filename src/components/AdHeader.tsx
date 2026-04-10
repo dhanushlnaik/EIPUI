@@ -1,13 +1,6 @@
 import React from 'react';
-import {
-  Box,
-  Heading,
-  Text,
-  useColorModeValue,
-  Flex,
-  Grid,
-  GridItem,
-} from '@chakra-ui/react';
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Heading, Text, Flex, Grid, GridItem } from "@chakra-ui/react";
 import { keyframes } from '@emotion/react';
 import CloseableAdCard from './CloseableAdCard';
 

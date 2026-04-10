@@ -1,6 +1,7 @@
 "use client";
-
-import { Box, Container, Heading, Text, VStack, Link, useColorModeValue } from '@chakra-ui/react';
+;
+import { Steps, Box, Container, Heading, Text, VStack, Link } from "@chakra-ui/react";
+import { useColorModeValue } from "../../components/ui/color-mode";
 import DefaultLayout from '@/components/Layout';
 
 const PrivacyPage = () => {
@@ -10,13 +11,13 @@ const PrivacyPage = () => {
   return (
     <DefaultLayout>
       <Container maxW="4xl" py={8}>
-        <VStack spacing={8} align="stretch">
+        <VStack gap={8} align="stretch">
           <Box bg={bg} p={8} borderRadius="lg" shadow="sm">
             <Heading as="h1" size="xl" mb={6} color={useColorModeValue('gray.800', 'white')}>
               Privacy Policy
             </Heading>
             
-            <VStack spacing={6} align="stretch" color={textColor}>
+            <VStack gap={6} align="stretch" color={textColor}>
               <Box>
                 <Heading as="h2" size="lg" mb={3}>
                   Information We Collect
@@ -76,7 +77,11 @@ const PrivacyPage = () => {
                 </Heading>
                 <Text>
                   We use Google Analytics to analyze website usage. Google Analytics may collect and process data according to their own privacy policies. You can learn more about Google's privacy practices at{' '}
-                  <Link href="https://policies.google.com/privacy" isExternal color="blue.500">
+                  <Link
+                    href="https://policies.google.com/privacy"
+                    color="blue.500"
+                    target='_blank'
+                    rel='noopener noreferrer'>
                     https://policies.google.com/privacy
                   </Link>
                 </Text>

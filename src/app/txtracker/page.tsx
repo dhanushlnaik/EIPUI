@@ -1,25 +1,12 @@
 "use client";
+import { Divider } from "@/components/ui/compat";
 
+import { useToast } from "@/components/ui/use-toast";
+;
 import { useState, useEffect } from 'react';
+import { useColorMode, useColorModeValue } from "../../components/ui/color-mode";
 import CloseableAdCard from "@/components/CloseableAdCard";
-import {
-  Flex,
-  Box,
-  Text,
-  useColorMode,
-  useColorModeValue,
-  Button,
-  HStack,
-  VStack,
-  Select,
-  Icon,
-  useToast,
-  Skeleton,
-  SkeletonText,
-  Divider,
-  Badge
-} from '@chakra-ui/react';
-import { RepeatIcon } from '@chakra-ui/icons';
+import { Steps, Flex, Box, Text, Button, HStack, VStack, NativeSelect, Icon, Skeleton, SkeletonText, Badge } from "@chakra-ui/react";
 import { MdNetworkCheck } from 'react-icons/md';
 import BlockInfo from '@/components/TxTracker/BlockInfo';
 import TransactionFeeChart from '@/components/TxTracker/TransactionFeeChart';
@@ -33,6 +20,7 @@ import { RingLoader } from 'react-spinners';
 import TransactionCountChart from '@/components/TxTracker/TransactionCountChart';
 import AllLayout from '@/components/Layout';
 import FeedbackWidget from '@/components/FeedbackWidget';
+import { LuRepeat } from 'react-icons/lu';
 
 
 const REFRESH_INTERVAL_MS = 60_000; // Increased to 1 minute
@@ -213,7 +201,7 @@ const EthereumV2 = () => {
           <Flex direction="column" gap={4}>
             <Flex align="center" gap={3} flexWrap="wrap">
               <Icon as={MdNetworkCheck} boxSize={8} color="purple.500" />
-              <VStack align="start" spacing={1}>
+              <VStack align="start" gap={1}>
                 <Text fontSize={{ base: 'xl', md: '2xl' }} fontWeight="bold" color={useColorModeValue('gray.800', 'gray.100')}>
                   🔍 Ethereum Live Monitor
                 </Text>
@@ -221,7 +209,7 @@ const EthereumV2 = () => {
                   Track real-time blockchain activity, costs, and network health
                 </Text>
               </VStack>
-              <Badge colorScheme="green" variant="solid" fontSize=".7rem" px={3} py={1} borderRadius="full">
+              <Badge colorPalette="green" variant="solid" fontSize=".7rem" px={3} py={1} borderRadius="full">
                 ⚡ LIVE DATA
               </Badge>
             </Flex>
@@ -232,36 +220,35 @@ const EthereumV2 = () => {
               Perfect for understanding blockchain activity in simple terms!
             </Text>
 
-            <HStack spacing={3} flexWrap="wrap">
-              <Select
-                size="sm"
-                w="140px"
-                value={network}
-                onChange={e => setNetwork(e.target.value as any)}
-                bg={colorMode === 'light' ? 'whiteAlpha.700' : 'whiteAlpha.200'}
-                backdropFilter="blur(6px)"
-                borderRadius="lg"
-              >
-                <option value="mainnet">Mainnet</option>
-                <option value="sepolia">Sepolia</option>
-              </Select>
+            <HStack gap={3} flexWrap="wrap">
+              <NativeSelect.Root>
+                <NativeSelect.Field
+                  size="sm"
+                  w="140px"
+                  value={network}
+                  onValueChange={e => setNetwork(e.target.value as any)}
+                  bg={colorMode === 'light' ? 'whiteAlpha.700' : 'whiteAlpha.200'}
+                  backdropFilter="blur(6px)"
+                  borderRadius="lg">
+                  <option value="mainnet">Mainnet</option>
+                  <option value="sepolia">Sepolia</option>
+                </NativeSelect.Field>
+                <NativeSelect.Indicator />
+              </NativeSelect.Root>
               <Button
                 size="sm"
-                leftIcon={<RepeatIcon />}
                 onClick={() => fetchData(true)}
-                isLoading={isRefreshing}
+                loading={isRefreshing}
                 loadingText="Refreshing"
                 bg="purple.600"
                 _hover={{ bg: 'purple.500' }}
                 color="white"
                 borderRadius="full"
-                isDisabled={isRefreshing}
-              >
-                Refresh Data
-              </Button>
+                disabled={isRefreshing}><LuRepeat />Refresh Data
+                              </Button>
               <Badge
                 variant="solid"
-                colorScheme="pink"
+                colorPalette="pink"
                 fontSize="1rem"
                 borderRadius="full"
                 px={3}
@@ -269,14 +256,14 @@ const EthereumV2 = () => {
                 ETH ${ethPriceInUSD ? ethPriceInUSD.toFixed(2) : '—'}
               </Badge>
               {lastUpdated && (
-                <Badge variant="outline" colorScheme="gray" fontSize="xs" px={2} py={1} borderRadius="md">
+                <Badge variant="outline" colorPalette="gray" fontSize="xs" px={2} py={1} borderRadius="md">
                   Updated: {lastUpdated.toLocaleTimeString()}
                 </Badge>
               )}
               {isRefreshing && (
                 <Badge
                   variant="subtle"
-                  colorScheme="blue"
+                  colorPalette="blue"
                   fontSize="0.65rem"
                   px={2}
                 >

@@ -1,21 +1,6 @@
-"use client"
-
-import type {
-  ButtonProps,
-  GroupProps,
-  InputProps,
-  StackProps,
-} from "@chakra-ui/react"
-import {
-  Box,
-  HStack,
-  IconButton,
-  Input,
-  InputGroup,
-  Stack,
-  mergeRefs,
-  useControllableState,
-} from "@chakra-ui/react"
+"use client";
+import type { Steps, ButtonProps, GroupProps, InputProps, StackProps } from "@chakra-ui/react";
+import { Box, HStack, IconButton, Input, InputGroup, Stack, mergeRefs, useControllableState } from "@chakra-ui/react"
 import * as React from "react"
 import { LuEye, LuEyeOff } from "react-icons/lu"
 

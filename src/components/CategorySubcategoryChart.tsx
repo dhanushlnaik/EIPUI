@@ -1,38 +1,13 @@
+import { Checkbox } from "@/components/ui/compat";
+import { TableContainer, Thead, Tbody, Tr, Th, Td } from "@/components/ui/compat";
 import React, { useEffect, useState, useMemo } from "react";
+import { useColorModeValue } from "./ui/color-mode";
 import dynamic from "next/dynamic";
-import {
-  Box,
-  Card,
-  CardHeader,
-  CardBody,
-  Heading,
-  Text,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  Button,
-  Stack,
-  useColorModeValue,
-  Flex,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  TableContainer,
-  Input,
-  Link,
-  Badge,
-  HStack,
-  Checkbox,
-  CheckboxGroup,
-} from "@chakra-ui/react";
-import { ChevronDownIcon, DownloadIcon, SearchIcon, ExternalLinkIcon } from "@chakra-ui/icons";
+import { Steps, Box, Card, Heading, Text, Menu, Button, Stack, Flex, Table, Input, Link, Badge, HStack, CheckboxGroup, Icon, Portal } from "@chakra-ui/react";
 import CopyLink from "./CopyLink";
 import DateTime from "./DateTime";
 import Papa from "papaparse";
+import { LuChevronDown, LuDownload, LuExternalLink, LuSearch } from 'react-icons/lu';
 
 const ReactECharts = dynamic(() => import("echarts-for-react"), { ssr: false });
 
@@ -483,7 +458,7 @@ export default function CategorySubcategoryChart() {
   }, [chartData.series]);
 
   return (
-    <Card
+    <Card.Root
       bg={cardBg}
       color={textColor}
       mx="auto"
@@ -494,7 +469,7 @@ export default function CategorySubcategoryChart() {
       boxShadow="sm"
       p={4}
     >
-      <CardHeader pb={3}>
+      <Card.Header pb={3}>
         <Flex align="center" justify="space-between" wrap="wrap" gap={3}>
           <Box>
             <Text fontSize="xs" fontWeight="600" letterSpacing="wider" color={useColorModeValue("gray.500", "gray.400")} mb={1}>
@@ -506,7 +481,7 @@ export default function CategorySubcategoryChart() {
             <Flex align="center" gap={2} mt={1}>
               <Badge
                 variant="subtle"
-                colorScheme={axisLayout === "processOnAxis" ? "blue" : "purple"}
+                colorPalette={axisLayout === "processOnAxis" ? "blue" : "purple"}
                 px={2}
                 py={0.5}
                 borderRadius="full"
@@ -519,119 +494,103 @@ export default function CategorySubcategoryChart() {
             </Flex>
           </Box>
           <Flex gap={3} align="center" wrap="wrap">
-            <Menu>
-              <MenuButton as={Button} rightIcon={<ChevronDownIcon />} variant="outline" size="sm" minW={140}>
-                {repoLabel}
-              </MenuButton>
-              <MenuList>
-                {REPOS.map((repo) => (
-                  <MenuItem key={repo.key} onClick={() => setRepoKey(repo.key as "eips" | "ercs" | "rips" | "all")}>
-                    {repo.label}
-                  </MenuItem>
-                ))}
-              </MenuList>
-            </Menu>
-            <Menu>
-              <MenuButton
-                as={Button}
-                rightIcon={<ChevronDownIcon />}
-                variant="outline"
-                size="sm"
-                minW={160}
-                isDisabled={noDataAtAll}
-              >
-                {axisLayout === "processOnAxis" ? "X: Process (stack: Participants)" : "X: Participants (stack: Process)"}
-              </MenuButton>
-              <MenuList minWidth="220px">
-                <MenuItem onClick={() => setAxisLayout("processOnAxis")}>
-                  X-axis: Process — stacked: Participants
-                </MenuItem>
-                <MenuItem onClick={() => setAxisLayout("participantsOnAxis")}>
-                  X-axis: Participants — stacked: Process
-                </MenuItem>
-              </MenuList>
-            </Menu>
-            <Menu>
-              <MenuButton
-                as={Button}
-                rightIcon={<ChevronDownIcon />}
-                variant="outline"
-                size="sm"
-                minW={160}
-                isDisabled={noDataAtAll}
-              >
-                {selectedMonthYear ? formatMonthLabel(selectedMonthYear) : "Select Month"}
-              </MenuButton>
-              <MenuList maxH="280px" overflowY="auto">
-                {months.slice().reverse().map((m) => (
-                  <MenuItem key={m} onClick={() => setSelectedMonthYear(m)}>
-                    {formatMonthLabel(m)}
-                  </MenuItem>
-                ))}
-              </MenuList>
-            </Menu>
+            <Menu.Root>
+              <Menu.Trigger asChild><Button variant="outline" size="sm" minW={140}>
+                  {repoLabel}
+                  <LuChevronDown /></Button></Menu.Trigger>
+              <Portal><Menu.Positioner><Menu.Content>
+                    {REPOS.map((repo) => (
+                      <Menu.Item
+                        key={repo.key}
+                        onSelect={() => setRepoKey(repo.key as "eips" | "ercs" | "rips" | "all")}
+                        value='item-0'>
+                        {repo.label}
+                      </Menu.Item>
+                    ))}
+                  </Menu.Content></Menu.Positioner></Portal>
+            </Menu.Root>
+            <Menu.Root>
+              <Menu.Trigger asChild><Button variant="outline" size="sm" minW={160} disabled={noDataAtAll}>
+                  {axisLayout === "processOnAxis" ? "X: Process (stack: Participants)" : "X: Participants (stack: Process)"}
+                  <LuChevronDown /></Button></Menu.Trigger>
+              <Portal><Menu.Positioner><Menu.Content>
+                    <Menu.Item onSelect={() => setAxisLayout("processOnAxis")} value='item-1'>
+                      X-axis: Process — stacked: Participants
+                    </Menu.Item>
+                    <Menu.Item onSelect={() => setAxisLayout("participantsOnAxis")} value='item-2'>
+                      X-axis: Participants — stacked: Process
+                    </Menu.Item>
+                  </Menu.Content></Menu.Positioner></Portal>
+            </Menu.Root>
+            <Menu.Root>
+              <Menu.Trigger asChild><Button variant="outline" size="sm" minW={160} disabled={noDataAtAll}>
+                  {selectedMonthYear ? formatMonthLabel(selectedMonthYear) : "Select Month"}
+                  <LuChevronDown /></Button></Menu.Trigger>
+              <Portal><Menu.Positioner><Menu.Content>
+                    {months.slice().reverse().map((m) => (
+                      <Menu.Item key={m} onSelect={() => setSelectedMonthYear(m)} value='item-3'>
+                        {formatMonthLabel(m)}
+                      </Menu.Item>
+                    ))}
+                  </Menu.Content></Menu.Positioner></Portal>
+            </Menu.Root>
             <Button
-              leftIcon={<DownloadIcon />}
-              colorScheme="blue"
+              colorPalette="blue"
               size="sm"
               onClick={downloadCSV}
-              isLoading={downloading}
-              isDisabled={noDataAtAll || !selectedMonthYear}
-            >
-              Download CSV
-            </Button>
+              loading={downloading}
+              disabled={noDataAtAll || !selectedMonthYear}><LuDownload />Download CSV
+                          </Button>
           </Flex>
         </Flex>
         <Text fontSize="sm" color={useColorModeValue("gray.600", "gray.400")} mt={3} maxW="900px">
           Open PRs by <strong>Process</strong> type and <strong>Participants</strong> status. Choose Process or Participants on the X-axis (the other is stacked). Sum of segments = total open PRs for that month.
         </Text>
-      </CardHeader>
-      <CardBody>
+      </Card.Header>
+      <Card.Body>
         <Flex gap={4} wrap="wrap" mb={3} align="center">
-          <Menu>
-            <MenuButton as={Button} rightIcon={<ChevronDownIcon />} variant="outline" size="sm" minW={180}>
-              Filter by Process
-            </MenuButton>
-            <MenuList minWidth="260px" px={2} py={2}>
-              <HStack mb={2} gap={2}>
-                <Button size="xs" colorScheme="teal" onClick={() => setSelectedProcesses([...PROCESS_ORDER])}>Select All</Button>
-                <Button size="xs" variant="outline" onClick={() => setSelectedProcesses([])}>Clear</Button>
-              </HStack>
-              <CheckboxGroup value={selectedProcesses} onChange={(v: string[]) => setSelectedProcesses(v)}>
-                <Stack gap={1}>
-                  {PROCESS_ORDER.map((p) => (
-                    <Checkbox key={p} value={p} py={1} px={2} colorScheme="blue">
-                      <Badge mr={2} fontSize="sm" colorScheme="blue" variant="outline" px={2} py={0.5} borderRadius="md">
-                        {p}
-                      </Badge>
-                    </Checkbox>
-                  ))}
-                </Stack>
-              </CheckboxGroup>
-            </MenuList>
-          </Menu>
-          <Menu>
-            <MenuButton as={Button} rightIcon={<ChevronDownIcon />} variant="outline" size="sm" minW={180}>
-              Filter by Participants
-            </MenuButton>
-            <MenuList minWidth="260px" px={2} py={2}>
-              <HStack mb={2} gap={2}>
-                <Button size="xs" colorScheme="teal" onClick={() => setSelectedParticipants([...PARTICIPANTS_ORDER])}>Select All</Button>
-                <Button size="xs" variant="outline" onClick={() => setSelectedParticipants([])}>Clear</Button>
-              </HStack>
-              <CheckboxGroup value={selectedParticipants} onChange={(v: string[]) => setSelectedParticipants(v)}>
-                <Stack gap={1}>
-                  {PARTICIPANTS_ORDER.map((s) => (
-                    <Checkbox key={s} value={s} py={1} px={2} colorScheme="purple">
-                      <Badge mr={2} fontSize="sm" colorScheme="purple" variant="outline" px={2} py={0.5} borderRadius="md">
-                        {s}
-                      </Badge>
-                    </Checkbox>
-                  ))}
-                </Stack>
-              </CheckboxGroup>
-            </MenuList>
-          </Menu>
+          <Menu.Root>
+            <Menu.Trigger asChild><Button variant="outline" size="sm" minW={180}>Filter by Process
+                            <LuChevronDown /></Button></Menu.Trigger>
+            <Portal><Menu.Positioner><Menu.Content>
+                  <HStack mb={2} gap={2}>
+                    <Button size="xs" colorPalette="teal" onClick={() => setSelectedProcesses([...PROCESS_ORDER])}>Select All</Button>
+                    <Button size="xs" variant="outline" onClick={() => setSelectedProcesses([])}>Clear</Button>
+                  </HStack>
+                  <CheckboxGroup value={selectedProcesses} onValueChange={(v: string[]) => setSelectedProcesses(v)}>
+                    <Stack gap={1}>
+                      {PROCESS_ORDER.map((p) => (
+                        <Checkbox.Root key={p} value={p} py={1} px={2} colorPalette="blue"><Checkbox.HiddenInput /><Checkbox.Control><Checkbox.Indicator /></Checkbox.Control><Checkbox.Label>
+                          <Badge mr={2} fontSize="sm" colorPalette="blue" variant="outline" px={2} py={0.5} borderRadius="md">
+                            {p}
+                          </Badge>
+                        </Checkbox.Label></Checkbox.Root>
+                      ))}
+                    </Stack>
+                  </CheckboxGroup>
+                </Menu.Content></Menu.Positioner></Portal>
+          </Menu.Root>
+          <Menu.Root>
+            <Menu.Trigger asChild><Button variant="outline" size="sm" minW={180}>Filter by Participants
+                            <LuChevronDown /></Button></Menu.Trigger>
+            <Portal><Menu.Positioner><Menu.Content>
+                  <HStack mb={2} gap={2}>
+                    <Button size="xs" colorPalette="teal" onClick={() => setSelectedParticipants([...PARTICIPANTS_ORDER])}>Select All</Button>
+                    <Button size="xs" variant="outline" onClick={() => setSelectedParticipants([])}>Clear</Button>
+                  </HStack>
+                  <CheckboxGroup value={selectedParticipants} onValueChange={(v: string[]) => setSelectedParticipants(v)}>
+                    <Stack gap={1}>
+                      {PARTICIPANTS_ORDER.map((s) => (
+                        <Checkbox.Root key={s} value={s} py={1} px={2} colorPalette="purple"><Checkbox.HiddenInput /><Checkbox.Control><Checkbox.Indicator /></Checkbox.Control><Checkbox.Label>
+                          <Badge mr={2} fontSize="sm" colorPalette="purple" variant="outline" px={2} py={0.5} borderRadius="md">
+                            {s}
+                          </Badge>
+                        </Checkbox.Label></Checkbox.Root>
+                      ))}
+                    </Stack>
+                  </CheckboxGroup>
+                </Menu.Content></Menu.Positioner></Portal>
+          </Menu.Root>
         </Flex>
         <Box
           bg={useColorModeValue("blue.50", "gray.700")}
@@ -710,12 +669,8 @@ export default function CategorySubcategoryChart() {
             <Button
               size="sm"
               variant="outline"
-              colorScheme="gray"
-              onClick={() => setShowTable((v) => !v)}
-              leftIcon={showTable ? undefined : <SearchIcon />}
-            >
-              {showTable ? "Hide table" : "Show table"}
-            </Button>
+              colorPalette="gray"
+              onClick={() => setShowTable((v) => !v)}>{showTable ? undefined : <LuSearch />}{showTable ? "Hide table" : "Show table"}</Button>
           </Flex>
 
           {showTable && (
@@ -724,49 +679,42 @@ export default function CategorySubcategoryChart() {
                 <Heading size="sm" color={textColor} fontWeight="600">
                   Open PRs — {selectedMonthYear ? formatMonthLabel(selectedMonthYear) : "Month"}
                 </Heading>
-                <Menu>
-                  <MenuButton
-                    as={Button}
-                    rightIcon={<ChevronDownIcon />}
-                    variant="outline"
-                    size="sm"
-                    colorScheme="gray"
-                    minW={140}
-                  >
-                    {selectedMonthYear ? formatMonthLabel(selectedMonthYear) : "Month"}
-                  </MenuButton>
-                  <MenuList maxH="280px" overflowY="auto">
-                    {months.slice().reverse().map((m) => (
-                      <MenuItem key={m} onClick={() => setSelectedMonthYear(m)}>
-                        {formatMonthLabel(m)}
-                      </MenuItem>
-                    ))}
-                  </MenuList>
-                </Menu>
+                <Menu.Root>
+                  <Menu.Trigger asChild><Button variant="outline" size="sm" colorPalette="gray" minW={140}>
+                      {selectedMonthYear ? formatMonthLabel(selectedMonthYear) : "Month"}
+                      <LuChevronDown /></Button></Menu.Trigger>
+                  <Portal><Menu.Positioner><Menu.Content>
+                        {months.slice().reverse().map((m) => (
+                          <Menu.Item key={m} onSelect={() => setSelectedMonthYear(m)} value='item-4'>
+                            {formatMonthLabel(m)}
+                          </Menu.Item>
+                        ))}
+                      </Menu.Content></Menu.Positioner></Portal>
+                </Menu.Root>
               </Flex>
               <Text fontSize="xs" color={tableMutedColor} mb={3}>
                 Table shows the same counts as the chart. For a per-PR list with links, use the EIP Board or Boards page.
               </Text>
 
-              <TableContainer
+              <Table.ScrollArea
                 overflowX="auto"
                 borderRadius="md"
                 borderWidth="1px"
                 borderColor={tableBorderColor}
                 bg={cardBg}
               >
-                <Table size="sm" variant="simple">
-                  <Thead>
-                    <Tr bg={tableHeaderBg}>
-                      <Th w="48px" color={textColor} fontWeight="600">#</Th>
-                      <Th color={textColor} fontWeight="600">Process</Th>
-                      <Th color={textColor} fontWeight="600">Participants</Th>
-                      <Th w="80px" color={textColor} fontWeight="600">Count</Th>
-                      <Th w="90px" color={textColor} fontWeight="600">View PRs</Th>
-                    </Tr>
-                    <Tr bg={tableFilterBg}>
-                      <Th px={2} />
-                      <Th px={2}>
+                <Table.Root size="sm" variant="simple">
+                  <Table.Header>
+                    <Table.Row bg={tableHeaderBg}>
+                      <Table.ColumnHeader w="48px" color={textColor} fontWeight="600">#</Table.ColumnHeader>
+                      <Table.ColumnHeader color={textColor} fontWeight="600">Process</Table.ColumnHeader>
+                      <Table.ColumnHeader color={textColor} fontWeight="600">Participants</Table.ColumnHeader>
+                      <Table.ColumnHeader w="80px" color={textColor} fontWeight="600">Count</Table.ColumnHeader>
+                      <Table.ColumnHeader w="90px" color={textColor} fontWeight="600">View PRs</Table.ColumnHeader>
+                    </Table.Row>
+                    <Table.Row bg={tableFilterBg}>
+                      <Table.ColumnHeader px={2} />
+                      <Table.ColumnHeader px={2}>
                         <Input
                           size="xs"
                           placeholder="Process"
@@ -775,8 +723,8 @@ export default function CategorySubcategoryChart() {
                           bg={tableInputBg}
                           borderColor={tableInputBorder}
                         />
-                      </Th>
-                      <Th px={2}>
+                      </Table.ColumnHeader>
+                      <Table.ColumnHeader px={2}>
                         <Input
                           size="xs"
                           placeholder="Participants"
@@ -785,20 +733,20 @@ export default function CategorySubcategoryChart() {
                           bg={tableInputBg}
                           borderColor={tableInputBorder}
                         />
-                      </Th>
-                      <Th px={2} />
-                      <Th px={2} />
-                    </Tr>
-                  </Thead>
-                  <Tbody>
+                      </Table.ColumnHeader>
+                      <Table.ColumnHeader px={2} />
+                      <Table.ColumnHeader px={2} />
+                    </Table.Row>
+                  </Table.Header>
+                  <Table.Body>
                     {filteredTableRows.length === 0 ? (
-                      <Tr>
-                        <Td colSpan={5} py={8} textAlign="center" color="gray.500">
+                      <Table.Row>
+                        <Table.Cell colSpan={5} py={8} textAlign="center" color="gray.500">
                           {countTableRows.length === 0
                             ? "No data for this month."
                             : "No rows match the current filters."}
-                        </Td>
-                      </Tr>
+                        </Table.Cell>
+                      </Table.Row>
                     ) : (
                       paginatedTableRows.map((row, idx) => {
                         const sr = (tablePage - 1) * TABLE_PAGE_SIZE + idx + 1;
@@ -806,11 +754,11 @@ export default function CategorySubcategoryChart() {
                         const partColor = participantsBadgeColor(row.Participants);
                         const viewPrsUrl = `/boards?month=${selectedMonthYear}&process=${encodeURIComponent(row.Process)}&participants=${encodeURIComponent(row.Participants)}`;
                         return (
-                          <Tr key={`${row.Process}-${row.Participants}-${sr}`} _hover={{ bg: tableRowHoverBg }}>
-                            <Td fontWeight="semibold" color={tableMutedColor}>
+                          <Table.Row key={`${row.Process}-${row.Participants}-${sr}`} _hover={{ bg: tableRowHoverBg }}>
+                            <Table.Cell fontWeight="semibold" color={tableMutedColor}>
                               {sr}
-                            </Td>
-                            <Td>
+                            </Table.Cell>
+                            <Table.Cell>
                               <Badge
                                 bg={processColor}
                                 color="white"
@@ -822,8 +770,8 @@ export default function CategorySubcategoryChart() {
                               >
                                 {row.Process || "—"}
                               </Badge>
-                            </Td>
-                            <Td>
+                            </Table.Cell>
+                            <Table.Cell>
                               <Badge
                                 bg={partColor}
                                 color="white"
@@ -835,11 +783,11 @@ export default function CategorySubcategoryChart() {
                               >
                                 {row.Participants || "—"}
                               </Badge>
-                            </Td>
-                            <Td fontWeight="700" color={textColor}>
+                            </Table.Cell>
+                            <Table.Cell fontWeight="700" color={textColor}>
                               {row.Count}
-                            </Td>
-                            <Td>
+                            </Table.Cell>
+                            <Table.Cell>
                               <Link
                                 href={viewPrsUrl}
                                 fontSize="sm"
@@ -848,16 +796,16 @@ export default function CategorySubcategoryChart() {
                                 gap={1}
                                 color={accentColor}
                               >
-                                View PRs <ExternalLinkIcon mx="2px" />
+                                View PRs <Icon as={LuExternalLink} mx="2px" />
                               </Link>
-                            </Td>
-                          </Tr>
+                            </Table.Cell>
+                          </Table.Row>
                         );
                       })
                     )}
-                  </Tbody>
-                </Table>
-              </TableContainer>
+                  </Table.Body>
+                </Table.Root>
+              </Table.ScrollArea>
 
               {filteredTableRows.length > 0 && (
                 <HStack mt={4} justify="space-between" wrap="wrap" gap={2}>
@@ -868,8 +816,8 @@ export default function CategorySubcategoryChart() {
                     <Button
                       size="sm"
                       variant="outline"
-                      colorScheme="gray"
-                      isDisabled={tablePage <= 1}
+                      colorPalette="gray"
+                      disabled={tablePage <= 1}
                       onClick={() => setTablePage((p) => Math.max(1, p - 1))}
                     >
                       Previous
@@ -880,8 +828,8 @@ export default function CategorySubcategoryChart() {
                     <Button
                       size="sm"
                       variant="outline"
-                      colorScheme="gray"
-                      isDisabled={tablePage >= totalTablePages}
+                      colorPalette="gray"
+                      disabled={tablePage >= totalTablePages}
                       onClick={() => setTablePage((p) => Math.min(totalTablePages, p + 1))}
                     >
                       Next
@@ -892,7 +840,7 @@ export default function CategorySubcategoryChart() {
             </>
           )}
         </Box>
-      </CardBody>
-    </Card>
+      </Card.Body>
+    </Card.Root>
   );
 }

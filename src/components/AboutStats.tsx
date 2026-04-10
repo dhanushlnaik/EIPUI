@@ -1,5 +1,7 @@
+import { Stat } from "@/components/ui/compat";
 import React, { useEffect, useState } from 'react';
-import { Box, SimpleGrid, Stat, StatLabel, StatNumber, StatHelpText, useColorModeValue, Spinner, Text } from '@chakra-ui/react';
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, SimpleGrid, Spinner, Text } from "@chakra-ui/react";
 
 export default function AboutStats() {
   const cardBg = useColorModeValue('white', 'gray.800');
@@ -82,14 +84,14 @@ export default function AboutStats() {
       {lastUpdated && (
         <Text fontSize="sm" mb={2} color="gray.400">Last updated: {new Date(lastUpdated).toLocaleString()}</Text>
       )}
-      <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
+      <SimpleGrid columns={{ base: 1, md: 3 }} gap={4}>
         {stats.map((s) => (
           <Box key={s.label} bg={cardBg} p={6} borderRadius="lg" boxShadow="sm">
-            <Stat>
-              <StatLabel color={textColor}>{s.label}</StatLabel>
-              <StatNumber color={textColor}>{s.value}</StatNumber>
-              <StatHelpText color="gray.500">{s.note}</StatHelpText>
-            </Stat>
+            <Stat.Root>
+              <Stat.Label color={textColor}>{s.label}</Stat.Label>
+              <Stat.ValueText color={textColor}>{s.value}</Stat.ValueText>
+              <Stat.HelpText color="gray.500">{s.note}</Stat.HelpText>
+            </Stat.Root>
           </Box>
         ))}
       </SimpleGrid>

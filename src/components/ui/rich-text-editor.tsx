@@ -1,6 +1,5 @@
-"use client"
-
-import type { BoxProps, StackProps, SystemStyleObject } from "@chakra-ui/react"
+"use client";
+import type { Steps, BoxProps, StackProps, SystemStyleObject } from "@chakra-ui/react";
 import { Box, HStack, StackSeparator, defineStyle } from "@chakra-ui/react"
 import { Editor, EditorContent } from "@tiptap/react"
 import {

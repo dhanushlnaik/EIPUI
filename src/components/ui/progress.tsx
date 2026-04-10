@@ -1,4 +1,4 @@
-import { Progress as ChakraProgress } from "@chakra-ui/react"
+import { Steps, Progress as ChakraProgress } from "@chakra-ui/react";
 import { InfoTip } from "./toggle-tip"
 import * as React from "react"
 

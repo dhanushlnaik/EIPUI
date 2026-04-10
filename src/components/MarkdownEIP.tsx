@@ -1,22 +1,6 @@
+import { Thead, Tbody, Tr, Th, Td } from "@/components/ui/compat";
 import NLink from "next/link";
-import {
-  Heading,
-  Link,
-  Text,
-  Code,
-  Divider,
-  Image,
-  UnorderedList,
-  OrderedList,
-  ListItem,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Td,
-  Th,
-  Box,
-} from "@chakra-ui/react";
+import { Steps, Heading, Link, Text, Code, Image, Table, Box, Separator, List } from "@chakra-ui/react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { CodeBlock } from "@/components/Codehelper";
@@ -186,7 +170,7 @@ export const Markdown = ({
           return <Text as="del">{children}</Text>;
         },
         hr: () => {
-          return <Divider />;
+          return <Separator />;
         },
         a: (props) => {
           const { href = "", children } = props;
@@ -209,8 +193,8 @@ export const Markdown = ({
               <Link
                 href={resolveURL(markdownFileURL, href)}
                 color="blue.500"
-                isExternal
-              >
+                target='_blank'
+                rel='noopener noreferrer'>
                 {children}
               </Link>
             );
@@ -230,38 +214,26 @@ export const Markdown = ({
           const { children } = props;
           const attrs = getCoreProps(props);
           return (
-            <UnorderedList
-              spacing={2}
-              as="ul"
-              styleType="disc"
-              pl={4}
-              {...attrs}
-            >
+            <List.Root as="ul" gap={2} listStyleType="disc" pl={4} {...attrs}>
               {children}
-            </UnorderedList>
+            </List.Root>
           );
         },
         ol: (props) => {
           const { children } = props;
           const attrs = getCoreProps(props);
           return (
-            <OrderedList
-              spacing={2}
-              as="ol"
-              styleType="decimal"
-              pl={4}
-              {...attrs}
-            >
+            <List.Root as="ol" gap={2} listStyleType="decimal" pl={4} {...attrs}>
               {children}
-            </OrderedList>
+            </List.Root>
           );
         },
         li: (props) => {
           const { children } = props;
           return (
-            <ListItem {...getCoreProps(props)} listStyleType="inherit">
+            <List.Item {...getCoreProps(props)} listStyleType="inherit">
               {children}
-            </ListItem>
+            </List.Item>
           );
         },
         h1: (props) => {
@@ -312,20 +284,20 @@ export const Markdown = ({
         },
         table: (props) => (
           <Box overflowX={"auto"}>
-            <Table variant="simple" border="1px solid" borderColor="gray.200">
+            <Table.Root variant="simple" border="1px solid" borderColor="gray.200">
               {props.children}
-            </Table>
+            </Table.Root>
           </Box>
         ),
         thead: (props) => (
-          <Thead borderBottom="2px solid" borderColor="gray.500" {...props} />
+          <Table.Header borderBottom="2px solid" borderColor="gray.500" {...props} />
         ),
         tbody: Tbody,
-        tr: (props) => <Tr borderBottom="1px solid" borderColor="gray.300">{props.children}</Tr>,
+        tr: (props) => <Table.Row borderBottom="1px solid" borderColor="gray.300">{props.children}</Table.Row>,
         td: (props) => (
-          <Td border="1px solid" borderColor="gray.300" p={3}>
+          <Table.Cell border="1px solid" borderColor="gray.300" p={3}>
             {props.children}
-          </Td>
+          </Table.Cell>
         ),
 th: (props) => {
   const headingToIdMap: Record<string, string> = {
@@ -343,7 +315,7 @@ th: (props) => {
   const id = headingToIdMap[label];
 
   return (
-    <Th
+    <Table.ColumnHeader
       id={id || undefined}
       border="1px solid"
       borderColor="gray.300"
@@ -358,7 +330,7 @@ th: (props) => {
       ) : (
         label
       )}
-    </Th>
+    </Table.ColumnHeader>
   );
 },
 

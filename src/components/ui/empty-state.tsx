@@ -1,4 +1,4 @@
-import { EmptyState as ChakraEmptyState, VStack } from "@chakra-ui/react"
+import { Steps, EmptyState as ChakraEmptyState, VStack } from "@chakra-ui/react";
 import * as React from "react"
 
 export interface EmptyStateProps extends ChakraEmptyState.RootProps {

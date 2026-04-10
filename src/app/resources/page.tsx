@@ -1,12 +1,13 @@
 "use client";
-
+;
 import React from "react";
+import { useColorModeValue } from "../../components/ui/color-mode";
 import CloseableAdCard from "@/components/CloseableAdCard";
 import PlaceYourAdCard from "@/components/PlaceYourAdCard";
 import AllLayout from "@/components/Layout";
 import Resources from "@/components/Resources3";
 import FeaturedVideos from "@/components/FeaturedVideos";
-import { useColorModeValue, Box } from "@chakra-ui/react";
+import { Steps, Box } from "@chakra-ui/react";
 
 const Index = () => {
   const bg = useColorModeValue("#f6f6f7", "#171923");

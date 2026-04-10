@@ -1,19 +1,8 @@
 "use client";
+import { TableContainer, Thead, Tbody, Tr, Th, Td } from "@/components/ui/compat";
 
-import {
-    Box,
-    Heading,
-    Table,
-    Thead,
-    Tbody,
-    Tr,
-    Th,
-    Td,
-    TableContainer,
-    Link as LI,
-    Spinner,
-    Text,
-  } from "@chakra-ui/react";
+
+import { Steps, Box, Heading, Table, Link as LI, Spinner, Text } from "@chakra-ui/react";
   import React, { useEffect, useState } from "react";
   import AllLayout from "@/components/Layout";
   import axios from "axios";
@@ -90,7 +79,7 @@ import {
           </Box>
   
           {/* Scrollable Table */}
-          <TableContainer
+          <Table.ScrollArea
             minHeight="500px"
             overflowY="auto"
             overflowX="auto"
@@ -101,49 +90,49 @@ import {
             boxShadow="md"
             maxHeight="900px"
           >
-            <Table variant="striped" colorScheme="blue" size="lg">
-              <Thead bg="#2D3748">
-                <Tr>
-                  <Th style={{ color: "#fff", textAlign: "center" }}>
+            <Table.Root variant="striped" colorPalette="blue" size="lg">
+              <Table.Header bg="#2D3748">
+                <Table.Row>
+                  <Table.ColumnHeader style={{ color: "#fff", textAlign: "center" }}>
                     Serial Number
-                  </Th>
-                  <Th style={{ color: "#fff", textAlign: "center" }}>
+                  </Table.ColumnHeader>
+                  <Table.ColumnHeader style={{ color: "#fff", textAlign: "center" }}>
                     PR Number
-                  </Th>
-                  <Th style={{ color: "#fff", textAlign: "center" }}>
+                  </Table.ColumnHeader>
+                  <Table.ColumnHeader style={{ color: "#fff", textAlign: "center" }}>
                     PR Link
-                  </Th>
-                </Tr>
-              </Thead>
-              <Tbody>
+                  </Table.ColumnHeader>
+                </Table.Row>
+              </Table.Header>
+              <Table.Body>
                 {eipData?.map((item: any, index: number) => (
-                  <Tr
+                  <Table.Row
                     key={item._id}
                     style={{
                       backgroundColor: index % 2 === 0 ? "#2D3748" : "#1A202C", // Alternating row colors
                       color: "#fff",
                     }}
                   >
-                    <Td style={{ textAlign: "center", color: "#fff" }}>
+                    <Table.Cell style={{ textAlign: "center", color: "#fff" }}>
                       {index + 1}
-                    </Td>
-                    <Td style={{ textAlign: "center", color: "#fff" }}>
+                    </Table.Cell>
+                    <Table.Cell style={{ textAlign: "center", color: "#fff" }}>
                       {extractPrNumber(item.url)}
-                    </Td>
-                    <Td style={{ textAlign: "center" }}>
+                    </Table.Cell>
+                    <Table.Cell style={{ textAlign: "center" }}>
                       <LI
                         href={item.url}
-                        isExternal
                         style={{ color: "teal" }}
-                      >
+                        target='_blank'
+                        rel='noopener noreferrer'>
                         {item.url}
                       </LI>
-                    </Td>
-                  </Tr>
+                    </Table.Cell>
+                  </Table.Row>
                 ))}
-              </Tbody>
-            </Table>
-          </TableContainer>
+              </Table.Body>
+            </Table.Root>
+          </Table.ScrollArea>
         </Box>
       </AllLayout>
     );

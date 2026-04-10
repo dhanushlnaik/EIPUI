@@ -39,7 +39,7 @@
 
 // import React, { useEffect, useState } from "react";
 // import dynamic from "next/dynamic";
-// import { Flex, Heading, Button,Box, useColorModeValue, Spinner } from "@chakra-ui/react";
+// import { Flex, Heading, Button, Box, useColorModeValue, Spinner } from "@chakra-ui/react";
 // import { useWindowSize } from "react-use";
 // import DateTime from "@/components/DateTime";
 // import { motion } from "framer-motion";
@@ -297,17 +297,9 @@
 // export default AreaStatus;
 
 import React, { useEffect, useState } from "react";
+import { useColorModeValue } from "./ui/color-mode";
 import dynamic from "next/dynamic";
-import {
-  Flex,
-  Heading,
-  Button,
-  Box,
-  useColorModeValue,
-  Spinner,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
+import { Steps, Flex, Heading, Button, Box, Spinner, Stack, Text } from "@chakra-ui/react";
 import { useWindowSize } from "react-use";
 import DateTime from "@/components/DateTime";
 import { motion } from "framer-motion";
@@ -543,7 +535,7 @@ const AreaStatus: React.FC<AreaCProps> = ({ type }) => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: "easeInOut" }}
           >
-            <Spinner size="xl" thickness="4px" color={buttonBg} />
+            <Spinner size="xl" borderWidth="4px" color={buttonBg} />
           </motion.div>
         </Box>
       ) : (

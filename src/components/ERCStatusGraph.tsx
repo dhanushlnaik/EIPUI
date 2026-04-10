@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Box, Grid, Text, useColorModeValue, Flex, Button } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Grid, Text, Flex, Button } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import StatusColumnChart from "@/components/StatusColumnChart";
 import AreaC from "@/components/AreaStatus";

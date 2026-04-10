@@ -1,23 +1,8 @@
-'use client';
+"use client";
+import { Thead, Tbody, Tr, Th, Td } from "@/components/ui/compat";
 
-import {
-  Heading,
-  Text,
-  Link as ChakraLink,
-  Code,
-  Divider,
-  Image as ChakraImage,
-  UnorderedList,
-  OrderedList,
-  ListItem,
-  Box,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Td,
-  Th,
-} from '@chakra-ui/react';
+
+import { Steps, Heading, Text, Link as ChakraLink, Code, Image as ChakraImage, Box, Table, Separator, List } from "@chakra-ui/react";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { CodeBlock } from './Codehelper'; // adjust if needed
@@ -25,7 +10,7 @@ import NextLink from 'next/link';
 import rehypeRaw from 'rehype-raw';
 import rehypeSanitize from 'rehype-sanitize';
 import { ReactNode } from 'react';
-// import { Heading } from '@chakra-ui/react';
+// import { Heading } from "@chakra-ui/react";
 import slugify from 'slugify';
 
 type HeadingProps = {
@@ -126,7 +111,7 @@ export default function MarkdownRenderer({ markdown }: { markdown: string }) {
             </Box>
           );
         },
-        hr: () => <Divider my={4} />,
+        hr: () => <Separator my={4} />,
         // a: ({ href = '', children }) => {
         //   const isHashLink = href.startsWith('#');
 
@@ -168,13 +153,13 @@ export default function MarkdownRenderer({ markdown }: { markdown: string }) {
 
   // 🧠 Handle external and relative links (fallback)
   return (
-    <ChakraLink 
-      as={NextLink} 
+    <ChakraLink
+      as={NextLink}
       fontSize={{ base: 'md', md: 'lg', lg: 'xl' }}
-      href={href} 
-      color="blue.500" 
-      isExternal={href.startsWith('http')}
-    >
+      href={href}
+      color="blue.500"
+      target='_blank'
+      rel='noopener noreferrer'>
       {children}
     </ChakraLink>
   );
@@ -212,17 +197,27 @@ export default function MarkdownRenderer({ markdown }: { markdown: string }) {
 
 
         ul: ({ children, ...props }) => (
-          <UnorderedList fontSize={{ base: 'md', md: 'lg', lg: 'xl' }} spacing={2} pl={4} {...getCoreProps(props)}>
+          <List.Root
+            as='ul'
+            fontSize={{ base: 'md', md: 'lg', lg: 'xl' }}
+            gap={2}
+            pl={4}
+            {...getCoreProps(props)}>
             {children}
-          </UnorderedList>
+          </List.Root>
         ),
         ol: ({ children, ...props }) => (
-          <OrderedList fontSize={{ base: 'md', md: 'lg', lg: 'xl' }} spacing={2} pl={4} {...getCoreProps(props)}>
+          <List.Root
+            as='ol'
+            fontSize={{ base: 'md', md: 'lg', lg: 'xl' }}
+            gap={2}
+            pl={4}
+            {...getCoreProps(props)}>
             {children}
-          </OrderedList>
+          </List.Root>
         ),
         li: ({ children, ...props }) => (
-          <ListItem fontSize={{ base: 'md', md: 'lg', lg: 'xl' }} {...getCoreProps(props)}>{children}</ListItem>
+          <List.Item fontSize={{ base: 'md', md: 'lg', lg: 'xl' }} {...getCoreProps(props)}>{children}</List.Item>
         ),
          h1: createHeadingRenderer(1),
         h2: createHeadingRenderer(2),
@@ -232,31 +227,31 @@ export default function MarkdownRenderer({ markdown }: { markdown: string }) {
         h6: createHeadingRenderer(6),
         table: ({ children }) => (
           <Box overflowX="auto" my={4}>
-            <Table variant="simple" border="1px solid" borderColor="gray.200">
+            <Table.Root variant="simple" border="1px solid" borderColor="gray.200">
               {children}
-            </Table>
+            </Table.Root>
           </Box>
         ),
         thead: ({ children }) => (
-          <Thead fontSize={{ base: 'md', md: 'lg', lg: 'xl' }} borderBottom="2px solid" borderColor="gray.500">
+          <Table.Header fontSize={{ base: 'md', md: 'lg', lg: 'xl' }} borderBottom="2px solid" borderColor="gray.500">
             {children}
-          </Thead>
+          </Table.Header>
         ),
         tbody: Tbody,
         tr: ({ children }) => (
-          <Tr fontSize={{ base: 'md', md: 'lg', lg: 'xl' }} borderBottom="1px solid" borderColor="gray.300">
+          <Table.Row fontSize={{ base: 'md', md: 'lg', lg: 'xl' }} borderBottom="1px solid" borderColor="gray.300">
             {children}
-          </Tr>
+          </Table.Row>
         ),
         td: ({ children }) => (
-          <Td fontSize={{ base: 'md', md: 'lg', lg: 'xl' }} border="1px solid" borderColor="gray.300" p={3}>
+          <Table.Cell fontSize={{ base: 'md', md: 'lg', lg: 'xl' }} border="1px solid" borderColor="gray.300" p={3}>
             {children}
-          </Td>
+          </Table.Cell>
         ),
         th: ({ children }) => (
-          <Th fontSize={{ base: 'md', md: 'lg', lg: 'xl' }} border="1px solid" borderColor="gray.300" p={3}>
+          <Table.ColumnHeader fontSize={{ base: 'md', md: 'lg', lg: 'xl' }} border="1px solid" borderColor="gray.300" p={3}>
             {children}
-          </Th>
+          </Table.ColumnHeader>
         ),
       }}
     >

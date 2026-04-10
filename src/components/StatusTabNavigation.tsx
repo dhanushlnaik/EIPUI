@@ -1,7 +1,8 @@
 "use client";
-
+;
 import React from "react";
-import { Box, Button, Flex, useColorModeValue } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Button, Flex } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -30,17 +31,19 @@ const StatusTabNavigation: React.FC<StatusTabNavigationProps> = ({ tabs }) => {
       mb={6}
       overflowX="auto"
       pb={2}
-      sx={{
-        "&::-webkit-scrollbar": {
+      css={{
+        '& &::-webkit-scrollbar': {
           height: "6px",
         },
-        "&::-webkit-scrollbar-track": {
+
+        '& &::-webkit-scrollbar-track': {
           background: "transparent",
         },
-        "&::-webkit-scrollbar-thumb": {
+
+        '& &::-webkit-scrollbar-thumb': {
           background: scrollbarThumb,
           borderRadius: "3px",
-        },
+        }
       }}
     >
       <Flex

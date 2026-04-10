@@ -1,33 +1,8 @@
+import { TabList, Tab, TabPanels, TabPanel } from "@/components/ui/compat";
 import React, { useState, useEffect } from "react";
+import { useColorModeValue } from "./ui/color-mode";
 import Header from "./Header";
-import {
-  useColorModeValue,
-  Box,
-  Button,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-  Text,
-  Image,
-  Link,
-  Flex,
-  SimpleGrid,
-  Heading,
-  Icon,
-  Badge,
-  useBreakpointValue,
-  AspectRatio,
-  Stack,
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  AccordionIcon,
-  Grid,
-  Center,
-} from "@chakra-ui/react";
+import { Steps, Box, Button, Tabs, Text, Image, Link, Flex, SimpleGrid, Heading, Icon, Badge, useBreakpointValue, AspectRatio, Stack, Accordion, Grid, Center } from "@chakra-ui/react";
 import {
   FaYoutube,
   FaNewspaper,
@@ -130,32 +105,30 @@ const ResourcesPage: React.FC = () => {
               src={image}
               alt={title}
               objectFit="cover"
-              fallbackSrc="/blog-placeholder.png"
               onError={(e: any) => {
                 e.target.style.display = 'none';
-              }}
-            />
+              }} />
           </AspectRatio>
         )}
         {tag && (
-          <Badge colorScheme="blue" mb={2} fontSize="xs">
+          <Badge colorPalette="blue" mb={2} fontSize="xs">
             {tag}
           </Badge>
         )}
-        <Heading fontSize={{ base: "lg", md: "xl" }} mb={2} noOfLines={2}>
+        <Heading fontSize={{ base: "lg", md: "xl" }} mb={2} lineClamp={2}>
           {title}
         </Heading>
-        <Text fontSize="md" color={textColor} noOfLines={3} mb={4}>
+        <Text fontSize="md" color={textColor} lineClamp={3} mb={4}>
           {content}
         </Text>
         <Link
           href={link}
           color={accentColor}
           fontWeight="semibold"
-          isExternal={!link.startsWith("/")}
           display="inline-flex"
           alignItems="center"
-        >
+          target='_blank'
+          rel='noopener noreferrer'>
           Read more →
         </Link>
       </Box>
@@ -200,10 +173,10 @@ const ResourcesPage: React.FC = () => {
             color={accentColor}
             fontSize="sm"
             fontWeight="semibold"
-            isExternal
             display="inline-flex"
             alignItems="center"
-          >
+            target='_blank'
+            rel='noopener noreferrer'>
             Watch on YouTube →
           </Link>
         </Box>
@@ -608,16 +581,16 @@ const ResourcesPage: React.FC = () => {
           <Icon as={FaQuestionCircle} color={accentColor} /> Frequently Asked
           Questions
         </Heading>
-        <Accordion allowToggle>
+        <Accordion.Root collapsible>
           {FAQs?.map((item, index) => (
-            <AccordionItem
+            <Accordion.Item
               key={index}
               mb={4}
               borderWidth="1px"
               borderRadius="lg"
               overflow="hidden"
-            >
-              <AccordionButton
+              value='item-0'>
+              <Accordion.ItemTrigger
                 bg={cardBg}
                 _hover={{ bg: useColorModeValue("gray.100", "gray.700") }}
                 p={4}
@@ -625,27 +598,24 @@ const ResourcesPage: React.FC = () => {
                 <Box flex="1" textAlign="left">
                   <Heading size="md">{item?.title}</Heading>
                 </Box>
-                <AccordionIcon />
-              </AccordionButton>
-              <AccordionPanel
-                pb={4}
-                bg={useColorModeValue("gray.50", "gray.700")}
-              >
-                <Text mb={3}>{item?.content}</Text>
-                <NextLink href={item.link} passHref legacyBehavior>
-                  <Link
-                    color={accentColor}
-                    fontWeight="semibold"
-                    display="inline-flex"
-                    alignItems="center"
-                  >
-                    Learn more →
-                  </Link>
-                </NextLink>
-              </AccordionPanel>
-            </AccordionItem>
+                <Accordion.ItemIndicator />
+              </Accordion.ItemTrigger>
+              <Accordion.ItemContent pb={4} bg={useColorModeValue("gray.50", "gray.700")}><Accordion.ItemBody>
+                  <Text mb={3}>{item?.content}</Text>
+                  <NextLink href={item.link} passHref legacyBehavior>
+                    <Link
+                      color={accentColor}
+                      fontWeight="semibold"
+                      display="inline-flex"
+                      alignItems="center"
+                    >
+                      Learn more →
+                    </Link>
+                  </NextLink>
+                </Accordion.ItemBody></Accordion.ItemContent>
+            </Accordion.Item>
           ))}
-        </Accordion>
+        </Accordion.Root>
       </Box>
     </Grid>
   );
@@ -670,7 +640,7 @@ const ResourcesPage: React.FC = () => {
               <Text fontSize="sm" color={textColor} mb={4}>
                 Latest updates from our database
               </Text>
-              <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
+              <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={6}>
                 {recentBlogs.map((blog) => (
                   <Card
                     key={blog.id}
@@ -693,7 +663,7 @@ const ResourcesPage: React.FC = () => {
             <Text fontSize="sm" color={textColor} mb={4}>
               In-depth guides and technical deep-dives
             </Text>
-            <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
+            <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={6}>
               {BLOGS?.map((item, index) => (
                 <Card key={index} {...item} />
               ))}
@@ -713,7 +683,7 @@ const ResourcesPage: React.FC = () => {
 
           <SimpleGrid
             columns={{ base: 1, sm: 2 }}
-            spacing={4}
+            gap={4}
             maxW="auto" // Constrain the maximum width
             mx="auto" // Center the grid
           >
@@ -723,14 +693,14 @@ const ResourcesPage: React.FC = () => {
           </SimpleGrid>
           {totalVideoPages > 1 && (
             <Flex justify="center" mt={6}>
-              <Stack direction="row" spacing={2}>
+              <Stack direction="row" gap={2}>
                 <Button
                   onClick={() =>
                     setCurrentVideoPage((prev) => Math.max(prev - 1, 0))
                   }
                   disabled={currentVideoPage === 0}
                   size="sm"
-                  colorScheme="blue"
+                  colorPalette="blue"
                   variant="outline"
                 >
                   Previous
@@ -739,7 +709,7 @@ const ResourcesPage: React.FC = () => {
                   <Button
                     key={index}
                     onClick={() => setCurrentVideoPage(index)}
-                    colorScheme={currentVideoPage === index ? "blue" : "gray"}
+                    colorPalette={currentVideoPage === index ? "blue" : "gray"}
                     size="sm"
                     variant={currentVideoPage === index ? "solid" : "outline"}
                   >
@@ -754,7 +724,7 @@ const ResourcesPage: React.FC = () => {
                   }
                   disabled={currentVideoPage === totalVideoPages - 1}
                   size="sm"
-                  colorScheme="blue"
+                  colorPalette="blue"
                   variant="outline"
                 >
                   Next
@@ -773,7 +743,7 @@ const ResourcesPage: React.FC = () => {
           <Heading size="lg" mb={6} display="flex" alignItems="center" gap={2}>
             <Icon as={FaNewspaper} color={accentColor} /> News & Announcements
           </Heading>
-          <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
+          <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={6}>
             {NEWS?.map((item, index) => (
               <Card key={index} {...item} />
             ))}
@@ -788,7 +758,7 @@ const ResourcesPage: React.FC = () => {
       <Heading size="lg" mb={6} display="flex" alignItems="center" gap={2}>
         <Icon as={FaTools} color={accentColor} /> Tools
       </Heading>
-      <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
+      <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={6}>
         {TOOLS?.map((tool, index) => (
           <Box
             key={index}
@@ -841,13 +811,13 @@ const ResourcesPage: React.FC = () => {
         </Box>
         <Box maxW="7xl" mx="auto" px={{ base: 4, md: 8 }} py={8}>
           <Center mb={8}>
-            <Tabs
-              index={tabIndex}
-              onChange={setTabIndex}
-              variant="unstyled"
-              isFitted={isMobile}
+            <Tabs.Root
+              value={tabIndex}
+              onValueChange={setTabIndex}
+              unstyled
+              fitted={isMobile}
             >
-              <TabList
+              <Tabs.List
                 display="flex"
                 flexWrap="wrap"
                 justifyContent="center"
@@ -887,14 +857,14 @@ const ResourcesPage: React.FC = () => {
                       direction="row"
                       align="center"
                       justify="center"
-                      spacing={2}
+                      gap={2}
                     >
                       <Icon as={tab.icon} />
                       {!isMobile && <Text>{tab.label}</Text>}
                     </Stack>
                   </Tab>
                 ))}
-              </TabList>
+              </Tabs.List>
 
               <TabPanels mt={8}>
                 {tabContent?.map((tab, index) => (
@@ -904,7 +874,7 @@ const ResourcesPage: React.FC = () => {
                   </TabPanel>
                 ))}
               </TabPanels>
-            </Tabs>
+            </Tabs.Root>
           </Center>
         </Box>
       </Box>

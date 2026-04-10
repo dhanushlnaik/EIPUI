@@ -1,30 +1,9 @@
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, useDisclosure, Divider } from "@/components/ui/compat";
 import React, { useState, useEffect, useRef } from "react";
-import {
-  Box,
-  Text,
-  HStack,
-  VStack,
-  Flex,
-  Tooltip,
-  Button,
-  Spinner,
-  Select,
-  Badge,
-  Icon,
-  Collapse,
-  useColorModeValue,
-  chakra,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalCloseButton,
-  useDisclosure,
-  Stack,
-  Divider,
-} from "@chakra-ui/react";
-import { keyframes } from "@chakra-ui/system";
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Text, HStack, VStack, Flex, Button, Spinner, NativeSelect, Badge, Icon, Collapsible, chakra, Stack } from "@chakra-ui/react";
+import { Tooltip } from '@/components/ui/tooltip';
+import { keyframes } from "@emotion/react";
 import { motion } from "framer-motion";
 import {
   FaNetworkWired,
@@ -137,7 +116,7 @@ const SlotCountdown: React.FC = () => {
   const [celebrationSeen, setCelebrationSeen] = useState<boolean>(() => {
     return localStorage.getItem('fusaka-celebration-seen') === 'true';
   });
-  const { isOpen: isCelebrationOpen, onOpen: onCelebrationOpen, onClose: onCelebrationClose } = useDisclosure();
+  const { open: isCelebrationOpen, onOpen: onCelebrationOpen, onClose: onCelebrationClose } = useDisclosure();
 
   const accent = getAccent(network, useColorModeValue(true, false));
 
@@ -563,13 +542,12 @@ Testing complete, ready for mainnet! 🎯
     const secondRowSlots = slotsInEpoch.slice(16);
 
     return (
-      <VStack spacing={3} align="center">
+      <VStack gap={3} align="center">
         <Text fontSize="xs" fontWeight="medium" color={useColorModeValue("gray.600", "gray.400")}>
           Epoch {currentEpoch} • 32 Slots • Current Slot: {currentSlot}
         </Text>
-        
-        <VStack spacing={2}>
-          <HStack spacing={2} wrap="wrap" justify="center" px={2}>
+        <VStack gap={2}>
+          <HStack gap={2} wrap="wrap" justify="center" px={2}>
             {firstRowSlots.map((slot) => {
               const isProcessed = slot < currentSlot;
               const isCurrent = slot === currentSlot;
@@ -578,19 +556,21 @@ Testing complete, ready for mainnet! 🎯
               return (
                 <Tooltip
                   key={slot}
-                  label={
+                  content={
                     isProcessed
                       ? `✅ Processed Slot: ${slot}\n📊 Epoch: ${epochOfSlot}\n📦 Block: ${blockOfSlot.toLocaleString()}\n🌐 Network: ${networks[network].name}`
                       : isCurrent
                       ? `📍 Current Slot: ${slot}\n📊 Epoch: ${epochOfSlot}\n📦 Current Block: ${blockOfSlot.toLocaleString()}\n🌐 Network: ${networks[network].name}\n⏱️ Next slot in ~${13 - timer}s`
                       : `🔮 Future Slot: ${slot}\n📊 Epoch: ${epochOfSlot}\n📅 Est. Time: ${new Date(Date.now() + ((slot - currentSlot) * 12 * 1000)).toLocaleString()}\n📦 Est. Block: ${(currentBlock + (slot - currentSlot)).toLocaleString()}`
                   }
-                  hasArrow
-                  placement="top"
+                  showArrow
                   bg={useColorModeValue("gray.800", "gray.200")}
                   color={useColorModeValue("white", "gray.800")}
                   fontSize="xs"
                   whiteSpace="pre-line"
+                  positioning={{
+                    placement: "top"
+                  }}
                 >
                   <Box
                     w="85px"
@@ -633,7 +613,7 @@ Testing complete, ready for mainnet! 🎯
             })}
           </HStack>
           
-          <HStack spacing={2} wrap="wrap" justify="center" px={2}>
+          <HStack gap={2} wrap="wrap" justify="center" px={2}>
             {secondRowSlots.map((slot) => {
               const isProcessed = slot < currentSlot;
               const isCurrent = slot === currentSlot;
@@ -642,19 +622,21 @@ Testing complete, ready for mainnet! 🎯
               return (
                 <Tooltip
                   key={slot}
-                  label={
+                  content={
                     isProcessed
                       ? `✅ Processed Slot: ${slot}\n📊 Epoch: ${epochOfSlot}\n📦 Block: ${blockOfSlot.toLocaleString()}\n🌐 Network: ${networks[network].name}`
                       : isCurrent
                       ? `📍 Current Slot: ${slot}\n📊 Epoch: ${epochOfSlot}\n📦 Current Block: ${blockOfSlot.toLocaleString()}\n🌐 Network: ${networks[network].name}\n⏱️ Next slot in ~${13 - timer}s`
                       : `🔮 Future Slot: ${slot}\n📊 Epoch: ${epochOfSlot}\n📅 Est. Time: ${new Date(Date.now() + ((slot - currentSlot) * 12 * 1000)).toLocaleString()}\n📦 Est. Block: ${(currentBlock + (slot - currentSlot)).toLocaleString()}`
                   }
-                  hasArrow
-                  placement="top"
+                  showArrow
                   bg={useColorModeValue("gray.800", "gray.200")}
                   color={useColorModeValue("white", "gray.800")}
                   fontSize="xs"
                   whiteSpace="pre-line"
+                  positioning={{
+                    placement: "top"
+                  }}
                 >
                   <Box
                     w="85px"
@@ -705,13 +687,15 @@ Testing complete, ready for mainnet! 🎯
                 </Box>
                 
                 <Tooltip
-                  label={`🎯 FUSAKA Target Slot: ${networks[network].target.toLocaleString()}\n📅 Scheduled: ${FUSAKA_INFO.schedule[network as keyof typeof FUSAKA_INFO.schedule]}\n📊 Target Epoch: ${networks[network].targetepoch.toLocaleString()}\n⏰ Estimated Block: ${(networks[network].target + (currentBlock - currentSlot)).toLocaleString()}\n🚀 Network: ${networks[network].name}\n⏳ Slots remaining: ${(networks[network].target - currentSlot).toLocaleString()}`}
-                  hasArrow
-                  placement="top"
+                  content={`🎯 FUSAKA Target Slot: ${networks[network].target.toLocaleString()}\n📅 Scheduled: ${FUSAKA_INFO.schedule[network as keyof typeof FUSAKA_INFO.schedule]}\n📊 Target Epoch: ${networks[network].targetepoch.toLocaleString()}\n⏰ Estimated Block: ${(networks[network].target + (currentBlock - currentSlot)).toLocaleString()}\n🚀 Network: ${networks[network].name}\n⏳ Slots remaining: ${(networks[network].target - currentSlot).toLocaleString()}`}
+                  showArrow
                   bg={useColorModeValue("gray.800", "gray.200")}
                   color={useColorModeValue("white", "gray.800")}
                   fontSize="xs"
                   whiteSpace="pre-line"
+                  positioning={{
+                    placement: "top"
+                  }}
                 >
                   <Box
                     w="85px"
@@ -748,20 +732,19 @@ Testing complete, ready for mainnet! 🎯
     const epochs = Array.from({ length: epochsToShow }, (_, i) => currentEpoch + i);
     
     return (
-      <VStack spacing={3} align="center">
+      <VStack gap={3} align="center">
         <Text fontSize="xs" fontWeight="medium" color={useColorModeValue("gray.600", "gray.400")}>
           Epochs Timeline • Current: {currentEpoch} • Slot: {currentSlot}
         </Text>
-        
-        <VStack spacing={2}>
-          <HStack spacing={2} wrap="wrap" justify="center">
+        <VStack gap={2}>
+          <HStack gap={2} wrap="wrap" justify="center">
             {epochs.slice(0, 8).map((epoch) => {
               const isCurrent = epoch === currentEpoch;
               const isTarget = epoch === networks[network].targetepoch;
               const isPast = epoch < currentEpoch;
               
               const formatTooltip = (epoch: number, isCurrent: boolean, isTarget: boolean) => {
-                const lines = [];
+                const lines: string[] = [];
                 
                 if (isTarget) {
                   lines.push(`🎯 FUSAKA Target Epoch: ${epoch}`);
@@ -790,13 +773,15 @@ Testing complete, ready for mainnet! 🎯
               return (
                 <Tooltip
                   key={epoch}
-                  label={formatTooltip(epoch, isCurrent, isTarget)}
-                  hasArrow
-                  placement="top"
+                  content={formatTooltip(epoch, isCurrent, isTarget)}
+                  showArrow
                   bg={useColorModeValue("gray.800", "gray.200")}
                   color={useColorModeValue("white", "gray.800")}
                   fontSize="xs"
                   whiteSpace="pre-line"
+                  positioning={{
+                    placement: "top"
+                  }}
                 >
                   <Box
                     w="85px"
@@ -844,14 +829,14 @@ Testing complete, ready for mainnet! 🎯
             
           </HStack>
           
-          <HStack spacing={2} wrap="wrap" justify="center">
+          <HStack gap={2} wrap="wrap" justify="center">
             {epochs.slice(8).map((epoch) => {
               const isCurrent = epoch === currentEpoch;
               const isTarget = epoch === networks[network].targetepoch;
               const isPast = epoch < currentEpoch;
               
               const formatTooltip = (epoch: number, isCurrent: boolean, isTarget: boolean) => {
-                const lines = [];
+                const lines: string[] = [];
                 
                 if (isTarget) {
                   lines.push(`🎯 FUSAKA Target Epoch: ${epoch}`);
@@ -880,13 +865,15 @@ Testing complete, ready for mainnet! 🎯
               return (
                 <Tooltip
                   key={epoch}
-                  label={formatTooltip(epoch, isCurrent, isTarget)}
-                  hasArrow
-                  placement="top"
+                  content={formatTooltip(epoch, isCurrent, isTarget)}
+                  showArrow
                   bg={useColorModeValue("gray.800", "gray.200")}
                   color={useColorModeValue("white", "gray.800")}
                   fontSize="xs"
                   whiteSpace="pre-line"
+                  positioning={{
+                    placement: "top"
+                  }}
                 >
                   <Box
                     w="85px"
@@ -943,13 +930,15 @@ Testing complete, ready for mainnet! 🎯
                 </Box>
                 
                 <Tooltip
-                  label={`🎯 FUSAKA Target Epoch: ${networks[network].targetepoch}\n📅 Scheduled: ${FUSAKA_INFO.schedule[network as keyof typeof FUSAKA_INFO.schedule]}\n🔢 Target Slot: ${networks[network].target.toLocaleString()}\n⏰ Estimated Block: ${(networks[network].target + (currentBlock - currentSlot)).toLocaleString()}\n🚀 Network: ${networks[network].name}\n⏳ Epochs remaining: ${(networks[network].targetepoch - currentEpoch).toLocaleString()}`}
-                  hasArrow
-                  placement="top"
+                  content={`🎯 FUSAKA Target Epoch: ${networks[network].targetepoch}\n📅 Scheduled: ${FUSAKA_INFO.schedule[network as keyof typeof FUSAKA_INFO.schedule]}\n🔢 Target Slot: ${networks[network].target.toLocaleString()}\n⏰ Estimated Block: ${(networks[network].target + (currentBlock - currentSlot)).toLocaleString()}\n🚀 Network: ${networks[network].name}\n⏳ Epochs remaining: ${(networks[network].targetepoch - currentEpoch).toLocaleString()}`}
+                  showArrow
                   bg={useColorModeValue("gray.800", "gray.200")}
                   color={useColorModeValue("white", "gray.800")}
                   fontSize="xs"
                   whiteSpace="pre-line"
+                  positioning={{
+                    placement: "top"
+                  }}
                 >
                   <Box
                     w="85px"
@@ -983,7 +972,7 @@ Testing complete, ready for mainnet! 🎯
 
   // --- Main Unified Layout ---
   return (
-    <VStack spacing={5} align="stretch" w="full">
+    <VStack gap={5} align="stretch" w="full">
       {/* HEADER WITH COLLAPSIBLE INFO */}
       <Box 
         bg={useColorModeValue("gray.50", "gray.900")} 
@@ -993,110 +982,104 @@ Testing complete, ready for mainnet! 🎯
         borderColor={useColorModeValue("gray.200", "gray.700")}
       >
         <Flex justify="space-between" align="center" mb={showInfo ? 3 : 0}>
-          <HStack spacing={3}>
+          <HStack gap={3}>
             <Icon as={FaInfoCircle} color={useColorModeValue("blue.600", "blue.300")} boxSize={5} />
             <Text fontSize="md" fontWeight="bold" color={useColorModeValue("gray.800", "white")}>
               FUSAKA Network Upgrade
             </Text>
-            <Badge colorScheme="purple" variant="subtle" fontSize="xs">Info</Badge>
+            <Badge colorPalette="purple" variant="subtle" fontSize="xs">Info</Badge>
           </HStack>
           <Button
             size="sm"
             variant="ghost"
             color={useColorModeValue("blue.600", "blue.200")}
             onClick={() => setShowInfo((prev) => !prev)}
-            rightIcon={showInfo ? <FaChevronUp /> : <FaChevronDown />}
-            _hover={{ bg: useColorModeValue("blue.100", "blue.800") }}
-          >
-            {showInfo ? "Hide" : "More"}
-          </Button>
+            _hover={{ bg: useColorModeValue("blue.100", "blue.800") }}>{showInfo ? "Hide" : "More"}{showInfo ? <FaChevronUp /> : <FaChevronDown />}</Button>
         </Flex>
         
-        <Collapse in={showInfo} animateOpacity>
-          <Box pt={2}>
-            <Text fontSize="sm" color={useColorModeValue("gray.700", "gray.300")} mb={3}>
-              {FUSAKA_INFO.description}
-            </Text>
-            <HStack spacing={6} align="start" flexWrap="wrap">
-              <VStack align="start" spacing={2} minW="180px">
-                <Text fontWeight="semibold" fontSize="sm" color={useColorModeValue("gray.800", "gray.200")}>
-                  Key Features:
-                </Text>
-                <VStack align="start" spacing={0.5} fontSize="sm" color={useColorModeValue("gray.600", "gray.400")}>
-                  {FUSAKA_INFO.features.map((f, i) => (
-                    <Text key={i}>• {f}</Text>
-                  ))}
+        <Collapsible.Root open={showInfo}>
+          <Collapsible.Content>
+            <Box pt={2}>
+              <Text fontSize="sm" color={useColorModeValue("gray.700", "gray.300")} mb={3}>
+                {FUSAKA_INFO.description}
+              </Text>
+              <HStack gap={6} align="start" flexWrap="wrap">
+                <VStack align="start" gap={2} minW="180px">
+                  <Text fontWeight="semibold" fontSize="sm" color={useColorModeValue("gray.800", "gray.200")}>
+                    Key Features:
+                  </Text>
+                  <VStack align="start" gap={0.5} fontSize="sm" color={useColorModeValue("gray.600", "gray.400")}>
+                    {FUSAKA_INFO.features.map((f, i) => (
+                      <Text key={i}>• {f}</Text>
+                    ))}
+                  </VStack>
                 </VStack>
-              </VStack>
+                
+                <VStack align="start" gap={2} minW="180px">
+                  <Text fontWeight="semibold" fontSize="sm" color={useColorModeValue("gray.800", "gray.200")}>
+                    Activation Schedule:
+                  </Text>
+                  <VStack align="start" gap={0.5} fontSize="sm" color={useColorModeValue("gray.600", "gray.400")}>
+                    {Object.entries(FUSAKA_INFO.schedule).map(([net, date]) => (
+                      <Text key={net}>
+                        <Text as="span" fontWeight="medium" color={useColorModeValue("gray.700", "gray.300")}>
+                          {net.charAt(0).toUpperCase() + net.slice(1)}:
+                        </Text>{" "}
+                        {date}
+                      </Text>
+                    ))}
+                  </VStack>
+                </VStack>
+              </HStack>
               
-              <VStack align="start" spacing={2} minW="180px">
-                <Text fontWeight="semibold" fontSize="sm" color={useColorModeValue("gray.800", "gray.200")}>
-                  Activation Schedule:
-                </Text>
-                <VStack align="start" spacing={0.5} fontSize="sm" color={useColorModeValue("gray.600", "gray.400")}>
-                  {Object.entries(FUSAKA_INFO.schedule).map(([net, date]) => (
-                    <Text key={net}>
-                      <Text as="span" fontWeight="medium" color={useColorModeValue("gray.700", "gray.300")}>
-                        {net.charAt(0).toUpperCase() + net.slice(1)}:
-                      </Text>{" "}
-                      {date}
-                    </Text>
-                  ))}
-                </VStack>
-              </VStack>
-            </HStack>
-            
-            <Button
-              as="a"
-              href={FUSAKA_INFO.readMore.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              leftIcon={<FaBook />}
-              colorScheme="blue"
-              size="sm"
-              variant="outline"
-              mt={3}
-            >
-              {FUSAKA_INFO.readMore.label}
-            </Button>
-          </Box>
-        </Collapse>
+              <Button
+                as="a"
+                href={FUSAKA_INFO.readMore.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                colorPalette="blue"
+                size="sm"
+                variant="outline"
+                mt={3}><FaBook />{FUSAKA_INFO.readMore.label}</Button>
+            </Box>
+          </Collapsible.Content>
+        </Collapsible.Root>
       </Box>
-
       {/* LIVE COUNTDOWN HEADER */}
       <Flex align="center" justify="space-between" flexWrap="wrap" gap={3}>
-        <HStack spacing={3}>
+        <HStack gap={3}>
           <Icon as={FaNetworkWired} boxSize={5} color={accent} />
           <Text fontSize={{ base: "lg", md: "xl" }} fontWeight="bold" color={useColorModeValue("gray.800", "white")}>
             Live Countdown — {networks[network].name} Network
           </Text>
-          <Badge colorScheme={network === "mainnet" ? "blue" : "green"} fontSize="xs" px={2}>
+          <Badge colorPalette={network === "mainnet" ? "blue" : "green"} fontSize="xs" px={2}>
             {network === "mainnet" ? "MAINNET" : "TESTNET"}
           </Badge>
         </HStack>
-        <Select
-          value={viewMode}
-          onChange={(e) => setViewMode(e.target.value as "slots" | "epochs")}
-          bg={useColorModeValue("white", "gray.700")}
-          borderColor={useColorModeValue("gray.300", "gray.600")}
-          width="120px"
-          size="sm"
-        >
-          <option value="slots">Slots</option>
-          <option value="epochs">Epochs</option>
-        </Select>
+        <NativeSelect.Root>
+          <NativeSelect.Field
+            value={viewMode}
+            onValueChange={(e) => setViewMode(e.target.value as "slots" | "epochs")}
+            bg={useColorModeValue("white", "gray.700")}
+            borderColor={useColorModeValue("gray.300", "gray.600")}
+            width="120px"
+            size="sm">
+            <option value="slots">Slots</option>
+            <option value="epochs">Epochs</option>
+          </NativeSelect.Field>
+          <NativeSelect.Indicator />
+        </NativeSelect.Root>
       </Flex>
-
       {/* NETWORK SELECTION */}
       <Box>
         <Text fontSize="sm" fontWeight="medium" color={useColorModeValue("gray.600", "gray.400")} mb={2} textAlign="center">
           Select Network to Track
         </Text>
-        <HStack spacing={3} justify="center" wrap="wrap">
+        <HStack gap={3} justify="center" wrap="wrap">
           {Object.keys(networks).map((net) => (
             <Button
               key={net}
-              colorScheme={network === net ? (net === "mainnet" ? "blue" : net === "hoodi" ? "orange" : net === "sepolia" ? "purple" : "blue") : "gray"}
+              colorPalette={network === net ? (net === "mainnet" ? "blue" : net === "hoodi" ? "orange" : net === "sepolia" ? "purple" : "blue") : "gray"}
               onClick={() => handleNetworkChange(net)}
               variant={network === net ? "solid" : "outline"}
               size="sm"
@@ -1107,11 +1090,11 @@ Testing complete, ready for mainnet! 🎯
             >
               {net.charAt(0).toUpperCase() + net.slice(1)}
               {(net === "holesky" || net === "sepolia" || net === "hoodi") && (
-                <Badge ml={1} colorScheme="green" fontSize="9px" variant="solid">
+                <Badge ml={1} colorPalette="green" fontSize="9px" variant="solid">
                   ✅ FINAL
                 </Badge>
               )}
-              {net === "mainnet" && <Badge ml={1} colorScheme="blue" fontSize="9px" variant="solid">FINAL</Badge>}
+              {net === "mainnet" && <Badge ml={1} colorPalette="blue" fontSize="9px" variant="solid">FINAL</Badge>}
               {mergedNetworks.has(net) && (
                 <Box
                   position="absolute"
@@ -1129,10 +1112,9 @@ Testing complete, ready for mainnet! 🎯
         </HStack>
 
       </Box>
-
       {/* COUNTDOWN STATUS - ONE LINE */}
       {loading ? (
-        <VStack spacing={3} py={6}>
+        <VStack gap={3} py={6}>
           <Spinner size="lg" color={accent} />
           <Text color={useColorModeValue("gray.600", "gray.400")} fontSize="sm">
             Loading {networks[network].name} network data...
@@ -1140,8 +1122,8 @@ Testing complete, ready for mainnet! 🎯
         </VStack>
       ) : /* CELEBRATION CONTENT - INLINE */
       (isUpgradeLive || slotsRemaining <= 0) ? (
-        <VStack spacing={2}>
-          <HStack spacing={2} align="center">
+        <VStack gap={2}>
+          <HStack gap={2} align="center">
             <Text
               fontSize="md"
               fontWeight="bold"
@@ -1149,7 +1131,7 @@ Testing complete, ready for mainnet! 🎯
             >
               FUSAKA IS LIVE ON {networks[network].name.toUpperCase()}!
             </Text>
-            <Badge colorScheme="green" px={2} py={1} fontSize="xs">
+            <Badge colorPalette="green" px={2} py={1} fontSize="xs">
               Successfully Activated
             </Badge>
           </HStack>
@@ -1164,10 +1146,10 @@ Testing complete, ready for mainnet! 🎯
           </button>
         </VStack>
       ) : (
-        <VStack spacing={4}>
+        <VStack gap={4}>
           {/* SINGLE LINE STATUS */}
-          <HStack justify="center" spacing={4} flexWrap="wrap" py={2}>
-            <HStack spacing={2}>
+          <HStack justify="center" gap={4} flexWrap="wrap" py={2}>
+            <HStack gap={2}>
               <Icon as={FaClock} color={useColorModeValue("blue.600", "blue.300")} />
               <Text fontSize="md" fontWeight="bold" color={useColorModeValue("gray.800", "white")}>
                 {countdown || "Calculating..."}
@@ -1192,19 +1174,16 @@ Testing complete, ready for mainnet! 🎯
           </Box>
         </VStack>
       )}
-
       {/* FOOTER INFO */}
-      <HStack justify="center" spacing={4} py={2}>
-        <HStack spacing={2}>
+      <HStack justify="center" gap={4} py={2}>
+        <HStack gap={2}>
           <Icon as={FaClock} boxSize={3} color={useColorModeValue("gray.500", "gray.400")} />
           <Text fontSize="sm" color={useColorModeValue("gray.500", "gray.400")}>
             Auto-refresh in {timer}s
           </Text>
         </HStack>
       </HStack>
-
       <DateTime />
-      
       <style>
         {`
           @keyframes blink {
@@ -1214,7 +1193,6 @@ Testing complete, ready for mainnet! 🎯
           }
         `}
       </style>
-
     </VStack>
   );
 };

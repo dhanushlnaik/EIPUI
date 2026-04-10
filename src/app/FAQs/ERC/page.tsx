@@ -1,25 +1,11 @@
 "use client";
-
-﻿import { VStack } from "@chakra-ui/react";
+;
+import { VStack } from "@chakra-ui/react";
+import { useColorModeValue } from "../../../components/ui/color-mode";
 import React, { useState, useEffect, useLayoutEffect } from "react";
 import AllLayout from "@/components/Layout";
 import CloseableAdCard from "@/components/CloseableAdCard";
-import {
-  Box,
-  Spinner,
-  useColorModeValue,
-  Wrap,
-  WrapItem,
-  Text,
-  List,
-  UnorderedList,
-  ListItem,
-  Heading,
-  Grid,
-  Stack,
-  Image,
-  Link
-} from "@chakra-ui/react";
+import { Box, Spinner, Wrap, WrapItem, Text, List, Heading, Grid, Stack, Image, Link } from "@chakra-ui/react";
 import NLink from "next/link";
 const EIPsInsightRecap = () => {
     const bg = useColorModeValue("#f6f6f7", "#171923");
@@ -41,7 +27,7 @@ const EIPsInsightRecap = () => {
     paddingX={{ lg: "10", md: "5", sm: "5", base: "5" }}
     marginTop={{ lg: "10", md: "5", sm: "5", base: "5" }}
     >
-      <VStack spacing={6} align="start">
+      <VStack gap={6} align="start">
       <Text
         
            transition={{ duration: 0.5 } as any}
@@ -54,7 +40,7 @@ const EIPsInsightRecap = () => {
 
         <Stack 
             direction={{ base: "column", lg: "row" }} // Stack vertically on small screens, horizontally on large screens
-            spacing={6} 
+            gap={6} 
             align="center" // Align content in the center
             justify="center" // Center content horizontally and vertically
             >
@@ -81,14 +67,16 @@ const EIPsInsightRecap = () => {
                 textAlign="justify"
             >     
             <Text fontSize={{ base: "sm", sm: "xs", md: "md" }} mt={4} textAlign="justify">
-            The goal of Ethereum Request for Change (<Link href="/erc" color="blue.300" isExternal>ERCs</Link>) is to standardize and provide high-quality documentation for the Ethereum application layer. This repository tracks past and ongoing improvements application standards in the form of ERCs.
+            The goal of Ethereum Request for Change (<Link href="/erc" color="blue.300" target='_blank' rel='noopener noreferrer'>ERCs</Link>) is to standardize and provide high-quality documentation for the Ethereum application layer. This repository tracks past and ongoing improvements application standards in the form of ERCs.
               </Text>
               <Text fontSize={{ base: "sm", sm: "xs", md: "md" }} mt={4} textAlign="justify">
-                <Link  href="/ercs/erc-1"
-                isExternal
-                color="blue.500"
-                textDecoration="underline"
-                _hover={{  color: "blue.700" }}>ERC-1</Link> governs how ERCs are published.
+                <Link
+                  href="/ercs/erc-1"
+                  color="blue.500"
+                  textDecoration="underline"
+                  _hover={{  color: "blue.700" }}
+                  target='_blank'
+                  rel='noopener noreferrer'>ERC-1</Link> governs how ERCs are published.
               </Text>
             </Box>
             </Stack>

@@ -1,10 +1,11 @@
 "use client";
-
+import { useToast } from "@/components/ui/use-toast";
+;
 import AllLayout from "@/components/Layout";
-import { Box, Button, Grid, Text, useColorModeValue, Link as LI, GridItem, Select, SimpleGrid, Link, useToast, Heading, } from "@chakra-ui/react";
+import { useColorModeValue } from "../../components/ui/color-mode";
+import { Steps, Box, Button, Grid, Text, Link as LI, GridItem, NativeSelect, SimpleGrid, Link, Heading } from "@chakra-ui/react";
 import FlexBetween from "@/components/FlexBetween";
 import Header from "@/components/Header";
-import { CopyIcon, DownloadIcon } from "@chakra-ui/icons";
 import TableStatus from "@/components/TableStatus";
 import AreaStatus from "@/components/AreaStatus";
 import React, { useEffect, useState } from "react";
@@ -34,6 +35,7 @@ import ErcTable from "@/components/ErcTable";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import ERCsPRChart from "@/components/Ercsprs";
 import { getStatusTimelineV2Data } from "@/lib/statusTimelineClient";
+import { LuCopy, LuDownload } from 'react-icons/lu';
 
 interface EIP {
   _id: string;
@@ -123,7 +125,7 @@ const Status_OPTIONS = ["Draft", "Review", "Last Call", "Living", "Final", "Stag
 const ERC = () => {
   const [data, setData] = useState<EIP[]>([]);
   const [data4, setData4] = useState<EIP[]>([]);
-  const [data2, setData2] = useState<APIResponse>({ eip: [], erc: [], rip: [] });
+  const [data2, setData2] = useState<any>({ eip: [], erc: [], rip: [] });
   const [isLoading, setIsLoading] = useState(true);
   const [selected, setSelected] = useState<"status" | "category">("category");
   const [selectedStatusInner, setSelectedStatusInner] = useState(Status_OPTIONS[0]);
@@ -264,8 +266,8 @@ useEffect(() => {
                     </Text>
                     <Button
                       size="sm"
-                      colorScheme="blue"
-                      variant="link"
+                      colorPalette="blue"
+                      variant='plain'
                       as={Link}
                       href="/FAQs/ERC"
                     >
@@ -299,7 +301,7 @@ useEffect(() => {
                 </Box>
 
                 {/* Toggle Buttons (right) */}
-                <ButtonGroup size="md" isAttached>
+                <ButtonGroup size="md" attached>
                   <Button
                     bg={selected === "category" ? "#40E0D0" : "white"}
                     color={selected === "category" ? "white" : "#40E0D0"}
@@ -344,12 +346,9 @@ useEffect(() => {
                 <Button
                   onClick={handleCopyOverviewChart}
                   size="sm"
-                  leftIcon={<CopyIcon />}
-                  colorScheme="blue"
-                  variant="ghost"
-                >
-                  Copy Link
-                </Button>
+                  colorPalette="blue"
+                  variant="ghost"><LuCopy />Copy Link
+                                  </Button>
               </Flex>
 
               {/* AllChart - Full Width Below Donut */}
@@ -382,12 +381,9 @@ useEffect(() => {
                     <Button
                       onClick={handleCopyERCStatusGraph}
                       size="sm"
-                      leftIcon={<CopyIcon />}
-                      colorScheme="blue"
-                      variant="ghost"
-                    >
-                      Copy Link
-                    </Button>
+                      colorPalette="blue"
+                      variant="ghost"><LuCopy />Copy Link
+                                          </Button>
                   </Flex>
                   <ERCStatusGraph />
                 </>
@@ -410,12 +406,9 @@ useEffect(() => {
                     <Button
                       onClick={handleCopyAreaChart}
                       size="sm"
-                      leftIcon={<CopyIcon />}
-                      colorScheme="blue"
-                      variant="ghost"
-                    >
-                      Copy Link
-                    </Button>
+                      colorPalette="blue"
+                      variant="ghost"><LuCopy />Copy Link
+                                          </Button>
                   </Flex>
                   <AreaStatus type="ERCs" />
                 </Box>
@@ -438,30 +431,28 @@ useEffect(() => {
                     direction={{ base: "column", sm: "row" }}
                     align={{ base: "stretch", sm: "center" }}
                   >
-                    <Select
-                      maxW={{ base: "100%", sm: "320px" }}
-                      value={selectedStatusInner}
-                      onChange={(e) => setSelectedStatusInner(e.target.value)}
-                      borderColor="blue.400"
-                      _hover={{ borderColor: "blue.500" }}
-                      focusBorderColor="blue.500"
-                    >
-                      {["Draft", "Review", "Last Call", "Final"].map((status) => (
-                        <option key={status} value={status}>
-                          {status} ({data.filter((item) => item.status === status).length})
-                        </option>
-                      ))}
-                    </Select>
+                    <NativeSelect.Root>
+                      <NativeSelect.Field
+                        maxW={{ base: "100%", sm: "320px" }}
+                        value={selectedStatusInner}
+                        onValueChange={(e) => setSelectedStatusInner(e.target.value)}
+                        borderColor="blue.400"
+                        _hover={{ borderColor: "blue.500" }}>
+                        {["Draft", "Review", "Last Call", "Final"].map((status) => (
+                          <option key={status} value={status}>
+                            {status} ({data.filter((item) => item.status === status).length})
+                          </option>
+                        ))}
+                      </NativeSelect.Field>
+                      <NativeSelect.Indicator />
+                    </NativeSelect.Root>
 
                     <Button
                       onClick={handleCopyStatusDetail}
                       size="sm"
-                      leftIcon={<CopyIcon />}
-                      colorScheme="blue"
-                      variant="ghost"
-                    >
-                      Copy Link
-                    </Button>
+                      colorPalette="blue"
+                      variant="ghost"><LuCopy />Copy Link
+                                          </Button>
                   </Flex>
 
                   <Flex
@@ -534,11 +525,11 @@ useEffect(() => {
             >
               <Text>
                 Also checkout{' '}
-                <LI href="/eip" color="blue" isExternal>
+                <LI href="/eip" color="blue" target='_blank' rel='noopener noreferrer'>
                   EIPs
                 </LI>{' '}
                 and{' '}
-                <LI href="/rip" color="blue" isExternal>
+                <LI href="/rip" color="blue" target='_blank' rel='noopener noreferrer'>
                   RIPs
                 </LI>.
               </Text>

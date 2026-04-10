@@ -1,32 +1,15 @@
+import { useDisclosure } from "@/components/ui/compat";
+import { HoverCard } from "@/components/ui/compat";
 import React, { useState } from "react";
+import { useColorMode, useColorModeValue } from "./ui/color-mode";
 import { usePathname } from "next/navigation";
-import {
-  Box,
-  Collapse,
-  Flex,
-  IconButton,
-  Link,
-  Popover,
-  PopoverContent,
-  PopoverArrow,
-  PopoverBody,
-  PopoverTrigger,
-  Spacer,
-  Stack,
-  Text,
-  useBreakpointValue,
-  useColorMode,
-  useColorModeValue,
-  useDisclosure,
-  VStack,
-  Portal,
-} from "@chakra-ui/react";
-import { CloseIcon, HamburgerIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
+import { Steps, Box, Collapsible, Flex, IconButton, Link, Popover, Spacer, Stack, Text, useBreakpointValue, VStack, Portal, Icon } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { GitHub } from "react-feather";
 import Logo from "@/components/Logo";
 import SearchBox from "./SearchBox";
 import { useSidebarStore } from "@/stores/useSidebarStore";
+import { LuMenu, LuMoon, LuSun, LuX } from 'react-icons/lu';
 interface NavItem {
   label: string;
   subLabel?: string;
@@ -237,7 +220,7 @@ const Navbar: React.FC = () => {
     return months;
   }
 
-  const { isOpen, onToggle } = useDisclosure();
+  const { open, onToggle } = useDisclosure();
   const { toggleColorMode } = useColorMode();
   const linkColor = useColorModeValue("gray.600", "gray.200");
   const linkHoverColor = useColorModeValue("gray.800", "white");
@@ -290,8 +273,11 @@ const Navbar: React.FC = () => {
             <Flex align="center" gap={4}>
               {NAV_ITEMS.map((navItem) => (
                 <Box key={navItem.label}>
-                  <Popover trigger={"hover"} placement={"bottom-start"}>
-                    <PopoverTrigger>
+                  <HoverCard.Root
+                    positioning={{
+                      placement: "bottom-start"
+                    }}>
+                    <HoverCard.Trigger asChild>
                       <Link
                         p={2}
                         href={navItem.href ?? "#"}
@@ -306,119 +292,43 @@ const Navbar: React.FC = () => {
                       >
                         {navItem.label}
                       </Link>
-                    </PopoverTrigger>
+                    </HoverCard.Trigger>
 
                     {navItem.children && navItem.label === "Insight" && (
-                      <PopoverContent
-                        border={0}
-                        boxShadow={"xl"}
-                        bg={popoverContentBgColor}
-                        p={4}
-                        rounded={"xl"}
-                        minW={"sm"}
-                        className={"overflow-y-auto"}
-                        maxH={"1500px"}
-                      >
-                        <Stack direction={"column"} spacing={2}>
-                          {navItem.children.map((child) => (
-                            <DesktopSubNav key={child.label} {...child} />
-                          ))}
-                        </Stack>
-                      </PopoverContent>
+                      <HoverCard.Positioner>
+                        <HoverCard.Content
+                          border={0}
+                          boxShadow={"xl"}
+                          bg={popoverContentBgColor}
+                          p={4}
+                          rounded={"xl"}
+                          minW={"sm"}
+                          className={"overflow-y-auto"}
+                          maxH={"1500px"}>
+                          <Stack direction={"column"} gap={2}>
+                            {navItem.children.map((child) => (
+                              <DesktopSubNav key={child.label} {...child} />
+                            ))}
+                          </Stack>
+                        </HoverCard.Content>
+                      </HoverCard.Positioner>
                     )}
 
                     {navItem.children && navItem.label === "Resources" && (
-                      <PopoverContent
-                        border={0}
-                        boxShadow={"xl"}
-                        bg={popoverContentBgColor}
-                        p={4}
-                        rounded={"xl"}
-                        minW={"sm"}
-                        className={"overflow-y-auto"}
-                        maxH={"1500px"}
-                      >
-                        <Stack direction={"column"} spacing={2}>
-                          {navItem.children.map((child) => (
-                            <Box
-                              key={child.label}
-                              _hover={{
-                                bg: useColorModeValue("pink.50", "gray.900"),
-                              }}
-                              p={2}
-                              rounded={"md"}
-                              role={"group"}
-                            >
-                              <Text
-                                transition={"all .3s ease"}
-                                _groupHover={{ color: "pink.400" }}
-                                fontWeight={500}
-                              >
-                                <NextLink href={`${child.href}`}>
-                                  {child.label}
-                                </NextLink>
-                              </Text>
-                            </Box>
-                          ))}
-                        </Stack>
-                      </PopoverContent>
-                    )}
-
-                    {navItem.children && navItem.label === "Standards" && (
-                      <PopoverContent
-                        border={0}
-                        boxShadow={"xl"}
-                        bg={popoverContentBgColor}
-                        p={4}
-                        rounded={"xl"}
-                        minW={"sm"}
-                        className={"overflow-y-auto"}
-                        maxH={"1500px"}
-                      >
-                        <Stack direction={"column"} spacing={2}>
-                          {navItem.children.map((child) => (
-                            <Box
-                              key={child.label}
-                              _hover={{
-                                bg: useColorModeValue("pink.50", "gray.900"),
-                              }}
-                              p={2}
-                              rounded={"md"}
-                              role={"group"}
-                            >
-                              <Text
-                                transition={"all .3s ease"}
-                                _groupHover={{ color: "pink.400" }}
-                                fontWeight={500}
-                              >
-                                <NextLink href={`${child.href}`}>
-                                  {child.label}
-                                </NextLink>
-                              </Text>
-                            </Box>
-                          ))}
-                        </Stack>
-                      </PopoverContent>
-                    )}
-
-                    {navItem.children && navItem.label === "Tools" && (
-                      <PopoverContent
-                        border={0}
-                        boxShadow={"xl"}
-                        bg={popoverContentBgColor}
-                        p={4}
-                        rounded={"xl"}
-                        minW={"sm"}
-                        className={"overflow-y-auto"}
-                        maxH={"1500px"}
-                      >
-                        <Stack direction={"column"} spacing={2}>
-                          {navItem.children.map((child) =>
-                            child.label === "Search By" ? (
-                              <DesktopSubNav2 key={child.label} {...child} />
-                            ) : (
+                      <HoverCard.Positioner>
+                        <HoverCard.Content
+                          border={0}
+                          boxShadow={"xl"}
+                          bg={popoverContentBgColor}
+                          p={4}
+                          rounded={"xl"}
+                          minW={"sm"}
+                          className={"overflow-y-auto"}
+                          maxH={"1500px"}>
+                          <Stack direction={"column"} gap={2}>
+                            {navItem.children.map((child) => (
                               <Box
-                                key={child.label} // Unique key for React rendering
+                                key={child.label}
                                 _hover={{
                                   bg: useColorModeValue("pink.50", "gray.900"),
                                 }}
@@ -436,18 +346,15 @@ const Navbar: React.FC = () => {
                                   </NextLink>
                                 </Text>
                               </Box>
-                            )
-                          )}
-                        </Stack>
-                      </PopoverContent>
+                            ))}
+                          </Stack>
+                        </HoverCard.Content>
+                      </HoverCard.Positioner>
                     )}
 
-                    {navItem.children &&
-                      navItem.label !== "Insight" &&
-                      navItem.label !== "Resources" &&
-                      navItem.label !== "Standards" &&
-                      navItem.label !== "Tools" && (
-                        <PopoverContent
+                    {navItem.children && navItem.label === "Standards" && (
+                      <HoverCard.Positioner>
+                        <HoverCard.Content
                           border={0}
                           boxShadow={"xl"}
                           bg={popoverContentBgColor}
@@ -455,16 +362,100 @@ const Navbar: React.FC = () => {
                           rounded={"xl"}
                           minW={"sm"}
                           className={"overflow-y-auto"}
-                          maxH={"800px"}
-                        >
-                          <Stack direction={"row"} spacing={5} ml={6} pl={4}>
+                          maxH={"1500px"}>
+                          <Stack direction={"column"} gap={2}>
                             {navItem.children.map((child) => (
-                              <DesktopSubNav key={child.label} {...child} />
+                              <Box
+                                key={child.label}
+                                _hover={{
+                                  bg: useColorModeValue("pink.50", "gray.900"),
+                                }}
+                                p={2}
+                                rounded={"md"}
+                                role={"group"}
+                              >
+                                <Text
+                                  transition={"all .3s ease"}
+                                  _groupHover={{ color: "pink.400" }}
+                                  fontWeight={500}
+                                >
+                                  <NextLink href={`${child.href}`}>
+                                    {child.label}
+                                  </NextLink>
+                                </Text>
+                              </Box>
                             ))}
                           </Stack>
-                        </PopoverContent>
+                        </HoverCard.Content>
+                      </HoverCard.Positioner>
+                    )}
+
+                    {navItem.children && navItem.label === "Tools" && (
+                      <HoverCard.Positioner>
+                        <HoverCard.Content
+                          border={0}
+                          boxShadow={"xl"}
+                          bg={popoverContentBgColor}
+                          p={4}
+                          rounded={"xl"}
+                          minW={"sm"}
+                          className={"overflow-y-auto"}
+                          maxH={"1500px"}>
+                          <Stack direction={"column"} gap={2}>
+                            {navItem.children.map((child) =>
+                              child.label === "Search By" ? (
+                                <DesktopSubNav2 key={child.label} {...child} />
+                              ) : (
+                                <Box
+                                  key={child.label} // Unique key for React rendering
+                                  _hover={{
+                                    bg: useColorModeValue("pink.50", "gray.900"),
+                                  }}
+                                  p={2}
+                                  rounded={"md"}
+                                  role={"group"}
+                                >
+                                  <Text
+                                    transition={"all .3s ease"}
+                                    _groupHover={{ color: "pink.400" }}
+                                    fontWeight={500}
+                                  >
+                                    <NextLink href={`${child.href}`}>
+                                      {child.label}
+                                    </NextLink>
+                                  </Text>
+                                </Box>
+                              )
+                            )}
+                          </Stack>
+                        </HoverCard.Content>
+                      </HoverCard.Positioner>
+                    )}
+
+                    {navItem.children &&
+                      navItem.label !== "Insight" &&
+                      navItem.label !== "Resources" &&
+                      navItem.label !== "Standards" &&
+                      navItem.label !== "Tools" && (
+                        <HoverCard.Positioner>
+                          <HoverCard.Content
+                            border={0}
+                            boxShadow={"xl"}
+                            bg={popoverContentBgColor}
+                            p={4}
+                            rounded={"xl"}
+                            minW={"sm"}
+                            className={"overflow-y-auto"}
+                            maxH={"800px"}>
+                            <Stack direction={"row"} gap={5} ml={6} pl={4}>
+                              {navItem.children.map((child) => (
+                                <DesktopSubNav key={child.label} {...child} />
+                              ))}
+                            </Stack>
+                          </HoverCard.Content>
+                        </HoverCard.Positioner>
                       )}
-                  </Popover>
+                  </HoverCard.Root>
                 </Box>
               ))}
             </Flex>
@@ -481,7 +472,7 @@ const Navbar: React.FC = () => {
                 flex={{ base: 1, md: 0 }}
                 justify={"flex-end"}
                 direction={"row"}
-                spacing={6}
+                gap={6}
                 mr={6}
                 pr={4}
               >
@@ -489,12 +480,10 @@ const Navbar: React.FC = () => {
                 <IconButton
                   aria-label="Mode Change"
                   variant="outline"
-                  colorScheme="blue"
+                  colorPalette="blue"
                   size="lg"
                   rounded="full"
-                  icon={useColorModeValue(<MoonIcon />, <SunIcon />)}
-                  onClick={toggleColorMode}
-                />
+                  onClick={toggleColorMode}>{useColorModeValue(<LuMoon />, <LuSun />)}</IconButton>
               </Stack>
             </Flex>
           </Flex>
@@ -512,18 +501,11 @@ const Navbar: React.FC = () => {
             className={"mx-10"}
           >
             <Flex flex={{ base: 1, md: "auto" }} ml={{ base: -2 }}>
-              <IconButton
-                onClick={onToggle}
-                icon={
-                  isOpen ? (
-                    <CloseIcon w={5} h={5} />
-                  ) : (
-                    <HamburgerIcon w={8} h={8} />
-                  )
-                }
-                variant={"ghost"}
-                aria-label={"Toggle Navigation"}
-              />
+              <IconButton onClick={onToggle} variant={"ghost"} aria-label={"Toggle Navigation"}>{open ? (
+                  <Icon as={LuX} w={5} h={5} />
+                ) : (
+                  <Icon as={LuMenu} w={8} h={8} />
+                )}</IconButton>
             </Flex>
 
             <Box className={"flex"}>
@@ -547,37 +529,32 @@ const Navbar: React.FC = () => {
                   flex={{ base: 1, md: 0 }}
                   justify={"flex-end"}
                   direction={"row"}
-                  spacing={3}
+                  gap={3}
                 >
                   <NextLink href="https://github.com/Avarch-org/EIPUI" passHref>
-                    <IconButton
-                      aria-label="github"
-                      variant={"outline"}
-                      colorScheme="blue"
-                      size="md"
-                      icon={<GitHub />}
-                    />
+                    <IconButton aria-label="github" variant={"outline"} colorPalette="blue" size="md"><GitHub /></IconButton>
                   </NextLink>
                   <IconButton
                     aria-label="Mode Change"
                     variant="outline"
-                    colorScheme="blue"
+                    colorPalette="blue"
                     size="md"
-                    icon={useColorModeValue(<MoonIcon />, <SunIcon />)}
-                    onClick={toggleColorMode}
-                  />
+                    onClick={toggleColorMode}>{useColorModeValue(<LuMoon />, <LuSun />)}</IconButton>
                 </Stack>
               </Flex>
             </Box>
           </Flex>
           <Box display={{ base: "block", lg: "none" }}>
-            {isOpen ? (
+            {open ? (
               <>
                 <div className="flex flex-col relative  border rounded-[0.55rem] my-3 mx-4 space-y-4 py-3 text-lg">
                   {NAV_ITEMS.map((navItem) => (
                     <Box key={navItem.label} className={"flex flex-col"}>
-                      <Popover trigger={"click"} placement={"bottom-start"}>
-                        <PopoverTrigger>
+                      <HoverCard.Root
+                        positioning={{
+                          placement: "bottom-start"
+                        }}>
+                        <HoverCard.Trigger asChild>
                           <Link
                             p={2}
                             href={navItem.href ?? "#"}
@@ -592,183 +569,11 @@ const Navbar: React.FC = () => {
                           >
                             {navItem.label}
                           </Link>
-                        </PopoverTrigger>
+                        </HoverCard.Trigger>
 
                         {navItem.children && navItem.label === "Insight" && (
-                          <PopoverContent
-                            border={0}
-                            boxShadow={"xl"}
-                            bg={popoverContentBgColor}
-                            p={4}
-                            rounded={"xl"}
-                            minW={"xs"}
-                            className={"overflow-y-auto"}
-                            maxH={"600px"}
-                          >
-                            <Stack direction={"column"} spacing={2}>
-                              {navItem.children.map((child) => (
-                                <DesktopSubNav key={child.label} {...child} />
-                              ))}
-                            </Stack>
-                          </PopoverContent>
-                        )}
-
-                        {navItem.children && navItem.label === "Search By" && (
-                          <PopoverContent
-                            border={0}
-                            boxShadow={"xl"}
-                            bg={popoverContentBgColor}
-                            p={4}
-                            rounded={"xl"}
-                            minW={"xs"}
-                            className={"overflow-y-auto"}
-                            maxH={"600px"}
-                          >
-                            <Stack direction={"column"} spacing={2}>
-                              {navItem.children.map((child) => (
-                                <DesktopSubNav2 key={child.label} {...child} />
-                              ))}
-                            </Stack>
-                          </PopoverContent>
-                        )}
-
-                        {navItem.children && navItem.label === "Resources" && (
-                          <PopoverContent
-                            border={0}
-                            boxShadow={"xl"}
-                            bg={popoverContentBgColor}
-                            p={4}
-                            rounded={"xl"}
-                            minW={"sm"}
-                            className={"overflow-y-auto"}
-                            maxH={"1500px"}
-                          >
-                            <Stack direction={"column"} spacing={2}>
-                              {navItem.children.map((child) => (
-                                <Box
-                                  key={child.label}
-                                  _hover={{
-                                    bg: useColorModeValue(
-                                      "pink.50",
-                                      "gray.900"
-                                    ),
-                                  }}
-                                  p={2}
-                                  rounded={"md"}
-                                  role={"group"}
-                                >
-                                  <Text
-                                    transition={"all .3s ease"}
-                                    _groupHover={{ color: "pink.400" }}
-                                    fontWeight={500}
-                                  >
-                                    <NextLink href={`${child.href}`}>
-                                      {child.label}
-                                    </NextLink>
-                                  </Text>
-                                </Box>
-                              ))}
-                            </Stack>
-                          </PopoverContent>
-                        )}
-
-                        {navItem.children && navItem.label === "Tools" && (
-                          <PopoverContent
-                            border={0}
-                            boxShadow={"xl"}
-                            bg={popoverContentBgColor}
-                            p={4}
-                            rounded={"xl"}
-                            minW={"sm"}
-                            className={"overflow-y-auto"}
-                            maxH={"1500px"}
-                          >
-                            <Stack direction={"column"} spacing={2}>
-                              {navItem.children.map((child) =>
-                                child.label === "Search By" ? (
-                                  <DesktopSubNav2
-                                    key={child.label}
-                                    {...child}
-                                  />
-                                ) : (
-                                  <Box
-                                    key={child.label} // Unique key for React rendering
-                                    _hover={{
-                                      bg: useColorModeValue(
-                                        "pink.50",
-                                        "gray.900"
-                                      ),
-                                    }}
-                                    p={2}
-                                    rounded={"md"}
-                                    role={"group"}
-                                  >
-                                    <Text
-                                      transition={"all .3s ease"}
-                                      _groupHover={{ color: "pink.400" }}
-                                      fontWeight={500}
-                                    >
-                                      <NextLink href={`${child.href}`}>
-                                        {child.label}
-                                      </NextLink>
-                                    </Text>
-                                  </Box>
-                                )
-                              )}
-                            </Stack>
-                          </PopoverContent>
-                        )}
-
-                        {navItem.children && navItem.label === "Standards" && (
-                          <PopoverContent
-                            border={0}
-                            boxShadow={"xl"}
-                            bg={popoverContentBgColor}
-                            p={4}
-                            rounded={"xl"}
-                            minW={"sm"}
-                            className={"overflow-y-auto"}
-                            maxH={"1500px"}
-                          >
-                            <Stack direction={"column"} spacing={2}>
-                              {navItem.children.map((child) =>
-                                child.label === "Search By" ? (
-                                  <DesktopSubNav key={child.label} {...child} />
-                                ) : (
-                                  <Box
-                                    key={child.label} // Unique key for React rendering
-                                    _hover={{
-                                      bg: useColorModeValue(
-                                        "pink.50",
-                                        "gray.900"
-                                      ),
-                                    }}
-                                    p={2}
-                                    rounded={"md"}
-                                    role={"group"}
-                                  >
-                                    <Text
-                                      transition={"all .3s ease"}
-                                      _groupHover={{ color: "pink.400" }}
-                                      fontWeight={500}
-                                    >
-                                      <NextLink href={`${child.href}`}>
-                                        {child.label}
-                                      </NextLink>
-                                    </Text>
-                                  </Box>
-                                )
-                              )}
-                            </Stack>
-                          </PopoverContent>
-                        )}
-
-                        {navItem.children &&
-                          navItem.label !== "Insight" &&
-                          navItem.label !== "Resources" &&
-                          navItem.label !== "Tools" &&
-                          navItem.label !== "Standards" && (
-                            <PopoverContent
+                          <HoverCard.Positioner>
+                            <HoverCard.Content
                               border={0}
                               boxShadow={"xl"}
                               bg={popoverContentBgColor}
@@ -776,21 +581,199 @@ const Navbar: React.FC = () => {
                               rounded={"xl"}
                               minW={"xs"}
                               className={"overflow-y-auto"}
-                              maxH={"600px"}
-                            >
-                              <Stack
-                                direction={"column"}
-                                spacing={5}
-                                ml={6}
-                                pl={4}
-                              >
+                              maxH={"600px"}>
+                              <Stack direction={"column"} gap={2}>
                                 {navItem.children.map((child) => (
                                   <DesktopSubNav key={child.label} {...child} />
                                 ))}
                               </Stack>
-                            </PopoverContent>
+                            </HoverCard.Content>
+                          </HoverCard.Positioner>
+                        )}
+
+                        {navItem.children && navItem.label === "Search By" && (
+                          <HoverCard.Positioner>
+                            <HoverCard.Content
+                              border={0}
+                              boxShadow={"xl"}
+                              bg={popoverContentBgColor}
+                              p={4}
+                              rounded={"xl"}
+                              minW={"xs"}
+                              className={"overflow-y-auto"}
+                              maxH={"600px"}>
+                              <Stack direction={"column"} gap={2}>
+                                {navItem.children.map((child) => (
+                                  <DesktopSubNav2 key={child.label} {...child} />
+                                ))}
+                              </Stack>
+                            </HoverCard.Content>
+                          </HoverCard.Positioner>
+                        )}
+
+                        {navItem.children && navItem.label === "Resources" && (
+                          <HoverCard.Positioner>
+                            <HoverCard.Content
+                              border={0}
+                              boxShadow={"xl"}
+                              bg={popoverContentBgColor}
+                              p={4}
+                              rounded={"xl"}
+                              minW={"sm"}
+                              className={"overflow-y-auto"}
+                              maxH={"1500px"}>
+                              <Stack direction={"column"} gap={2}>
+                                {navItem.children.map((child) => (
+                                  <Box
+                                    key={child.label}
+                                    _hover={{
+                                      bg: useColorModeValue(
+                                        "pink.50",
+                                        "gray.900"
+                                      ),
+                                    }}
+                                    p={2}
+                                    rounded={"md"}
+                                    role={"group"}
+                                  >
+                                    <Text
+                                      transition={"all .3s ease"}
+                                      _groupHover={{ color: "pink.400" }}
+                                      fontWeight={500}
+                                    >
+                                      <NextLink href={`${child.href}`}>
+                                        {child.label}
+                                      </NextLink>
+                                    </Text>
+                                  </Box>
+                                ))}
+                              </Stack>
+                            </HoverCard.Content>
+                          </HoverCard.Positioner>
+                        )}
+
+                        {navItem.children && navItem.label === "Tools" && (
+                          <HoverCard.Positioner>
+                            <HoverCard.Content
+                              border={0}
+                              boxShadow={"xl"}
+                              bg={popoverContentBgColor}
+                              p={4}
+                              rounded={"xl"}
+                              minW={"sm"}
+                              className={"overflow-y-auto"}
+                              maxH={"1500px"}>
+                              <Stack direction={"column"} gap={2}>
+                                {navItem.children.map((child) =>
+                                  child.label === "Search By" ? (
+                                    <DesktopSubNav2
+                                      key={child.label}
+                                      {...child}
+                                    />
+                                  ) : (
+                                    <Box
+                                      key={child.label} // Unique key for React rendering
+                                      _hover={{
+                                        bg: useColorModeValue(
+                                          "pink.50",
+                                          "gray.900"
+                                        ),
+                                      }}
+                                      p={2}
+                                      rounded={"md"}
+                                      role={"group"}
+                                    >
+                                      <Text
+                                        transition={"all .3s ease"}
+                                        _groupHover={{ color: "pink.400" }}
+                                        fontWeight={500}
+                                      >
+                                        <NextLink href={`${child.href}`}>
+                                          {child.label}
+                                        </NextLink>
+                                      </Text>
+                                    </Box>
+                                  )
+                                )}
+                              </Stack>
+                            </HoverCard.Content>
+                          </HoverCard.Positioner>
+                        )}
+
+                        {navItem.children && navItem.label === "Standards" && (
+                          <HoverCard.Positioner>
+                            <HoverCard.Content
+                              border={0}
+                              boxShadow={"xl"}
+                              bg={popoverContentBgColor}
+                              p={4}
+                              rounded={"xl"}
+                              minW={"sm"}
+                              className={"overflow-y-auto"}
+                              maxH={"1500px"}>
+                              <Stack direction={"column"} gap={2}>
+                                {navItem.children.map((child) =>
+                                  child.label === "Search By" ? (
+                                    <DesktopSubNav key={child.label} {...child} />
+                                  ) : (
+                                    <Box
+                                      key={child.label} // Unique key for React rendering
+                                      _hover={{
+                                        bg: useColorModeValue(
+                                          "pink.50",
+                                          "gray.900"
+                                        ),
+                                      }}
+                                      p={2}
+                                      rounded={"md"}
+                                      role={"group"}
+                                    >
+                                      <Text
+                                        transition={"all .3s ease"}
+                                        _groupHover={{ color: "pink.400" }}
+                                        fontWeight={500}
+                                      >
+                                        <NextLink href={`${child.href}`}>
+                                          {child.label}
+                                        </NextLink>
+                                      </Text>
+                                    </Box>
+                                  )
+                                )}
+                              </Stack>
+                            </HoverCard.Content>
+                          </HoverCard.Positioner>
+                        )}
+
+                        {navItem.children &&
+                          navItem.label !== "Insight" &&
+                          navItem.label !== "Resources" &&
+                          navItem.label !== "Tools" &&
+                          navItem.label !== "Standards" && (
+                            <HoverCard.Positioner>
+                              <HoverCard.Content
+                                border={0}
+                                boxShadow={"xl"}
+                                bg={popoverContentBgColor}
+                                p={4}
+                                rounded={"xl"}
+                                minW={"xs"}
+                                className={"overflow-y-auto"}
+                                maxH={"600px"}>
+                                <Stack
+                                  direction={"column"}
+                                  gap={5}
+                                  ml={6}
+                                  pl={4}
+                                >
+                                  {navItem.children.map((child) => (
+                                    <DesktopSubNav key={child.label} {...child} />
+                                  ))}
+                                </Stack>
+                              </HoverCard.Content>
+                            </HoverCard.Positioner>
                           )}
-                      </Popover>
+                      </HoverCard.Root>
                     </Box>
                   ))}
                   <Box m={4}>
@@ -822,7 +805,7 @@ const DesktopSubNav = ({ label, href, subLabel, children }: NavItem) => {
         onClick={handleToggle}
         _hover={{ bg: useColorModeValue("pink.50", "gray.900") }}
       >
-        <VStack spacing={1} align="start">
+        <VStack gap={1} align="start">
           <Text
             transition={"all .3s ease"}
             _groupHover={{ color: "pink.400" }}
@@ -833,53 +816,44 @@ const DesktopSubNav = ({ label, href, subLabel, children }: NavItem) => {
           <Text fontSize={"sm"}>{subLabel}</Text>
         </VStack>
       </Link>
-
-      <Collapse in={isOpen} animateOpacity style={{ marginTop: "0!important" }}>
-        <Stack
-          mt={2}
-          pl={4}
-          borderLeft={1}
-          borderStyle={"solid"}
-          borderColor={useColorModeValue("gray.200", "gray.700")}
-          align={"start"}
-        >
-          {children &&
-            children.map((subNavItem) => (
-              <Link
-                key={subNavItem.label}
-                py={2}
-                href={subNavItem.href}
-                _hover={{
-                  textDecoration: "none",
-                  color: "pink.400",
-                }}
-              >
-                {subNavItem.label}
-              </Link>
-            ))}
-        </Stack>
-      </Collapse>
+      <Collapsible.Root open={isOpen} style={{ marginTop: "0!important" }}>
+        <Collapsible.Content>
+          <Stack
+            mt={2}
+            pl={4}
+            borderLeft={1}
+            borderStyle={"solid"}
+            borderColor={useColorModeValue("gray.200", "gray.700")}
+            align={"start"}
+          >
+            {children &&
+              children.map((subNavItem) => (
+                <Link
+                  key={subNavItem.label}
+                  py={2}
+                  href={subNavItem.href}
+                  _hover={{
+                    textDecoration: "none",
+                    color: "pink.400",
+                  }}
+                >
+                  {subNavItem.label}
+                </Link>
+              ))}
+          </Stack>
+        </Collapsible.Content>
+      </Collapsible.Root>
     </Box>
   );
 };
 
 const DesktopSubNav2 = ({ label, href, subLabel, children }: NavItem) => {
   return (
-    <Popover
-      trigger="hover"
-      placement="bottom-start"
-      modifiers={[
-        {
-          name: "preventOverflow",
-          options: { boundary: "viewport" },
-        },
-        {
-          name: "offset",
-          options: { offset: [0, 8] }, // Adds spacing below the trigger
-        },
-      ]}
-    >
-      <PopoverTrigger>
+    <HoverCard.Root
+      positioning={{
+        placement: 'bottom-start'
+      }}>
+      <HoverCard.Trigger asChild>
         <Link
           href={href || "#"}
           style={{ textDecoration: "none" }}
@@ -894,7 +868,7 @@ const DesktopSubNav2 = ({ label, href, subLabel, children }: NavItem) => {
             cursor="pointer"
             transition="background-color 0.3s ease"
           >
-            <VStack spacing={1} align="start">
+            <VStack gap={1} align="start">
               <Text
                 transition="all .3s ease"
                 _groupHover={{ color: "pink.400" }}
@@ -906,46 +880,46 @@ const DesktopSubNav2 = ({ label, href, subLabel, children }: NavItem) => {
             </VStack>
           </Box>
         </Link>
-      </PopoverTrigger>
-
+      </HoverCard.Trigger>
       <Portal>
-        <PopoverContent
-          border="1px solid"
-          borderColor={useColorModeValue("gray.200", "gray.700")}
-          boxShadow="md"
-          bg={useColorModeValue("white", "gray.800")}
-          rounded="md"
-          p={4}
-          zIndex={10}
-        >
-          <PopoverArrow />
-          <PopoverBody>
-            <Stack align="start">
-              {children &&
-                children.map((subNavItem) => (
-                  <Link
-                    key={subNavItem.label}
-                    href={subNavItem.href}
-                    _hover={{
-                      textDecoration: "none",
-                      color: "pink.400",
-                    }}
-                    style={{ textDecoration: "none" }}
-                  >
-                    <Box
-                      py={2}
-                      fontWeight={500}
-                      transition="background-color 0.3s ease"
+        <HoverCard.Positioner>
+          <HoverCard.Content
+            border="1px solid"
+            borderColor={useColorModeValue("gray.200", "gray.700")}
+            boxShadow="md"
+            bg={useColorModeValue("white", "gray.800")}
+            rounded="md"
+            p={4}
+            zIndex={10}>
+            <HoverCard.Arrow />
+            <HoverCard.Body>
+              <Stack align="start">
+                {children &&
+                  children.map((subNavItem) => (
+                    <Link
+                      key={subNavItem.label}
+                      href={subNavItem.href}
+                      _hover={{
+                        textDecoration: "none",
+                        color: "pink.400",
+                      }}
+                      style={{ textDecoration: "none" }}
                     >
-                      {subNavItem.label}
-                    </Box>
-                  </Link>
-                ))}
-            </Stack>
-          </PopoverBody>
-        </PopoverContent>
+                      <Box
+                        py={2}
+                        fontWeight={500}
+                        transition="background-color 0.3s ease"
+                      >
+                        {subNavItem.label}
+                      </Box>
+                    </Link>
+                  ))}
+              </Stack>
+            </HoverCard.Body>
+          </HoverCard.Content>
+        </HoverCard.Positioner>
       </Portal>
-    </Popover>
+    </HoverCard.Root>
   );
 };
 

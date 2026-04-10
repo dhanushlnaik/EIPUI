@@ -1,9 +1,10 @@
 "use client";
-
+;
 import React, { useEffect, useState, useMemo } from "react";
+import { useColorModeValue } from "../../components/ui/color-mode";
 import CloseableAdCard from "@/components/CloseableAdCard";
 import AllLayout from "@/components/Layout";
-import { Box, useColorModeValue, SimpleGrid, Grid } from "@chakra-ui/react";
+import { Steps, Box, SimpleGrid, Grid } from "@chakra-ui/react";
 import FlexBetween from "@/components/FlexBetween";
 import Header from "@/components/Header";
 import { motion } from "framer-motion";
@@ -122,7 +123,7 @@ const Living = () => {
                 description="These proposals are maintained and updated as standards evolve over time."
               />
             </FlexBetween>
-            <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={6} mb={8}>
+            <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} gap={6} mb={8}>
               <AnalyticsStatCard label="Living Documents" value={livingData.length} icon={FiRefreshCw} colorScheme="teal" helpText="Active standards" />
               <AnalyticsStatCard label="Meta Living" value={livingData.filter(item => item.category === "Meta").length} icon={FiFileText} colorScheme="cyan" helpText="Process docs" />
               <AnalyticsStatCard label="With Discussions" value={withDiscussions} icon={FiGitPullRequest} colorScheme="purple" helpText="Active updates" />

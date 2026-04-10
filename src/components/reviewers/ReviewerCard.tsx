@@ -1,18 +1,10 @@
 import React from 'react';
-import {
-  Box,
-  Button,
-  Collapse,
-  Flex,
-  IconButton,
-  Spinner,
-  Text,
-  useColorModeValue,
-} from '@chakra-ui/react';
-import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
+import { useColorModeValue } from "../ui/color-mode";
+import { Steps, Box, Button, Collapsible, Flex, IconButton, Spinner, Text } from "@chakra-ui/react";
 import { CSVLink } from 'react-csv';
 import dynamic from 'next/dynamic';
 import axios from 'axios';
+import { LuChevronDown, LuChevronUp } from 'react-icons/lu';
 
 const Line = dynamic(() => import('@ant-design/plots').then((mod) => mod.Line), { ssr: false });
 
@@ -142,28 +134,28 @@ const ReviewerCard: React.FC<ReviewerCardProps> = ({
                 }
               }}
             >
-              <Button colorScheme="blue" size="sm" variant="outline">
+              <Button colorPalette="blue" size="sm" variant="outline">
                 {loading ? <Spinner size="sm" /> : 'CSV'}
               </Button>
             </CSVLink>
           </Box>
           <IconButton
             aria-label="Toggle chart"
-            icon={isExpanded ? <ChevronUpIcon /> : <ChevronDownIcon />}
             size="sm"
             variant="ghost"
             onClick={(e: React.MouseEvent) => {
               e.stopPropagation();
               onToggle();
-            }}
-          />
+            }}>{isExpanded ? <LuChevronUp /> : <LuChevronDown />}</IconButton>
         </Flex>
       </Flex>
-      <Collapse in={isExpanded} animateOpacity>
-        <Box mt={4}>
-          <Line {...config} />
-        </Box>
-      </Collapse>
+      <Collapsible.Root open={isExpanded}>
+        <Collapsible.Content>
+          <Box mt={4}>
+            <Line {...config} />
+          </Box>
+        </Collapsible.Content>
+      </Collapsible.Root>
     </Box>
   );
 };

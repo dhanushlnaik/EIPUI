@@ -1,4 +1,6 @@
-import { Box, Text, Table, Thead, Tbody, Tr, Th, Td, useColorModeValue, Icon } from '@chakra-ui/react';
+import { Thead, Tbody, Tr, Th, Td } from "@/components/ui/compat";
+import { Steps, Box, Text, Table, Icon } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
 import { convertEthToUSD, convertGweiToUSD } from './ethereumService';
 import { FaCube } from 'react-icons/fa';
 import Web3 from 'web3';
@@ -35,21 +37,20 @@ const RecentBlocks = ({ blocks, ethPriceInUSD }: { blocks: any[]; ethPriceInUSD:
           <Icon as={FaCube} color={"white"} mr={2} /> Recent Blocks
       </Text>
       <br/>
-
-      <Table variant="simple" colorScheme="whiteAlpha" width="100%">
-        <Thead bg={tableHeaderBg}>
-          <Tr>
-            <Th color={textColor} textAlign="center">Number</Th>
-            <Th color={textColor} textAlign="center">Gas Target</Th>
-            <Th color={textColor} textAlign="center">Gas Used</Th>
+      <Table.Root variant="simple" colorPalette="whiteAlpha" width="100%">
+        <Table.Header bg={tableHeaderBg}>
+          <Table.Row>
+            <Table.ColumnHeader color={textColor} textAlign="center">Number</Table.ColumnHeader>
+            <Table.ColumnHeader color={textColor} textAlign="center">Gas Target</Table.ColumnHeader>
+            <Table.ColumnHeader color={textColor} textAlign="center">Gas Used</Table.ColumnHeader>
             {/* <Th color={textColor} textAlign="center">Reward</Th> */}
-            <Th color={textColor} textAlign="center">Txs</Th>
-            <Th color={textColor} textAlign="center">Time</Th>
-            <Th color={textColor} textAlign="center">Base Fee</Th>
-            <Th color={textColor} textAlign="center">Burned ETH</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
+            <Table.ColumnHeader color={textColor} textAlign="center">Txs</Table.ColumnHeader>
+            <Table.ColumnHeader color={textColor} textAlign="center">Time</Table.ColumnHeader>
+            <Table.ColumnHeader color={textColor} textAlign="center">Base Fee</Table.ColumnHeader>
+            <Table.ColumnHeader color={textColor} textAlign="center">Burned ETH</Table.ColumnHeader>
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
           {blocks?.map((block, index) => {
             const gasTarget = Number(block?.gasLimit);
             const gasUsed = Number(block?.gasUsed);
@@ -60,14 +61,14 @@ const RecentBlocks = ({ blocks, ethPriceInUSD }: { blocks: any[]; ethPriceInUSD:
             const burnedETH = block?.baseFeePerGas ? `${Web3.utils?.fromWei((BigInt(block.gasUsed) * BigInt(block.baseFeePerGas))?.toString(), 'ether')} ETH` : 'N/A';
 
             return (
-              <Tr key={index} bg={tableRowBg} _hover={{ bg: 'rgba(255, 255, 255, 0.1)' }}>
-                <Td color={textColor} textAlign="center">{Number(block.number)}</Td>
-                <Td color={textColor} textAlign="center">{gasTarget}</Td>
-                <Td color={textColor} textAlign="center">{gasUsed}</Td>
+              <Table.Row key={index} bg={tableRowBg} _hover={{ bg: 'rgba(255, 255, 255, 0.1)' }}>
+                <Table.Cell color={textColor} textAlign="center">{Number(block.number)}</Table.Cell>
+                <Table.Cell color={textColor} textAlign="center">{gasTarget}</Table.Cell>
+                <Table.Cell color={textColor} textAlign="center">{gasUsed}</Table.Cell>
                 {/* <Td color={textColor} textAlign="center">{reward}</Td> */}
-                <Td color={textColor} textAlign="center">{txs}</Td>
-                <Td color={textColor} textAlign="center">{age}</Td>
-                <Td textAlign="center">
+                <Table.Cell color={textColor} textAlign="center">{txs}</Table.Cell>
+                <Table.Cell color={textColor} textAlign="center">{age}</Table.Cell>
+                <Table.Cell textAlign="center">
                   <Box
                     bg={baseFeeBg}
                     borderRadius="md"
@@ -78,8 +79,8 @@ const RecentBlocks = ({ blocks, ethPriceInUSD }: { blocks: any[]; ethPriceInUSD:
                       {baseFee} (${convertGweiToUSD(Number(baseFee.split(' ')[0]), ethPriceInUSD)})
                     </Text>
                   </Box>
-                </Td>
-                <Td textAlign="center">
+                </Table.Cell>
+                <Table.Cell textAlign="center">
                   <Box
                     bg={burnedEthBg}
                     borderRadius="md"
@@ -90,12 +91,12 @@ const RecentBlocks = ({ blocks, ethPriceInUSD }: { blocks: any[]; ethPriceInUSD:
                       {burnedETH} (${convertEthToUSD(Number(burnedETH.split(' ')[0]), ethPriceInUSD)})
                     </Text>
                   </Box>
-                </Td>
-              </Tr>
+                </Table.Cell>
+              </Table.Row>
             );
           })}
-        </Tbody>
-      </Table>
+        </Table.Body>
+      </Table.Root>
     </Box>
   );
 };

@@ -1,27 +1,13 @@
 "use client";
-
+;
 import React, { useState } from "react";
+import { useColorModeValue } from "../../components/ui/color-mode";
 import AllLayout from "@/components/Layout";
 import ContributorsGrid from "@/components/ContributorsGrid";
 import FundingDetails from "@/components/FundingDetails";
 import GrantList from "@/components/GrantList";
 import Partners from "@/components/Partners";
-import {
-  Box,
-  Container,
-  Text,
-  Link,
-  Heading,
-  SimpleGrid,
-  useColorModeValue,
-  Button,
-  Collapse,
-  Icon,
-  VStack,
-  HStack,
-  Divider,
-  Badge
-} from '@chakra-ui/react';
+import { Steps, Box, Container, Text, Link, Heading, SimpleGrid, Button, Collapsible, Icon, VStack, HStack, Badge, Separator } from "@chakra-ui/react";
 import { 
   FaUsers, 
   FaChartLine, 
@@ -77,7 +63,6 @@ export default function AboutPage() {
           transform: scale(1.05);
         }
       `}</style>
-      
       <Box
         w="full"
         bg={useColorModeValue("gray.50", "gray.900")}
@@ -85,7 +70,7 @@ export default function AboutPage() {
         px={{ base: 4, md: 6, lg: 8 }}
       >
         {/* Hero Section */}
-        <VStack spacing={4} align="stretch" maxW="100%">
+        <VStack gap={4} align="stretch" maxW="100%">
           <Box
             bg={cardBg}
             p={{ base: 4, md: 6 }}
@@ -99,8 +84,8 @@ export default function AboutPage() {
             }}
             transition="all 0.2s ease"
           >
-            <VStack spacing={3} align="start">
-              <HStack spacing={4}>
+            <VStack gap={3} align="start">
+              <HStack gap={4}>
                 <Icon as={FaRocket} boxSize={8} color={accentColor} />
                 <Heading
                   as="h1"
@@ -113,7 +98,7 @@ export default function AboutPage() {
                 </Heading>
               </HStack>
               
-              <Divider borderColor={borderColor} />
+              <Separator borderColor={borderColor} />
 
               <Text
                 fontSize={{ base: "md", md: "lg" }}
@@ -124,110 +109,108 @@ export default function AboutPage() {
                 <Link
                   href="https://github.com/ethereum/EIPs"
                   color={linkColor}
-                  isExternal
                   fontWeight="600"
                   _hover={{ color: accentColor }}
                   transition="color 0.2s"
-                >
+                  target='_blank'
+                  rel='noopener noreferrer'>
                   Ethereum Improvement Proposals (EIPs)
                 </Link>,{" "}
                 <Link
                   href="https://github.com/ethereum/ERCs"
                   color={linkColor}
-                  isExternal
                   fontWeight="600"
                   _hover={{ color: accentColor }}
                   transition="color 0.2s"
-                >
+                  target='_blank'
+                  rel='noopener noreferrer'>
                   Ethereum Request for Comments (ERCs)
                 </Link>, and{" "}
                 <Link
                   href="https://github.com/ethereum/RIPs"
                   color={linkColor}
-                  isExternal
                   fontWeight="600"
                   _hover={{ color: accentColor }}
                   transition="color 0.2s"
-                >
+                  target='_blank'
+                  rel='noopener noreferrer'>
                   Rollup Improvement Proposals (RIPs)
                 </Link>. Our platform tracks progress and workload distribution among EIP Editors.
               </Text>
               <Button
                 onClick={() => setShowFeaturesOverview(!showFeaturesOverview)}
                 size="md"
-                colorScheme="blue"
-                variant={showFeaturesOverview ? "outline" : "solid"}
-                leftIcon={<Icon as={FaHeart} />}
-              >
-                {showFeaturesOverview ? 'Hide Features' : 'View Features'}
-              </Button>
+                colorPalette="blue"
+                variant={showFeaturesOverview ? "outline" : "solid"}><Icon as={FaHeart} />{showFeaturesOverview ? 'Hide Features' : 'View Features'}</Button>
             </VStack>
           </Box>
 
           {/* Features Grid */}
-          <Collapse in={showFeaturesOverview} animateOpacity>
-            <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={3}>
-                {featuresList.map((feature, index) => (
-                <Box
-                  key={feature.title}
-                  className="feature-card"
-                  bg={cardBg}
-                  p={4}
-                  borderRadius="md"
-                  borderWidth="1px"
-                  borderColor={borderColor}
-                  boxShadow={useColorModeValue('sm', 'md')}
-                  cursor="pointer"
-                  onClick={() => setExpanded(expanded === feature.title ? null : feature.title)}
-                  _hover={{
-                    bg: hoverBg,
-                    borderColor: accentColor
-                  }}
-                  transition="all 0.2s ease"
-                >
-                  <VStack align="start" spacing={2}>
-                    <Icon 
-                      as={feature.icon} 
-                      boxSize={8} 
-                      color={accentColor} 
-                      className="feature-icon"
-                    />
-                    <Heading 
-                      as="h3" 
-                      fontSize="md" 
-                      color={headingColor}
-                      fontWeight="600"
-                    >
-                      {feature.title}
-                    </Heading>
-                    <Text 
-                      color={textColor} 
-                      fontSize="sm" 
-                      lineHeight="short"
-                    >
-                      {feature.desc}
-                    </Text>
-
-                    {expanded === feature.title && (
-                      <Box 
-                        mt={2} 
-                        p={3} 
-                        bg={useColorModeValue('blue.50', 'blue.900')} 
-                        borderRadius="md" 
-                        borderLeftWidth="3px" 
-                        borderLeftColor={accentColor}
-                        w="full"
+          <Collapsible.Root open={showFeaturesOverview}>
+            <Collapsible.Content>
+              <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={3}>
+                  {featuresList.map((feature, index) => (
+                  <Box
+                    key={feature.title}
+                    className="feature-card"
+                    bg={cardBg}
+                    p={4}
+                    borderRadius="md"
+                    borderWidth="1px"
+                    borderColor={borderColor}
+                    boxShadow={useColorModeValue('sm', 'md')}
+                    cursor="pointer"
+                    onClick={() => setExpanded(expanded === feature.title ? null : feature.title)}
+                    _hover={{
+                      bg: hoverBg,
+                      borderColor: accentColor
+                    }}
+                    transition="all 0.2s ease"
+                  >
+                    <VStack align="start" gap={2}>
+                      <Icon 
+                        as={feature.icon} 
+                        boxSize={8} 
+                        color={accentColor} 
+                        className="feature-icon"
+                      />
+                      <Heading 
+                        as="h3" 
+                        fontSize="md" 
+                        color={headingColor}
+                        fontWeight="600"
                       >
-                        <Text fontSize="xs" color={textColor}>
-                          Detailed dashboards with charts, filters, and export options.
-                        </Text>
-                      </Box>
-                    )}
-                  </VStack>
-                </Box>
-              ))}
-            </SimpleGrid>
-          </Collapse>
+                        {feature.title}
+                      </Heading>
+                      <Text 
+                        color={textColor} 
+                        fontSize="sm" 
+                        lineHeight="short"
+                      >
+                        {feature.desc}
+                      </Text>
+
+                      {expanded === feature.title && (
+                        <Box 
+                          mt={2} 
+                          p={3} 
+                          bg={useColorModeValue('blue.50', 'blue.900')} 
+                          borderRadius="md" 
+                          borderLeftWidth="3px" 
+                          borderLeftColor={accentColor}
+                          w="full"
+                        >
+                          <Text fontSize="xs" color={textColor}>
+                            Detailed dashboards with charts, filters, and export options.
+                          </Text>
+                        </Box>
+                      )}
+                    </VStack>
+                  </Box>
+                ))}
+              </SimpleGrid>
+            </Collapsible.Content>
+          </Collapsible.Root>
 
 
         {/* Contributors Section */}

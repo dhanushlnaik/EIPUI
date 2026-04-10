@@ -1,12 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import {
-  Box,
-  Flex,
-  Text,
-  Image,
-  useColorModeValue,
-  useBreakpointValue,
-} from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Flex, Text, Image, useBreakpointValue } from "@chakra-ui/react";
 import "@fontsource/patrick-hand"; // Install via npm i @fontsource/patrick-hand
 // Add these new imports
 
@@ -153,7 +147,7 @@ return (
               </svg>
             </Box>
 
-            <Text fontSize="md" color={quoteColor} noOfLines={4} mb={4}>
+            <Text fontSize="md" color={quoteColor} lineClamp={4} mb={4}>
               “{it.quote}”
             </Text>
 
@@ -194,7 +188,6 @@ return (
         );
       })}
     </Flex>
-
     {/* Buttons Below */}
     <Flex justify="center" mt={10} gap={6}>
       <Box

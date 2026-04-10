@@ -1,6 +1,5 @@
-"use client"
-
-import type { HTMLChakraProps, RecipeProps } from "@chakra-ui/react"
+"use client";
+import type { Steps, HTMLChakraProps, RecipeProps } from "@chakra-ui/react";
 import { createRecipeContext } from "@chakra-ui/react"
 
 export interface LinkButtonProps

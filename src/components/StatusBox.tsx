@@ -1,15 +1,7 @@
+import { TableContainer, Thead, Tbody, Tr, Th, Td } from "@/components/ui/compat";
 import React from "react";
-import {
-  Box,
-  Table,
-  TableContainer,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
-  useColorModeValue,
-} from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Table } from "@chakra-ui/react";
 // import { getStatusColorScheme } from "@chakra-ui/alert/dist/alert-context";
 import NextLink from "next/link";
 import { useAllEipsData } from "@/hooks/useAllEipsData";
@@ -135,38 +127,38 @@ const StatusBox = () => {
       className={"hover:border hover:border-blue-400 duration-200 px-6 py-4"}
       bgColor={bg}
     >
-      <TableContainer>
-        <Table variant={"simple"} size={"md"}>
-          <Thead>
-            <Tr>
-              <Th>Status</Th>
-              <Th>Numbers</Th>
-              <Th>Percentage</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
+      <Table.ScrollArea>
+        <Table.Root variant={"simple"} size={"md"}>
+          <Table.Header>
+            <Table.Row>
+              <Table.ColumnHeader>Status</Table.ColumnHeader>
+              <Table.ColumnHeader>Numbers</Table.ColumnHeader>
+              <Table.ColumnHeader>Percentage</Table.ColumnHeader>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
             {tableItems?.map((item, index) => (
-              <Tr key={index}>
-                <Td>
+              <Table.Row key={index}>
+                <Table.Cell>
                   <NextLink href={`/tableStatus/${item.status}`}>
                     {item.status}
                   </NextLink>
-                </Td>
-                <Td>
+                </Table.Cell>
+                <Table.Cell>
                   <NextLink href={`/tableStatus/${item.status}`}>
                     {item.count}
                   </NextLink>
-                </Td>
-                <Td>
+                </Table.Cell>
+                <Table.Cell>
                   <NextLink href={`/tableStatus/${item.status}`}>
                     {item.per}%
                   </NextLink>
-                </Td>
-              </Tr>
+                </Table.Cell>
+              </Table.Row>
             ))}
-          </Tbody>
-        </Table>
-      </TableContainer>
+          </Table.Body>
+        </Table.Root>
+      </Table.ScrollArea>
     </Box>
   );
 };

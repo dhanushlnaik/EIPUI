@@ -1,11 +1,9 @@
-import { Box } from "@chakra-ui/react";
+import { Flex, type FlexProps } from "@chakra-ui/react";
+import React from 'react';
 
-const { default: styled } = require("@emotion/styled");
-
-const FlexBetween = styled(Box)({
-    display:"flex",
-    justifyContent: "space-between",
-    alignItems:"center"
-});
+const FlexBetween = React.forwardRef<HTMLDivElement, FlexProps>((props, ref) => (
+  <Flex justify="space-between" align="center" ref={ref} {...props} />
+));
+FlexBetween.displayName = "FlexBetween";
 
 export default FlexBetween;

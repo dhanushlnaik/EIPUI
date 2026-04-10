@@ -1,7 +1,7 @@
 import React from "react";
 import LargeWithAppLinksAndSocial from "@/components/Footer";
 import Navbar from "@/components/Navbar";
-import { Box, Text, Link } from "@chakra-ui/react";
+import { Steps, Box, Text, Link } from "@chakra-ui/react";
 import { Rajdhani } from 'next/font/google';
 import "../app/globals.css";
 import { motion, AnimatePresence } from "framer-motion";

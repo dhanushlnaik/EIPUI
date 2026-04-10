@@ -1,22 +1,9 @@
+import { Thead, Tbody, Tr, Th, Td } from "@/components/ui/compat";
+import { useToast } from "@/components/ui/use-toast";
 import React, { useMemo } from 'react';
-import {
-  Box,
-  Text,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  useColorModeValue,
-  Icon,
-  Tooltip,
-  useToast,
-  Flex,
-  HStack,
-  Skeleton,
-  Badge
-} from '@chakra-ui/react';
+import { useColorModeValue } from "../ui/color-mode";
+import { Steps, Box, Text, Table, Icon, Flex, HStack, Skeleton, Badge } from "@chakra-ui/react";
+import { Tooltip } from '@/components/ui/tooltip';
 import { FaList, FaCopy } from 'react-icons/fa';
 import { convertEthToUSD, convertGweiToUSD } from './ethereumService';
 
@@ -146,55 +133,56 @@ const RecentTransactions = ({
           </Text>
         </Box>
       </Flex>
-
       <Box px={{ base: 3, md: 5 }} py={{ base: 4, md: 5 }} overflowX="auto">
-        <Table
+        <Table.Root
           size="sm"
           variant="unstyled"
           minW="1000px"
-          sx={{ 'th, td': { whiteSpace: 'nowrap' } }}
+          css={{
+            '& th, td': { whiteSpace: 'nowrap' }
+          }}
         >
-          <Thead>
-            <Tr bg={headBg}>
-              <Th fontSize="xs" textTransform="uppercase" color={textSecondary}>
+          <Table.Header>
+            <Table.Row bg={headBg}>
+              <Table.ColumnHeader fontSize="xs" textTransform="uppercase" color={textSecondary}>
                 Hash
-              </Th>
-              <Th fontSize="xs" textTransform="uppercase" color={textSecondary}>
+              </Table.ColumnHeader>
+              <Table.ColumnHeader fontSize="xs" textTransform="uppercase" color={textSecondary}>
                 From
-              </Th>
-              <Th fontSize="xs" textTransform="uppercase" color={textSecondary}>
+              </Table.ColumnHeader>
+              <Table.ColumnHeader fontSize="xs" textTransform="uppercase" color={textSecondary}>
                 To
-              </Th>
-              <Th fontSize="xs" textTransform="uppercase" color={textSecondary}>
+              </Table.ColumnHeader>
+              <Table.ColumnHeader fontSize="xs" textTransform="uppercase" color={textSecondary}>
                 Age
-              </Th>
-              <Th fontSize="xs" textTransform="uppercase" color={textSecondary} textAlign="right">
+              </Table.ColumnHeader>
+              <Table.ColumnHeader fontSize="xs" textTransform="uppercase" color={textSecondary} textAlign="right">
                 Value (ETH)
-              </Th>
-              <Th fontSize="xs" textTransform="uppercase" color={textSecondary} textAlign="right">
+              </Table.ColumnHeader>
+              <Table.ColumnHeader fontSize="xs" textTransform="uppercase" color={textSecondary} textAlign="right">
                 Value (USD)
-              </Th>
-              <Th fontSize="xs" textTransform="uppercase" color={textSecondary} textAlign="right">
+              </Table.ColumnHeader>
+              <Table.ColumnHeader fontSize="xs" textTransform="uppercase" color={textSecondary} textAlign="right">
                 Gas Limit
-              </Th>
-              <Th fontSize="xs" textTransform="uppercase" color={textSecondary} textAlign="right">
+              </Table.ColumnHeader>
+              <Table.ColumnHeader fontSize="xs" textTransform="uppercase" color={textSecondary} textAlign="right">
                 Gas Price (Gwei)
-              </Th>
-              <Th fontSize="xs" textTransform="uppercase" color={textSecondary} textAlign="right">
+              </Table.ColumnHeader>
+              <Table.ColumnHeader fontSize="xs" textTransform="uppercase" color={textSecondary} textAlign="right">
                 Est. Fee (USD)
-              </Th>
-            </Tr>
-          </Thead>
-          <Tbody>
+              </Table.ColumnHeader>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
             {isLoading &&
               skeletonRows.map((_, r) => (
-                <Tr key={r}>
+                <Table.Row key={r}>
                   {Array.from({ length: 9 }).map((__, c) => (
-                    <Td key={c} py={3}>
+                    <Table.Cell key={c} py={3}>
                       <Skeleton h="14px" w={c === 0 ? '80px' : '60px'} borderRadius="md" />
-                    </Td>
+                    </Table.Cell>
                   ))}
-                </Tr>
+                </Table.Row>
               ))}
 
             {!isLoading &&
@@ -225,15 +213,15 @@ const RecentTransactions = ({
                 const usdValue = convertEthToUSD(valueEth, ethPriceInUSD);
 
                 return (
-                  <Tr
+                  <Table.Row
                     key={tx.hash}
                     bg={rowBg}
                     _hover={{ bg: rowHover }}
                     transition="0.18s"
                   >
-                    <Td>
-                      <HStack spacing={2}>
-                        <Tooltip label={tx.hash}>
+                    <Table.Cell>
+                      <HStack gap={2}>
+                        <Tooltip content={tx.hash}>
                           <Text
                             fontWeight="semibold"
                             color="purple.400"
@@ -251,10 +239,10 @@ const RecentTransactions = ({
                           onClick={() => copy(tx.hash, 'Hash')}
                         />
                       </HStack>
-                    </Td>
-                    <Td>
-                      <HStack spacing={2}>
-                        <Tooltip label={tx.from}>
+                    </Table.Cell>
+                    <Table.Cell>
+                      <HStack gap={2}>
+                        <Tooltip content={tx.from}>
                           <Text
                             fontSize="sm"
                             color={textPrimary}
@@ -272,11 +260,11 @@ const RecentTransactions = ({
                           onClick={() => copy(tx.from, 'From')}
                         />
                       </HStack>
-                    </Td>
-                    <Td>
+                    </Table.Cell>
+                    <Table.Cell>
                       {tx.to ? (
-                        <HStack spacing={2}>
-                          <Tooltip label={tx.to}>
+                        <HStack gap={2}>
+                          <Tooltip content={tx.to}>
                             <Text
                               fontSize="sm"
                               color={textPrimary}
@@ -295,34 +283,34 @@ const RecentTransactions = ({
                           />
                         </HStack>
                       ) : (
-                        <Badge colorScheme="gray" variant="subtle">
+                        <Badge colorPalette="gray" variant="subtle">
                           Contract Creation
                         </Badge>
                       )}
-                    </Td>
-                    <Td color={textSecondary} fontSize="sm">
+                    </Table.Cell>
+                    <Table.Cell color={textSecondary} fontSize="sm">
                       {age}
-                    </Td>
-                    <Td textAlign="right" fontWeight="medium" color={textPrimary}>
+                    </Table.Cell>
+                    <Table.Cell textAlign="right" fontWeight="medium" color={textPrimary}>
                       {nf(valueEth, 6)}
-                    </Td>
-                    <Td textAlign="right" fontSize="sm" color="green.400" fontWeight="semibold">
+                    </Table.Cell>
+                    <Table.Cell textAlign="right" fontSize="sm" color="green.400" fontWeight="semibold">
                       ${nf(usdValue, 2)}
-                    </Td>
-                    <Td textAlign="right" color={textPrimary}>
+                    </Table.Cell>
+                    <Table.Cell textAlign="right" color={textPrimary}>
                       {gasLimit ? nf(gasLimit, 0) : '-'}
-                    </Td>
-                    <Td textAlign="right" color="orange.400" fontWeight="medium">
+                    </Table.Cell>
+                    <Table.Cell textAlign="right" color="orange.400" fontWeight="medium">
                       {gasPriceGwei ? nf(gasPriceGwei, 2) : '-'}
-                    </Td>
-                    <Td textAlign="right" fontSize="sm" color="pink.400" fontWeight="semibold">
+                    </Table.Cell>
+                    <Table.Cell textAlign="right" fontSize="sm" color="pink.400" fontWeight="semibold">
                       {estFeeUsd ? `$${nf(estFeeUsd, 2)}` : '-'}
-                    </Td>
-                  </Tr>
+                    </Table.Cell>
+                  </Table.Row>
                 );
               })}
-          </Tbody>
-        </Table>
+          </Table.Body>
+        </Table.Root>
       </Box>
     </Box>
   );

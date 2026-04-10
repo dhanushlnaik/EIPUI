@@ -1,12 +1,10 @@
 "use client";
-
-
 import React, { useEffect } from "react";
 import AllLayout from "@/components/Layout";
 import Dashboard from "@/components/Dashboard"
 import ViewsShare from "@/components/ViewsNShare";
 import PlaceYourAdCard from "@/components/PlaceYourAdCard";
-import { Box } from "@chakra-ui/react";
+import { Steps, Box } from "@chakra-ui/react";
 
 
 const Dasboard = () => {

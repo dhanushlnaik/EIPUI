@@ -1,9 +1,12 @@
+import { Checkbox } from "@/components/ui/compat";
+import { useToast } from "@/components/ui/use-toast";
 import React, { useState, useEffect } from 'react';
-import { Box, Heading, Checkbox, Menu, MenuList, MenuItem, MenuButton, Button, Flex, useToast, useColorModeValue } from '@chakra-ui/react';
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Heading, Menu, Button, Flex, Portal } from "@chakra-ui/react";
 import { ColumnConfig } from '@ant-design/plots';
 import dynamic from "next/dynamic";
-import { ChevronDownIcon, DownloadIcon } from "@chakra-ui/icons";
 import CopyLink from './CopyLink';
+import { LuChevronDown, LuDownload } from 'react-icons/lu';
 
 const Column = dynamic(() => import("@ant-design/plots").then(mod => mod.Column), { ssr: false });
 
@@ -507,139 +510,125 @@ const EipsLabelChart = () => {
           <Flex direction={{ base: "column", md: "row" }} align="center" gap={6}>
             {/* Repo Selector */}
             <Box minW="200px">
-              <Menu>
-                <MenuButton
-                  as={Button}
-                  rightIcon={<ChevronDownIcon />}
-                  colorScheme="blue"
-                  size="md"
-                  width="200px"
-                >
-                  {selectedRepo === 'eip' ? 'EIPs' : 
-                   selectedRepo === 'erc' ? 'ERCs' : 
-                   selectedRepo === 'rip' ? 'RIPs' : 'Select Type'}
-                </MenuButton>
-                <MenuList bg={bgColor} borderColor={borderColor}>
-                  <MenuItem onClick={() => setSelectedRepo('eip')} _hover={{ bg: useColorModeValue("gray.100", "gray.700") }}>
-                    EIPs
-                  </MenuItem>
-                  <MenuItem onClick={() => setSelectedRepo('erc')} _hover={{ bg: useColorModeValue("gray.100", "gray.700") }}>
-                    ERCs
-                  </MenuItem>
-                  <MenuItem onClick={() => setSelectedRepo('rip')} _hover={{ bg: useColorModeValue("gray.100", "gray.700") }}>
-                    RIPs
-                  </MenuItem>
-                </MenuList>
-              </Menu>
+              <Menu.Root>
+                <Menu.Trigger asChild><Button colorPalette="blue" size="md" width="200px">
+                    {selectedRepo === 'eip' ? 'EIPs' : 
+                     selectedRepo === 'erc' ? 'ERCs' : 
+                     selectedRepo === 'rip' ? 'RIPs' : 'Select Type'}
+                    <LuChevronDown /></Button></Menu.Trigger>
+                <Portal><Menu.Positioner><Menu.Content>
+                      <Menu.Item
+                        onSelect={() => setSelectedRepo('eip')}
+                        _hover={{ bg: useColorModeValue("gray.100", "gray.700") }}
+                        value='item-0'>
+                        EIPs
+                      </Menu.Item>
+                      <Menu.Item
+                        onSelect={() => setSelectedRepo('erc')}
+                        _hover={{ bg: useColorModeValue("gray.100", "gray.700") }}
+                        value='item-1'>
+                        ERCs
+                      </Menu.Item>
+                      <Menu.Item
+                        onSelect={() => setSelectedRepo('rip')}
+                        _hover={{ bg: useColorModeValue("gray.100", "gray.700") }}
+                        value='item-2'>
+                        RIPs
+                      </Menu.Item>
+                    </Menu.Content></Menu.Positioner></Portal>
+              </Menu.Root>
             </Box>
 
             {/* Month Selector */}
             <Box minW="200px">
-              <Menu>
-                <MenuButton
-                  as={Button}
-                  rightIcon={<ChevronDownIcon />}
-                  colorScheme="blue"
-                  size="md"
-                  width="200px"
-                >
-                  {selectedMonth ? 
-                    new Date(selectedMonth + '-01').toLocaleString('default', { month: 'short', year: 'numeric' }) : 
-                    'Select Month'
-                  }
-                </MenuButton>
-                <MenuList maxHeight="300px" overflowY="auto" bg={bgColor} borderColor={borderColor}>
-                  {availableMonths.map(month => (
-                    <MenuItem 
-                      key={month}
-                      onClick={() => setSelectedMonth(month)}
-                      _hover={{ bg: useColorModeValue("gray.100", "gray.700") }}
-                      bg={selectedMonth === month ? useColorModeValue("blue.50", "blue.900") : "transparent"}
-                    >
-                      <Box color={textColor}>
-                        {new Date(month + '-01').toLocaleString('default', { month: 'long', year: 'numeric' })}
-                      </Box>
-                    </MenuItem>
-                  ))}
-                </MenuList>
-              </Menu>
+              <Menu.Root>
+                <Menu.Trigger asChild><Button colorPalette="blue" size="md" width="200px">
+                    {selectedMonth ? 
+                      new Date(selectedMonth + '-01').toLocaleString('default', { month: 'short', year: 'numeric' }) : 
+                      'Select Month'
+                    }
+                    <LuChevronDown /></Button></Menu.Trigger>
+                <Portal><Menu.Positioner><Menu.Content>
+                      {availableMonths.map(month => (
+                        <Menu.Item
+                          key={month}
+                          onSelect={() => setSelectedMonth(month)}
+                          _hover={{ bg: useColorModeValue("gray.100", "gray.700") }}
+                          bg={selectedMonth === month ? useColorModeValue("blue.50", "blue.900") : "transparent"}
+                          value='item-3'>
+                          <Box color={textColor}>
+                            {new Date(month + '-01').toLocaleString('default', { month: 'long', year: 'numeric' })}
+                          </Box>
+                        </Menu.Item>
+                      ))}
+                    </Menu.Content></Menu.Positioner></Portal>
+              </Menu.Root>
             </Box>
 
             {/* Labels Selector */}
             <Box minW="200px">
-              <Menu closeOnSelect={false}>
-                <MenuButton
-                  as={Button}
-                  rightIcon={<ChevronDownIcon />}
-                  colorScheme="blue"
-                  size="md"
-                  width="200px"
-                >
-                  Labels
-                </MenuButton>
-                <MenuList maxHeight="300px" overflowY="auto" bg={bgColor} borderColor={borderColor}>
-                  {/* Select All / Remove All Actions */}
-                  <Flex px={3} py={2} borderBottomWidth="1px" borderColor={borderColor}>
-                    <Button 
-                      size="sm" 
-                      variant="ghost" 
-                      colorScheme="blue"
-                      onClick={() => {
-                        const allSelected: Record<string, boolean> = {};
-                        availableLabels?.forEach(label => {
-                          allSelected[label] = true;
-                        });
-                        setShowLabels(allSelected);
-                      }}
-                      mr={2}
-                    >
-                      Select All
-                    </Button>
-                    <Button 
-                      size="sm" 
-                      variant="ghost" 
-                      colorScheme="red"
-                      onClick={() => {
-                        const noneSelected: Record<string, boolean> = {};
-                        availableLabels?.forEach(label => {
-                          noneSelected[label] = false;
-                        });
-                        setShowLabels(noneSelected);
-                      }}
-                    >
-                      Remove All
-                    </Button>
-                  </Flex>
-                  
-                  {/* Labels List */}
-                  {availableLabels?.map(label => (
-                    <MenuItem 
-                      key={label} 
-                      closeOnSelect={false} 
-                      _hover={{ bg: useColorModeValue("gray.100", "gray.700") }}
-                    >
-                      <Checkbox
-                        isChecked={showLabels[label]}
-                        onChange={() => toggleLabel(label)}
-                        colorScheme="blue"
-                        flex="1"
-                      >
-                        <Box color={textColor}>{label}</Box>
-                      </Checkbox>
-                    </MenuItem>
-                  ))}
-                </MenuList>
-              </Menu>
+              <Menu.Root closeOnSelect={false}>
+                <Menu.Trigger asChild><Button colorPalette="blue" size="md" width="200px">Labels
+                                    <LuChevronDown /></Button></Menu.Trigger>
+                <Portal><Menu.Positioner><Menu.Content>
+                      {/* Select All / Remove All Actions */}
+                      <Flex px={3} py={2} borderBottomWidth="1px" borderColor={borderColor}>
+                        <Button 
+                          size="sm" 
+                          variant="ghost" 
+                          colorPalette="blue"
+                          onClick={() => {
+                            const allSelected: Record<string, boolean> = {};
+                            availableLabels?.forEach(label => {
+                              allSelected[label] = true;
+                            });
+                            setShowLabels(allSelected);
+                          }}
+                          mr={2}
+                        >
+                          Select All
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="ghost" 
+                          colorPalette="red"
+                          onClick={() => {
+                            const noneSelected: Record<string, boolean> = {};
+                            availableLabels?.forEach(label => {
+                              noneSelected[label] = false;
+                            });
+                            setShowLabels(noneSelected);
+                          }}
+                        >
+                          Remove All
+                        </Button>
+                      </Flex>
+                      {/* Labels List */}
+                      {availableLabels?.map(label => (
+                        <Menu.Item
+                          key={label}
+                          closeOnSelect={false}
+                          _hover={{ bg: useColorModeValue("gray.100", "gray.700") }}
+                          value='item-4'>
+                          <Checkbox.Root
+                            onCheckedChange={() => toggleLabel(label)}
+                            colorPalette="blue"
+                            flex="1"
+                            checked={showLabels[label]}
+                          ><Checkbox.HiddenInput /><Checkbox.Control><Checkbox.Indicator /></Checkbox.Control><Checkbox.Label>
+                            <Box color={textColor}>{label}</Box>
+                          </Checkbox.Label></Checkbox.Root>
+                        </Menu.Item>
+                      ))}
+                    </Menu.Content></Menu.Positioner></Portal>
+              </Menu.Root>
             </Box>
-            <Button 
-              colorScheme="blue" 
-              leftIcon={<DownloadIcon />} 
+            <Button
+              colorPalette="blue"
               onClick={handleDownload}
               size="md"
-              isDisabled={!selectedMonth}
-            >
-              Download PRs CSV
-            </Button>
+              disabled={!selectedMonth}><LuDownload />Download PRs CSV
+                          </Button>
           </Flex>
         </Flex>
             {renderChart()}

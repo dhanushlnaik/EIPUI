@@ -1,14 +1,17 @@
 "use client";
+/*
+ MIGRATION NOTE: The following Chakra UI hooks have been removed.
+ Please replace them with the suggested alternatives:
+
+//   - usePrefersReducedMotion: Use usehooks-ts: usePrefersReducedMotion
+
+ See: https://chakra-ui.com/docs/get-started/migration#hooks
+*/
 import React, { useEffect, useState } from "react";
 import LargeWithAppLinksAndSocial from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import SubscriptionFloater from "@/components/SubscriptionFloater";
-import {
-  Box,
-  useBreakpointValue,
-  Portal,
-  usePrefersReducedMotion,
-} from "@chakra-ui/react";
+import { Steps, Box, useBreakpointValue, Portal } from "@chakra-ui/react";
 import { Rajdhani } from "next/font/google";
 import "../app/globals.css";
 import { motion } from "framer-motion";

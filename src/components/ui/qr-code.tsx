@@ -1,4 +1,4 @@
-import { QrCode as ChakraQrCode } from "@chakra-ui/react"
+import { Steps, QrCode as ChakraQrCode } from "@chakra-ui/react";
 import * as React from "react"
 
 export interface QrCodeProps

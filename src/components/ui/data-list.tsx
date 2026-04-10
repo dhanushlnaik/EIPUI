@@ -1,4 +1,4 @@
-import { DataList as ChakraDataList } from "@chakra-ui/react"
+import { Steps, DataList as ChakraDataList } from "@chakra-ui/react";
 import { InfoTip } from "./toggle-tip"
 import * as React from "react"
 

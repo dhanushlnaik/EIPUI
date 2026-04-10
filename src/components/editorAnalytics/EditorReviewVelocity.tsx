@@ -1,12 +1,6 @@
 import React, { useMemo } from 'react';
-import {
-  Box,
-  Heading,
-  Text,
-  useColorModeValue,
-  Flex,
-  Spinner,
-} from '@chakra-ui/react';
+import { useColorModeValue } from "../ui/color-mode";
+import { Steps, Box, Heading, Text, Flex, Spinner } from "@chakra-ui/react";
 import dynamic from 'next/dynamic';
 
 const Column = dynamic(() => import('@ant-design/plots').then((mod) => mod.Column), {

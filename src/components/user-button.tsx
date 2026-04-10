@@ -1,4 +1,5 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar } from "@/components/ui/avatar";
+import { AvatarImage, AvatarFallback } from "@/components/ui/compat";
 import {
   DropdownMenu,
   DropdownMenuContent,

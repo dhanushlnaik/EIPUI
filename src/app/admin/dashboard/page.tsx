@@ -1,67 +1,27 @@
 "use client";
+import { Stat, Checkbox, Divider, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter, ModalCloseButton, Progress } from "@/components/ui/compat";
 
+import { TabList, Tab, TabPanels, TabPanel, InputLeftElement, Thead, Tbody, Tr, Th, Td } from "@/components/ui/compat";
+import { useToast } from "@/components/ui/use-toast";
+;
 import { useEffect, useState } from 'react';
+import { useColorModeValue } from "../../../components/ui/color-mode";
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import AllLayout from '@/components/Layout';
-import {
-  Box,
-  Button,
-  Container,
-  Heading,
-  HStack,
-  VStack,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  Badge,
-  IconButton,
-  useToast,
-  Spinner,
-  Text,
-  Flex,
-  Stat,
-  StatLabel,
-  StatNumber,
-  StatGroup,
-  StatHelpText,
-  StatArrow,
-  useColorModeValue,
-  Icon,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  Select,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
-  Grid,
-  SimpleGrid,
-  Avatar,
-  Checkbox,
-  Divider,
-  Tooltip,
-  useDisclosure,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  ModalCloseButton,
-  Progress,
-} from '@chakra-ui/react';
-import { EditIcon, DeleteIcon, AddIcon, ViewIcon, SearchIcon, ChevronDownIcon, DownloadIcon, StarIcon } from '@chakra-ui/icons';
+import { Steps, Box, Button, Container, Heading, HStack, VStack, Table, Badge, IconButton, Spinner, Text, Flex, Icon, Input, InputGroup, NativeSelect, Menu, Tabs, Grid, SimpleGrid, Avatar, Portal } from "@chakra-ui/react";
+import { Tooltip } from '@/components/ui/tooltip';
 import { FaFileAlt, FaEye, FaEyeSlash, FaSignOutAlt, FaFilter, FaDatabase, FaFile, FaClock, FaCheckCircle, FaExclamationTriangle, FaChartLine, FaCalendar, FaTag, FaStar } from 'react-icons/fa';
+import {
+  LuChevronDown,
+  LuDownload,
+  LuEye,
+  LuPencil,
+  LuPlus,
+  LuSearch,
+  LuStar,
+  LuTrash2,
+} from 'react-icons/lu';
 
 interface Blog {
   id: string;
@@ -91,7 +51,7 @@ export default function AdminDashboard() {
   const [viewMode, setViewMode] = useState<'all' | 'database' | 'static'>('all');
   const [selectedBlogs, setSelectedBlogs] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState<'date' | 'title' | 'author'>('date');
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { open, onOpen, onClose } = useDisclosure();
   const [analytics, setAnalytics] = useState({
     totalViews: 0,
     avgReadingTime: 0,
@@ -232,7 +192,7 @@ export default function AdminDashboard() {
       <AllLayout>
         <Container maxW="container.xl" py={10}>
           <Flex justify="center" align="center" minH="50vh">
-            <Spinner size="xl" color="blue.500" thickness="4px" />
+            <Spinner size="xl" color="blue.500" borderWidth="4px" />
           </Flex>
         </Container>
       </AllLayout>
@@ -242,7 +202,7 @@ export default function AdminDashboard() {
   return (
     <AllLayout>
       <Container maxW="container.xl" py={8}>
-        <VStack spacing={6} align="stretch">
+        <VStack gap={6} align="stretch">
           {/* Header */}
           <Flex justify="space-between" align="center" wrap="wrap" gap={4}>
             <Box>
@@ -253,25 +213,19 @@ export default function AdminDashboard() {
                 </Text>
               )}
             </Box>
-            <HStack spacing={3}>
+            <HStack gap={3}>
               <Link href="/Blogs" passHref>
-                <Button as="a" leftIcon={<ViewIcon />} variant="outline">
-                  View Site
-                </Button>
+                <Button as="a" variant="outline"><LuEye />View Site
+                                  </Button>
               </Link>
-              <Button
-                leftIcon={<Icon as={FaSignOutAlt} />}
-                colorScheme="red"
-                onClick={handleLogout}
-              >
-                Logout
-              </Button>
+              <Button colorPalette="red" onClick={handleLogout}><Icon as={FaSignOutAlt} />Logout
+                              </Button>
             </HStack>
           </Flex>
 
           {/* Enhanced Stats Grid */}
-          <SimpleGrid columns={{ base: 2, md: 4, lg: 6 }} spacing={4}>
-            <Stat
+          <SimpleGrid columns={{ base: 2, md: 4, lg: 6 }} gap={4}>
+            <Stat.Root
               bg={bgColor}
               p={4}
               borderRadius="xl"
@@ -279,15 +233,15 @@ export default function AdminDashboard() {
               border="1px"
               borderColor={borderColor}
             >
-              <StatLabel fontSize="xs">Total Blogs</StatLabel>
-              <StatNumber fontSize="2xl">{blogs.length}</StatNumber>
-              <StatHelpText>
+              <Stat.Label fontSize="xs">Total Blogs</Stat.Label>
+              <Stat.ValueText fontSize="2xl">{blogs.length}</Stat.ValueText>
+              <Stat.HelpText>
                 <Icon as={FaFileAlt} color="blue.500" mr={1} />
                 All content
-              </StatHelpText>
-            </Stat>
+              </Stat.HelpText>
+            </Stat.Root>
 
-            <Stat
+            <Stat.Root
               bg={bgColor}
               p={4}
               borderRadius="xl"
@@ -295,17 +249,17 @@ export default function AdminDashboard() {
               border="1px"
               borderColor={borderColor}
             >
-              <StatLabel fontSize="xs">Database</StatLabel>
-              <StatNumber fontSize="2xl" color="purple.500">
+              <Stat.Label fontSize="xs">Database</Stat.Label>
+              <Stat.ValueText fontSize="2xl" color="purple.500">
                 {databaseBlogs.length}
-              </StatNumber>
-              <StatHelpText>
+              </Stat.ValueText>
+              <Stat.HelpText>
                 <Icon as={FaDatabase} color="purple.500" mr={1} />
                 Editable
-              </StatHelpText>
-            </Stat>
+              </Stat.HelpText>
+            </Stat.Root>
 
-            <Stat
+            <Stat.Root
               bg={bgColor}
               p={4}
               borderRadius="xl"
@@ -313,17 +267,17 @@ export default function AdminDashboard() {
               border="1px"
               borderColor={borderColor}
             >
-              <StatLabel fontSize="xs">Static Files</StatLabel>
-              <StatNumber fontSize="2xl" color="gray.500">
+              <Stat.Label fontSize="xs">Static Files</Stat.Label>
+              <Stat.ValueText fontSize="2xl" color="gray.500">
                 {staticBlogs.length}
-              </StatNumber>
-              <StatHelpText>
+              </Stat.ValueText>
+              <Stat.HelpText>
                 <Icon as={FaFile} color="gray.500" mr={1} />
                 Read-only
-              </StatHelpText>
-            </Stat>
+              </Stat.HelpText>
+            </Stat.Root>
 
-            <Stat
+            <Stat.Root
               bg={bgColor}
               p={4}
               borderRadius="xl"
@@ -331,17 +285,17 @@ export default function AdminDashboard() {
               border="1px"
               borderColor={borderColor}
             >
-              <StatLabel fontSize="xs">Published</StatLabel>
-              <StatNumber fontSize="2xl" color="green.500">
+              <Stat.Label fontSize="xs">Published</Stat.Label>
+              <Stat.ValueText fontSize="2xl" color="green.500">
                 {blogs.filter((b) => b.published).length}
-              </StatNumber>
-              <StatHelpText>
+              </Stat.ValueText>
+              <Stat.HelpText>
                 <Icon as={FaCheckCircle} color="green.500" mr={1} />
                 Live now
-              </StatHelpText>
-            </Stat>
+              </Stat.HelpText>
+            </Stat.Root>
 
-            <Stat
+            <Stat.Root
               bg={bgColor}
               p={4}
               borderRadius="xl"
@@ -349,17 +303,17 @@ export default function AdminDashboard() {
               border="1px"
               borderColor={borderColor}
             >
-              <StatLabel fontSize="xs">Drafts</StatLabel>
-              <StatNumber fontSize="2xl" color="orange.500">
+              <Stat.Label fontSize="xs">Drafts</Stat.Label>
+              <Stat.ValueText fontSize="2xl" color="orange.500">
                 {blogs.filter((b) => !b.published).length}
-              </StatNumber>
-              <StatHelpText>
+              </Stat.ValueText>
+              <Stat.HelpText>
                 <Icon as={FaExclamationTriangle} color="orange.500" mr={1} />
                 Pending
-              </StatHelpText>
-            </Stat>
+              </Stat.HelpText>
+            </Stat.Root>
 
-            <Stat
+            <Stat.Root
               bg={bgColor}
               p={4}
               borderRadius="xl"
@@ -367,15 +321,15 @@ export default function AdminDashboard() {
               border="1px"
               borderColor={borderColor}
             >
-              <StatLabel fontSize="xs">Featured</StatLabel>
-              <StatNumber fontSize="2xl" color="yellow.500">
+              <Stat.Label fontSize="xs">Featured</Stat.Label>
+              <Stat.ValueText fontSize="2xl" color="yellow.500">
                 {featuredBlogs.length}
-              </StatNumber>
-              <StatHelpText>
+              </Stat.ValueText>
+              <Stat.HelpText>
                 <Icon as={FaStar} color="yellow.500" mr={1} />
                 Highlighted
-              </StatHelpText>
-            </Stat>
+              </Stat.HelpText>
+            </Stat.Root>
           </SimpleGrid>
 
           {/* Search and Filter Bar */}
@@ -387,11 +341,11 @@ export default function AdminDashboard() {
             border="1px"
             borderColor={borderColor}
           >
-            <VStack spacing={4} align="stretch">
+            <VStack gap={4} align="stretch">
               <Flex gap={4} wrap="wrap" align="center" justify="space-between">
                 <InputGroup maxW="500px" flex={1}>
                   <InputLeftElement>
-                    <SearchIcon color="gray.400" />
+                    <Icon as={LuSearch} color="gray.400" />
                   </InputLeftElement>
                   <Input
                     placeholder="Search by title, author, slug, summary..."
@@ -401,89 +355,76 @@ export default function AdminDashboard() {
                   />
                 </InputGroup>
                 
-                <HStack spacing={3} wrap="wrap">
-                  <Menu>
-                    <MenuButton
-                      as={Button}
-                      rightIcon={<ChevronDownIcon />}
-                      leftIcon={<Icon as={FaFilter} />}
-                      size="md"
-                      variant="outline"
-                    >
-                      {filterStatus === 'all' ? 'All Status' : filterStatus === 'published' ? 'Published' : 'Drafts'}
-                    </MenuButton>
-                    <MenuList>
-                      <MenuItem icon={<FaFileAlt />} onClick={() => setFilterStatus('all')}>
-                        All Status
-                      </MenuItem>
-                      <MenuItem icon={<FaCheckCircle />} onClick={() => setFilterStatus('published')}>
-                        Published Only
-                      </MenuItem>
-                      <MenuItem icon={<FaExclamationTriangle />} onClick={() => setFilterStatus('draft')}>
-                        Drafts Only
-                      </MenuItem>
-                    </MenuList>
-                  </Menu>
+                <HStack gap={3} wrap="wrap">
+                  <Menu.Root>
+                    <Menu.Trigger asChild><Button size="md" variant="outline"><Icon as={FaFilter} />
+                        {filterStatus === 'all' ? 'All Status' : filterStatus === 'published' ? 'Published' : 'Drafts'}
+                        <LuChevronDown /></Button></Menu.Trigger>
+                    <Portal><Menu.Positioner><Menu.Content>
+                          <Menu.Item
+                            icon={<FaFileAlt />}
+                            onSelect={() => setFilterStatus('all')}
+                            value='item-0'>
+                            All Status
+                          </Menu.Item>
+                          <Menu.Item
+                            icon={<FaCheckCircle />}
+                            onSelect={() => setFilterStatus('published')}
+                            value='item-1'>
+                            Published Only
+                          </Menu.Item>
+                          <Menu.Item
+                            icon={<FaExclamationTriangle />}
+                            onSelect={() => setFilterStatus('draft')}
+                            value='item-2'>
+                            Drafts Only
+                          </Menu.Item>
+                        </Menu.Content></Menu.Positioner></Portal>
+                  </Menu.Root>
 
-                  <Menu>
-                    <MenuButton
-                      as={Button}
-                      rightIcon={<ChevronDownIcon />}
-                      size="md"
-                      variant="outline"
-                    >
-                      Sort: {sortBy === 'date' ? 'Date' : sortBy === 'title' ? 'Title' : 'Author'}
-                    </MenuButton>
-                    <MenuList>
-                      <MenuItem icon={<FaCalendar />} onClick={() => setSortBy('date')}>
-                        By Date
-                      </MenuItem>
-                      <MenuItem icon={<FaFileAlt />} onClick={() => setSortBy('title')}>
-                        By Title
-                      </MenuItem>
-                      <MenuItem icon={<FaTag />} onClick={() => setSortBy('author')}>
-                        By Author
-                      </MenuItem>
-                    </MenuList>
-                  </Menu>
+                  <Menu.Root>
+                    <Menu.Trigger asChild><Button size="md" variant="outline">Sort: {sortBy === 'date' ? 'Date' : sortBy === 'title' ? 'Title' : 'Author'}
+                        <LuChevronDown /></Button></Menu.Trigger>
+                    <Portal><Menu.Positioner><Menu.Content>
+                          <Menu.Item icon={<FaCalendar />} onSelect={() => setSortBy('date')} value='item-3'>
+                            By Date
+                          </Menu.Item>
+                          <Menu.Item icon={<FaFileAlt />} onSelect={() => setSortBy('title')} value='item-4'>
+                            By Title
+                          </Menu.Item>
+                          <Menu.Item icon={<FaTag />} onSelect={() => setSortBy('author')} value='item-5'>
+                            By Author
+                          </Menu.Item>
+                        </Menu.Content></Menu.Positioner></Portal>
+                  </Menu.Root>
                   
                   <Link href="/admin/dashboard/new" passHref>
-                    <Button as="a" leftIcon={<AddIcon />} colorScheme="blue" size="md">
-                      New Blog
-                    </Button>
+                    <Button as="a" colorPalette="blue" size="md"><LuPlus />New Blog
+                                          </Button>
                   </Link>
                 </HStack>
               </Flex>
 
               {/* Quick View Mode Tabs */}
-              <HStack spacing={2}>
+              <HStack gap={2}>
                 <Button
                   size="sm"
                   variant={viewMode === 'all' ? 'solid' : 'ghost'}
-                  colorScheme={viewMode === 'all' ? 'blue' : 'gray'}
-                  leftIcon={<Icon as={FaFileAlt} />}
-                  onClick={() => setViewMode('all')}
-                >
-                  All ({blogs.length})
-                </Button>
+                  colorPalette={viewMode === 'all' ? 'blue' : 'gray'}
+                  onClick={() => setViewMode('all')}><Icon as={FaFileAlt} />All ({blogs.length})
+                                  </Button>
                 <Button
                   size="sm"
                   variant={viewMode === 'database' ? 'solid' : 'ghost'}
-                  colorScheme={viewMode === 'database' ? 'purple' : 'gray'}
-                  leftIcon={<Icon as={FaDatabase} />}
-                  onClick={() => setViewMode('database')}
-                >
-                  Database ({databaseBlogs.length})
-                </Button>
+                  colorPalette={viewMode === 'database' ? 'purple' : 'gray'}
+                  onClick={() => setViewMode('database')}><Icon as={FaDatabase} />Database ({databaseBlogs.length})
+                                  </Button>
                 <Button
                   size="sm"
                   variant={viewMode === 'static' ? 'solid' : 'ghost'}
-                  colorScheme={viewMode === 'static' ? 'gray' : 'gray'}
-                  leftIcon={<Icon as={FaFile} />}
-                  onClick={() => setViewMode('static')}
-                >
-                  Static ({staticBlogs.length})
-                </Button>
+                  colorPalette={viewMode === 'static' ? 'gray' : 'gray'}
+                  onClick={() => setViewMode('static')}><Icon as={FaFile} />Static ({staticBlogs.length})
+                                  </Button>
               </HStack>
             </VStack>
           </Box>
@@ -495,10 +436,10 @@ export default function AdminDashboard() {
                 Blog Posts ({sortedBlogs.length})
               </Heading>
               {(searchTerm || filterStatus !== 'all' || viewMode !== 'all') && (
-                <Badge colorScheme="blue">Filtered</Badge>
+                <Badge colorPalette="blue">Filtered</Badge>
               )}
             </HStack>
-            <HStack spacing={4} fontSize="sm" color="gray.600">
+            <HStack gap={4} fontSize="sm" color="gray.600">
               {searchTerm && (
                 <Text>
                   Showing {sortedBlogs.length} of {blogs.length} total
@@ -521,7 +462,7 @@ export default function AdminDashboard() {
           >
             {sortedBlogs.length === 0 ? (
               <Box p={10} textAlign="center">
-                <VStack spacing={3}>
+                <VStack gap={3}>
                   <Icon as={FaFileAlt} boxSize={12} color="gray.400" />
                   <Text color="gray.500" fontWeight="medium" fontSize="lg">
                     {searchTerm || filterStatus !== 'all' || viewMode !== 'all'
@@ -532,7 +473,7 @@ export default function AdminDashboard() {
                     <Button
                       size="sm"
                       variant="outline"
-                      colorScheme="blue"
+                      colorPalette="blue"
                       onClick={() => {
                         setSearchTerm('');
                         setFilterStatus('all');
@@ -545,28 +486,28 @@ export default function AdminDashboard() {
                 </VStack>
               </Box>
             ) : (
-              <Table variant="simple" size="md">
-                <Thead>
-                  <Tr>
-                    <Th>Title</Th>
-                    <Th>Author</Th>
-                    <Th>Type</Th>
-                    <Th>Category</Th>
-                    <Th>Status</Th>
-                    <Th>Reading</Th>
-                    <Th>Date</Th>
-                    <Th isNumeric>Actions</Th>
-                  </Tr>
-                </Thead>
-                <Tbody>
+              <Table.Root variant="simple" size="md">
+                <Table.Header>
+                  <Table.Row>
+                    <Table.ColumnHeader>Title</Table.ColumnHeader>
+                    <Table.ColumnHeader>Author</Table.ColumnHeader>
+                    <Table.ColumnHeader>Type</Table.ColumnHeader>
+                    <Table.ColumnHeader>Category</Table.ColumnHeader>
+                    <Table.ColumnHeader>Status</Table.ColumnHeader>
+                    <Table.ColumnHeader>Reading</Table.ColumnHeader>
+                    <Table.ColumnHeader>Date</Table.ColumnHeader>
+                    <Table.ColumnHeader textAlign='end'>Actions</Table.ColumnHeader>
+                  </Table.Row>
+                </Table.Header>
+                <Table.Body>
                   {sortedBlogs.map((blog) => (
-                    <Tr key={blog.id} _hover={{ bg: useColorModeValue('gray.50', 'gray.700') }}>
-                      <Td>
-                        <VStack align="start" spacing={1}>
-                          <HStack spacing={2}>
+                    <Table.Row key={blog.id} _hover={{ bg: useColorModeValue('gray.50', 'gray.700') }}>
+                      <Table.Cell>
+                        <VStack align="start" gap={1}>
+                          <HStack gap={2}>
                             {blog.featured && (
-                              <Tooltip label="Featured">
-                                <Icon as={StarIcon} color="yellow.500" boxSize={4} />
+                              <Tooltip content="Featured">
+                                <Icon as={FaStar} color="yellow.500" boxSize={4} />
                               </Tooltip>
                             )}
                             <Text fontWeight="medium" fontSize="sm">{blog.title}</Text>
@@ -575,67 +516,65 @@ export default function AdminDashboard() {
                             {blog.slug}
                           </Text>
                           {blog.summary && (
-                            <Text fontSize="xs" color="gray.400" noOfLines={1}>
+                            <Text fontSize="xs" color="gray.400" lineClamp={1}>
                               {blog.summary}
                             </Text>
                           )}
                         </VStack>
-                      </Td>
-                      <Td>
+                      </Table.Cell>
+                      <Table.Cell>
                         <Text fontSize="sm">{blog.author}</Text>
-                      </Td>
-                      <Td>
+                      </Table.Cell>
+                      <Table.Cell>
                         <Badge
-                          colorScheme={blog.isStatic ? 'gray' : 'purple'}
+                          colorPalette={blog.isStatic ? 'gray' : 'purple'}
                           fontSize="xs"
                           variant="subtle"
                         >
                           {blog.isStatic ? 'Static' : 'Database'}
                         </Badge>
-                      </Td>
-                      <Td>
+                      </Table.Cell>
+                      <Table.Cell>
                         {blog.category && (
-                          <Badge colorScheme="blue" fontSize="xs">{blog.category}</Badge>
+                          <Badge colorPalette="blue" fontSize="xs">{blog.category}</Badge>
                         )}
-                      </Td>
-                      <Td>
+                      </Table.Cell>
+                      <Table.Cell>
                         <Badge
-                          colorScheme={blog.published ? 'green' : 'orange'}
+                          colorPalette={blog.published ? 'green' : 'orange'}
                           fontSize="xs"
                           variant="subtle"
                         >
                           {blog.published ? 'Published' : 'Draft'}
                         </Badge>
-                      </Td>
-                      <Td>
+                      </Table.Cell>
+                      <Table.Cell>
                         {blog.reading_time ? (
-                          <HStack spacing={1}>
+                          <HStack gap={1}>
                             <Icon as={FaClock} boxSize={3} color="gray.500" />
                             <Text fontSize="xs">{blog.reading_time} min</Text>
                           </HStack>
                         ) : (
                           <Text fontSize="xs" color="gray.400">—</Text>
                         )}
-                      </Td>
-                      <Td>
+                      </Table.Cell>
+                      <Table.Cell>
                         <Text fontSize="xs" color="gray.600">
                           {new Date(blog.created_at).toLocaleDateString()}
                         </Text>
-                      </Td>
-                      <Td isNumeric>
-                        <HStack justify="flex-end" spacing={2}>
+                      </Table.Cell>
+                      <Table.Cell textAlign='end'>
+                        <HStack justify="flex-end" gap={2}>
                           {blog.isStatic ? (
                             <>
                               <Link href={`/Blogs/${blog.slug}`} passHref>
                                 <IconButton
                                   as="a"
                                   aria-label="View"
-                                  icon={<ViewIcon />}
                                   size="sm"
-                                  colorScheme="blue"
+                                  colorPalette="blue"
                                   variant="ghost"
-                                  target="_blank"
-                                />
+                                  target="_blank"><LuEye /></IconButton>
                               </Link>
                               <Text fontSize="xs" color="gray.500" fontStyle="italic">
                                 Read-only
@@ -644,31 +583,22 @@ export default function AdminDashboard() {
                           ) : (
                             <>
                               <Link href={`/admin/dashboard/edit/${blog.id}`} passHref>
-                                <IconButton
-                                  as="a"
-                                  aria-label="Edit"
-                                  icon={<EditIcon />}
-                                  size="sm"
-                                  colorScheme="blue"
-                                  variant="ghost"
-                                />
+                                <IconButton as="a" aria-label="Edit" size="sm" colorPalette="blue" variant="ghost"><LuPencil /></IconButton>
                               </Link>
                               <IconButton
                                 aria-label="Delete"
-                                icon={<DeleteIcon />}
                                 size="sm"
-                                colorScheme="red"
+                                colorPalette="red"
                                 variant="ghost"
-                                onClick={() => handleDelete(blog.id)}
-                              />
+                                onClick={() => handleDelete(blog.id)}><LuTrash2 /></IconButton>
                             </>
                           )}
                         </HStack>
-                      </Td>
-                    </Tr>
+                      </Table.Cell>
+                    </Table.Row>
                   ))}
-                </Tbody>
-              </Table>
+                </Table.Body>
+              </Table.Root>
             )}
           </Box>
         </VStack>

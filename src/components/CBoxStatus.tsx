@@ -1,22 +1,7 @@
+import { TableContainer, Tbody, Td, Th, Thead, Tr } from "@/components/ui/compat";
+import { useToast } from "@/components/ui/use-toast";
 // import React, { useState, useEffect } from "react";
-// import {
-//   Badge,
-//   Box,
-//   Link,
-//   Table,
-//   TableContainer,
-//   Tbody,
-//   Td,
-//   Text,
-//   Th,
-//   Thead,
-//   Tr,
-//   Wrap,
-//   WrapItem,
-//   useColorModeValue,
-//   Select,
-//   Button,
-// } from "@chakra-ui/react";
+// import { //   Badge, //   Box, //   Link, //   Table, //   TableContainer, //   Tbody, //   Td, //   Text, //   Th, //   Thead, //   Tr, //   Wrap, //   WrapItem, //   useColorModeValue, //   Select, //   Button, // } from "@chakra-ui/react";
 // import { motion } from "framer-motion";
 // import DateTime from "@/components/DateTime";
 // import { DownloadIcon } from "@chakra-ui/icons";
@@ -530,31 +515,12 @@
 // export default CBoxStatus;
 
 import React, { useState, useEffect } from "react";
-import {
-  Badge,
-  Box,
-  Link,
-  Table,
-  TableContainer,
-  Tbody,
-  Td,
-  Text,
-  Th,
-  Thead,
-  Tr,
-  Wrap,
-  WrapItem,
-  useColorModeValue,
-  Select,
-  Button,
-  Stack,
-  Spinner,
-  useToast
-} from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Badge, Box, Link, Table, Text, Wrap, WrapItem, NativeSelect, Button, Stack, Spinner } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import DateTime from "@/components/DateTime";
-import { DownloadIcon } from "@chakra-ui/icons";
 import axios from "axios";
+import { LuDownload } from 'react-icons/lu';
 
 
 interface EIP {
@@ -816,37 +782,37 @@ const CBoxStatus: React.FC<CBoxProps> = ({ dataset, status, type }) => {
   ].map((key) => {
     const percentage = total ? ((result[key] * 100) / total).toFixed(2) : "0.00";
     return (
-      <Tr key={key}>
-        <Td
+      <Table.Row key={key}>
+        <Table.Cell
           whiteSpace="normal"
           minW={{ base: "120px", md: "150px" }}
           wordBreak="break-word"
         >
           <Wrap>
             <WrapItem>
-              <Badge colorScheme={key.startsWith("Standard") ? "blue" : "pink"}>
+              <Badge colorPalette={key.startsWith("Standard") ? "blue" : "pink"}>
                 {key}
               </Badge>
             </WrapItem>
           </Wrap>
-        </Td>
-        <Td
+        </Table.Cell>
+        <Table.Cell
           color="blue.400"
           minW={{ base: "80px", md: "100px" }}
           textAlign="center"
           fontWeight="semibold"
         >
           {result[key]}
-        </Td>
-        <Td
+        </Table.Cell>
+        <Table.Cell
           color="blue.400"
           minW={{ base: "100px", md: "150px" }}
           textAlign="center"
           fontWeight="semibold"
         >
           {percentage}%
-        </Td>
-      </Tr>
+        </Table.Cell>
+      </Table.Row>
     );
   });
 
@@ -886,7 +852,7 @@ const CBoxStatus: React.FC<CBoxProps> = ({ dataset, status, type }) => {
             justify="space-between"
             align="center"
             mb={6}
-            spacing={{ base: 4, md: 6 }}
+            gap={{ base: 4, md: 6 }}
             flexWrap="wrap"
           >
             <Text
@@ -897,7 +863,7 @@ const CBoxStatus: React.FC<CBoxProps> = ({ dataset, status, type }) => {
               {type} Status:{" "}
               <Badge
                 fontSize="1em"
-                colorScheme={
+                colorPalette={
                   status === "Final"
                     ? "green"
                     : status === "Draft"
@@ -917,27 +883,29 @@ const CBoxStatus: React.FC<CBoxProps> = ({ dataset, status, type }) => {
 
             <Stack
               direction={{ base: "column", sm: "row" }}
-              spacing={4}
+              gap={4}
               align="center"
             >
-              <Select
-                size="md"
-                value={selectedYear}
-                onChange={handleYearChange}
-                maxW="150px"
-                aria-label="Select Year"
-                variant="outline"
-              >
-                {years.map((year) => (
-                  <option key={year} value={year}>
-                    {year}
-                  </option>
-                ))}
-              </Select>
+              <NativeSelect.Root>
+                <NativeSelect.Field
+                  size="md"
+                  value={selectedYear}
+                  onValueChange={handleYearChange}
+                  maxW="150px"
+                  aria-label="Select Year"
+                  variant="outline">
+                  {years.map((year) => (
+                    <option key={year} value={year}>
+                      {year}
+                    </option>
+                  ))}
+                </NativeSelect.Field>
+                <NativeSelect.Indicator />
+              </NativeSelect.Root>
 
               <Button
                 size="lg"
-                colorScheme="blue"
+                colorPalette="blue"
                 onClick={convertAndDownloadCSV}
                 aria-label="Download CSV"
                 fontSize="2xs"
@@ -947,27 +915,27 @@ const CBoxStatus: React.FC<CBoxProps> = ({ dataset, status, type }) => {
             </Stack>
           </Stack>
 
-          <TableContainer>
-            <Table
+          <Table.ScrollArea>
+            <Table.Root
               size="md"
               variant="striped"
-              colorScheme="blue"
+              colorPalette="blue"
               whiteSpace="normal"
             >
-              <Thead>
-                <Tr>
-                  <Th fontSize="md">Category</Th>
-                  <Th fontSize="md" isNumeric>
+              <Table.Header>
+                <Table.Row>
+                  <Table.ColumnHeader fontSize="md">Category</Table.ColumnHeader>
+                  <Table.ColumnHeader fontSize="md" textAlign='end'>
                     Count
-                  </Th>
-                  <Th fontSize="md" isNumeric>
+                  </Table.ColumnHeader>
+                  <Table.ColumnHeader fontSize="md" textAlign='end'>
                     %
-                  </Th>
-                </Tr>
-              </Thead>
-              <Tbody>{rows}</Tbody>
-            </Table>
-          </TableContainer>
+                  </Table.ColumnHeader>
+                </Table.Row>
+              </Table.Header>
+              <Table.Body>{rows}</Table.Body>
+            </Table.Root>
+          </Table.ScrollArea>
         </Box>
 
       )}

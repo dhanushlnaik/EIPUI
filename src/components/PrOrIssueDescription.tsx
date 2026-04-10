@@ -1,5 +1,6 @@
 import React from 'react';
-import { Box, Text, useColorModeValue } from '@chakra-ui/react';
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Text } from "@chakra-ui/react";
 import ReactMarkdown from 'react-markdown';
 
 interface MarkdownBoxProps {

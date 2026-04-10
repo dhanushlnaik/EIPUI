@@ -1,25 +1,11 @@
 "use client";
-
+;
 import { VStack } from "@chakra-ui/react";
+import { useColorModeValue } from "../../components/ui/color-mode";
 import React, { useState, useEffect, useLayoutEffect } from "react";
 import CloseableAdCard from "@/components/CloseableAdCard";
 import AllLayout from "@/components/Layout";
-import {
-  Box,
-  Spinner,
-  useColorModeValue,
-  Wrap,
-  WrapItem,
-  Text,
-  List,
-  UnorderedList,
-  ListItem,
-  Heading,
-  Grid,
-  Stack,
-  Image,
-  Link
-} from "@chakra-ui/react";
+import { Box, Spinner, Wrap, WrapItem, Text, List, Heading, Grid, Stack, Image, Link } from "@chakra-ui/react";
 import NLink from "next/link";
 const EIPsInsightRecap = () => {
     const bg = useColorModeValue("#f6f6f7", "#171923");
@@ -41,7 +27,7 @@ const EIPsInsightRecap = () => {
     paddingX={{ lg: "10", md: "5", sm: "5", base: "5" }}
     marginTop={{ lg: "10", md: "5", sm: "5", base: "5" }}
     >
-      <VStack spacing={6} align="start">
+      <VStack gap={6} align="start">
       <Text
         
            transition={{ duration: 0.5 } as any}
@@ -59,7 +45,7 @@ const EIPsInsightRecap = () => {
 
         <Stack 
   direction={{ base: "column", lg: "row" }} // Stack vertically on small screens, horizontally on large screens
-  spacing={6} 
+  gap={6} 
   align="center" // Align content in the center
   justify="center" // Center content horizontally and vertically
 >
@@ -90,7 +76,12 @@ const EIPsInsightRecap = () => {
     >
       As the Ethereum Improvement Proposals (EIPs) play an important role in
       shaping Ethereum's future, tools like 
-     {" "} <Link href="https://eipsinsight.com/" color="blue.400" isExternal className="underline">
+     {" "} <Link
+      href="https://eipsinsight.com/"
+      color="blue.400"
+      className="underline"
+      target='_blank'
+      rel='noopener noreferrer'>
       EIPs Insight</Link> {" "}
       offer valuable
       analytics and tracking solutions to enhance transparency and
@@ -117,7 +108,12 @@ const EIPsInsightRecap = () => {
         </Heading>
         <Text fontSize={{base: "md",md:"xl", lg: "xl"}} textAlign="justify">
           The 
-          {" "} <Link href="https://eipsinsight.com/Analytics" color="blue.400" isExternal className="underline">
+          {" "} <Link
+          href="https://eipsinsight.com/Analytics"
+          color="blue.400"
+          className="underline"
+          target='_blank'
+          rel='noopener noreferrer'>
           Analytics Scheduler</Link> {" "}
            is a powerful tool designed to monitor and
           analyze the performance of Ethereum-based GitHub repositories. Its
@@ -129,7 +125,12 @@ const EIPsInsightRecap = () => {
 
         <Text fontSize={{base: "md",md:"xl", lg: "xl"}} textAlign="justify">
           Designed based on 
-          {" "} <Link href="https://github.com/AvarchLLC/EIPsInsight/issues/56" color="blue.400" isExternal className="underline">
+          {" "} <Link
+          href="https://github.com/AvarchLLC/EIPsInsight/issues/56"
+          color="blue.400"
+          className="underline"
+          target='_blank'
+          rel='noopener noreferrer'>
           input</Link> {" "}
           from active EIP Editors, the scheduler
           automates data extraction from GitHub, eliminating manual tracking
@@ -151,7 +152,12 @@ const EIPsInsightRecap = () => {
         </Heading>
         <Text fontSize={{base: "md",md:"xl", lg: "xl"}} textAlign="justify">
           The 
-          {" "} <Link href="https://eipsinsight.com//Analytics#GithubAnalytics" color="blue.400" isExternal className="underline">
+          {" "} <Link
+          href="https://eipsinsight.com//Analytics#GithubAnalytics"
+          color="blue.400"
+          className="underline"
+          target='_blank'
+          rel='noopener noreferrer'>
           Analytics Scheduler</Link> {" "}
            tracks the creation, closure, and merging of
           PRs and issues. By presenting this data on a monthly and yearly
@@ -175,7 +181,12 @@ const EIPsInsightRecap = () => {
         </Heading>
         <Text fontSize={{base: "md",md:"xl", lg: "xl"}} textAlign="justify">
           The tool maintains a 
-          {" "} <Link href="https://eipsinsight.com//Analytics#GithubAnalytics" color="blue.400" isExternal className="underline">
+          {" "} <Link
+          href="https://eipsinsight.com//Analytics#GithubAnalytics"
+          color="blue.400"
+          className="underline"
+          target='_blank'
+          rel='noopener noreferrer'>
           historical record of PRs</Link> {" "}
           and issues, enabling
           users to visualize activity over extended periods. By examining
@@ -196,7 +207,12 @@ const EIPsInsightRecap = () => {
         </Heading>
         <Text fontSize={{base: "md",md:"xl", lg: "xl"}} textAlign="justify">
           The Analytics Scheduler transforms raw GitHub data into intuitive
-          {" "} <Link href="https://eipsinsight.com//Analytics#GithubAnalytics" color="blue.400" isExternal className="underline">
+          {" "} <Link
+          href="https://eipsinsight.com//Analytics#GithubAnalytics"
+          color="blue.400"
+          className="underline"
+          target='_blank'
+          rel='noopener noreferrer'>
           visual reports</Link> {" "}
            and charts. These visualizations offer a quick
           snapshot, making it easier for teams to communicate progress to
@@ -227,7 +243,12 @@ const EIPsInsightRecap = () => {
         </Heading>
         <Text fontSize={{base: "md",md:"xl", lg: "xl"}} textAlign="justify">
           The 
-          {" "} <Link href="https://eipsinsight.com/Reviewers" color="blue.400" isExternal className="underline">
+          {" "} <Link
+          href="https://eipsinsight.com/Reviewers"
+          color="blue.400"
+          className="underline"
+          target='_blank'
+          rel='noopener noreferrer'>
           Reviewers Tracker</Link> {" "} is designed to monitor and analyze the activity
           of EIP editors. It focuses on tracking PR reviews made by editors,
           providing insights into their contributions and review patterns over
@@ -254,7 +275,12 @@ const EIPsInsightRecap = () => {
         </Heading>
         <Text fontSize={{base: "md",md:"xl", lg: "xl"}} textAlign="justify">
           The 
-          {" "} <Link href="https://eipsinsight.com//Reviewers#Leaderboard" color="blue.400" isExternal className="underline">
+          {" "} <Link
+          href="https://eipsinsight.com//Reviewers#Leaderboard"
+          color="blue.400"
+          className="underline"
+          target='_blank'
+          rel='noopener noreferrer'>
           Reviewers Tracker</Link> {" "}
           enables users to monitor the activity of
           individual EIP editors. For each PR reviewed, the tool logs essential
@@ -282,7 +308,12 @@ const EIPsInsightRecap = () => {
         </Heading>
         <Text fontSize={{base: "md",md:"xl", lg: "xl"}} textAlign="justify">
           A 
-          {" "} <Link href="https://eipsinsight.com//Reviewers#ActivityTimeline" color="blue.400" isExternal className="underline">
+          {" "} <Link
+          href="https://eipsinsight.com//Reviewers#ActivityTimeline"
+          color="blue.400"
+          className="underline"
+          target='_blank'
+          rel='noopener noreferrer'>
          dedicated activity timeline</Link> {" "}
           tracks the submission times of editors,
           providing insight into when reviews are typically conducted. This
@@ -310,7 +341,12 @@ const EIPsInsightRecap = () => {
         </Heading>
         <Text fontSize={{base: "md",md:"xl", lg: "xl"}} textAlign="justify">
           The Reviewers Tracker 
-          {" "} <Link href="https://eipsinsight.com//Reviewers#Speciality" color="blue.400" isExternal className="underline">
+          {" "} <Link
+          href="https://eipsinsight.com//Reviewers#Speciality"
+          color="blue.400"
+          className="underline"
+          target='_blank'
+          rel='noopener noreferrer'>
           categorizes editors based on their specialization </Link> {" "}
           within different types of proposals, such as EIPs,
           ERCs, and RIPs. This specialization chart identifies which editors
@@ -353,11 +389,21 @@ const EIPsInsightRecap = () => {
         </Heading>
         <Text fontSize={{base: "md",md:"xl", lg: "xl"}} textAlign="justify">
           The 
-          {" "} <Link href="https://eipsinsight.com/boards" color="blue.400" isExternal className="underline"> 
+          {" "} <Link
+          href="https://eipsinsight.com/boards"
+          color="blue.400"
+          className="underline"
+          target='_blank'
+          rel='noopener noreferrer'> 
           EIP Board </Link> {" "}
           is a prioritization tool designed to streamline the
           review process for EIPs. Developed in collaboration with 
-          {" "} <Link href="https://x.com/_samwilsn_" color="blue.400" isExternal className="underline">
+          {" "} <Link
+          href="https://x.com/_samwilsn_"
+          color="blue.400"
+          className="underline"
+          target='_blank'
+          rel='noopener noreferrer'>
          samwilsn</Link>,
           the EIP Board helps editors identify and prioritize PRs that require
           urgent attention. By systematically highlighting PRs based on waiting
@@ -398,7 +444,12 @@ const EIPsInsightRecap = () => {
         </Heading>
         <Text fontSize={{base: "md",md:"xl", lg: "xl"}} textAlign="justify">
           The 
-          {" "} <Link href="https://eipsinsight.com/SearchEip" color="blue.400" isExternal className="underline">
+          {" "} <Link
+          href="https://eipsinsight.com/SearchEip"
+          color="blue.400"
+          className="underline"
+          target='_blank'
+          rel='noopener noreferrer'>
           Search Tool </Link> {" "}
           simplifies the process of locating EIPs by allowing
           users to filter and retrieve proposals based on specific parameters
@@ -418,7 +469,12 @@ const EIPsInsightRecap = () => {
         </Heading>
         <Text fontSize={{base: "md",md:"xl", lg: "xl"}} textAlign="justify">
           Users can locate proposals by entering a 
-          {" "} <Link href="https://eipsinsight.com/SearchEip" color="blue.400" isExternal className="underline">
+          {" "} <Link
+          href="https://eipsinsight.com/SearchEip"
+          color="blue.400"
+          className="underline"
+          target='_blank'
+          rel='noopener noreferrer'>
          specific EIP number</Link>.
           This
           feature is particularly useful for editors and developers who need to
@@ -445,7 +501,12 @@ const EIPsInsightRecap = () => {
         </Heading>
         <Text fontSize={{base: "md",md:"xl", lg: "xl"}} textAlign="justify">
           The tool enables searches based on the 
-          {" "} <Link href="https://eipsinsight.com/authors" color="blue.400" isExternal className="underline">
+          {" "} <Link
+          href="https://eipsinsight.com/authors"
+          color="blue.400"
+          className="underline"
+          target='_blank'
+          rel='noopener noreferrer'>
           author’s name or GitHub
           handle</Link>,
            allowing users to view all EIPs contributed by a specific
@@ -472,7 +533,12 @@ const EIPsInsightRecap = () => {
         </Heading>
         <Text fontSize={{base: "md",md:"xl", lg: "xl"}} textAlign="justify">
         Users can filter EIPs by entering keywords from the 
-        {" "} <Link href="https://eipsinsight.com/SearchEipTitle" color="blue.400" isExternal className="underline">
+        {" "} <Link
+          href="https://eipsinsight.com/SearchEipTitle"
+          color="blue.400"
+          className="underline"
+          target='_blank'
+          rel='noopener noreferrer'>
         title or description</Link>{" "} of the proposal. 
         This allows for flexible and broad searches, making it easy to locate proposals even if the exact EIP number or author is unknown.
          By searching for relevant terms, 
@@ -497,7 +563,12 @@ const EIPsInsightRecap = () => {
         </Heading>
         <Text fontSize={{base: "md",md:"xl", lg: "xl"}} textAlign="justify">
           The 
-          {" "} <Link href="https://eipsinsight.com/pectra" color="blue.400" isExternal className="underline">
+          {" "} <Link
+          href="https://eipsinsight.com/pectra"
+          color="blue.400"
+          className="underline"
+          target='_blank'
+          rel='noopener noreferrer'>
           Pectra</Link>{" "} 
            Page is a dedicated resource that provides comprehensive information on the Pectra network upgrade along with detailed specifications for devnet and testnet environments. This page serves as a centralized hub for tracking network upgrades across the Ethereum ecosystem, offering a granular breakdown of the contributions made by authors and the proposals (EIPs) involved in each upgrade cycle.
         </Text>
@@ -512,7 +583,12 @@ const EIPsInsightRecap = () => {
         </Box>
         <Text fontSize={{base: "md",md:"xl", lg: "xl"}} textAlign="justify">
           The Pectra Page provides exhaustive details regarding the 
-          {" "} <Link href="https://eipsinsight.com/pectra" color="blue.400" isExternal className="underline">
+          {" "} <Link
+          href="https://eipsinsight.com/pectra"
+          color="blue.400"
+          className="underline"
+          target='_blank'
+          rel='noopener noreferrer'>
           Pectra network upgrade
           </Link>{" "}  as well as past and future Ethereum upgrades. Users can access comprehensive specs for devnet and testnet environments, allowing them to track and prepare for changes before they are implemented on the mainnet.
         </Text>
@@ -533,7 +609,12 @@ const EIPsInsightRecap = () => {
         </Heading>
         <Text fontSize={{base: "md",md:"xl", lg: "xl"}} textAlign="justify">
           A prominent feature of the Pectra Page is the 
-          {" "} <Link href="https://eipsinsight.com/pectra" color="blue.400" isExternal className="underline">
+          {" "} <Link
+          href="https://eipsinsight.com/pectra"
+          color="blue.400"
+          className="underline"
+          target='_blank'
+          rel='noopener noreferrer'>
           network upgrade chart</Link>
           , which visually represents contributions from different proposals (EIPs) to each upgrade. This chart allows users to see which proposals were integrated into a particular upgrade and how various contributors influenced its development.
         </Text>
@@ -555,7 +636,12 @@ const EIPsInsightRecap = () => {
         </Heading>
         <Text fontSize={{base: "md",md:"xl", lg: "xl"}} textAlign="justify">
           The page highlights contributions from individual authors involved in Ethereum’s upgrade process. By detailing the 
-          {" "} <Link href="https://eipsinsight.com/pectra" color="blue.400" isExternal className="underline">
+          {" "} <Link
+          href="https://eipsinsight.com/pectra"
+          color="blue.400"
+          className="underline"
+          target='_blank'
+          rel='noopener noreferrer'>
           number of EIPs authored by each contributor</Link>, the tool recognizes key players in the ecosystem and showcases the impact of their work.
         </Text>
         <Text fontSize={{base: "md",md:"xl", lg: "xl"}} textAlign="justify">
@@ -581,7 +667,12 @@ const EIPsInsightRecap = () => {
           Ethereum Improvement Proposals (EIPs)
         </Heading>
         <Text fontSize={{base: "md",md:"xl", lg: "xl"}} textAlign="justify">
-          The {" "} <Link href="https://eipsinsight.com/eip" color="blue.400" isExternal className="underline">
+          The {" "} <Link
+          href="https://eipsinsight.com/eip"
+          color="blue.400"
+          className="underline"
+          target='_blank'
+          rel='noopener noreferrer'>
           EIPs</Link> page provides a comprehensive overview of Ethereum Improvement Proposals (EIPs), offering valuable statistics and visualizations. The page highlights the total number of EIPs and their distribution across different statuses, including Final, Draft, Review, and other stages.
         </Text>
         
@@ -620,7 +711,12 @@ const EIPsInsightRecap = () => {
           Rollup Improvement Proposal (RIP)
         </Heading>
         <Text fontSize={{base: "md",md:"xl", lg: "xl"}} textAlign="justify">
-          The {" "} <Link href="https://eipsinsight.com/rip" color="blue.400" isExternal className="underline">RIP</Link> Page is a specialized resource that aggregates and visualizes RIP data, offering insights into contributions and development trends that are not readily available elsewhere. This tool plays a critical role in documenting and categorizing RIPs, ensuring that contributors and community members have access to a structured overview of ongoing and completed proposals.
+          The {" "} <Link
+          href="https://eipsinsight.com/rip"
+          color="blue.400"
+          className="underline"
+          target='_blank'
+          rel='noopener noreferrer'>RIP</Link> Page is a specialized resource that aggregates and visualizes RIP data, offering insights into contributions and development trends that are not readily available elsewhere. This tool plays a critical role in documenting and categorizing RIPs, ensuring that contributors and community members have access to a structured overview of ongoing and completed proposals.
         </Text>
         <Box display="flex" justifyContent="center" width="100%">
         <Image src="milestone20.png" alt="RIP Dashboard" 
@@ -657,7 +753,12 @@ const EIPsInsightRecap = () => {
         </Text>
         <Text fontSize={{base: "md",md:"xl", lg: "xl"}} textAlign="justify">
           As Ethereum continues to evolve, platforms like 
-          {" "} <Link href="https://eipsinsight.com/" color="blue.400" isExternal className="underline">
+          {" "} <Link
+          href="https://eipsinsight.com/"
+          color="blue.400"
+          className="underline"
+          target='_blank'
+          rel='noopener noreferrer'>
           EIPs Insight</Link> will remain essential for driving efficiency, encouraging participation, and ensuring that the network’s governance stays robust and inclusive. By leveraging these insights, contributors can actively shape the blockchain’s future while reinforcing the core principles of decentralization and transparency.
         </Text>
       </VStack>

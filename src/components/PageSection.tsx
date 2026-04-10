@@ -1,5 +1,6 @@
 import React from 'react';
-import { Box, Divider, useColorModeValue } from '@chakra-ui/react';
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Separator } from "@chakra-ui/react";
 import { motion } from 'framer-motion';
 
 interface PageSectionProps {
@@ -35,7 +36,7 @@ const PageSection: React.FC<PageSectionProps> = ({
     >
       {children}
       {showDivider && (
-        <Divider 
+        <Separator 
           mt={sectionSpacing.py} 
           borderColor={dividerColor}
           opacity={0.6}

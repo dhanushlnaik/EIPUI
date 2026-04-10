@@ -1,4 +1,4 @@
-import { Tag as ChakraTag } from "@chakra-ui/react"
+import { Steps, Tag as ChakraTag } from "@chakra-ui/react";
 import * as React from "react"
 
 export interface TagProps extends ChakraTag.RootProps {

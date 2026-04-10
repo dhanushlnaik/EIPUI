@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import {Box, Text, useColorModeValue} from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Text } from "@chakra-ui/react";
 import NextLink from "next/link";
 import Markdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'

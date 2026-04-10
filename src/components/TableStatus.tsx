@@ -1,19 +1,9 @@
-import {
-  Box,
-  Text,
-  useColorModeValue,
-  Wrap,
-  WrapItem,
-  Badge,
-  Link,
-  Button,
-  Flex,
-  Select,
-} from "@chakra-ui/react";
+import { Box, Text, Wrap, WrapItem, Badge, Link, Button, Flex, Select, Icon } from "@chakra-ui/react";
+import { useColorModeValue, useColorMode } from "./ui/color-mode";
 import { CCardBody, CSmartTable } from "@coreui/react-pro";
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Spinner, useColorMode } from "@chakra-ui/react";
+import { Spinner } from "@chakra-ui/react";
 import { Popover, PopoverContent, PopoverTrigger } from "@chakra-ui/react";
 import axios from "axios";
 
@@ -68,7 +58,7 @@ interface EIP {
 
 import "@coreui/coreui/dist/css/coreui.min.css";
 import LoaderComponent from "./Loader";
-import { DownloadIcon } from "@chakra-ui/icons";
+import { LuDownload } from 'react-icons/lu';
 interface TabProps {
   cat: string;
 }
@@ -272,7 +262,7 @@ const TableStat: React.FC<TabProps> = ({ cat }) => {
 
   const currentYear = new Date().getFullYear();
   const startYear = 2015;
-  const yearsArr = [];
+  const yearsArr: number[] = [];
 
   for (let year = startYear; year <= currentYear; year++) {
     yearsArr.push(year);
@@ -302,14 +292,14 @@ const TableStat: React.FC<TabProps> = ({ cat }) => {
           className="scrollbarDesign"
         >
           {isLoading ? ( // Show loader while data is loading
-            <Box
+            (<Box
               display="flex"
               justifyContent="center"
               alignItems="center"
               height="200px"
             >
               <Spinner />
-            </Box>
+            </Box>)
           ) : (
             <>
             <Flex justifyContent="flex-end">
@@ -319,7 +309,7 @@ const TableStat: React.FC<TabProps> = ({ cat }) => {
                     {/* <Flex justifyContent="flex-end"> */}
                     <Button
                     
-                      colorScheme="blue"
+                      colorPalette="blue"
                       variant="outline"
                       fontSize={"14px"}
                       fontWeight={"bold"}
@@ -336,7 +326,7 @@ const TableStat: React.FC<TabProps> = ({ cat }) => {
                         }
                       }}
                     >
-                      <DownloadIcon marginEnd={"1.5"} />
+                      <Icon as={LuDownload} marginEnd={"1.5"} />
                       Download Reports
                     </Button>
                     {/* </Flex> */}

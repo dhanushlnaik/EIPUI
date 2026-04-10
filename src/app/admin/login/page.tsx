@@ -1,28 +1,14 @@
 "use client";
-
+import { InputLeftElement } from "@/components/ui/compat";
+;
 import { useState, FormEvent, useEffect } from 'react';
+import { useColorModeValue } from "../../../components/ui/color-mode";
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import AllLayout from '@/components/Layout';
-import {
-  Box,
-  Button,
-  FormControl,
-  FormLabel,
-  Input,
-  VStack,
-  Heading,
-  Text,
-  Alert,
-  AlertIcon,
-  Container,
-  useColorModeValue,
-  Icon,
-  InputGroup,
-  InputLeftElement,
-} from '@chakra-ui/react';
-import { LockIcon, EmailIcon, ArrowBackIcon } from '@chakra-ui/icons';
+import { Steps, Box, Button, Input, VStack, Heading, Text, Alert, Container, Icon, InputGroup, Field } from "@chakra-ui/react";
 import { FaUser } from 'react-icons/fa';
+import { LuArrowLeft, LuLock, LuMail } from 'react-icons/lu';
 
 export default function AdminLogin() {
   const router = useRouter();
@@ -82,17 +68,11 @@ export default function AdminLogin() {
   return (
     <AllLayout>
       <Container maxW="md" py={20}>
-        <VStack spacing={4}>
+        <VStack gap={4}>
           {/* Back to Site Link */}
           <Link href="/" passHref>
-            <Button
-              as="a"
-              variant="ghost"
-              size="sm"
-              leftIcon={<ArrowBackIcon />}
-            >
-              Back to Site
-            </Button>
+            <Button as="a" variant="ghost" size="sm"><LuArrowLeft />Back to Site
+                          </Button>
           </Link>
 
           <Box
@@ -104,16 +84,16 @@ export default function AdminLogin() {
             borderColor={borderColor}
             w="full"
           >
-            <VStack spacing={6} align="stretch">
+            <VStack gap={6} align="stretch">
               {/* Header */}
-              <VStack spacing={2}>
+              <VStack gap={2}>
                 <Box
                   bg="blue.500"
                   p={3}
                   borderRadius="full"
                   mb={2}
                 >
-                  <Icon as={LockIcon} boxSize={6} color="white" />
+                  <Icon as={LuLock} boxSize={6} color="white" />
                 </Box>
                 <Heading size="lg">Blog Admin</Heading>
                 <Text color="gray.600" fontSize="sm">
@@ -123,17 +103,17 @@ export default function AdminLogin() {
 
             {/* Error Alert */}
             {error && (
-              <Alert status="error" borderRadius="md">
-                <AlertIcon />
+              <Alert.Root status="error" borderRadius="md">
+                <Alert.Indicator />
                 {error}
-              </Alert>
+              </Alert.Root>
             )}
 
             {/* Login Form */}
             <form onSubmit={handleSubmit}>
-              <VStack spacing={4}>
-                <FormControl isRequired>
-                  <FormLabel>Username</FormLabel>
+              <VStack gap={4}>
+                <Field.Root required>
+                  <Field.Label>Username</Field.Label>
                   <InputGroup>
                     <InputLeftElement>
                       <Icon as={FaUser} color="gray.400" />
@@ -145,13 +125,13 @@ export default function AdminLogin() {
                       placeholder="Enter your username"
                     />
                   </InputGroup>
-                </FormControl>
+                </Field.Root>
 
-                <FormControl isRequired>
-                  <FormLabel>Password</FormLabel>
+                <Field.Root required>
+                  <Field.Label>Password</Field.Label>
                   <InputGroup>
                     <InputLeftElement>
-                      <LockIcon color="gray.400" />
+                      <Icon as={LuLock} color="gray.400" />
                     </InputLeftElement>
                     <Input
                       type="password"
@@ -160,14 +140,14 @@ export default function AdminLogin() {
                       placeholder="Enter your password"
                     />
                   </InputGroup>
-                </FormControl>
+                </Field.Root>
 
                 <Button
                   type="submit"
-                  colorScheme="blue"
+                  colorPalette="blue"
                   width="full"
                   size="lg"
-                  isLoading={loading}
+                  loading={loading}
                   loadingText="Signing in..."
                 >
                   Sign In

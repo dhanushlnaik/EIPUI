@@ -1,26 +1,16 @@
 "use client";
-
+;
 import React, { useState, useEffect } from "react";
+import { useColorModeValue, useColorMode } from "../../components/ui/color-mode";
 import AllLayout from "@/components/Layout";
-import {
-  Box,
-  Spinner,
-  Text,
-  Button,
-  useColorModeValue,
-  Badge,
-  Wrap,
-  WrapItem,
-  Link,
-  useColorMode,
-} from "@chakra-ui/react";
+import { Steps, Box, Spinner, Text, Button, Badge, Wrap, WrapItem, Link, Icon } from "@chakra-ui/react";
 import SearchBox from "@/components/SearchBox";
-import { DownloadIcon } from "@chakra-ui/icons";
 import { motion } from "framer-motion";
 import { CSmartTable, CCardBody } from "@coreui/react-pro";
 import "@coreui/coreui/dist/css/coreui.min.css";
 import axios from "axios";
 import CloseableAdCard from "@/components/CloseableAdCard";
+import { LuDownload } from 'react-icons/lu';
 
 const MotionBox = motion(Box);
 interface EIP {
@@ -79,7 +69,7 @@ const All = () => {
 
 
 function filterDuplicateRipEntries(data: EIP[]): EIP[] {
-  const filtered = [];
+  const filtered: EIP[] = [];
   const seenTitles = new Set();
   for (const item of data) {
     const eip = item.eip; // support case difference just in case
@@ -234,7 +224,7 @@ useEffect(() => {
               <Button
                 key={item}
                 variant={selected === item ? "solid" : "outline"}
-                colorScheme={selected === item ? "blue" : "gray"}
+                colorPalette={selected === item ? "blue" : "gray"}
                 onClick={() => {
                   setSelected(item);
                   if (item !== "All") {
@@ -286,7 +276,7 @@ useEffect(() => {
               await axios.post("/api/DownloadCounter");
             }}
           >
-            <DownloadIcon mr={2} />
+            <Icon as={LuDownload} mr={2} />
             Download CSV
           </Button>
         </Box>
@@ -418,7 +408,7 @@ useEffect(() => {
                         >
                           <Wrap>
                             <WrapItem>
-                              <Badge colorScheme={getStatusColor(item.status)}>
+                              <Badge colorPalette={getStatusColor(item.status)}>
                                 {item["#"]}
                               </Badge>
                             </WrapItem>
@@ -439,7 +429,7 @@ useEffect(() => {
                                   : "eips/eip"
                               }-${item.eip}`}
                             >
-                              <Badge colorScheme={getStatusColor(item.status)}>
+                              <Badge colorPalette={getStatusColor(item.status)}>
                                 {`${item.repo.toUpperCase()}-${item.eip}`}
                               </Badge>
                             </Link>
@@ -483,9 +473,9 @@ useEffect(() => {
                                   : "eips/eip"
                               }-${item.eip}`}
                               fontSize="13px"
-                              sx={{
+                              css={{
                                 color: `${textColor} !important`,
-                                _hover: { color: "#1c7ed6 !important" },
+                                '& _hover': { color: "#1c7ed6 !important" }
                               }}
                             >
                               {item.title}
@@ -525,9 +515,9 @@ useEffect(() => {
                                       href={link}
                                       target="_blank"
                                       fontSize="13px"
-                                      sx={{
+                                      css={{
                                         color: `${textColor} !important`,
-                                        _hover: { color: "#1c7ed6 !important" },
+                                        '& _hover': { color: "#1c7ed6 !important" }
                                       }}
                                     >
                                       {authorPart.join(" ")}
@@ -599,14 +589,14 @@ useEffect(() => {
                         | undefined;
                     }) => (
                       <td style={{ backgroundColor: tableBg }}>
-                        <Badge colorScheme={getStatusColor(item.status)}>
+                        <Badge colorPalette={getStatusColor(item.status)}>
                           {item.status}
                         </Badge>
                       </td>
                     ),
                     repo: (item: { repo: string }) => (
                       <td style={{ backgroundColor: tableBg }}>
-                        <Badge colorScheme="cyan">
+                        <Badge colorPalette="cyan">
                           {item.repo.toUpperCase()}
                         </Badge>
                       </td>

@@ -1,4 +1,4 @@
-import { HStack, IconButton, NumberInput } from "@chakra-ui/react"
+import { Steps, HStack, IconButton, NumberInput } from "@chakra-ui/react";
 import * as React from "react"
 import { LuMinus, LuPlus } from "react-icons/lu"
 
@@ -11,14 +11,14 @@ export const StepperInput = React.forwardRef<HTMLDivElement, StepperInputProps>(
     const { label, ...rest } = props
     return (
       <NumberInput.Root {...rest} unstyled ref={ref}>
-        {label && <NumberInput.Label>{label}</NumberInput.Label>}
+        {label && <NumberInput.Root>{label}</NumberInput.Root>}
         <HStack gap="2">
           <DecrementTrigger />
-          <NumberInput.ValueText textAlign="center" fontSize="lg" minW="3ch" />
+          <NumberInput.Root textAlign="center" fontSize="lg" minW="3ch" />
           <IncrementTrigger />
         </HStack>
       </NumberInput.Root>
-    )
+    );
   },
 )
 
@@ -27,12 +27,12 @@ const DecrementTrigger = React.forwardRef<
   NumberInput.DecrementTriggerProps
 >(function DecrementTrigger(props, ref) {
   return (
-    <NumberInput.DecrementTrigger {...props} asChild ref={ref}>
+    <NumberInput.Root {...props} asChild ref={ref}>
       <IconButton variant="outline" size="sm">
         <LuMinus />
       </IconButton>
-    </NumberInput.DecrementTrigger>
-  )
+    </NumberInput.Root>
+  );
 })
 
 const IncrementTrigger = React.forwardRef<
@@ -40,10 +40,10 @@ const IncrementTrigger = React.forwardRef<
   NumberInput.IncrementTriggerProps
 >(function IncrementTrigger(props, ref) {
   return (
-    <NumberInput.IncrementTrigger {...props} asChild ref={ref}>
+    <NumberInput.Root {...props} asChild ref={ref}>
       <IconButton variant="outline" size="sm">
         <LuPlus />
       </IconButton>
-    </NumberInput.IncrementTrigger>
-  )
+    </NumberInput.Root>
+  );
 })

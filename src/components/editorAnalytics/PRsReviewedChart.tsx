@@ -1,13 +1,6 @@
 import React, { useMemo } from 'react';
-import {
-  Box,
-  Heading,
-  Text,
-  useColorModeValue,
-  Flex,
-  Button,
-  Spinner,
-} from '@chakra-ui/react';
+import { useColorModeValue } from "../ui/color-mode";
+import { Steps, Box, Heading, Text, Flex, Button, Spinner } from "@chakra-ui/react";
 import { FiDownload } from 'react-icons/fi';
 import dynamic from 'next/dynamic';
 import { CSVLink } from 'react-csv';
@@ -116,9 +109,8 @@ const PRsReviewedChart: React.FC<PRsReviewedChartProps> = ({
           </Text>
         </Box>
         <CSVLink data={csvData} filename={`prs-reviewed-monthly-${timePeriod}.csv`}>
-          <Button size="sm" leftIcon={<FiDownload />} colorScheme="blue">
-            Export CSV
-          </Button>
+          <Button size="sm" colorPalette="blue"><FiDownload />Export CSV
+                      </Button>
         </CSVLink>
       </Flex>
       <Box height="450px">

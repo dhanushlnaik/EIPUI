@@ -1,12 +1,9 @@
 "use client";
-
+;
 import { useState, useEffect } from 'react';
-import {
-  HStack,
-  IconButton,
-  Tooltip,
-  useColorModeValue,
-} from '@chakra-ui/react';
+import { useColorModeValue } from "../ui/color-mode";
+import { Steps, HStack, IconButton } from "@chakra-ui/react";
+import { Tooltip } from '@/components/ui/tooltip';
 import {
   FaArrowUp,
   FaArrowDown,
@@ -95,59 +92,56 @@ export default function EngagementBar({
   };
 
   return (
-    <HStack spacing={2} justify="flex-start" py={2}>
+    <HStack gap={2} justify="flex-start" py={2}>
       {/* Upvote */}
-      <Tooltip label="Upvote" placement="top">
+      <Tooltip content="Upvote" positioning={{
+        placement: "top"
+      }}>
         <IconButton
-          icon={<FaArrowUp />}
           aria-label="Upvote"
           size="sm"
           variant={hasUpvoted ? 'solid' : 'outline'}
-          colorScheme={hasUpvoted ? 'green' : 'gray'}
+          colorPalette={hasUpvoted ? 'green' : 'gray'}
           onClick={() => handleVote('upvote')}
-          isLoading={isLoading}
-          _hover={{ bg: hasUpvoted ? upvoteColor : hoverBg }}
-        />
+          loading={isLoading}
+          _hover={{ bg: hasUpvoted ? upvoteColor : hoverBg }}><FaArrowUp /></IconButton>
       </Tooltip>
-
       {/* Downvote */}
-      <Tooltip label="Downvote" placement="top">
+      <Tooltip content="Downvote" positioning={{
+        placement: "top"
+      }}>
         <IconButton
-          icon={<FaArrowDown />}
           aria-label="Downvote"
           size="sm"
           variant={hasDownvoted ? 'solid' : 'outline'}
-          colorScheme={hasDownvoted ? 'red' : 'gray'}
+          colorPalette={hasDownvoted ? 'red' : 'gray'}
           onClick={() => handleVote('downvote')}
-          isLoading={isLoading}
-          _hover={{ bg: hasDownvoted ? downvoteColor : hoverBg }}
-        />
+          loading={isLoading}
+          _hover={{ bg: hasDownvoted ? downvoteColor : hoverBg }}><FaArrowDown /></IconButton>
       </Tooltip>
-
       {/* Save */}
-      <Tooltip label={isBookmarked ? 'Saved' : 'Save'} placement="top">
+      <Tooltip content={isBookmarked ? 'Saved' : 'Save'} positioning={{
+        placement: "top"
+      }}>
         <IconButton
-          icon={isBookmarked ? <FaBookmark /> : <FaRegBookmark />}
           aria-label="Save"
           size="sm"
           variant="outline"
-          colorScheme={isBookmarked ? 'blue' : 'gray'}
+          colorPalette={isBookmarked ? 'blue' : 'gray'}
           onClick={() => setIsBookmarked(!isBookmarked)}
-          _hover={{ bg: hoverBg }}
-        />
+          _hover={{ bg: hoverBg }}>{isBookmarked ? <FaBookmark /> : <FaRegBookmark />}</IconButton>
       </Tooltip>
-
       {/* Share */}
-      <Tooltip label="Share" placement="top">
+      <Tooltip content="Share" positioning={{
+        placement: "top"
+      }}>
         <IconButton
-          icon={<FaShare />}
           aria-label="Share"
           size="sm"
           variant="outline"
-          colorScheme="gray"
+          colorPalette="gray"
           onClick={handleShare}
-          _hover={{ bg: hoverBg }}
-        />
+          _hover={{ bg: hoverBg }}><FaShare /></IconButton>
       </Tooltip>
     </HStack>
   );

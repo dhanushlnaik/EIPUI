@@ -1,6 +1,5 @@
-"use client"
-
-import { TagsInput as ChakraTagsInput } from "@chakra-ui/react"
+"use client";
+import { Steps, TagsInput as ChakraTagsInput } from "@chakra-ui/react";
 import { CloseButton } from "./close-button"
 import * as React from "react"
 

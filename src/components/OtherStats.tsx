@@ -1,13 +1,5 @@
-import {
-  Box,
-  Flex,
-  Icon,
-  Text,
-  useColorModeValue,
-  Button,
-  SimpleGrid,
-  Badge,
-} from '@chakra-ui/react';
+import { Steps, Box, Flex, Icon, Text, Button, SimpleGrid, Badge } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
 import { useEffect, useState } from 'react';
 import {
   ArrowUpRight,
@@ -129,9 +121,7 @@ const ChakraGithubStats: React.FC<Props> = ({ type }) => {
       <Text fontSize="2xl" fontWeight="bold" color="#40E0D0" mb={4}>
         GitHub Stats – {type}
       </Text>
-
-
-      <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4 }} spacing={6}>
+      <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4 }} gap={6}>
         {statCards.map(({ title, icon, value }) => (
           <Box
             key={title}
@@ -147,11 +137,11 @@ const ChakraGithubStats: React.FC<Props> = ({ type }) => {
                 <Text
                   fontSize={{ base: "24px", md: "28px" }}
                   color="gray.500"
-                  noOfLines={1}
+                  lineClamp={1}
                 >
                   {title}
                 </Text>
-                <Text fontSize={{ base: "20px", md: "24px" }} fontWeight="bold" noOfLines={1}>
+                <Text fontSize={{ base: "20px", md: "24px" }} fontWeight="bold" lineClamp={1}>
                   {value}
                 </Text>
               </Box>

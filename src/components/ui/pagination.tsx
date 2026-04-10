@@ -1,13 +1,6 @@
-"use client"
-
-import type { ButtonProps } from "@chakra-ui/react"
-import {
-  Button,
-  Pagination as ChakraPagination,
-  IconButton,
-  createContext,
-  usePaginationContext,
-} from "@chakra-ui/react"
+"use client";
+import type { Steps, ButtonProps } from "@chakra-ui/react";
+import { Button, Pagination as ChakraPagination, IconButton, createContext, usePaginationContext } from "@chakra-ui/react"
 import * as React from "react"
 import {
   HiChevronLeft,

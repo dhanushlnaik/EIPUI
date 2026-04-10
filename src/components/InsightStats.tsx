@@ -1,17 +1,7 @@
+import { TableContainer, Thead, Tbody, Tr, Th, Td } from "@/components/ui/compat";
 import React, { useEffect, useState } from 'react';
-import {
-  Table,
-  Thead,
-  Tbody,
-  Tfoot,
-  Tr,
-  Th,
-  Td,
-  TableCaption,
-  TableContainer,
-  useColorModeValue,
-  Text,
-} from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Table, Tfoot, TableCaption, Text } from "@chakra-ui/react";
 import { usePathname } from "next/navigation";
 
 type InsightStatCounts = {
@@ -120,63 +110,63 @@ export default function InsightStats() {
 
   return (
     <>
-    <TableContainer bg={bg} padding={4} rounded={"xl"} marginTop={8}>
-  <Table variant="simple" size="md" bg={bg} padding={8}>
-    <TableCaption>eipsinsight.com</TableCaption>
-    <Thead>
-      <Tr>
-        <Th>Status</Th>
-        <Th>EIPs</Th>
-        <Th>ERCs</Th>
-        <Th>RIPs</Th>
-      </Tr>
-    </Thead>
-    <Tbody>
-      <Tr>
-        <Td>Created PRs</Td>
-        <Td>{prData.EIPs.created}</Td>
-        <Td>{prData.ERCs.created}</Td>
-        <Td>{prData.RIPs.created}</Td>
-      </Tr>
-      <Tr>
-        <Td>Open PRs</Td>
-        <Td>{prData.EIPs.open}</Td>
-        <Td>{prData.ERCs.open}</Td>
-        <Td>{prData.RIPs.open}</Td>
-      </Tr>
-      <Tr>
-        <Td>Closed PRs</Td>
-        <Td>{prData.EIPs.closed}</Td>
-        <Td>{prData.ERCs.closed}</Td>
-        <Td>{prData.RIPs.closed}</Td>
-      </Tr>
-      <Tr>
-        <Td>Merged PRs</Td>
-        <Td>{prData.EIPs.merged}</Td>
-        <Td>{prData.ERCs.merged}</Td>
-        <Td>{prData.RIPs.merged}</Td>
-      </Tr>
-      <Tr>
-        <Td>Created Issues</Td>
-        <Td>{issueData.EIPs.created}</Td>
-        <Td>{issueData.ERCs.created}</Td>
-        <Td>{issueData.RIPs.created}</Td>
-      </Tr>
-      <Tr>
-        <Td>Open Issues</Td>
-        <Td>{issueData.EIPs.open}</Td>
-        <Td>{issueData.ERCs.open}</Td>
-        <Td>{issueData.RIPs.open}</Td>
-      </Tr>
-      <Tr>
-        <Td>Closed Issues</Td>
-        <Td>{issueData.EIPs.closed}</Td>
-        <Td>{issueData.ERCs.closed}</Td>
-        <Td>{issueData.RIPs.closed}</Td>
-      </Tr>
-    </Tbody>
-  </Table>
-</TableContainer>
- </>
+      <Table.ScrollArea bg={bg} padding={4} rounded={"xl"} marginTop={8}>
+    <Table.Root variant="simple" size="md" bg={bg} padding={8}>
+      <Table.Caption>eipsinsight.com</Table.Caption>
+      <Table.Header>
+        <Table.Row>
+          <Table.ColumnHeader>Status</Table.ColumnHeader>
+          <Table.ColumnHeader>EIPs</Table.ColumnHeader>
+          <Table.ColumnHeader>ERCs</Table.ColumnHeader>
+          <Table.ColumnHeader>RIPs</Table.ColumnHeader>
+        </Table.Row>
+      </Table.Header>
+      <Table.Body>
+        <Table.Row>
+          <Table.Cell>Created PRs</Table.Cell>
+          <Table.Cell>{prData.EIPs.created}</Table.Cell>
+          <Table.Cell>{prData.ERCs.created}</Table.Cell>
+          <Table.Cell>{prData.RIPs.created}</Table.Cell>
+        </Table.Row>
+        <Table.Row>
+          <Table.Cell>Open PRs</Table.Cell>
+          <Table.Cell>{prData.EIPs.open}</Table.Cell>
+          <Table.Cell>{prData.ERCs.open}</Table.Cell>
+          <Table.Cell>{prData.RIPs.open}</Table.Cell>
+        </Table.Row>
+        <Table.Row>
+          <Table.Cell>Closed PRs</Table.Cell>
+          <Table.Cell>{prData.EIPs.closed}</Table.Cell>
+          <Table.Cell>{prData.ERCs.closed}</Table.Cell>
+          <Table.Cell>{prData.RIPs.closed}</Table.Cell>
+        </Table.Row>
+        <Table.Row>
+          <Table.Cell>Merged PRs</Table.Cell>
+          <Table.Cell>{prData.EIPs.merged}</Table.Cell>
+          <Table.Cell>{prData.ERCs.merged}</Table.Cell>
+          <Table.Cell>{prData.RIPs.merged}</Table.Cell>
+        </Table.Row>
+        <Table.Row>
+          <Table.Cell>Created Issues</Table.Cell>
+          <Table.Cell>{issueData.EIPs.created}</Table.Cell>
+          <Table.Cell>{issueData.ERCs.created}</Table.Cell>
+          <Table.Cell>{issueData.RIPs.created}</Table.Cell>
+        </Table.Row>
+        <Table.Row>
+          <Table.Cell>Open Issues</Table.Cell>
+          <Table.Cell>{issueData.EIPs.open}</Table.Cell>
+          <Table.Cell>{issueData.ERCs.open}</Table.Cell>
+          <Table.Cell>{issueData.RIPs.open}</Table.Cell>
+        </Table.Row>
+        <Table.Row>
+          <Table.Cell>Closed Issues</Table.Cell>
+          <Table.Cell>{issueData.EIPs.closed}</Table.Cell>
+          <Table.Cell>{issueData.ERCs.closed}</Table.Cell>
+          <Table.Cell>{issueData.RIPs.closed}</Table.Cell>
+        </Table.Row>
+      </Table.Body>
+    </Table.Root>
+  </Table.ScrollArea>
+    </>
   );
 }

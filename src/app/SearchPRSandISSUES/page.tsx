@@ -1,11 +1,10 @@
 "use client";
-
 import React from 'react';
 import AllLayout from "@/components/Layout";
 import SearchByPrOrIssue from '@/components/SearchByPrOrIssue';
 import { useScrollSpy } from '@/hooks/useScrollSpy';
 import CloseableAdCard from "@/components/CloseableAdCard";
-import { Box } from "@chakra-ui/react";
+import { Steps, Box } from "@chakra-ui/react";
 
 const Authors: React.FC = () => {
     useScrollSpy([

@@ -1,32 +1,9 @@
-'use client';
-
+"use client";
+import { TabList, Tab, TabPanels, TabPanel } from "@/components/ui/compat";
+;
 import { useState, useEffect, useRef } from 'react';
-import {
-  Box,
-  Button,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
-  VStack,
-  HStack,
-  Text,
-  Badge,
-  Divider,
-  useColorModeValue,
-  Icon,
-  Textarea,
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  AccordionIcon,
-  Code,
-  List,
-  ListItem,
-  Link as ChakraLink,
-} from '@chakra-ui/react';
+import { useColorModeValue } from "../ui/color-mode";
+import { Steps, Box, Button, Tabs, VStack, HStack, Text, Badge, Icon, Textarea, Accordion, Code, List, Link as ChakraLink, Separator } from "@chakra-ui/react";
 import { FaEdit, FaEye, FaImage, FaClock, FaList } from 'react-icons/fa';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -136,7 +113,7 @@ export default function AdvancedMarkdownEditor({
   };
 
   return (
-    <VStack spacing={4} align="stretch">
+    <VStack gap={4} align="stretch">
       {/* Toolbar */}
       <Box
         p={3}
@@ -145,15 +122,12 @@ export default function AdvancedMarkdownEditor({
         borderWidth="1px"
         borderColor={borderColor}
       >
-        <HStack spacing={2} wrap="wrap">
+        <HStack gap={2} wrap="wrap">
           <Button
             size="sm"
-            leftIcon={<FaImage />}
-            isLoading={uploading}
-            onClick={() => document.getElementById('md-image-upload')?.click()}
-          >
-            Image
-          </Button>
+            loading={uploading}
+            onClick={() => document.getElementById('md-image-upload')?.click()}><FaImage />Image
+                      </Button>
           <input
             id="md-image-upload"
             type="file"
@@ -161,7 +135,7 @@ export default function AdvancedMarkdownEditor({
             style={{ display: 'none' }}
             onChange={handleImageUpload}
           />
-          <Divider orientation="vertical" h="20px" />
+          <Separator orientation="vertical" h="20px" />
           <Button size="sm" onClick={() => insertMarkdown('**', '**')}>
             Bold
           </Button>
@@ -171,7 +145,7 @@ export default function AdvancedMarkdownEditor({
           <Button size="sm" onClick={() => insertMarkdown('~~', '~~')}>
             Strike
           </Button>
-          <Divider orientation="vertical" h="20px" />
+          <Separator orientation="vertical" h="20px" />
           <Button size="sm" onClick={() => insertMarkdown('# ', '')}>
             H1
           </Button>
@@ -181,7 +155,7 @@ export default function AdvancedMarkdownEditor({
           <Button size="sm" onClick={() => insertMarkdown('### ', '')}>
             H3
           </Button>
-          <Divider orientation="vertical" h="20px" />
+          <Separator orientation="vertical" h="20px" />
           <Button size="sm" onClick={() => insertMarkdown('[', '](url)')}>
             Link
           </Button>
@@ -191,8 +165,8 @@ export default function AdvancedMarkdownEditor({
           <Button size="sm" onClick={() => insertMarkdown('```\n', '\n```')}>
             Block
           </Button>
-          <Divider orientation="vertical" h="20px" />
-          <HStack spacing={2}>
+          <Separator orientation="vertical" h="20px" />
+          <HStack gap={2}>
             <Icon as={FaClock} color="gray.500" />
             <Text fontSize="sm" color="gray.600">
               {readingTime} min read
@@ -200,9 +174,9 @@ export default function AdvancedMarkdownEditor({
           </HStack>
           {toc.length > 0 && (
             <>
-              <Divider orientation="vertical" h="20px" />
-              <Badge colorScheme="blue">
-                <HStack spacing={1}>
+              <Separator orientation="vertical" h="20px" />
+              <Badge colorPalette="blue">
+                <HStack gap={1}>
                   <Icon as={FaList} boxSize={3} />
                   <Text>{toc.length} headings</Text>
                 </HStack>
@@ -211,10 +185,9 @@ export default function AdvancedMarkdownEditor({
           )}
         </HStack>
       </Box>
-
       {/* Editor and Preview Tabs */}
-      <Tabs variant="enclosed" colorScheme="blue">
-        <TabList>
+      <Tabs.Root variant='enclosed' colorPalette="blue">
+        <Tabs.List>
           <Tab>
             <HStack>
               <Icon as={FaEdit} />
@@ -227,7 +200,7 @@ export default function AdvancedMarkdownEditor({
               <Text>Preview</Text>
             </HStack>
           </Tab>
-        </TabList>
+        </Tabs.List>
 
         <TabPanels>
           {/* Write Tab */}
@@ -246,7 +219,7 @@ export default function AdvancedMarkdownEditor({
 
           {/* Preview Tab */}
           <TabPanel px={0}>
-            <HStack align="start" spacing={4}>
+            <HStack align="start" gap={4}>
               {/* Table of Contents Sidebar */}
               {toc.length > 0 && (
                 <Box
@@ -255,9 +228,9 @@ export default function AdvancedMarkdownEditor({
                   top="20px"
                   display={{ base: 'none', md: 'block' }}
                 >
-                  <Accordion allowToggle defaultIndex={[0]}>
-                    <AccordionItem border="none">
-                      <AccordionButton
+                  <Accordion.Root collapsible defaultValue={['0']}>
+                    <Accordion.Item border="none" value='item-0'>
+                      <Accordion.ItemTrigger
                         bg={tocBgColor}
                         borderRadius="md"
                         _hover={{ bg: useColorModeValue('gray.100', 'gray.600') }}
@@ -268,30 +241,30 @@ export default function AdvancedMarkdownEditor({
                             <Text>Table of Contents</Text>
                           </HStack>
                         </Box>
-                        <AccordionIcon />
-                      </AccordionButton>
-                      <AccordionPanel pb={4}>
-                        <List spacing={2}>
-                          {toc.map((heading, index) => (
-                            <ListItem
-                              key={index}
-                              pl={(heading.level - 1) * 4}
-                              fontSize={heading.level === 1 ? 'sm' : 'xs'}
-                              fontWeight={heading.level === 1 ? 'semibold' : 'normal'}
-                            >
-                              <ChakraLink
-                                color="blue.500"
-                                onClick={() => scrollToHeading(heading.id)}
-                                _hover={{ textDecoration: 'underline', cursor: 'pointer' }}
+                        <Accordion.ItemIndicator />
+                      </Accordion.ItemTrigger>
+                      <Accordion.ItemContent pb={4}><Accordion.ItemBody>
+                          <List.Root gap={2}>
+                            {toc.map((heading, index) => (
+                              <List.Item
+                                key={index}
+                                pl={(heading.level - 1) * 4}
+                                fontSize={heading.level === 1 ? 'sm' : 'xs'}
+                                fontWeight={heading.level === 1 ? 'semibold' : 'normal'}
                               >
-                                {heading.text}
-                              </ChakraLink>
-                            </ListItem>
-                          ))}
-                        </List>
-                      </AccordionPanel>
-                    </AccordionItem>
-                  </Accordion>
+                                <ChakraLink
+                                  color="blue.500"
+                                  onClick={() => scrollToHeading(heading.id)}
+                                  _hover={{ textDecoration: 'underline', cursor: 'pointer' }}
+                                >
+                                  {heading.text}
+                                </ChakraLink>
+                              </List.Item>
+                            ))}
+                          </List.Root>
+                        </Accordion.ItemBody></Accordion.ItemContent>
+                    </Accordion.Item>
+                  </Accordion.Root>
                 </Box>
               )}
 
@@ -304,58 +277,68 @@ export default function AdvancedMarkdownEditor({
                 borderRadius="md"
                 borderColor={borderColor}
                 className="markdown-preview"
-                sx={{
-                  '& h1, & h2, & h3, & h4, & h5, & h6': {
+                css={{
+                  '& & h1, & h2, & h3, & h4, & h5, & h6': {
                     scrollMarginTop: '80px',
                   },
-                  '& h1': {
+
+                  '& & h1': {
                     fontSize: '2xl',
                     fontWeight: 'bold',
                     mt: 6,
                     mb: 4,
                   },
-                  '& h2': {
+
+                  '& & h2': {
                     fontSize: 'xl',
                     fontWeight: 'bold',
                     mt: 5,
                     mb: 3,
                   },
-                  '& h3': {
+
+                  '& & h3': {
                     fontSize: 'lg',
                     fontWeight: 'semibold',
                     mt: 4,
                     mb: 2,
                   },
-                  '& p': {
+
+                  '& & p': {
                     mb: 3,
                     lineHeight: '1.7',
                   },
-                  '& code': {
+
+                  '& & code': {
                     bg: useColorModeValue('gray.100', 'gray.700'),
                     px: 1,
                     py: 0.5,
                     borderRadius: 'sm',
                     fontSize: 'sm',
                   },
-                  '& pre': {
+
+                  '& & pre': {
                     bg: useColorModeValue('gray.900', 'gray.900'),
                     p: 4,
                     borderRadius: 'md',
                     overflow: 'auto',
                     my: 4,
                   },
-                  '& pre code': {
+
+                  '& & pre code': {
                     bg: 'transparent',
                     color: 'white',
                   },
-                  '& ul, & ol': {
+
+                  '& & ul, & ol': {
                     ml: 4,
                     mb: 3,
                   },
-                  '& li': {
+
+                  '& & li': {
                     mb: 1,
                   },
-                  '& blockquote': {
+
+                  '& & blockquote': {
                     borderLeftWidth: '4px',
                     borderLeftColor: 'blue.500',
                     pl: 4,
@@ -364,30 +347,35 @@ export default function AdvancedMarkdownEditor({
                     fontStyle: 'italic',
                     bg: useColorModeValue('blue.50', 'blue.900'),
                   },
-                  '& img': {
+
+                  '& & img': {
                     maxW: '100%',
                     borderRadius: 'md',
                     my: 4,
                   },
-                  '& table': {
+
+                  '& & table': {
                     width: '100%',
                     borderCollapse: 'collapse',
                     my: 4,
                   },
-                  '& th, & td': {
+
+                  '& & th, & td': {
                     border: '1px solid',
                     borderColor: borderColor,
                     px: 3,
                     py: 2,
                   },
-                  '& th': {
+
+                  '& & th': {
                     bg: tocBgColor,
                     fontWeight: 'semibold',
                   },
-                  '& a': {
+
+                  '& & a': {
                     color: 'blue.500',
                     textDecoration: 'underline',
-                  },
+                  }
                 }}
               >
                 {value ? (
@@ -427,65 +415,64 @@ export default function AdvancedMarkdownEditor({
             </HStack>
           </TabPanel>
         </TabPanels>
-      </Tabs>
-
+      </Tabs.Root>
       {/* Markdown Help */}
-      <Accordion allowToggle>
-        <AccordionItem>
-          <AccordionButton>
+      <Accordion.Root collapsible>
+        <Accordion.Item value='item-1'>
+          <Accordion.ItemTrigger>
             <Box flex="1" textAlign="left">
               <Text fontSize="sm" fontWeight="medium">
                 Markdown Guide
               </Text>
             </Box>
-            <AccordionIcon />
-          </AccordionButton>
-          <AccordionPanel pb={4}>
-            <VStack align="stretch" spacing={2} fontSize="sm">
-              <HStack>
-                <Code># H1</Code>
-                <Text color="gray.600">Main heading</Text>
-              </HStack>
-              <HStack>
-                <Code>## H2</Code>
-                <Text color="gray.600">Subheading</Text>
-              </HStack>
-              <HStack>
-                <Code>**bold**</Code>
-                <Text color="gray.600">Bold text</Text>
-              </HStack>
-              <HStack>
-                <Code>*italic*</Code>
-                <Text color="gray.600">Italic text</Text>
-              </HStack>
-              <HStack>
-                <Code>[link](url)</Code>
-                <Text color="gray.600">Hyperlink</Text>
-              </HStack>
-              <HStack>
-                <Code>![alt](image)</Code>
-                <Text color="gray.600">Image</Text>
-              </HStack>
-              <HStack>
-                <Code>`code`</Code>
-                <Text color="gray.600">Inline code</Text>
-              </HStack>
-              <HStack>
-                <Code>```language```</Code>
-                <Text color="gray.600">Code block</Text>
-              </HStack>
-              <HStack>
-                <Code>- item</Code>
-                <Text color="gray.600">List item</Text>
-              </HStack>
-              <HStack>
-                <Code>&gt; quote</Code>
-                <Text color="gray.600">Blockquote</Text>
-              </HStack>
-            </VStack>
-          </AccordionPanel>
-        </AccordionItem>
-      </Accordion>
+            <Accordion.ItemIndicator />
+          </Accordion.ItemTrigger>
+          <Accordion.ItemContent pb={4}><Accordion.ItemBody>
+              <VStack align="stretch" gap={2} fontSize="sm">
+                <HStack>
+                  <Code># H1</Code>
+                  <Text color="gray.600">Main heading</Text>
+                </HStack>
+                <HStack>
+                  <Code>## H2</Code>
+                  <Text color="gray.600">Subheading</Text>
+                </HStack>
+                <HStack>
+                  <Code>**bold**</Code>
+                  <Text color="gray.600">Bold text</Text>
+                </HStack>
+                <HStack>
+                  <Code>*italic*</Code>
+                  <Text color="gray.600">Italic text</Text>
+                </HStack>
+                <HStack>
+                  <Code>[link](url)</Code>
+                  <Text color="gray.600">Hyperlink</Text>
+                </HStack>
+                <HStack>
+                  <Code>![alt](image)</Code>
+                  <Text color="gray.600">Image</Text>
+                </HStack>
+                <HStack>
+                  <Code>`code`</Code>
+                  <Text color="gray.600">Inline code</Text>
+                </HStack>
+                <HStack>
+                  <Code>```language```</Code>
+                  <Text color="gray.600">Code block</Text>
+                </HStack>
+                <HStack>
+                  <Code>- item</Code>
+                  <Text color="gray.600">List item</Text>
+                </HStack>
+                <HStack>
+                  <Code>&gt; quote</Code>
+                  <Text color="gray.600">Blockquote</Text>
+                </HStack>
+              </VStack>
+            </Accordion.ItemBody></Accordion.ItemContent>
+        </Accordion.Item>
+      </Accordion.Root>
     </VStack>
   );
 }

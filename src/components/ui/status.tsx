@@ -1,4 +1,4 @@
-import type { ColorPalette } from "@chakra-ui/react"
+import type { Steps, ColorPalette } from "@chakra-ui/react";
 import { Status as ChakraStatus } from "@chakra-ui/react"
 import * as React from "react"
 

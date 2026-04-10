@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { useColorModeValue } from "./ui/color-mode";
 import dynamic from "next/dynamic";
-import { Box, useColorModeValue, Spinner, Flex, Heading, Button } from "@chakra-ui/react";
+import { Steps, Box, Spinner, Flex, Heading, Button } from "@chakra-ui/react";
 import { useWindowSize } from "react-use";
 import { motion } from "framer-motion";
 import DateTime from "@/components/DateTime";
@@ -335,14 +336,14 @@ const StackedColumnChart: React.FC<AreaCProps> = ({ dataset, status, type }) => 
   return (
     <>
       {isLoading ? ( // Show loader while data is loading
-        <Box
+        (<Box
           display="flex"
           justifyContent="center"
           alignItems="center"
           height="200px"
         >
           <Spinner />
-        </Box>
+        </Box>)
       ) : (
         <Box bgColor={bg} padding={"2rem"} borderRadius={"0.55rem"}>
           <Flex

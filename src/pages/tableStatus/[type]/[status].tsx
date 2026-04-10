@@ -1,14 +1,14 @@
 import React from "react";
 import AllLayout from "@/components/Layout";
-import { Box, Button } from "@chakra-ui/react";
+import { Steps, Box, Button } from "@chakra-ui/react";
 import FlexBetween from "@/components/FlexBetween";
 import Header from "@/components/Header";
-import { DownloadIcon } from "@chakra-ui/icons";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import LoaderComponent from "@/components/Loader";
 import { usePathname } from "next/navigation";
 import TableStat from "@/components/TableStat";
+import { LuDownload } from 'react-icons/lu';
 const getStatus = (status: string) => {
   switch (status) {
     case "LastCall":

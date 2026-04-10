@@ -1,46 +1,20 @@
 "use client";
-
+import { Thead, Tr, Th, Td } from "@/components/ui/compat";
+;
 import { usePathname } from "next/navigation";
+import { useColorModeValue } from "../../../components/ui/color-mode";
 import { useState, useEffect, useCallback } from "react";
 import AllLayout from "@/components/Layout";
 import NLink from "next/link";
 import { motion } from "framer-motion";
 import React from "react";
 import CloseableAdCard from "@/components/CloseableAdCard";
-import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 import SearchBox from "@/components/SearchBox";
-import {
-  Container,
-  Box,
-  Table,
-  Thead,
-  Tr,
-  Th,
-  Td,
-  Link,
-  HStack,
-  Switch,
-  Flex,
-  Text,
-  VStack,
-  Spinner,
-  IconButton,
-  Heading,
-  Button,
-  useColorModeValue,
-  Popover,
-  PopoverTrigger,
-  PopoverArrow,
-  PopoverContent,
-  PopoverHeader,
-  PopoverCloseButton,
-  PopoverBody
-} from "@chakra-ui/react";
+import { Steps, Container, Box, Table, Link, HStack, Switch, Flex, Text, VStack, Spinner, IconButton, Heading, Button, Popover, Icon } from "@chakra-ui/react";
 import SingleSubscriptionButton from "@/components/SingleSubscriptionButton";
 import { Markdown } from "@/components/MarkdownEIP";
 import Header from "@/components/Header2";
 import LoaderComponent from "@/components/Loader";
-import { InfoOutlineIcon } from "@chakra-ui/icons";
 import { EipAiSummary } from "@/components/EipAiSummary";
 import glamsterdamTimelineData from "@/data/upgrades/glamsterdam-timeline.json";
 import {
@@ -54,6 +28,8 @@ import {
   TooltipProps,
 } from "recharts";
 import { ValueType, NameType } from "recharts/types/component/DefaultTooltipContent";
+
+import { LuChevronDown, LuChevronUp, LuInfo } from 'react-icons/lu';
 
 interface EipMetadataJson {
   eip: number;
@@ -624,7 +600,7 @@ const CustomTooltip = ({
             <SearchBox />
             <br />
             <Button
-              colorScheme="blue"
+              colorPalette="blue"
               size="lg"
               onClick={() => (window.location.href = "/")}
             >
@@ -650,36 +626,36 @@ const CustomTooltip = ({
                 subtitle={metadataJson?.title || ""}
               />
               <Box overflowX="auto">
-                <Table variant="simple">
-                  <Thead>
-                    <Tr>
-                      <Th>Authors</Th>
-                      <Td>{metadataJson?.author?.join(", ")}</Td>
-                    </Tr>
-                    <Tr>
-                      <Th>Created</Th>
-                      <Td>{metadataJson?.created}</Td>
-                    </Tr>
+                <Table.Root variant="simple">
+                  <Table.Header>
+                    <Table.Row>
+                      <Table.ColumnHeader>Authors</Table.ColumnHeader>
+                      <Table.Cell>{metadataJson?.author?.join(", ")}</Table.Cell>
+                    </Table.Row>
+                    <Table.Row>
+                      <Table.ColumnHeader>Created</Table.ColumnHeader>
+                      <Table.Cell>{metadataJson?.created}</Table.Cell>
+                    </Table.Row>
                     {metadataJson?.["discussions-to"] && (
-                      <Tr>
-                        <Th>Discussion Link</Th>
-                        <Td>
+                      <Table.Row>
+                        <Table.ColumnHeader>Discussion Link</Table.ColumnHeader>
+                        <Table.Cell>
                           <Link
                             href={metadataJson["discussions-to"]}
                             color="blue.400"
-                            isExternal
-                          >
+                            target='_blank'
+                            rel='noopener noreferrer'>
                             {metadataJson["discussions-to"]}
                           </Link>
-                        </Td>
-                      </Tr>
+                        </Table.Cell>
+                      </Table.Row>
                     )}
 
                     {metadataJson?.requires &&
                       metadataJson.requires?.length > 0 && (
-                        <Tr>
-                          <Th>Requires</Th>
-                          <Td>
+                        <Table.Row>
+                          <Table.ColumnHeader>Requires</Table.ColumnHeader>
+                          <Table.Cell>
                             <HStack>
                               {metadataJson.requires?.map((req, i) => (
                                 <NLink key={i} href={`/eips/eip-${req}`}>
@@ -692,55 +668,55 @@ const CustomTooltip = ({
                                 </NLink>
                               ))}
                             </HStack>
-                          </Td>
-                        </Tr>
+                          </Table.Cell>
+                        </Table.Row>
                       )}
                     {metadataJson?.status && (
-                      <Tr>
-                        <Th>Status</Th>
-                        <Td>{metadataJson?.status}</Td>
-                      </Tr>
+                      <Table.Row>
+                        <Table.ColumnHeader>Status</Table.ColumnHeader>
+                        <Table.Cell>{metadataJson?.status}</Table.Cell>
+                      </Table.Row>
                     )}
                     {metadataJson?.["last-call-deadline"] && (
-                      <Tr>
-                        <Th>Last Call Deadline</Th>
-                        <Td>{metadataJson["last-call-deadline"]}</Td>
-                      </Tr>
+                      <Table.Row>
+                        <Table.ColumnHeader>Last Call Deadline</Table.ColumnHeader>
+                        <Table.Cell>{metadataJson["last-call-deadline"]}</Table.Cell>
+                      </Table.Row>
                     )}
                     {getInclusionStage(eipNo) !== 'Not in upgrade consideration' && (
-                      <Tr>
-                        <Th>Inclusion Stage</Th>
-                        <Td>
+                      <Table.Row>
+                        <Table.ColumnHeader>Inclusion Stage</Table.ColumnHeader>
+                        <Table.Cell>
                           {getInclusionStage(eipNo)}
-                        </Td>
-                      </Tr>
+                        </Table.Cell>
+                      </Table.Row>
                     )}
                     {metadataJson?.type && (
-                      <Tr>
-                        <Th>Type</Th>
-                        <Td>{metadataJson?.type}</Td>
-                      </Tr>
+                      <Table.Row>
+                        <Table.ColumnHeader>Type</Table.ColumnHeader>
+                        <Table.Cell>{metadataJson?.type}</Table.Cell>
+                      </Table.Row>
                     )}
                     {metadataJson?.category && (
-                      <Tr>
-                        <Th>category</Th>
-                        <Td>{metadataJson?.category}</Td>
-                      </Tr>
+                      <Table.Row>
+                        <Table.ColumnHeader>category</Table.ColumnHeader>
+                        <Table.Cell>{metadataJson?.category}</Table.Cell>
+                      </Table.Row>
                     )}
                     {networkUpgradeLabels && (
-                      <Tr>
-                        <Th>Network Upgrade</Th>
-                        <Td>{networkUpgradeLabels}</Td>
-                      </Tr>
+                      <Table.Row>
+                        <Table.ColumnHeader>Network Upgrade</Table.ColumnHeader>
+                        <Table.Cell>{networkUpgradeLabels}</Table.Cell>
+                      </Table.Row>
                     )}
-                    <Tr>
-                      <Th>Get Updates</Th>
-                      <Td>
+                    <Table.Row>
+                      <Table.ColumnHeader>Get Updates</Table.ColumnHeader>
+                      <Table.Cell>
                         <SingleSubscriptionButton type="eips" id={eipNo} />
-                      </Td>
-                    </Tr>
-                  </Thead>
-                </Table>
+                      </Table.Cell>
+                    </Table.Row>
+                  </Table.Header>
+                </Table.Root>
               </Box>
               {/* AI Summary */}
 
@@ -754,25 +730,21 @@ const CustomTooltip = ({
                     {/* Heading on the Left */}
                     <Heading id="timeline" size="md" color={"#30A0E0"}>
                       Status Timeline
-                      <Popover>
-                        <PopoverTrigger>
-                          <IconButton
-                            aria-label="More info"
-                            icon={<InfoOutlineIcon />}
-                            size="md"
-                            colorScheme="blue"
-                            variant="ghost"
-                          />
-                        </PopoverTrigger>
-                        <PopoverContent>
-                          <PopoverArrow />
-                          <PopoverCloseButton />
-                          <PopoverHeader>Instructions</PopoverHeader>
-                          <PopoverBody>
-                            The timeline tracks status changes using the merged date as the reference point.
-                          </PopoverBody>
-                        </PopoverContent>
-                      </Popover>
+                      <Popover.Root>
+                        <Popover.Trigger asChild>
+                          <IconButton aria-label="More info" size="md" colorPalette="blue" variant="ghost"><LuInfo /></IconButton>
+                        </Popover.Trigger>
+                        <Popover.Positioner>
+                          <Popover.Content>
+                            <Popover.Arrow />
+                            <Popover.CloseTrigger />
+                            <Popover.Title>Instructions</Popover.Title>
+                            <Popover.Body>
+                              The timeline tracks status changes using the merged date as the reference point.
+                            </Popover.Body>
+                          </Popover.Content>
+                        </Popover.Positioner>
+                      </Popover.Root>
                     </Heading>
 
                     {/* Dropdown Button on the Right */}
@@ -783,22 +755,24 @@ const CustomTooltip = ({
                     >
                       <IconButton
                         onClick={toggleCollapse}
-                        icon={show ? <ChevronUpIcon boxSize={8} color="white" /> : <ChevronDownIcon boxSize={8} color="white" />}
                         variant="ghost"
-                        h="24px" // Smaller height
+                        // Smaller height
+                        h="24px"
                         w="20px"
                         aria-label="Toggle Status Timeline"
-                        _hover={{ bg: 'blue' }} // Background color on hover
-                        _active={{ bg: 'blue' }} // Background color when active
-                        _focus={{ boxShadow: 'none' }} // Remove focus outline
-                      />
+                        // Background color on hover
+                        _hover={{ bg: 'blue' }}
+                        // Background color when active
+                        _active={{ bg: 'blue' }}
+                        // Remove focus outline
+                        _focus={{ boxShadow: 'none' }}>{show ? <Icon as={LuChevronUp} boxSize={8} color="white" /> : <Icon as={LuChevronDown} boxSize={8} color="white" />}</IconButton>
                     </Box>
                   </Flex>
 
                   {show && (
                     <Flex align="center" mb={4}>
                       <Text fontWeight="bold" mr={2}>Chart View</Text>
-                      <Switch isChecked={isChartView} onChange={() => setIsChartView(!isChartView)} />
+                      <Switch checked={isChartView} onValueChange={() => setIsChartView(!isChartView)} />
                     </Flex>
                   )}
 
@@ -855,7 +829,7 @@ const CustomTooltip = ({
                               return (
                                 <React.Fragment key={index}>
                                   {/* Status and Date */}
-                                  <VStack align="center" spacing={3} minW="120px" maxW="120px" mb={4}>
+                                  <VStack align="center" gap={3} minW="120px" maxW="120px" mb={4}>
                                     <Box
                                       p="5"
                                       bg={useColorModeValue("white", "gray.800")}
@@ -879,10 +853,9 @@ const CustomTooltip = ({
                                       </Text>
                                     </Box>
                                   </VStack>
-
                                   {/* Arrow design and days difference */}
                                   {nextItem && (
-                                    <VStack align="center" spacing={1}>
+                                    <VStack align="center" gap={1}>
                                       <Box
                                         h="1px"
                                         w="80px"

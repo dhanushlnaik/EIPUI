@@ -1,39 +1,17 @@
 "use client";
-
+import { TabList, Tab, TabPanels, TabPanel } from "@/components/ui/compat";
+import { useToast } from "@/components/ui/use-toast";
+;
 import { useState, useEffect, FormEvent } from 'react';
+import { useColorModeValue } from "../../../../../components/ui/color-mode";
 import { useParams, useRouter } from 'next/navigation';
 import AllLayout from '@/components/Layout';
-import {
-  Box,
-  Button,
-  Container,
-  FormControl,
-  FormLabel,
-  Input,
-  Textarea,
-  VStack,
-  Heading,
-  HStack,
-  useToast,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
-  Badge,
-  useColorModeValue,
-  Text,
-  IconButton,
-  Spinner,
-  Flex,
-  Select,
-  Image,
-} from '@chakra-ui/react';
-import { ArrowBackIcon, DeleteIcon } from '@chakra-ui/icons';
+import { Steps, Box, Button, Container, Input, Textarea, VStack, Heading, HStack, Tabs, Badge, Text, IconButton, Spinner, Flex, NativeSelect, Image, Field } from "@chakra-ui/react";
 import { FaImage, FaEye, FaEdit, FaUpload } from 'react-icons/fa';
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { LuArrowLeft, LuTrash2 } from 'react-icons/lu';
 
 // Author profiles
 const AUTHORS = {
@@ -382,39 +360,28 @@ export default function EditBlogPost() {
   return (
     <AllLayout>
       <Container maxW="container.xl" py={8}>
-        <VStack spacing={6} align="stretch">
+        <VStack gap={6} align="stretch">
           {/* Header */}
           <HStack justify="space-between">
             <HStack>
               <Link href="/admin/dashboard" passHref>
-                <IconButton
-                  as="a"
-                  aria-label="Back"
-                  icon={<ArrowBackIcon />}
-                  variant="ghost"
-                />
+                <IconButton as="a" aria-label="Back" variant="ghost"><LuArrowLeft /></IconButton>
               </Link>
               <Box>
                 <Heading size="lg">Edit Blog Post</Heading>
                 <HStack mt={1}>
-                  <Badge colorScheme={formData.published ? 'green' : 'orange'}>
+                  <Badge colorPalette={formData.published ? 'green' : 'orange'}>
                     {formData.published ? 'Published' : 'Draft'}
                   </Badge>
                 </HStack>
               </Box>
             </HStack>
-            <Button
-              leftIcon={<DeleteIcon />}
-              colorScheme="red"
-              variant="outline"
-              onClick={handleDelete}
-            >
-              Delete
-            </Button>
+            <Button colorPalette="red" variant="outline" onClick={handleDelete}><LuTrash2 />Delete
+                          </Button>
           </HStack>
 
           <form onSubmit={handleSubmit}>
-            <VStack spacing={6} align="stretch">
+            <VStack gap={6} align="stretch">
               {/* Blog Details */}
               <Box
                 bg={bgColor}
@@ -424,9 +391,9 @@ export default function EditBlogPost() {
                 border="1px"
                 borderColor={borderColor}
               >
-                <VStack spacing={4}>
-                  <FormControl isRequired>
-                    <FormLabel>Title</FormLabel>
+                <VStack gap={4}>
+                  <Field.Root required>
+                    <Field.Label>Title</Field.Label>
                     <Input
                       value={formData.title}
                       onChange={(e) =>
@@ -435,10 +402,10 @@ export default function EditBlogPost() {
                       placeholder="Enter blog title"
                       size="lg"
                     />
-                  </FormControl>
+                  </Field.Root>
 
-                  <FormControl isRequired>
-                    <FormLabel>Slug</FormLabel>
+                  <Field.Root required>
+                    <Field.Label>Slug</Field.Label>
                     <Input
                       value={formData.slug}
                       onChange={(e) =>
@@ -446,22 +413,23 @@ export default function EditBlogPost() {
                       }
                       placeholder="url-friendly-slug"
                     />
-                  </FormControl>
+                  </Field.Root>
 
-                  <FormControl isRequired>
-                    <FormLabel>Select Author</FormLabel>
-                    <Select
-                      placeholder="Select an author"
-                      value={selectedAuthor}
-                      onChange={(e) => handleAuthorSelect(e.target.value)}
-                      size="lg"
-                    >
-                      <option value="dhanush">Dhanush L Naik</option>
-                      <option value="yash">Yash Kamal Chaturvedi</option>
-                      <option value="ayush">Ayush Gupta</option>
-                      <option value="pooja">Pooja Ranjan</option>
-                    </Select>
-                  </FormControl>
+                  <Field.Root required>
+                    <Field.Label>Select Author</Field.Label>
+                    <NativeSelect.Root size="lg">
+                      <NativeSelect.Field
+                        placeholder="Select an author"
+                        value={selectedAuthor}
+                        onChange={(e: any) => handleAuthorSelect((e.target as HTMLSelectElement).value)}>
+                        <option value="dhanush">Dhanush L Naik</option>
+                        <option value="yash">Yash Kamal Chaturvedi</option>
+                        <option value="ayush">Ayush Gupta</option>
+                        <option value="pooja">Pooja Ranjan</option>
+                      </NativeSelect.Field>
+                      <NativeSelect.Indicator />
+                    </NativeSelect.Root>
+                  </Field.Root>
 
                   {selectedAuthor && (
                     <Box
@@ -472,7 +440,7 @@ export default function EditBlogPost() {
                       borderWidth="1px"
                       borderColor={useColorModeValue('blue.200', 'blue.700')}
                     >
-                      <HStack spacing={4}>
+                      <HStack gap={4}>
                         <Image
                           src={formData.authorAvatar}
                           alt={formData.author}
@@ -480,7 +448,7 @@ export default function EditBlogPost() {
                           borderRadius="full"
                           objectFit="cover"
                         />
-                        <VStack align="flex-start" spacing={1} flex={1}>
+                        <VStack align="flex-start" gap={1} flex={1}>
                           <Text fontWeight="bold" fontSize="lg">{formData.author}</Text>
                           <Text fontSize="sm" color={useColorModeValue('gray.600', 'gray.300')}>
                             {formData.authorRole}
@@ -493,9 +461,9 @@ export default function EditBlogPost() {
                     </Box>
                   )}
 
-                  <HStack spacing={4} width="100%">
-                    <FormControl flex={1}>
-                      <FormLabel>Category</FormLabel>
+                  <HStack gap={4} width="100%">
+                    <Field.Root flex={1}>
+                      <Field.Label>Category</Field.Label>
                       <Input
                         value={formData.category}
                         onChange={(e) =>
@@ -503,10 +471,10 @@ export default function EditBlogPost() {
                         }
                         placeholder="e.g., Tutorial"
                       />
-                    </FormControl>
+                    </Field.Root>
 
-                    <FormControl flex={1}>
-                      <FormLabel>Tags (comma separated)</FormLabel>
+                    <Field.Root flex={1}>
+                      <Field.Label>Tags (comma separated)</Field.Label>
                       <Input
                         value={formData.tags}
                         onChange={(e) =>
@@ -514,22 +482,19 @@ export default function EditBlogPost() {
                         }
                         placeholder="ethereum, eip, blockchain"
                       />
-                    </FormControl>
+                    </Field.Root>
                   </HStack>
 
-                  <FormControl>
-                    <FormLabel>Cover Image</FormLabel>
-                    <VStack align="stretch" spacing={3}>
+                  <Field.Root>
+                    <Field.Label>Cover Image</Field.Label>
+                    <VStack align="stretch" gap={3}>
                       <HStack>
                         <Button
-                          leftIcon={<FaUpload />}
-                          isLoading={uploadingCover}
+                          loading={uploadingCover}
                           onClick={() => document.getElementById('cover-upload')?.click()}
-                          colorScheme="blue"
-                          variant="outline"
-                        >
-                          Upload Cover Image
-                        </Button>
+                          colorPalette="blue"
+                          variant="outline"><FaUpload />Upload Cover Image
+                                                  </Button>
                         <input
                           id="cover-upload"
                           type="file"
@@ -540,13 +505,10 @@ export default function EditBlogPost() {
                         {formData.image && (
                           <Button
                             size="sm"
-                            leftIcon={<DeleteIcon />}
-                            colorScheme="red"
+                            colorPalette="red"
                             variant="ghost"
-                            onClick={() => setFormData({ ...formData, image: '' })}
-                          >
-                            Remove
-                          </Button>
+                            onClick={() => setFormData({ ...formData, image: '' })}><LuTrash2 />Remove
+                                                      </Button>
                         )}
                       </HStack>
                       {formData.image && (
@@ -574,7 +536,7 @@ export default function EditBlogPost() {
                         size="sm"
                       />
                     </VStack>
-                  </FormControl>
+                  </Field.Root>
                 </VStack>
               </Box>
 
@@ -587,17 +549,14 @@ export default function EditBlogPost() {
                 border="1px"
                 borderColor={borderColor}
               >
-                <VStack spacing={4} align="stretch">
+                <VStack gap={4} align="stretch">
                   <HStack justify="space-between">
-                    <FormLabel mb={0}>Content</FormLabel>
+                    <Field.Label mb={0}>Content</Field.Label>
                     <Button
                       size="sm"
-                      leftIcon={<FaImage />}
-                      isLoading={uploading}
-                      onClick={() => document.getElementById('image-upload')?.click()}
-                    >
-                      Upload Image
-                    </Button>
+                      loading={uploading}
+                      onClick={() => document.getElementById('image-upload')?.click()}><FaImage />Upload Image
+                                          </Button>
                     <input
                       id="image-upload"
                       type="file"
@@ -607,8 +566,8 @@ export default function EditBlogPost() {
                     />
                   </HStack>
 
-                  <Tabs>
-                    <TabList>
+                  <Tabs.Root>
+                    <Tabs.List>
                       <Tab>
                         <FaEdit style={{ marginRight: 8 }} />
                         Write
@@ -617,7 +576,7 @@ export default function EditBlogPost() {
                         <FaEye style={{ marginRight: 8 }} />
                         Preview
                       </Tab>
-                    </TabList>
+                    </Tabs.List>
 
                     <TabPanels>
                       <TabPanel px={0}>
@@ -649,12 +608,12 @@ export default function EditBlogPost() {
                         </Box>
                       </TabPanel>
                     </TabPanels>
-                  </Tabs>
+                  </Tabs.Root>
                 </VStack>
               </Box>
 
               {/* Actions */}
-              <HStack justify="flex-end" spacing={4}>
+              <HStack justify="flex-end" gap={4}>
                 <Link href="/admin/dashboard" passHref>
                   <Button as="a" variant="outline">
                     Cancel
@@ -662,15 +621,15 @@ export default function EditBlogPost() {
                 </Link>
                 <Button
                   type="submit"
-                  colorScheme="gray"
-                  isLoading={saving}
+                  colorPalette="gray"
+                  loading={saving}
                 >
                   Update
                 </Button>
                 {!formData.published && (
                   <Button
-                    colorScheme="blue"
-                    isLoading={saving}
+                    colorPalette="blue"
+                    loading={saving}
                     onClick={(e) => handleSubmit(e, true)}
                   >
                     Publish
@@ -678,8 +637,8 @@ export default function EditBlogPost() {
                 )}
                 {formData.published && (
                   <Button
-                    colorScheme="orange"
-                    isLoading={saving}
+                    colorPalette="orange"
+                    loading={saving}
                     onClick={(e) => handleSubmit(e, false)}
                   >
                     Unpublish

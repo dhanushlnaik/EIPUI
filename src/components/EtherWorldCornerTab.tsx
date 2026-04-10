@@ -1,14 +1,6 @@
 import React, { useState } from 'react';
-import {
-  Box,
-  Text,
-  Flex,
-  Icon,
-  useColorModeValue,
-  Link,
-  VStack,
-  HStack,
-} from '@chakra-ui/react';
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Text, Flex, Icon, Link, VStack, HStack } from "@chakra-ui/react";
 import { FaGlobe, FaExternalLinkAlt, FaChevronLeft } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 
@@ -35,9 +27,9 @@ const EtherWorldCornerTab: React.FC = () => {
     >
       <Link
         href="https://etherworld.co"
-        isExternal
         _hover={{ textDecoration: 'none' }}
-      >
+        target='_blank'
+        rel='noopener noreferrer'>
         <MotionBox
           bg={bgColor}
           borderTopLeftRadius="xl"
@@ -94,8 +86,8 @@ const EtherWorldCornerTab: React.FC = () => {
 
           {/* Expanded Content */}
           <Box ml="60px" p={4} minH="120px">
-            <VStack spacing={3} align="stretch">
-              <HStack spacing={2}>
+            <VStack gap={3} align="stretch">
+              <HStack gap={2}>
                 <Text
                   fontSize="lg"
                   fontWeight="bold"

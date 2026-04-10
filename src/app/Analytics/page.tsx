@@ -1,40 +1,17 @@
 "use client";
+import { Checkbox, useDisclosure } from "@/components/ui/compat";
 
+import { Thead, Tbody, Tr, Th, Td } from "@/components/ui/compat";
+;
 import React, { useState, useEffect } from "react";
+import { useColorModeValue } from "../../components/ui/color-mode";
 import CloseableAdCard from "@/components/CloseableAdCard";
 import PlaceYourAdCard from "@/components/PlaceYourAdCard";
 import dynamic from "next/dynamic";
-import { ChevronDownIcon } from "@chakra-ui/icons";
-import {
-  Box,
-  Button,
-  Flex,
-  Spinner,
-  Heading,
-  Select,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  Checkbox,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  Text,
-  useDisclosure,
-  IconButton,
-  HStack,
-  Collapse,
-  useColorModeValue,
-} from "@chakra-ui/react";
-import { DownloadIcon } from "@chakra-ui/icons";
+import { Steps, Box, Button, Flex, Spinner, Heading, NativeSelect, Menu, Table, Text, IconButton, HStack, Collapsible, Portal } from "@chakra-ui/react";
 import DateTime from "@/components/DateTime";
 import LoaderComponent from "@/components/Loader";
 import AllLayout from "@/components/Layout";
-import { ChevronUpIcon } from "@chakra-ui/icons";
 import axios from "axios";
 import Comments from "@/components/comments";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -47,6 +24,8 @@ import ERCsPRChart from "@/components/Ercsprs";
 import PRAnalyticsCard from "@/components/PrLabels";
 import CategorySubcategoryChart from "@/components/CategorySubcategoryChart";
 import AnimatedHeader from "@/components/AnimatedHeader";
+
+import { LuChevronDown, LuChevronUp, LuDownload } from 'react-icons/lu';
 
 // Dynamic import for Ant Design's Column chart
 // const Column = dynamic(() => import("@ant-design/plots").then(mod => mod.Column), { ssr: false });
@@ -98,7 +77,7 @@ const GitHubPRTracker: React.FC = () => {
   const [loading3, setLoading3] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<"PRs" | "Issues">("PRs");
   const [selectedRepo, setSelectedRepo] = useState<string>("EIPs");
-  const { isOpen: showDropdown, onToggle: toggleDropdown } = useDisclosure();
+  const { open: showDropdown, onToggle: toggleDropdown } = useDisclosure();
   const [show, setShow] = useState(false);
   const bg = useColorModeValue("#f6f6f7", "#171923");
 
@@ -507,7 +486,6 @@ const GitHubPRTracker: React.FC = () => {
             (Based on selected category filters below - Click categories to toggle)
           </Text>
         </Box>
-
         <Flex
           wrap="wrap"
           justify="space-around"
@@ -598,53 +576,53 @@ const GitHubPRTracker: React.FC = () => {
           borderTopWidth="1px"
           borderTopColor="gray.200"
         >
-          <Table variant="striped" colorScheme="gray">
-            <Thead bg={useColorModeValue("gray.50", "gray.900")}>
-              <Tr>
-                <Th fontSize="xs" color={useColorModeValue("gray.700", "gray.300")} textAlign="center" borderTopLeftRadius="10px" minWidth="6rem" p="6px">
+          <Table.Root variant="striped" colorPalette="gray">
+            <Table.Header bg={useColorModeValue("gray.50", "gray.900")}>
+              <Table.Row>
+                <Table.ColumnHeader fontSize="xs" color={useColorModeValue("gray.700", "gray.300")} textAlign="center" borderTopLeftRadius="10px" minWidth="6rem" p="6px">
                   Number
-                </Th>
-                <Th fontSize="xs" color={useColorModeValue("gray.700", "gray.300")} textAlign="left" minWidth="20rem" whiteSpace="normal" overflow="hidden" textOverflow="ellipsis" p="6px">
+                </Table.ColumnHeader>
+                <Table.ColumnHeader fontSize="xs" color={useColorModeValue("gray.700", "gray.300")} textAlign="left" minWidth="20rem" whiteSpace="normal" overflow="hidden" textOverflow="ellipsis" p="6px">
                   Title
-                </Th>
-                <Th fontSize="xs" color={useColorModeValue("gray.700", "gray.300")} textAlign="center" minWidth="6rem" p="6px">
+                </Table.ColumnHeader>
+                <Table.ColumnHeader fontSize="xs" color={useColorModeValue("gray.700", "gray.300")} textAlign="center" minWidth="6rem" p="6px">
                   State
-                </Th>
-                <Th fontSize="xs" color={useColorModeValue("gray.700", "gray.300")} textAlign="center" minWidth="6rem" p="6px">
+                </Table.ColumnHeader>
+                <Table.ColumnHeader fontSize="xs" color={useColorModeValue("gray.700", "gray.300")} textAlign="center" minWidth="6rem" p="6px">
                   Created At
-                </Th>
-                <Th fontSize="xs" color={useColorModeValue("gray.700", "gray.300")} textAlign="center" minWidth="6rem" p="6px">
+                </Table.ColumnHeader>
+                <Table.ColumnHeader fontSize="xs" color={useColorModeValue("gray.700", "gray.300")} textAlign="center" minWidth="6rem" p="6px">
                   Closed At
-                </Th>
+                </Table.ColumnHeader>
                 {type === "PRs" && (
-                  <Th fontSize="xs" color={useColorModeValue("gray.700", "gray.300")} textAlign="center" minWidth="6rem" p="6px">
+                  <Table.ColumnHeader fontSize="xs" color={useColorModeValue("gray.700", "gray.300")} textAlign="center" minWidth="6rem" p="6px">
                     Merged At
-                  </Th>
+                  </Table.ColumnHeader>
                 )}
-                <Th fontSize="xs" color={useColorModeValue("gray.700", "gray.300")} textAlign="left" minWidth="10rem" p="6px">
+                <Table.ColumnHeader fontSize="xs" color={useColorModeValue("gray.700", "gray.300")} textAlign="left" minWidth="10rem" p="6px">
                   Link
-                </Th>
-              </Tr>
-            </Thead>
+                </Table.ColumnHeader>
+              </Table.Row>
+            </Table.Header>
 
-            <Tbody>
+            <Table.Body>
               {items.created?.length === 0 &&
               items.closed?.length === 0 &&
               items.open?.length === 0 &&
               (type === "PRs"
                 ? "merged" in items && items.merged?.length === 0
                 : true) ? (
-                <Tr>
-                  <Td colSpan={type === "PRs" ? 8 : 6} textAlign="center">
+                <Table.Row>
+                  <Table.Cell colSpan={type === "PRs" ? 8 : 6} textAlign="center">
                     No Data Available
-                  </Td>
-                </Tr>
+                  </Table.Cell>
+                </Table.Row>
               ) : (
                 <>
                   {/* Render Created Items */}
                   {showCategory.created &&
                     items.created?.map((item: PR | Issue) => (
-                      <Tr
+                      <Table.Row
                         key={`created-${
                           type === "PRs"
                             ? (item as PR).prNumber
@@ -653,12 +631,12 @@ const GitHubPRTracker: React.FC = () => {
                         borderWidth="1px"
                         borderColor="gray.200"
                       >
-                        <Td p="6px" textAlign="center" verticalAlign="middle">
+                        <Table.Cell p="6px" textAlign="center" verticalAlign="middle">
                           {type === "PRs"
                             ? (item as PR).prNumber
                             : (item as Issue).IssueNumber}
-                        </Td>
-                        <Td
+                        </Table.Cell>
+                        <Table.Cell
                           p="6px"
                           textAlign="left"
                           style={{ wordWrap: "break-word", maxWidth: "200px" }}
@@ -666,30 +644,30 @@ const GitHubPRTracker: React.FC = () => {
                           {type === "PRs"
                             ? (item as PR).prTitle
                             : (item as Issue).IssueTitle}
-                        </Td>
-                        <Td p="6px" textAlign="center" verticalAlign="middle">
+                        </Table.Cell>
+                        <Table.Cell p="6px" textAlign="center" verticalAlign="middle">
                           Created
-                        </Td>
-                        <Td p="6px" textAlign="center" verticalAlign="middle">
+                        </Table.Cell>
+                        <Table.Cell p="6px" textAlign="center" verticalAlign="middle">
                           {item.created_at
                             ? new Date(item.created_at).toLocaleDateString()
                             : "-"}
-                        </Td>
-                        <Td p="6px" textAlign="center" verticalAlign="middle">
+                        </Table.Cell>
+                        <Table.Cell p="6px" textAlign="center" verticalAlign="middle">
                           {item.closed_at
                             ? new Date(item.closed_at).toLocaleDateString()
                             : "-"}
-                        </Td>
+                        </Table.Cell>
                         {type === "PRs" && (
-                          <Td textAlign="center" verticalAlign="middle">
+                          <Table.Cell textAlign="center" verticalAlign="middle">
                             {(item as PR).merged_at
                               ? new Date(
                                   (item as PR).merged_at!
                                 ).toLocaleDateString()
                               : "-"}
-                          </Td>
+                          </Table.Cell>
                         )}
-                        <Td p="6px">
+                        <Table.Cell p="6px">
                           <button
                             style={{
                               backgroundColor: "#428bca",
@@ -716,14 +694,14 @@ const GitHubPRTracker: React.FC = () => {
                               {type === "PRs" ? "Pull Request" : "Issue"}
                             </a>
                           </button>
-                        </Td>
-                      </Tr>
+                        </Table.Cell>
+                      </Table.Row>
                     ))}
 
                   {/* Render Closed Items */}
                   {showCategory.closed &&
                     items.closed?.map((item: PR | Issue) => (
-                      <Tr
+                      <Table.Row
                         key={`closed-${
                           type === "PRs"
                             ? (item as PR).prNumber
@@ -732,12 +710,12 @@ const GitHubPRTracker: React.FC = () => {
                         borderWidth="1px"
                         borderColor="gray.200"
                       >
-                        <Td p="6px" textAlign="center" verticalAlign="middle">
+                        <Table.Cell p="6px" textAlign="center" verticalAlign="middle">
                           {type === "PRs"
                             ? (item as PR).prNumber
                             : (item as Issue).IssueNumber}
-                        </Td>
-                        <Td
+                        </Table.Cell>
+                        <Table.Cell
                           p="6px"
                           textAlign="left"
                           verticalAlign="middle"
@@ -748,30 +726,30 @@ const GitHubPRTracker: React.FC = () => {
                           {type === "PRs"
                             ? (item as PR).prTitle
                             : (item as Issue).IssueTitle}
-                        </Td>
-                        <Td p="6px" textAlign="center" verticalAlign="middle">
+                        </Table.Cell>
+                        <Table.Cell p="6px" textAlign="center" verticalAlign="middle">
                           Closed
-                        </Td>
-                        <Td p="6px" textAlign="center" verticalAlign="middle">
+                        </Table.Cell>
+                        <Table.Cell p="6px" textAlign="center" verticalAlign="middle">
                           {item.created_at
                             ? new Date(item.created_at).toLocaleDateString()
                             : "-"}
-                        </Td>
-                        <Td p="6px" textAlign="center" verticalAlign="middle">
+                        </Table.Cell>
+                        <Table.Cell p="6px" textAlign="center" verticalAlign="middle">
                           {item.closed_at
                             ? new Date(item.closed_at).toLocaleDateString()
                             : "-"}
-                        </Td>
+                        </Table.Cell>
                         {type === "PRs" && (
-                          <Td p="6px" textAlign="center" verticalAlign="middle">
+                          <Table.Cell p="6px" textAlign="center" verticalAlign="middle">
                             {(item as PR).merged_at
                               ? new Date(
                                   (item as PR).merged_at!
                                 ).toLocaleDateString()
                               : "-"}
-                          </Td>
+                          </Table.Cell>
                         )}
-                        <Td p="6px">
+                        <Table.Cell p="6px">
                           <button
                             style={{
                               backgroundColor: "#428bca",
@@ -798,23 +776,23 @@ const GitHubPRTracker: React.FC = () => {
                               {type === "PRs" ? "Pull Request" : "Issue"}
                             </a>
                           </button>
-                        </Td>
-                      </Tr>
+                        </Table.Cell>
+                      </Table.Row>
                     ))}
 
                   {/* Render Merged Items (only for PRs) */}
                   {showCategory.merged &&
                     type === "PRs" &&
                     (items as { merged: PR[] }).merged?.map((item: PR) => (
-                      <Tr
+                      <Table.Row
                         key={`merged-${item.prNumber}`}
                         borderWidth="1px"
                         borderColor="gray.200"
                       >
-                        <Td p="6px" textAlign="center" verticalAlign="middle">
+                        <Table.Cell p="6px" textAlign="center" verticalAlign="middle">
                           {item.prNumber}
-                        </Td>
-                        <Td
+                        </Table.Cell>
+                        <Table.Cell
                           p="6px"
                           textAlign="left"
                           verticalAlign="middle"
@@ -823,26 +801,26 @@ const GitHubPRTracker: React.FC = () => {
                           textOverflow="ellipsis"
                         >
                           {item.prTitle}
-                        </Td>
-                        <Td p="6px" textAlign="center" verticalAlign="middle">
+                        </Table.Cell>
+                        <Table.Cell p="6px" textAlign="center" verticalAlign="middle">
                           Merged
-                        </Td>
-                        <Td p="6px" textAlign="center" verticalAlign="middle">
+                        </Table.Cell>
+                        <Table.Cell p="6px" textAlign="center" verticalAlign="middle">
                           {item.created_at
                             ? new Date(item.created_at).toLocaleDateString()
                             : "-"}
-                        </Td>
-                        <Td p="6px" textAlign="center" verticalAlign="middle">
+                        </Table.Cell>
+                        <Table.Cell p="6px" textAlign="center" verticalAlign="middle">
                           {item.closed_at
                             ? new Date(item.closed_at).toLocaleDateString()
                             : "-"}
-                        </Td>
-                        <Td p="6px" textAlign="center" verticalAlign="middle">
+                        </Table.Cell>
+                        <Table.Cell p="6px" textAlign="center" verticalAlign="middle">
                           {item.merged_at
                             ? new Date(item.merged_at!).toLocaleDateString()
                             : "-"}
-                        </Td>
-                        <Td p="6px">
+                        </Table.Cell>
+                        <Table.Cell p="6px">
                           <button
                             style={{
                               backgroundColor: "#428bca",
@@ -861,14 +839,14 @@ const GitHubPRTracker: React.FC = () => {
                               {type === "PRs" ? "Pull Request" : "Issue"}
                             </a>
                           </button>
-                        </Td>
-                      </Tr>
+                        </Table.Cell>
+                      </Table.Row>
                     ))}
 
                   {/* Render Open Items */}
                   {showCategory.open &&
                     items.open?.map((item: PR | Issue) => (
-                      <Tr
+                      <Table.Row
                         key={`open-${
                           type === "PRs"
                             ? (item as PR).prNumber
@@ -877,12 +855,12 @@ const GitHubPRTracker: React.FC = () => {
                         borderWidth="1px"
                         borderColor="gray.200"
                       >
-                        <Td p="6px" textAlign="center" verticalAlign="middle">
+                        <Table.Cell p="6px" textAlign="center" verticalAlign="middle">
                           {type === "PRs"
                             ? (item as PR).prNumber
                             : (item as Issue).IssueNumber}
-                        </Td>
-                        <Td
+                        </Table.Cell>
+                        <Table.Cell
                           p="6px"
                           textAlign="left"
                           verticalAlign="middle"
@@ -893,30 +871,30 @@ const GitHubPRTracker: React.FC = () => {
                           {type === "PRs"
                             ? (item as PR).prTitle
                             : (item as Issue).IssueTitle}
-                        </Td>
-                        <Td p="6px" textAlign="center" verticalAlign="middle">
+                        </Table.Cell>
+                        <Table.Cell p="6px" textAlign="center" verticalAlign="middle">
                           Open
-                        </Td>
-                        <Td p="6px" textAlign="center" verticalAlign="middle">
+                        </Table.Cell>
+                        <Table.Cell p="6px" textAlign="center" verticalAlign="middle">
                           {item.created_at
                             ? new Date(item.created_at).toLocaleDateString()
                             : "-"}
-                        </Td>
-                        <Td p="6px" textAlign="center" verticalAlign="middle">
+                        </Table.Cell>
+                        <Table.Cell p="6px" textAlign="center" verticalAlign="middle">
                           {item.closed_at
                             ? new Date(item.closed_at).toLocaleDateString()
                             : "-"}
-                        </Td>
+                        </Table.Cell>
                         {type === "PRs" && (
-                          <Td p="6px" textAlign="center" verticalAlign="middle">
+                          <Table.Cell p="6px" textAlign="center" verticalAlign="middle">
                             {(item as PR).merged_at
                               ? new Date(
                                   (item as PR).merged_at!
                                 ).toLocaleDateString()
                               : "-"}
-                          </Td>
+                          </Table.Cell>
                         )}
-                        <Td p="6px">
+                        <Table.Cell p="6px">
                           <button
                             style={{
                               backgroundColor: "#428bca",
@@ -943,20 +921,20 @@ const GitHubPRTracker: React.FC = () => {
                               {type === "PRs" ? "Pull Request" : "Issue"}
                             </a>
                           </button>
-                        </Td>
-                      </Tr>
+                        </Table.Cell>
+                      </Table.Row>
                     ))}
                 </>
               )}
-            </Tbody>
-          </Table>
+            </Table.Body>
+          </Table.Root>
         </Box>
       </Box>
     );
   };
 
   const convertToCSV = (filteredData: any, type: "PRs" | "Issues") => {
-    const csvRows = [];
+    const csvRows: string[] = [];
 
     const headers =
       type === "PRs"
@@ -1037,7 +1015,7 @@ const GitHubPRTracker: React.FC = () => {
   };
 
   const convertToCSV2 = (filteredData: any, type: "PRs" | "Issues") => {
-    const csvRows = [];
+    const csvRows: string[] = [];
 
     // Add `Key` and `Tag` headers to the existing ones
     const headers =
@@ -1721,7 +1699,7 @@ const GitHubPRTracker: React.FC = () => {
                   key={tab}
                   size="sm"
                   variant={activeTab === tab ? "solid" : "ghost"}
-                  colorScheme={activeTab === tab ? "blue" : "gray"}
+                  colorPalette={activeTab === tab ? "blue" : "gray"}
                   borderRadius="full"
                   onClick={() => setActiveTab(tab)}
                   px={4}
@@ -1737,26 +1715,20 @@ const GitHubPRTracker: React.FC = () => {
           <Flex align="center" justify="space-between" mt={3} mb={3}>
             <Flex align="center" gap={2}>
               <Text fontSize="sm" fontWeight="medium">Repository</Text>
-              <Menu>
-                <MenuButton
-                  as={Button}
-                  size="sm"
-                  rightIcon={<ChevronDownIcon />}
-                  variant="outline"
-                >
-                  {selectedRepo || "Select"}
-                </MenuButton>
-                <MenuList maxHeight="200px" overflowY="auto">
-                  <MenuItem onClick={() => setSelectedRepo("All")}>All</MenuItem>
-                  <MenuItem onClick={() => setSelectedRepo("EIPs")}>EIPs</MenuItem>
-                  <MenuItem onClick={() => setSelectedRepo("ERCs")}>ERCs</MenuItem>
-                  <MenuItem onClick={() => setSelectedRepo("RIPs")}>RIPs</MenuItem>
-                </MenuList>
-              </Menu>
+              <Menu.Root>
+                <Menu.Trigger asChild><Button size="sm" variant="outline">
+                    {selectedRepo || "Select"}
+                    <LuChevronDown /></Button></Menu.Trigger>
+                <Portal><Menu.Positioner><Menu.Content>
+                      <Menu.Item onSelect={() => setSelectedRepo("All")} value='item-0'>All</Menu.Item>
+                      <Menu.Item onSelect={() => setSelectedRepo("EIPs")} value='item-1'>EIPs</Menu.Item>
+                      <Menu.Item onSelect={() => setSelectedRepo("ERCs")} value='item-2'>ERCs</Menu.Item>
+                      <Menu.Item onSelect={() => setSelectedRepo("RIPs")} value='item-3'>RIPs</Menu.Item>
+                    </Menu.Content></Menu.Positioner></Portal>
+              </Menu.Root>
             </Flex>
             <Button
               size="sm"
-              leftIcon={loading3 ? undefined : <DownloadIcon />}
               variant="outline"
               onClick={async () => {
                 try {
@@ -1766,9 +1738,7 @@ const GitHubPRTracker: React.FC = () => {
                   console.error("Download counter error:", e);
                 }
               }}
-              disabled={loading3}
-            >
-              {loading3 ? <Spinner size="sm" mr={2} /> : null}
+              disabled={loading3}>{loading3 ? undefined : <LuDownload />}{loading3 ? <Spinner size="sm" mr={2} /> : null}
               Download CSV
             </Button>
           </Flex>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Button, Input, Text, VStack, HStack, IconButton } from '@chakra-ui/react';
-import { AddIcon } from '@chakra-ui/icons';
+import { Steps, Box, Button, Input, Text, VStack, HStack, IconButton } from "@chakra-ui/react";
 import axios from 'axios';
+import { LuPlus } from 'react-icons/lu';
 
 interface Comment {
   _id: string;
@@ -80,7 +80,7 @@ const Comments: React.FC<CommentsProps> =({page}) => {
 
   return (
     <Box mt={8}>
-      <VStack spacing={4} align="stretch">
+      <VStack gap={4} align="stretch">
         {comments?.map(comment => (
           <Box key={comment._id} p={4} shadow="md" borderWidth="1px" borderRadius="md">
             <Text mb={2}>{comment.content}</Text>
@@ -92,7 +92,7 @@ const Comments: React.FC<CommentsProps> =({page}) => {
 
             {/* Replies */}
             {comment.subComments && (
-              <VStack spacing={3} align="stretch" pl={6} mt={3}>
+              <VStack gap={3} align="stretch" pl={6} mt={3}>
                 {comment.subComments?.map(reply => (
                   <Box key={reply._id} p={3} shadow="sm" borderWidth="1px" borderRadius="md">
                     <Text>{reply.content}</Text>
@@ -113,10 +113,8 @@ const Comments: React.FC<CommentsProps> =({page}) => {
                   />
                   <IconButton
                     aria-label="Add Reply"
-                    icon={<AddIcon />}
                     onClick={() => handleAddReply(comment._id)}
-                    size="sm"
-                  />
+                    size="sm"><LuPlus /></IconButton>
                 </HStack>
               </Box>
             )}
@@ -131,7 +129,7 @@ const Comments: React.FC<CommentsProps> =({page}) => {
               onChange={(e) => setNewComment(e.target.value)}
               placeholder="Write a comment..."
             />
-            <Button onClick={handleAddComment} colorScheme="blue" fontSize={{ base: "xs", md: "md" }}>
+            <Button onClick={handleAddComment} colorPalette="blue" fontSize={{ base: "xs", md: "md" }}>
               Add Comment
             </Button>
           </HStack>

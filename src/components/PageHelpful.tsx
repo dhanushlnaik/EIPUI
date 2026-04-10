@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Box, useColorModeValue, Text } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Text } from "@chakra-ui/react";
 
 interface PageHelpfulProps {
   pageName: string;

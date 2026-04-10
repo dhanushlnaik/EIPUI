@@ -1,35 +1,11 @@
 "use client";
+import { Stat, Progress } from "@/components/ui/compat";
 
+import { TabList, Tab, TabPanels, TabPanel, Thead, Tbody, Tr, Th, Td } from "@/components/ui/compat";
+;
 import { useState, useEffect } from 'react';
-import {
-  Box,
-  VStack,
-  HStack,
-  Text,
-  Stat,
-  StatLabel,
-  StatNumber,
-  StatHelpText,
-  StatArrow,
-  Grid,
-  GridItem,
-  useColorModeValue,
-  Badge,
-  Progress,
-  Divider,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  Icon,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
-} from '@chakra-ui/react';
+import { useColorModeValue } from "../ui/color-mode";
+import { Steps, Box, VStack, HStack, Text, Grid, GridItem, Badge, Table, Icon, Tabs, Separator } from "@chakra-ui/react";
 import {
   FaEye,
   FaArrowUp,
@@ -72,13 +48,16 @@ function StatCard({
   icon,
   trend,
   colorScheme = 'blue',
+  colorPalette,
 }: {
   label: string;
   value: number | string;
   icon: any;
   trend?: number;
   colorScheme?: string;
+  colorPalette?: string;
 }) {
+  const tone = colorPalette ?? colorScheme;
   const bgColor = useColorModeValue('white', 'gray.800');
   const borderColor = useColorModeValue('gray.200', 'gray.700');
 
@@ -95,25 +74,25 @@ function StatCard({
         p={6}
         boxShadow="md"
       >
-        <Stat>
+        <Stat.Root>
           <HStack justify="space-between" mb={3}>
-            <Icon as={icon} boxSize={6} color={`${colorScheme}.500`} />
+            <Icon as={icon} boxSize={6} color={`${tone}.500`} />
             {trend !== undefined && (
-              <Badge colorScheme={trend > 0 ? 'green' : 'red'}>
-                <HStack spacing={1}>
-                  <StatArrow type={trend > 0 ? 'increase' : 'decrease'} />
+              <Badge colorPalette={trend > 0 ? 'green' : 'red'}>
+                <HStack gap={1}>
+                  <Stat.DownIndicator />
                   <Text>{Math.abs(trend)}%</Text>
                 </HStack>
               </Badge>
             )}
           </HStack>
-          <StatNumber fontSize="3xl" fontWeight="bold">
+          <Stat.ValueText fontSize="3xl" fontWeight="bold">
             {typeof value === 'number' ? value.toLocaleString() : value}
-          </StatNumber>
-          <StatLabel fontSize="sm" color="gray.500" mt={2}>
+          </Stat.ValueText>
+          <Stat.Label fontSize="sm" color="gray.500" mt={2}>
             {label}
-          </StatLabel>
-        </Stat>
+          </Stat.Label>
+        </Stat.Root>
       </Box>
     </MotionBox>
   );
@@ -165,7 +144,7 @@ export default function AdminAnalytics({ blogSlug }: AdminAnalyticsProps) {
       p={6}
       mt={6}
     >
-      <VStack align="stretch" spacing={6}>
+      <VStack align="stretch" gap={6}>
         {/* Header */}
         <HStack justify="space-between">
           <HStack>
@@ -174,12 +153,12 @@ export default function AdminAnalytics({ blogSlug }: AdminAnalyticsProps) {
               Admin Analytics
             </Text>
           </HStack>
-          <Badge colorScheme="purple" fontSize="md" px={3} py={1}>
+          <Badge colorPalette="purple" fontSize="md" px={3} py={1}>
             Admin Only
           </Badge>
         </HStack>
 
-        <Divider />
+        <Separator />
 
         {/* Main Stats Grid */}
         <Grid templateColumns="repeat(auto-fit, minmax(200px, 1fr))" gap={4}>
@@ -189,7 +168,7 @@ export default function AdminAnalytics({ blogSlug }: AdminAnalyticsProps) {
               value={analytics.total_views}
               icon={FaEye}
               trend={analytics.view_trend}
-              colorScheme="blue"
+              colorPalette="blue"
             />
           </GridItem>
           <GridItem>
@@ -197,7 +176,7 @@ export default function AdminAnalytics({ blogSlug }: AdminAnalyticsProps) {
               label="Unique Visitors"
               value={analytics.unique_views}
               icon={FaUsers}
-              colorScheme="green"
+              colorPalette="green"
             />
           </GridItem>
           <GridItem>
@@ -205,7 +184,7 @@ export default function AdminAnalytics({ blogSlug }: AdminAnalyticsProps) {
               label="Upvotes"
               value={analytics.upvotes}
               icon={FaArrowUp}
-              colorScheme="green"
+              colorPalette="green"
             />
           </GridItem>
           <GridItem>
@@ -213,7 +192,7 @@ export default function AdminAnalytics({ blogSlug }: AdminAnalyticsProps) {
               label="Downvotes"
               value={analytics.downvotes}
               icon={FaArrowDown}
-              colorScheme="red"
+              colorPalette="red"
             />
           </GridItem>
           <GridItem>
@@ -221,7 +200,7 @@ export default function AdminAnalytics({ blogSlug }: AdminAnalyticsProps) {
               label="Comments"
               value={analytics.comments}
               icon={FaComment}
-              colorScheme="purple"
+              colorPalette="purple"
             />
           </GridItem>
           <GridItem>
@@ -229,7 +208,7 @@ export default function AdminAnalytics({ blogSlug }: AdminAnalyticsProps) {
               label="Downloads"
               value={analytics.downloads}
               icon={FaDownload}
-              colorScheme="orange"
+              colorPalette="orange"
             />
           </GridItem>
         </Grid>
@@ -240,7 +219,7 @@ export default function AdminAnalytics({ blogSlug }: AdminAnalyticsProps) {
           p={6}
           borderRadius="lg"
         >
-          <VStack align="stretch" spacing={4}>
+          <VStack align="stretch" gap={4}>
             <Text fontSize="lg" fontWeight="semibold">
               Performance Metrics
             </Text>
@@ -250,37 +229,43 @@ export default function AdminAnalytics({ blogSlug }: AdminAnalyticsProps) {
               <HStack justify="space-between" mb={2}>
                 <Text fontSize="sm">Net Vote Score</Text>
                 <Badge
-                  colorScheme={analytics.net_score > 0 ? 'green' : 'red'}
+                  colorPalette={analytics.net_score > 0 ? 'green' : 'red'}
                   fontSize="md"
                 >
                   {analytics.net_score > 0 ? '+' : ''}
                   {analytics.net_score}
                 </Badge>
               </HStack>
-              <Progress
+              <Progress.Root
                 value={Math.abs(analytics.net_score)}
                 max={Math.max(analytics.upvotes, analytics.downvotes) || 1}
-                colorScheme={analytics.net_score > 0 ? 'green' : 'red'}
+                colorPalette={analytics.net_score > 0 ? 'green' : 'red'}
                 size="sm"
-                borderRadius="full"
-              />
+                borderRadius="full">
+                <Progress.Track>
+                  <Progress.Range />
+                </Progress.Track>
+              </Progress.Root>
             </Box>
 
             {/* Engagement Rate */}
             <Box>
               <HStack justify="space-between" mb={2}>
                 <Text fontSize="sm">Engagement Score</Text>
-                <Badge colorScheme="purple" fontSize="md">
+                <Badge colorPalette="purple" fontSize="md">
                   {engagementScore}%
                 </Badge>
               </HStack>
-              <Progress
+              <Progress.Root
                 value={engagementScore}
                 max={100}
-                colorScheme="purple"
+                colorPalette="purple"
                 size="sm"
-                borderRadius="full"
-              />
+                borderRadius="full">
+                <Progress.Track>
+                  <Progress.Range />
+                </Progress.Track>
+              </Progress.Root>
             </Box>
 
             {/* Comment Rate */}
@@ -291,98 +276,110 @@ export default function AdminAnalytics({ blogSlug }: AdminAnalyticsProps) {
                   {((analytics.comments / analytics.unique_views) * 100).toFixed(1)}%
                 </Text>
               </HStack>
-              <Progress
+              <Progress.Root
                 value={(analytics.comments / analytics.unique_views) * 100}
                 max={100}
-                colorScheme="blue"
+                colorPalette="blue"
                 size="sm"
-                borderRadius="full"
-              />
+                borderRadius="full">
+                <Progress.Track>
+                  <Progress.Range />
+                </Progress.Track>
+              </Progress.Root>
             </Box>
           </VStack>
         </Box>
 
         {/* Tabs for detailed data */}
-        <Tabs variant="enclosed" colorScheme="blue">
-          <TabList>
+        <Tabs.Root variant='enclosed' colorPalette="blue">
+          <Tabs.List>
             <Tab>Traffic Sources</Tab>
             <Tab>User Breakdown</Tab>
             <Tab>Hourly Views</Tab>
-          </TabList>
+          </Tabs.List>
 
           <TabPanels>
             {/* Traffic Sources */}
             <TabPanel>
-              <Table size="sm">
-                <Thead>
-                  <Tr>
-                    <Th>Referrer</Th>
-                    <Th isNumeric>Views</Th>
-                    <Th isNumeric>%</Th>
-                  </Tr>
-                </Thead>
-                <Tbody>
+              <Table.Root size="sm">
+                <Table.Header>
+                  <Table.Row>
+                    <Table.ColumnHeader>Referrer</Table.ColumnHeader>
+                    <Table.ColumnHeader textAlign='end'>Views</Table.ColumnHeader>
+                    <Table.ColumnHeader textAlign='end'>%</Table.ColumnHeader>
+                  </Table.Row>
+                </Table.Header>
+                <Table.Body>
                   {analytics.top_referrers.map((ref, i) => (
-                    <Tr key={i}>
-                      <Td>{ref.source || 'Direct'}</Td>
-                      <Td isNumeric>{ref.count}</Td>
-                      <Td isNumeric>
+                    <Table.Row key={i}>
+                      <Table.Cell>{ref.source || 'Direct'}</Table.Cell>
+                      <Table.Cell textAlign='end'>{ref.count}</Table.Cell>
+                      <Table.Cell textAlign='end'>
                         {((ref.count / analytics.total_views) * 100).toFixed(1)}%
-                      </Td>
-                    </Tr>
+                      </Table.Cell>
+                    </Table.Row>
                   ))}
-                </Tbody>
-              </Table>
+                </Table.Body>
+              </Table.Root>
             </TabPanel>
 
             {/* User Breakdown */}
             <TabPanel>
-              <VStack spacing={4}>
+              <VStack gap={4}>
                 <HStack width="full" justify="space-between">
                   <Text>Logged In Users</Text>
-                  <Badge colorScheme="green" fontSize="lg">
+                  <Badge colorPalette="green" fontSize="lg">
                     {analytics.user_breakdown.logged_in}
                   </Badge>
                 </HStack>
-                <Progress
+                <Progress.Root
                   value={analytics.user_breakdown.logged_in}
                   max={analytics.unique_views}
-                  colorScheme="green"
+                  colorPalette="green"
                   size="md"
-                  width="full"
-                />
+                  width="full">
+                  <Progress.Track>
+                    <Progress.Range />
+                  </Progress.Track>
+                </Progress.Root>
 
                 <HStack width="full" justify="space-between">
                   <Text>Anonymous Users</Text>
-                  <Badge colorScheme="gray" fontSize="lg">
+                  <Badge colorPalette="gray" fontSize="lg">
                     {analytics.user_breakdown.anonymous}
                   </Badge>
                 </HStack>
-                <Progress
+                <Progress.Root
                   value={analytics.user_breakdown.anonymous}
                   max={analytics.unique_views}
-                  colorScheme="gray"
+                  colorPalette="gray"
                   size="md"
-                  width="full"
-                />
+                  width="full">
+                  <Progress.Track>
+                    <Progress.Range />
+                  </Progress.Track>
+                </Progress.Root>
               </VStack>
             </TabPanel>
 
             {/* Hourly Views */}
             <TabPanel>
-              <VStack spacing={2} align="stretch">
+              <VStack gap={2} align="stretch">
                 {analytics.hourly_views.map((hourData) => (
                   <HStack key={hourData.hour} justify="space-between">
                     <Text fontSize="sm" width="80px">
                       {hourData.hour}:00
                     </Text>
-                    <Progress
+                    <Progress.Root
                       value={hourData.count}
                       max={Math.max(...analytics.hourly_views.map((h) => h.count))}
                       flex={1}
                       size="sm"
-                      colorScheme="blue"
-                    />
+                      colorPalette="blue">
+                      <Progress.Track>
+                        <Progress.Range />
+                      </Progress.Track>
+                    </Progress.Root>
                     <Text fontSize="sm" width="60px" textAlign="right">
                       {hourData.count}
                     </Text>
@@ -391,7 +388,7 @@ export default function AdminAnalytics({ blogSlug }: AdminAnalyticsProps) {
               </VStack>
             </TabPanel>
           </TabPanels>
-        </Tabs>
+        </Tabs.Root>
       </VStack>
     </Box>
   );

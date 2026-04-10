@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { useColorModeValue } from "./ui/color-mode";
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-import { Box, useColorModeValue } from '@chakra-ui/react';
+import { Steps, Box } from "@chakra-ui/react";
 import { motion } from 'framer-motion';
 
 ChartJS.register(ArcElement, Tooltip, Legend);

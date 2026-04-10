@@ -1,18 +1,6 @@
-"use client"
-
-import type { IconButtonProps } from "@chakra-ui/react"
-import {
-  Box,
-  CloseButton,
-  ColorSwatch,
-  HStack,
-  IconButton,
-  Popover,
-  Portal,
-  Select,
-  VStack,
-  createListCollection,
-} from "@chakra-ui/react"
+"use client";
+import type { IconButtonProps, Portal } from "@chakra-ui/react";
+import { Box, CloseButton, ColorSwatch, HStack, IconButton, Popover, Portal, Select, VStack, createListCollection } from "@chakra-ui/react"
 import { Editor } from "@tiptap/react"
 import { useRichTextEditorContext } from "./rich-text-editor-context"
 import { Tooltip } from "./tooltip"

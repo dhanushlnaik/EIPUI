@@ -1,14 +1,4 @@
-import {
-  Box,
-  Circle,
-  HStack,
-  Portal,
-  Span,
-  Stack,
-  Text,
-  mergeRefs,
-  useSlotRecipe,
-} from "@chakra-ui/react"
+import { Steps, Box, Circle, HStack, Portal, Span, Stack, Text, mergeRefs, useSlotRecipe } from "@chakra-ui/react";
 import {
   autoUpdate,
   flip,

@@ -1,14 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { useColorModeValue } from "./ui/color-mode";
 import dynamic from "next/dynamic";
-import {
-  Box,
-  useColorModeValue,
-  Flex,
-  Text,
-  Spinner,
-  Link as LI,
-  Button, 
-} from "@chakra-ui/react";
+import { Steps, Box, Flex, Text, Spinner, Link as LI, Button } from "@chakra-ui/react";
 import DateTime from "@/components/DateTime";
 import LoaderComponent from "@/components/Loader";
 import { usePathname } from "next/navigation";
@@ -954,94 +947,90 @@ const csv = allData?.map((item) => {
 
 
   return (
-       
     <>
-    {loading ? (
-      <div
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
+      {loading ? (
+        (<div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+          <Spinner size="lg" /> {/* Use a larger size */}
+        </div>) // Return empty fragment when loading
+      ) : (
+        <Box
+          bgColor={bg}
+          padding="1rem"
+          borderRadius="0.55rem"
+          minHeight="400px" // Set minimum height
+          marginTop={{ base: "1rem", md: "1rem" }} // Margin for separation
+        >
+
+  <Flex 
+    justifyContent="center" // Center items horizontally
+    alignItems="center" // Align items vertically
+    marginBottom="0.5rem" 
+    gap={4} // Add some space between the items
+  >
+    <Text
+      color="#30A0E0"
+      fontSize="2xl"
+      fontWeight="bold"
+      textAlign="center"
+      marginBottom="0.5rem"
+    >
+      {`Open PRs and Issues`}
+    </Text>
+
+    {/* Download button next to the text */}
+    <CSVLink 
+      data={csvData?.length ? csvData : []} 
+      filename={`OpenPRSAndIssues-${selectedYear}-${selectedMonth}.csv`} 
+      onClick={async (e: any) => {
+        try {
+          // Generate the CSV data
+          generateCSVData();
+    
+          // Check if CSV data is empty and prevent default behavior
+          if (csvData?.length === 0) {
+            e.preventDefault();
+            console.error("CSV data is empty or not generated correctly.");
+            return;
+          }
+    
+          // Trigger the API call to update the download counter
+          await axios.post("/api/DownloadCounter");
+        } catch (error) {
+          console.error("Error triggering download counter:", error);
+        }
       }}
     >
-      <Spinner size="lg" /> {/* Use a larger size */}
-    </div> // Return empty fragment when loading
-    ) : (
-      <Box
-        bgColor={bg}
-        padding="1rem"
-        borderRadius="0.55rem"
-        minHeight="400px" // Set minimum height
-        marginTop={{ base: "1rem", md: "1rem" }} // Margin for separation
-      >
-
-<Flex 
-  justifyContent="center" // Center items horizontally
-  alignItems="center" // Align items vertically
-  marginBottom="0.5rem" 
-  gap={4} // Add some space between the items
->
-  <Text
-    color="#30A0E0"
-    fontSize="2xl"
-    fontWeight="bold"
-    textAlign="center"
-    marginBottom="0.5rem"
-  >
-    {`Open PRs and Issues`}
-  </Text>
-
-  {/* Download button next to the text */}
-  <CSVLink 
-    data={csvData?.length ? csvData : []} 
-    filename={`OpenPRSAndIssues-${selectedYear}-${selectedMonth}.csv`} 
-    onClick={async (e: any) => {
-      try {
-        // Generate the CSV data
-        generateCSVData();
-  
-        // Check if CSV data is empty and prevent default behavior
-        if (csvData?.length === 0) {
-          e.preventDefault();
-          console.error("CSV data is empty or not generated correctly.");
-          return;
-        }
-  
-        // Trigger the API call to update the download counter
-        await axios.post("/api/DownloadCounter");
-      } catch (error) {
-        console.error("Error triggering download counter:", error);
-      }
-    }}
-  >
-    <Button colorScheme="blue">
-      {loading2 ? <Spinner size="sm" /> : "Download CSV"}
-    </Button>
-  </CSVLink>
-</Flex>
-        {/* <Text
-          color="#30A0E0"
-          fontSize="2xl"
-          fontWeight="bold"
-          textAlign="center"
-          marginBottom="0.5rem"
-        >
-          {`Open PRs and Issues (${selectedYear})`}
-        </Text> */}
-        {/* <LI href="/Analytics"> */}
-          <Box padding="1rem" borderRadius="0.55rem">
-            {renderChart()}
-          </Box>
-        {/* </LI> */}
-        {/* <Box className="w-full">
-          <DateTime />
-        </Box> */}
-      </Box>
-    )}
-  </>
-  
-      
-   
+      <Button colorPalette="blue">
+        {loading2 ? <Spinner size="sm" /> : "Download CSV"}
+      </Button>
+    </CSVLink>
+  </Flex>
+          {/* <Text
+            color="#30A0E0"
+            fontSize="2xl"
+            fontWeight="bold"
+            textAlign="center"
+            marginBottom="0.5rem"
+          >
+            {`Open PRs and Issues (${selectedYear})`}
+          </Text> */}
+          {/* <LI href="/Analytics"> */}
+            <Box padding="1rem" borderRadius="0.55rem">
+              {renderChart()}
+            </Box>
+          {/* </LI> */}
+          {/* <Box className="w-full">
+            <DateTime />
+          </Box> */}
+        </Box>
+      )}
+    </>
   );
   
 };

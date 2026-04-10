@@ -1,17 +1,16 @@
 "use client";
-
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import { Box, Button, Spinner } from "@chakra-ui/react";
-import { DownloadIcon } from "@chakra-ui/icons";
+import { Steps, Box, Button, Spinner } from "@chakra-ui/react";
 import CloseableAdCard from "@/components/CloseableAdCard";
-
 import AllLayout from "@/components/Layout";
+
 import FlexBetween from "@/components/FlexBetween";
 import Header from "@/components/Header";
 import Table from "@/components/Table";
 import AreaC from "@/components/AreaC";
 import LoaderComponent from "@/components/Loader";
+import { LuDownload } from 'react-icons/lu';
 
 interface EIP {
   _id: string;
@@ -62,7 +61,7 @@ const AllTable = () => {
     <AllLayout>
       {isLoading ? ( // Check if the data is still loading
         // Show loader if data is loading
-        <Box
+        (<Box
           display="flex"
           justifyContent="center"
           alignItems="center"
@@ -76,7 +75,7 @@ const AllTable = () => {
             {/* Your loader component */}
             <LoaderComponent />
           </motion.div>
-        </Box>
+        </Box>)
       ) : (
         <motion.div
           initial={{ opacity: 0 }}

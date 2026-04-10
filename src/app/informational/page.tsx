@@ -1,9 +1,10 @@
 "use client";
-
+;
 import React, { useEffect, useState, useMemo } from "react";
+import { useColorModeValue } from "../../components/ui/color-mode";
 import CloseableAdCard from "@/components/CloseableAdCard";
 import AllLayout from "@/components/Layout";
-import { Box, useColorModeValue, SimpleGrid, Grid } from "@chakra-ui/react";
+import { Steps, Box, SimpleGrid, Grid } from "@chakra-ui/react";
 import FlexBetween from "@/components/FlexBetween";
 import Header from "@/components/Header";
 import TableStatus from "@/components/TableStatus";
@@ -110,7 +111,7 @@ const Info = () => {
     <AllLayout>
       {isLoading ? ( // Check if the data is still loading
         // Show loader if data is loading
-        <Box
+        (<Box
           display="flex"
           justifyContent="center"
           alignItems="center"
@@ -124,7 +125,7 @@ const Info = () => {
             {/* Your loader component */}
             <LoaderComponent />
           </motion.div>
-        </Box>
+        </Box>)
       ) : (
         <motion.div
           initial={{ opacity: 0 }}
@@ -141,7 +142,7 @@ const Info = () => {
                 description="Informational EIPs provide general guidelines or information to the Ethereum community but do not propose a new feature."
               />
             </FlexBetween>
-            <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={6} mb={8}>
+            <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} gap={6} mb={8}>
               <AnalyticsStatCard label="Total Informational" value={infoData.length} icon={FiInfo} colorScheme="pink" helpText="All documents" />
               <AnalyticsStatCard label="Published" value={infoData.filter(item => item.status === "Final").length} icon={FiCheckCircle} colorScheme="green" helpText="Final status" />
               <AnalyticsStatCard label="Living Docs" value={livingCount} icon={FiActivity} colorScheme="blue" helpText="Active guides" />

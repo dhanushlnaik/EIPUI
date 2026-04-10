@@ -1,24 +1,9 @@
-'use client';
+"use client";
+import { useDisclosure } from "@/components/ui/compat";
 
-import {
-  Box,
-  Button,
-  Text,
-  HStack,
-  VStack,
-  useColorModeValue,
-  useDisclosure,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalCloseButton,
-  Link,
-  Switch,
-  FormControl,
-  FormLabel,
-} from '@chakra-ui/react';
+;
+import { Steps, Box, Button, Text, HStack, VStack, Link, Switch, Field, Dialog, Portal } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -36,7 +21,7 @@ const CookieConsent = () => {
     functional: false,
   });
   
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { open, onOpen, onClose } = useDisclosure();
 
   // Theme colors matching EIPs Insight
   const bannerBg = useColorModeValue('rgba(255, 255, 255, 0.95)', 'rgba(26, 32, 44, 0.95)');
@@ -123,20 +108,24 @@ const CookieConsent = () => {
               p={4}
               backdropFilter="blur(10px)"
             >
-              <VStack spacing={3} maxW="6xl" mx="auto">
+              <VStack gap={3} maxW="6xl" mx="auto">
                 <Text color={textColor} fontSize="sm" textAlign="center">
                   🍪 We use cookies to enhance your experience. Our site uses necessary cookies for basic functionality and optional analytics cookies to understand how you use EIPs Insight.{' '}
-                  <Link color="blue.500" href="/privacy" isExternal>
+                  <Link
+                    color="blue.500"
+                    href="/privacy"
+                    target='_blank'
+                    rel='noopener noreferrer'>
                     Learn more in our Privacy Policy
                   </Link>
                 </Text>
                 
-                <HStack spacing={3} flexWrap="wrap" justify="center">
+                <HStack gap={3} flexWrap="wrap" justify="center">
                   <Button
                     size="sm"
                     variant="outline"
                     onClick={acceptNecessary}
-                    colorScheme="gray"
+                    colorPalette="gray"
                   >
                     Necessary Only
                   </Button>
@@ -145,7 +134,7 @@ const CookieConsent = () => {
                     size="sm"
                     variant="outline"
                     onClick={onOpen}
-                    colorScheme="blue"
+                    colorPalette="blue"
                   >
                     Customize
                   </Button>
@@ -165,79 +154,88 @@ const CookieConsent = () => {
           </motion.div>
         )}
       </AnimatePresence>
-
       {/* Preferences Modal */}
-      <Modal isOpen={isOpen} onClose={onClose} size="lg">
-        <ModalOverlay backdropFilter="blur(4px)" />
-        <ModalContent>
-          <ModalHeader>Cookie Preferences</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody pb={6}>
-            <VStack spacing={4} align="stretch">
-              <Text fontSize="sm" color={textColor}>
-                Manage your cookie preferences for EIPs Insight. You can change these settings at any time.
-              </Text>
+      <Dialog.Root open={open} size='lg' onOpenChange={e => {
+        if (!e.open) {
+          onClose();
+        }
+      }}>
+        <Portal>
 
-              <FormControl display="flex" alignItems="center" justifyContent="space-between">
-                <Box flex="1">
-                  <FormLabel mb="0" fontWeight="semibold">
-                    Necessary Cookies
-                  </FormLabel>
-                  <Text fontSize="xs" color={textColor}>
-                    Required for basic site functionality, authentication, and security.
+          <Dialog.Backdrop backdropFilter="blur(4px)" />
+          <Dialog.Positioner>
+            <Dialog.Content>
+              <Dialog.Header>Cookie Preferences</Dialog.Header>
+              <Dialog.CloseTrigger />
+              <Dialog.Body pb={6}>
+                <VStack gap={4} align="stretch">
+                  <Text fontSize="sm" color={textColor}>
+                    Manage your cookie preferences for EIPs Insight. You can change these settings at any time.
                   </Text>
-                </Box>
-                <Switch
-                  isChecked={preferences.necessary}
-                  isDisabled={true} // Always required
-                  colorScheme="blue"
-                />
-              </FormControl>
 
-              <FormControl display="flex" alignItems="center" justifyContent="space-between">
-                <Box flex="1">
-                  <FormLabel mb="0" fontWeight="semibold">
-                    Analytics Cookies
-                  </FormLabel>
-                  <Text fontSize="xs" color={textColor}>
-                    Help us understand how you use EIPs Insight to improve the platform.
-                  </Text>
-                </Box>
-                <Switch
-                  isChecked={preferences.analytics}
-                  onChange={(e) => setPreferences(prev => ({ ...prev, analytics: e.target.checked }))}
-                  colorScheme="blue"
-                />
-              </FormControl>
+                  <Field.Root display="flex" alignItems="center" justifyContent="space-between">
+                    <Box flex="1">
+                      <Field.Label mb="0" fontWeight="semibold">
+                        Necessary Cookies
+                      </Field.Label>
+                      <Text fontSize="xs" color={textColor}>
+                        Required for basic site functionality, authentication, and security.
+                      </Text>
+                    </Box>
+                    <Switch
+                      checked={preferences.necessary}
+                      disabled={true}
+                      colorPalette="blue"
+                    />
+                  </Field.Root>
 
-              <FormControl display="flex" alignItems="center" justifyContent="space-between">
-                <Box flex="1">
-                  <FormLabel mb="0" fontWeight="semibold">
-                    Functional Cookies
-                  </FormLabel>
-                  <Text fontSize="xs" color={textColor}>
-                    Remember your preferences and enhance your experience.
-                  </Text>
-                </Box>
-                <Switch
-                  isChecked={preferences.functional}
-                  onChange={(e) => setPreferences(prev => ({ ...prev, functional: e.target.checked }))}
-                  colorScheme="blue"
-                />
-              </FormControl>
+                  <Field.Root display="flex" alignItems="center" justifyContent="space-between">
+                    <Box flex="1">
+                      <Field.Label mb="0" fontWeight="semibold">
+                        Analytics Cookies
+                      </Field.Label>
+                      <Text fontSize="xs" color={textColor}>
+                        Help us understand how you use EIPs Insight to improve the platform.
+                      </Text>
+                    </Box>
+                    <Switch
+                      checked={preferences.analytics}
+                      onValueChange={(e) => setPreferences(prev => ({ ...prev, analytics: e.target.checked }))}
+                      colorPalette="blue"
+                    />
+                  </Field.Root>
 
-              <HStack spacing={3} justify="flex-end" mt={6}>
-                <Button variant="ghost" onClick={onClose}>
-                  Cancel
-                </Button>
-                <Button colorScheme="blue" onClick={saveCustomPreferences}>
-                  Save Preferences
-                </Button>
-              </HStack>
-            </VStack>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
+                  <Field.Root display="flex" alignItems="center" justifyContent="space-between">
+                    <Box flex="1">
+                      <Field.Label mb="0" fontWeight="semibold">
+                        Functional Cookies
+                      </Field.Label>
+                      <Text fontSize="xs" color={textColor}>
+                        Remember your preferences and enhance your experience.
+                      </Text>
+                    </Box>
+                    <Switch
+                      checked={preferences.functional}
+                      onValueChange={(e) => setPreferences(prev => ({ ...prev, functional: e.target.checked }))}
+                      colorPalette="blue"
+                    />
+                  </Field.Root>
+
+                  <HStack gap={3} justify="flex-end" mt={6}>
+                    <Button variant="ghost" onClick={onClose}>
+                      Cancel
+                    </Button>
+                    <Button colorPalette="blue" onClick={saveCustomPreferences}>
+                      Save Preferences
+                    </Button>
+                  </HStack>
+                </VStack>
+              </Dialog.Body>
+            </Dialog.Content>
+          </Dialog.Positioner>
+
+        </Portal>
+      </Dialog.Root>
     </>
   );
 };

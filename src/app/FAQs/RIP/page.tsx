@@ -1,25 +1,11 @@
 "use client";
-
-﻿import { VStack } from "@chakra-ui/react";
+;
+import { VStack } from "@chakra-ui/react";
+import { useColorModeValue } from "../../../components/ui/color-mode";
 import React, { useState, useEffect, useLayoutEffect } from "react";
 import AllLayout from "@/components/Layout";
 import CloseableAdCard from "@/components/CloseableAdCard";
-import {
-  Box,
-  Spinner,
-  useColorModeValue,
-  Wrap,
-  WrapItem,
-  Text,
-  List,
-  UnorderedList,
-  ListItem,
-  Heading,
-  Grid,
-  Stack,
-  Image,
-  Link
-} from "@chakra-ui/react";
+import { Box, Spinner, Wrap, WrapItem, Text, List, Heading, Grid, Stack, Image, Link } from "@chakra-ui/react";
 import NLink from "next/link";
 const EIPsInsightRecap = () => {
     const bg = useColorModeValue("#f6f6f7", "#171923");
@@ -41,7 +27,7 @@ const EIPsInsightRecap = () => {
     paddingX={{ lg: "10", md: "5", sm: "5", base: "5" }}
     marginTop={{ lg: "10", md: "5", sm: "5", base: "5" }}
     >
-      <VStack spacing={6} align="start">
+      <VStack gap={6} align="start">
       <Text
         
            transition={{ duration: 0.5 } as any}
@@ -54,7 +40,7 @@ const EIPsInsightRecap = () => {
 
         <Stack 
             direction={{ base: "column", lg: "row" }} // Stack vertically on small screens, horizontally on large screens
-            spacing={6} 
+            gap={6} 
             align="center" // Align content in the center
             justify="center" // Center content horizontally and vertically
             >
@@ -81,14 +67,16 @@ const EIPsInsightRecap = () => {
                 textAlign="justify"
             >     
             <Text fontSize={{ base: "sm", sm: "xs", md: "md" }} mt={4} textAlign="justify">
-                A Rollup Improvement Proposal (<Link href="/rip" color="blue.300" isExternal>RIP</Link>) is a formal document that outlines new features, processes, or optimizations for rollup solutions in the Ethereum ecosystem. RIPs act as specifications to improve rollups, enhance interoperability, and standardize development processes.
+                A Rollup Improvement Proposal (<Link href="/rip" color="blue.300" target='_blank' rel='noopener noreferrer'>RIP</Link>) is a formal document that outlines new features, processes, or optimizations for rollup solutions in the Ethereum ecosystem. RIPs act as specifications to improve rollups, enhance interoperability, and standardize development processes.
               </Text>
               <Text fontSize={{ base: "sm", sm: "xs", md: "md" }} mt={4} textAlign="justify">
-                <Link  href="https://ethereum-magicians.org/t/about-the-rips-category/19805"
-                isExternal
-                color="blue.500"
-                textDecoration="underline"
-                _hover={{  color: "blue.700" }}>All RIPs are optional</Link>. RIPs are and will always remain optional standards for Rollups and participants in the larger EVM ecosystem.
+                <Link
+                  href="https://ethereum-magicians.org/t/about-the-rips-category/19805"
+                  color="blue.500"
+                  textDecoration="underline"
+                  _hover={{  color: "blue.700" }}
+                  target='_blank'
+                  rel='noopener noreferrer'>All RIPs are optional</Link>. RIPs are and will always remain optional standards for Rollups and participants in the larger EVM ecosystem.
               </Text>
             </Box>
             </Stack>
@@ -145,11 +133,13 @@ const EIPsInsightRecap = () => {
                 <li><b>Living</b>: RIPs continually updated without reaching a final state.</li>
               </ul>
               <Text fontSize={{ base: "sm", sm: "xs", md: "md" }}  mt={4} textAlign="justify">
-                <b>Tip</b>: For Core RIPs, presenting your proposal during  <Link  href="https://github.com/ethereum/pm/issues"
-                isExternal
+                <b>Tip</b>: For Core RIPs, presenting your proposal during  <Link
+                href="https://github.com/ethereum/pm/issues"
                 color="blue.500"
                 textDecoration="underline"
-                _hover={{  color: "blue.700" }}>Rollcall meetings</Link> is the best way to gather technical feedback and consensus from rollup core teams.
+                _hover={{  color: "blue.700" }}
+                target='_blank'
+                rel='noopener noreferrer'>Rollcall meetings</Link> is the best way to gather technical feedback and consensus from rollup core teams.
               </Text>
             
               <Text fontSize={{ base: "sm", sm: "xs", md: "md" }} className="text-4xl font-semibold text-blue-400 text-left mt-10" textAlign="justify">
@@ -159,11 +149,13 @@ const EIPsInsightRecap = () => {
                 Anyone! Whether you're a developer, researcher, or rollup enthusiast, you can submit an RIP. Before drafting:
               </Text>
               <ul >
-                <li>Discuss your idea on the <Link  href="https://ethereum-magicians.org/"
-                isExternal
-                color="blue.500"
-                textDecoration="underline"
-                _hover={{  color: "blue.700" }}>Ethereum Magicians Forum</Link>.</li>
+                <li>Discuss your idea on the <Link
+                  href="https://ethereum-magicians.org/"
+                  color="blue.500"
+                  textDecoration="underline"
+                  _hover={{  color: "blue.700" }}
+                  target='_blank'
+                  rel='noopener noreferrer'>Ethereum Magicians Forum</Link>.</li>
                 <li>Collaborate with rollup teams early to build consensus.</li>
               </ul>
             
@@ -197,11 +189,13 @@ const EIPsInsightRecap = () => {
                 <li><b>Reference Implementation (optional)</b>: Code to aid understanding.</li>
               </ul>
               <Text fontSize={{ base: "sm", sm: "xs", md: "md" }}  mt={4} textAlign="justify">
-                Refer to the <Link  href="https://github.com/ethereum/RIPs/blob/master/rip-template.md"
-                isExternal
+                Refer to the <Link
+                href="https://github.com/ethereum/RIPs/blob/master/rip-template.md"
                 color="blue.500"
                 textDecoration="underline"
-                _hover={{  color: "blue.700" }}>RIP Template</Link> for guidelines.
+                _hover={{  color: "blue.700" }}
+                target='_blank'
+                rel='noopener noreferrer'>RIP Template</Link> for guidelines.
               </Text>
             
               <Text fontSize={{ base: "sm", sm: "xs", md: "md" }} className="text-4xl font-semibold text-blue-400 text-left mt-10" textAlign="justify">
@@ -221,29 +215,37 @@ const EIPsInsightRecap = () => {
                 Where Can I Track RIPs and Rollup Progress?
               </Text>
               <ul >
-                <li><b>GitHub Repository</b>: <Link  href="https://github.com/ethereum/RIPs"
-                isExternal
-                color="blue.500"
-                textDecoration="underline"
-                _hover={{  color: "blue.700" }}>RIP Repository</Link></li>
+                <li><b>GitHub Repository</b>: <Link
+                  href="https://github.com/ethereum/RIPs"
+                  color="blue.500"
+                  textDecoration="underline"
+                  _hover={{  color: "blue.700" }}
+                  target='_blank'
+                  rel='noopener noreferrer'>RIP Repository</Link></li>
                 <li><b>Discussions</b>: 
-                <Link  href="https://ethereum-magicians.org/"
-                isExternal
-                color="blue.500"
-                textDecoration="underline"
-                _hover={{  color: "blue.700" }}>
+                <Link
+                  href="https://ethereum-magicians.org/"
+                  color="blue.500"
+                  textDecoration="underline"
+                  _hover={{  color: "blue.700" }}
+                  target='_blank'
+                  rel='noopener noreferrer'>
                   Ethereum Magicians Forum</Link></li>
-                <li><b>Rollup Status</b>: <Link  href="https://l2beat.com/scaling/summary"
-                isExternal
-                color="blue.500"
-                textDecoration="underline"
-                _hover={{  color: "blue.700" }}>
+                <li><b>Rollup Status</b>: <Link
+                  href="https://l2beat.com/scaling/summary"
+                  color="blue.500"
+                  textDecoration="underline"
+                  _hover={{  color: "blue.700" }}
+                  target='_blank'
+                  rel='noopener noreferrer'>
                   L2BEAT</Link></li>
-                <li><b>Comparison of Rollups</b>: <Link  href="https://www.rollup.codes/"
-                isExternal
-                color="blue.500"
-                textDecoration="underline"
-                _hover={{  color: "blue.700" }}>
+                <li><b>Comparison of Rollups</b>: <Link
+                  href="https://www.rollup.codes/"
+                  color="blue.500"
+                  textDecoration="underline"
+                  _hover={{  color: "blue.700" }}
+                  target='_blank'
+                  rel='noopener noreferrer'>
                   rollup.codes</Link></li>
               </ul>
             
@@ -267,22 +269,28 @@ const EIPsInsightRecap = () => {
                 Where Can I Find More Information?
               </Text>
               <ul >
-                <li><b>RIP Template</b>: <Link  href="https://github.com/ethereum/RIPs/blob/master/rip-template.md"
-                isExternal
-                color="blue.500"
-                textDecoration="underline"
-                _hover={{  color: "blue.700" }}>Link to Template</Link></li>
-                <li><b>RIP Discussions</b>: <Link  href="https://ethereum-magicians.org/"
-                isExternal
-                color="blue.500"
-                textDecoration="underline"
-                _hover={{  color: "blue.700" }}>
+                <li><b>RIP Template</b>: <Link
+                  href="https://github.com/ethereum/RIPs/blob/master/rip-template.md"
+                  color="blue.500"
+                  textDecoration="underline"
+                  _hover={{  color: "blue.700" }}
+                  target='_blank'
+                  rel='noopener noreferrer'>Link to Template</Link></li>
+                <li><b>RIP Discussions</b>: <Link
+                  href="https://ethereum-magicians.org/"
+                  color="blue.500"
+                  textDecoration="underline"
+                  _hover={{  color: "blue.700" }}
+                  target='_blank'
+                  rel='noopener noreferrer'>
                   Ethereum Magicians Forum</Link></li>
-                <li><b>Rollup Specifications</b>: <Link  href="https://www.rollup.codes/"
-                isExternal
-                color="blue.500"
-                textDecoration="underline"
-                _hover={{  color: "blue.700" }}>
+                <li><b>Rollup Specifications</b>: <Link
+                  href="https://www.rollup.codes/"
+                  color="blue.500"
+                  textDecoration="underline"
+                  _hover={{  color: "blue.700" }}
+                  target='_blank'
+                  rel='noopener noreferrer'>
                   rollup.codes</Link></li>
               </ul>
             

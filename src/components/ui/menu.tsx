@@ -1,6 +1,5 @@
-"use client"
-
-import { AbsoluteCenter, Menu as ChakraMenu, Portal } from "@chakra-ui/react"
+"use client";
+import { Steps, AbsoluteCenter, Menu as ChakraMenu, Portal } from "@chakra-ui/react";
 import * as React from "react"
 import { LuCheck, LuChevronRight } from "react-icons/lu"
 

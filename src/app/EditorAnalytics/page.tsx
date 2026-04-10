@@ -1,26 +1,9 @@
 "use client";
-
+import { TabList, Tab, TabPanels, TabPanel } from "@/components/ui/compat";
+;
 import React, { useState, useEffect } from 'react';
-import {
-  Box,
-  Flex,
-  Heading,
-  Text,
-  useColorModeValue,
-  Select,
-  HStack,
-  VStack,
-  Grid,
-  Spinner,
-  Button,
-  Input,
-  Badge,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
-} from '@chakra-ui/react';
+import { useColorModeValue } from "../../components/ui/color-mode";
+import { Steps, Box, Flex, Heading, Text, NativeSelect, HStack, VStack, Grid, Spinner, Button, Input, Badge, Tabs } from "@chakra-ui/react";
 import { FiUsers, FiTrendingUp, FiActivity, FiDownload, FiCalendar } from 'react-icons/fi';
 import AllLayout from '@/components/Layout';
 import AnimatedHeader from '@/components/AnimatedHeader';
@@ -120,26 +103,28 @@ export default function EditorAnalytics() {
             borderWidth="1px"
             borderColor={borderColor}
           >
-            <VStack align="stretch" flex={1} spacing={2}>
+            <VStack align="stretch" flex={1} gap={2}>
               <Text fontSize="sm" fontWeight="semibold" color={useColorModeValue('#2b6cb0', '#4FD1FF')}>
                 Time Period
               </Text>
-              <Select
-                value={timePeriod}
-                onChange={(e) => setTimePeriod(e.target.value as any)}
-                size="md"
-              >
-                <option value="all">All Time</option>
-                <option value="week">Last 7 Days</option>
-                <option value="month">Last 30 Days</option>
-                <option value="year">Last Year</option>
-                <option value="custom">Custom Range</option>
-              </Select>
+              <NativeSelect.Root>
+                <NativeSelect.Field
+                  value={timePeriod}
+                  onValueChange={(e) => setTimePeriod(e.target.value as any)}
+                  size="md">
+                  <option value="all">All Time</option>
+                  <option value="week">Last 7 Days</option>
+                  <option value="month">Last 30 Days</option>
+                  <option value="year">Last Year</option>
+                  <option value="custom">Custom Range</option>
+                </NativeSelect.Field>
+                <NativeSelect.Indicator />
+              </NativeSelect.Root>
             </VStack>
 
             {timePeriod === 'custom' && (
               <>
-                <VStack align="stretch" flex={1} spacing={2}>
+                <VStack align="stretch" flex={1} gap={2}>
                   <Text fontSize="sm" fontWeight="semibold" color={useColorModeValue('#2b6cb0', '#4FD1FF')}>
                     Start Date
                   </Text>
@@ -150,7 +135,7 @@ export default function EditorAnalytics() {
                     size="md"
                   />
                 </VStack>
-                <VStack align="stretch" flex={1} spacing={2}>
+                <VStack align="stretch" flex={1} gap={2}>
                   <Text fontSize="sm" fontWeight="semibold" color={useColorModeValue('#2b6cb0', '#4FD1FF')}>
                     End Date
                   </Text>
@@ -164,20 +149,22 @@ export default function EditorAnalytics() {
               </>
             )}
 
-            <VStack align="stretch" flex={1} spacing={2}>
+            <VStack align="stretch" flex={1} gap={2}>
               <Text fontSize="sm" fontWeight="semibold" color={useColorModeValue('#2b6cb0', '#4FD1FF')}>
                 Repository
               </Text>
-              <Select
-                value={selectedRepo}
-                onChange={(e) => setSelectedRepo(e.target.value as any)}
-                size="md"
-              >
-                <option value="all">All Repositories</option>
-                <option value="eips">EIPs</option>
-                <option value="ercs">ERCs</option>
-                <option value="rips">RIPs</option>
-              </Select>
+              <NativeSelect.Root>
+                <NativeSelect.Field
+                  value={selectedRepo}
+                  onValueChange={(e) => setSelectedRepo(e.target.value as any)}
+                  size="md">
+                  <option value="all">All Repositories</option>
+                  <option value="eips">EIPs</option>
+                  <option value="ercs">ERCs</option>
+                  <option value="rips">RIPs</option>
+                </NativeSelect.Field>
+                <NativeSelect.Indicator />
+              </NativeSelect.Root>
             </VStack>
           </Flex>
 
@@ -191,20 +178,20 @@ export default function EditorAnalytics() {
               <EditorMetricsCards data={data} />
 
               {/* Main Content Tabs */}
-              <Tabs mt={6} colorScheme="blue">
-                <TabList>
+              <Tabs.Root mt={6} colorPalette="blue">
+                <Tabs.List>
                   <Tab fontWeight="semibold">Overview</Tab>
                   <Tab fontWeight="semibold">Leaderboards</Tab>
                   <Tab fontWeight="semibold">Frequency & Trends</Tab>
                   <Tab fontWeight="semibold">Activity Timeline</Tab>
                   <Tab fontWeight="semibold">Repository Distribution</Tab>
                   <Tab fontWeight="semibold">Detailed Comparison</Tab>
-                </TabList>
+                </Tabs.List>
 
                 <TabPanels>
                   {/* Overview Tab */}
                   <TabPanel px={0}>
-                    <VStack spacing={6} align="stretch">
+                    <VStack gap={6} align="stretch">
                       <EditorLeaderboard
                         data={data}
                         timePeriod={timePeriod}
@@ -228,7 +215,7 @@ export default function EditorAnalytics() {
 
                   {/* Frequency & Trends Tab */}
                   <TabPanel px={0}>
-                    <VStack spacing={6} align="stretch">
+                    <VStack gap={6} align="stretch">
                       <EditorFrequencyChart
                         data={data}
                         timePeriod={timePeriod}
@@ -253,7 +240,7 @@ export default function EditorAnalytics() {
 
                   {/* Repository Distribution Tab */}
                   <TabPanel px={0}>
-                    <VStack spacing={6} align="stretch">
+                    <VStack gap={6} align="stretch">
                       <RepositoryDistributionChart
                         chartData={data?.repositoryDistribution || []}
                         loading={false}
@@ -274,7 +261,7 @@ export default function EditorAnalytics() {
                     />
                   </TabPanel>
                 </TabPanels>
-              </Tabs>
+              </Tabs.Root>
             </>
           )}
         </Box>

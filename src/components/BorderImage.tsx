@@ -1,4 +1,6 @@
-import { Box, Image as ChakraImage, useColorModeValue, ImageProps, BoxProps } from '@chakra-ui/react';
+import { Steps, Box, Image as ChakraImage, ImageProps, BoxProps } from "@chakra-ui/react";
+
+import { useColorModeValue } from "./ui/color-mode";
 
 type BorderedImageProps = {
   src: string;

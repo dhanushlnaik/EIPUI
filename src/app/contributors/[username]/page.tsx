@@ -1,35 +1,11 @@
 "use client";
+import { Stat } from "@/components/ui/compat";
 
+import { TabList, Tab, TabPanels, TabPanel } from "@/components/ui/compat";
+;
 import React, { useState, useEffect } from "react";
-import {
-  Box,
-  Container,
-  Heading,
-  Text,
-  Avatar,
-  Badge,
-  Flex,
-  Spinner,
-  useColorModeValue,
-  HStack,
-  VStack,
-  Stat,
-  StatLabel,
-  StatNumber,
-  Card,
-  CardBody,
-  Button,
-  Select,
-  Divider,
-  Link,
-  Icon,
-  Grid,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
-} from "@chakra-ui/react";
+import { useColorModeValue } from "../../../components/ui/color-mode";
+import { Steps, Box, Container, Heading, Text, Avatar, Badge, Flex, Spinner, HStack, VStack, Card, Button, NativeSelect, Link, Icon, Grid, Tabs, Separator } from "@chakra-ui/react";
 import { useParams } from "next/navigation";
 import NextLink from "next/link";
 import { FiGithub, FiTwitter, FiExternalLink, FiArrowLeft, FiTrendingUp, FiActivity, FiCalendar } from "react-icons/fi";
@@ -176,18 +152,18 @@ export default function ContributorDetailPage() {
       <AllLayout>
         <Box bg={useColorModeValue("gray.50", "gray.900")} minH="100vh" py={8}>
           <Container maxW="container.xl">
-            <Card>
-              <CardBody>
+            <Card.Root>
+              <Card.Body>
                 <Text textAlign="center" py={8}>
                   Contributor not found
                 </Text>
                 <Flex justify="center">
                   <NextLink href="/contributors" passHref legacyBehavior>
-                    <Button as="a" colorScheme="blue">Back to Contributors</Button>
+                    <Button as="a" colorPalette="blue">Back to Contributors</Button>
                   </NextLink>
                 </Flex>
-              </CardBody>
-            </Card>
+              </Card.Body>
+            </Card.Root>
           </Container>
         </Box>
       </AllLayout>
@@ -198,19 +174,16 @@ export default function ContributorDetailPage() {
     <AllLayout>
       <Box bg={useColorModeValue("gray.50", "gray.900")} minH="100vh" py={8}>
         <Container maxW="container.xl">
-          <VStack spacing={8} align="stretch">
+          <VStack gap={8} align="stretch">
             <Button
               as={NextLink}
               href="/contributors"
-              leftIcon={<Icon as={FiArrowLeft} />}
               variant="ghost"
               alignSelf="flex-start"
-              size="lg"
-            >
-              Back to Contributors
-            </Button>
+              size="lg"><Icon as={FiArrowLeft} />Back to Contributors
+                          </Button>
 
-            <Card
+            <Card.Root
               bg={useColorModeValue("blue.50", "blue.950")}
               borderWidth="2px"
               borderColor={useColorModeValue("blue.200", "blue.900")}
@@ -218,15 +191,10 @@ export default function ContributorDetailPage() {
               overflow="hidden"
               shadow="sm"
             >
-              <CardBody p={8} bg={useColorModeValue("blue.50/30", "blue.950/20")}>
+              <Card.Body p={8} bg={useColorModeValue("blue.50/30", "blue.950/20")}>
                 <Flex gap={6} align="start" direction={{ base: "column", md: "row" }}>
-                  <Avatar
-                    src={contributor.avatarUrl}
-                    name={contributor.username}
-                    size="2xl"
-                    border="4px solid white"
-                  />
-                  <VStack align="start" flex={1} spacing={4}>
+                  <Avatar.Root size="2xl" border="4px solid white"><Avatar.Fallback name={contributor.username} /><Avatar.Image src={contributor.avatarUrl} /></Avatar.Root>
+                  <VStack align="start" flex={1} gap={4}>
                     <Box>
                       <Heading size="2xl">{contributor.username}</Heading>
                       {contributor.name && (
@@ -240,7 +208,7 @@ export default function ContributorDetailPage() {
                       <Text opacity={0.9} fontSize="md">{contributor.bio}</Text>
                     )}
 
-                    <HStack spacing={4} flexWrap="wrap">
+                    <HStack gap={4} flexWrap="wrap">
                       {contributor.company && (
                         <Badge bg="whiteAlpha.300" color="white" px={3} py={1}>
                           🏢 {contributor.company}
@@ -253,36 +221,39 @@ export default function ContributorDetailPage() {
                       )}
                     </HStack>
 
-                    <HStack spacing={4}>
+                    <HStack gap={4}>
                       <Link
                         href={`https://github.com/${contributor.username}`}
-                        isExternal
-                      >
-                        <Button leftIcon={<Icon as={FiGithub} />} size="sm" bg="whiteAlpha.300" color="white" _hover={{ bg: "whiteAlpha.400" }}>
-                          GitHub
-                        </Button>
+                        target='_blank'
+                        rel='noopener noreferrer'>
+                        <Button
+                          size="sm"
+                          bg="whiteAlpha.300"
+                          color="white"
+                          _hover={{ bg: "whiteAlpha.400" }}><Icon as={FiGithub} />GitHub
+                                                  </Button>
                       </Link>
                       {contributor.twitterUsername && (
                         <Link
                           href={`https://twitter.com/${contributor.twitterUsername}`}
-                          isExternal
-                        >
-                          <Button leftIcon={<Icon as={FiTwitter} />} size="sm" bg="whiteAlpha.300" color="white" _hover={{ bg: "whiteAlpha.400" }}>
-                            Twitter
-                          </Button>
-                        </Link>
-                      )}
-                      {contributor.blog && (
-                        <Link href={contributor.blog} isExternal>
+                          target='_blank'
+                          rel='noopener noreferrer'>
                           <Button
-                            leftIcon={<Icon as={FiExternalLink} />}
                             size="sm"
                             bg="whiteAlpha.300"
                             color="white"
-                            _hover={{ bg: "whiteAlpha.400" }}
-                          >
-                            Website
-                          </Button>
+                            _hover={{ bg: "whiteAlpha.400" }}><Icon as={FiTwitter} />Twitter
+                                                      </Button>
+                        </Link>
+                      )}
+                      {contributor.blog && (
+                        <Link href={contributor.blog} target='_blank' rel='noopener noreferrer'>
+                          <Button
+                            size="sm"
+                            bg="whiteAlpha.300"
+                            color="white"
+                            _hover={{ bg: "whiteAlpha.400" }}><Icon as={FiExternalLink} />Website
+                                                      </Button>
                         </Link>
                       )}
                     </HStack>
@@ -297,69 +268,69 @@ export default function ContributorDetailPage() {
                     </Text>
                   </VStack>
                 </Flex>
-              </CardBody>
-            </Card>
+              </Card.Body>
+            </Card.Root>
 
             <Grid templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }} gap={4}>
-              <Card bgGradient="linear(to-br, blue.50, blue.100)" _dark={{ bgGradient: "linear(to-br, blue.900, blue.800)" }} borderWidth={2} borderColor="blue.200">
-                <CardBody>
-                  <Stat>
+              <Card.Root bgGradient="linear(to-br, blue.50, blue.100)" _dark={{ bgGradient: "linear(to-br, blue.900, blue.800)" }} borderWidth={2} borderColor="blue.200">
+                <Card.Body>
+                  <Stat.Root>
                     <HStack mb={2}>
                       <Icon as={FiActivity} color="blue.500" boxSize={5} />
-                      <StatLabel fontWeight="bold">Total Activities</StatLabel>
+                      <Stat.Label fontWeight="bold">Total Activities</Stat.Label>
                     </HStack>
-                    <StatNumber fontSize="3xl" color="blue.600" _dark={{ color: "blue.300" }}>{contributor.totalActivities}</StatNumber>
-                  </Stat>
-                </CardBody>
-              </Card>
+                    <Stat.ValueText fontSize="3xl" color="blue.600" _dark={{ color: "blue.300" }}>{contributor.totalActivities}</Stat.ValueText>
+                  </Stat.Root>
+                </Card.Body>
+              </Card.Root>
 
-              <Card bgGradient="linear(to-br, purple.50, purple.100)" _dark={{ bgGradient: "linear(to-br, purple.900, purple.800)" }} borderWidth={2} borderColor="purple.200">
-                <CardBody>
-                  <Stat>
+              <Card.Root bgGradient="linear(to-br, purple.50, purple.100)" _dark={{ bgGradient: "linear(to-br, purple.900, purple.800)" }} borderWidth={2} borderColor="purple.200">
+                <Card.Body>
+                  <Stat.Root>
                     <HStack mb={2}>
                       <Icon as={FiGithub} color="purple.500" boxSize={5} />
-                      <StatLabel fontWeight="bold">Repositories</StatLabel>
+                      <Stat.Label fontWeight="bold">Repositories</Stat.Label>
                     </HStack>
-                    <StatNumber fontSize="3xl" color="purple.600" _dark={{ color: "purple.300" }}>{contributor.repositories.length}</StatNumber>
-                  </Stat>
-                </CardBody>
-              </Card>
+                    <Stat.ValueText fontSize="3xl" color="purple.600" _dark={{ color: "purple.300" }}>{contributor.repositories.length}</Stat.ValueText>
+                  </Stat.Root>
+                </Card.Body>
+              </Card.Root>
 
-              <Card bgGradient="linear(to-br, green.50, green.100)" _dark={{ bgGradient: "linear(to-br, green.900, green.800)" }} borderWidth={2} borderColor="green.200">
-                <CardBody>
-                  <Stat>
+              <Card.Root bgGradient="linear(to-br, green.50, green.100)" _dark={{ bgGradient: "linear(to-br, green.900, green.800)" }} borderWidth={2} borderColor="green.200">
+                <Card.Body>
+                  <Stat.Root>
                     <HStack mb={2}>
                       <Icon as={FiCalendar} color="green.500" boxSize={5} />
-                      <StatLabel fontWeight="bold">First Activity</StatLabel>
+                      <Stat.Label fontWeight="bold">First Activity</Stat.Label>
                     </HStack>
-                    <StatNumber fontSize="lg" color="green.600" _dark={{ color: "green.300" }}>
+                    <Stat.ValueText fontSize="lg" color="green.600" _dark={{ color: "green.300" }}>
                       {contributor.firstActivityAt
                         ? formatDate(contributor.firstActivityAt).split(",")[0]
                         : "N/A"}
-                    </StatNumber>
-                  </Stat>
-                </CardBody>
-              </Card>
+                    </Stat.ValueText>
+                  </Stat.Root>
+                </Card.Body>
+              </Card.Root>
 
-              <Card bgGradient="linear(to-br, orange.50, orange.100)" _dark={{ bgGradient: "linear(to-br, orange.900, orange.800)" }} borderWidth={2} borderColor="orange.200">
-                <CardBody>
-                  <Stat>
+              <Card.Root bgGradient="linear(to-br, orange.50, orange.100)" _dark={{ bgGradient: "linear(to-br, orange.900, orange.800)" }} borderWidth={2} borderColor="orange.200">
+                <Card.Body>
+                  <Stat.Root>
                     <HStack mb={2}>
                       <Icon as={FiTrendingUp} color="orange.500" boxSize={5} />
-                      <StatLabel fontWeight="bold">Last Activity</StatLabel>
+                      <Stat.Label fontWeight="bold">Last Activity</Stat.Label>
                     </HStack>
-                    <StatNumber fontSize="lg" color="orange.600" _dark={{ color: "orange.300" }}>
+                    <Stat.ValueText fontSize="lg" color="orange.600" _dark={{ color: "orange.300" }}>
                       {contributor.lastActivityAt
                         ? formatDate(contributor.lastActivityAt).split(",")[0]
                         : "N/A"}
-                    </StatNumber>
-                  </Stat>
-                </CardBody>
-              </Card>
+                    </Stat.ValueText>
+                  </Stat.Root>
+                </Card.Body>
+              </Card.Root>
             </Grid>
 
-          <Card>
-            <CardBody>
+          <Card.Root>
+            <Card.Body>
               <Heading size="md" mb={4}>
                 Repository Breakdown
               </Heading>
@@ -375,7 +346,7 @@ export default function ContributorDetailPage() {
                     <Text fontWeight="bold" mb={2}>
                       {stat.repository.split("/")[1]}
                     </Text>
-                    <VStack align="start" spacing={1} fontSize="sm">
+                    <VStack align="start" gap={1} fontSize="sm">
                       <Text>Score: {stat.score}</Text>
                       <Text>Commits: {stat.commits}</Text>
                       <Text>Pull Requests: {(stat.prsOpened || 0) + (stat.prsMerged || 0) + (stat.prsClosed || 0)}</Text>
@@ -385,19 +356,19 @@ export default function ContributorDetailPage() {
                   </Box>
                 ))}
               </Grid>
-            </CardBody>
-          </Card>
+            </Card.Body>
+          </Card.Root>
 
-            <Tabs variant="enclosed" colorScheme="blue" size="lg">
-              <TabList>
+            <Tabs.Root variant='enclosed' colorPalette="blue" size="lg">
+              <Tabs.List>
                 <Tab fontWeight="bold">📊 Analytics</Tab>
                 <Tab fontWeight="bold">📋 Repository Stats</Tab>
                 <Tab fontWeight="bold">⏱️ Activity Timeline</Tab>
-              </TabList>
+              </Tabs.List>
 
               <TabPanels>
                 <TabPanel px={0}>
-                  <VStack spacing={6}>
+                  <VStack gap={6}>
                     {analyticsLoading ? (
                       <Flex justify="center" py={8}>
                         <Spinner size="xl" />
@@ -436,8 +407,8 @@ export default function ContributorDetailPage() {
                 </TabPanel>
 
                 <TabPanel px={0}>
-                  <Card>
-                    <CardBody>
+                  <Card.Root>
+                    <Card.Body>
                       <Heading size="md" mb={4}>
                         Repository Breakdown
                       </Heading>
@@ -467,75 +438,79 @@ export default function ContributorDetailPage() {
                             <Text fontWeight="bold" fontSize="xl" mb={3}>
                               {stat.repository.split("/")[1]}
                             </Text>
-                            <VStack align="start" spacing={2} fontSize="sm">
+                            <VStack align="start" gap={2} fontSize="sm">
                               <HStack justify="space-between" w="full">
                                 <Text>Score:</Text>
-                                <Badge colorScheme="purple" fontSize="md">{stat.score}</Badge>
+                                <Badge colorPalette="purple" fontSize="md">{stat.score}</Badge>
                               </HStack>
-                              <Divider />
+                              <Separator />
                               <HStack justify="space-between" w="full">
                                 <Text>Commits:</Text>
-                                <Badge colorScheme="blue">{stat.commits}</Badge>
+                                <Badge colorPalette="blue">{stat.commits}</Badge>
                               </HStack>
                               <HStack justify="space-between" w="full">
                                 <Text>Pull Requests:</Text>
-                                <Badge colorScheme="green">{(stat.prsOpened || 0) + (stat.prsMerged || 0) + (stat.prsClosed || 0)}</Badge>
+                                <Badge colorPalette="green">{(stat.prsOpened || 0) + (stat.prsMerged || 0) + (stat.prsClosed || 0)}</Badge>
                               </HStack>
                               <HStack justify="space-between" w="full">
                                 <Text>Reviews:</Text>
-                                <Badge colorScheme="orange">{stat.reviews}</Badge>
+                                <Badge colorPalette="orange">{stat.reviews}</Badge>
                               </HStack>
                               <HStack justify="space-between" w="full">
                                 <Text>Comments:</Text>
-                                <Badge colorScheme="cyan">{stat.comments}</Badge>
+                                <Badge colorPalette="cyan">{stat.comments}</Badge>
                               </HStack>
                             </VStack>
                           </Box>
                         ))}
                       </Grid>
-                    </CardBody>
-                  </Card>
+                    </Card.Body>
+                  </Card.Root>
                 </TabPanel>
 
                 <TabPanel px={0} id="activity-timeline">
-                  <Card>
-                    <CardBody>
+                  <Card.Root>
+                    <Card.Body>
                       <Heading size="md" mb={4}>
                         Activity Timeline
                       </Heading>
 
-                      <HStack spacing={4} mb={4}>
-                        <Select
-                          value={selectedRepo}
-                          onChange={(e) => {
-                            setSelectedRepo(e.target.value);
-                            setPage(1);
-                          }}
-                          placeholder="All Repositories"
-                        >
-                          {contributor.repositories.map((repo) => (
-                            <option key={repo} value={repo}>
-                              {repo.split("/")[1]}
-                            </option>
-                          ))}
-                        </Select>
+                      <HStack gap={4} mb={4}>
+                        <NativeSelect.Root>
+                          <NativeSelect.Field
+                            value={selectedRepo}
+                            onValueChange={(e) => {
+                              setSelectedRepo(e.target.value);
+                              setPage(1);
+                            }}
+                            placeholder="All Repositories">
+                            {contributor.repositories.map((repo) => (
+                              <option key={repo} value={repo}>
+                                {repo.split("/")[1]}
+                              </option>
+                            ))}
+                          </NativeSelect.Field>
+                          <NativeSelect.Indicator />
+                        </NativeSelect.Root>
 
-                        <Select
-                          value={activityType}
-                          onChange={(e) => {
-                            setActivityType(e.target.value);
-                            setPage(1);
-                          }}
-                          placeholder="All Activity Types"
-                        >
-                          <option value="COMMIT">Commits</option>
-                          <option value="PR_OPENED">PR Opened</option>
-                          <option value="PR_MERGED">PR Merged</option>
-                          <option value="REVIEW_APPROVED">Review Approved</option>
-                          <option value="REVIEW_COMMENTED">Review Commented</option>
-                          <option value="ISSUE_COMMENT">Issue Comments</option>
-                          <option value="PR_COMMENT">PR Comments</option>
-                        </Select>
+                        <NativeSelect.Root>
+                          <NativeSelect.Field
+                            value={activityType}
+                            onValueChange={(e) => {
+                              setActivityType(e.target.value);
+                              setPage(1);
+                            }}
+                            placeholder="All Activity Types">
+                            <option value="COMMIT">Commits</option>
+                            <option value="PR_OPENED">PR Opened</option>
+                            <option value="PR_MERGED">PR Merged</option>
+                            <option value="REVIEW_APPROVED">Review Approved</option>
+                            <option value="REVIEW_COMMENTED">Review Commented</option>
+                            <option value="ISSUE_COMMENT">Issue Comments</option>
+                            <option value="PR_COMMENT">PR Comments</option>
+                          </NativeSelect.Field>
+                          <NativeSelect.Indicator />
+                        </NativeSelect.Root>
                       </HStack>
 
                       {activitiesLoading ? (
@@ -548,7 +523,7 @@ export default function ContributorDetailPage() {
                         </Text>
                       ) : (
                         <>
-                          <VStack spacing={3} align="stretch">
+                          <VStack gap={3} align="stretch">
                             {activities.map((activity) => (
                               <ActivityCard key={activity._id} activity={activity} />
                             ))}
@@ -557,27 +532,27 @@ export default function ContributorDetailPage() {
                           <Flex justify="center" gap={4} mt={6}>
                             <Button
                               onClick={() => setPage((p) => Math.max(1, p - 1))}
-                              isDisabled={page === 1}
-                              colorScheme="blue"
+                              disabled={page === 1}
+                              colorPalette="blue"
                             >
                               Previous
                             </Button>
                             <Text alignSelf="center" fontWeight="bold">Page {page}</Text>
                             <Button
                               onClick={() => setPage((p) => p + 1)}
-                              isDisabled={!hasMore}
-                              colorScheme="blue"
+                              disabled={!hasMore}
+                              colorPalette="blue"
                             >
                               Next
                             </Button>
                           </Flex>
                         </>
                       )}
-                    </CardBody>
-                  </Card>
+                    </Card.Body>
+                  </Card.Root>
                 </TabPanel>
               </TabPanels>
-            </Tabs>
+            </Tabs.Root>
           </VStack>
         </Container>
       </Box>

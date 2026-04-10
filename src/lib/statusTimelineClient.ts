@@ -1,7 +1,6 @@
 import { client } from "@/lib/orpc";
-import type { StatusTimelineV2Response } from "@/server/data/statusTimelineV2";
 
-export async function getStatusTimelineV2Data(): Promise<StatusTimelineV2Response> {
+export async function getStatusTimelineV2Data(): Promise<any> {
   try {
     return await client.home.getStatusTimelineV2();
   } catch (rpcError) {
