@@ -1,0 +1,866 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model account {
+  id                    String    @id
+  userId                String
+  accountId             String
+  providerId            String
+  accessToken           String?
+  refreshToken          String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  idToken               String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime
+  user                  user      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model api_token {
+  id        String      @id
+  userId    String
+  name      String
+  tokenHash String      @unique
+  lastUsed  DateTime?
+  expiresAt DateTime?
+  createdAt DateTime    @default(now())
+  updatedAt DateTime
+  scopes    String[]    @default([])
+  user      user        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  api_usage api_usage[]
+}
+
+model api_usage {
+  id         String     @id
+  userId     String
+  apiTokenId String?
+  endpoint   String
+  method     String
+  statusCode Int
+  userAgent  String?
+  ipAddress  String?
+  createdAt  DateTime   @default(now())
+  api_token  api_token? @relation(fields: [apiTokenId], references: [id])
+  user       user       @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model blog {
+  id                 String         @id
+  slug               String         @unique
+  title              String
+  excerpt            String?
+  content            String
+  coverImage         String?
+  published          Boolean        @default(false)
+  authorId           String
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime
+  categoryId         String?
+  readingTimeMinutes Int?
+  tags               String[]       @default([])
+  featured           Boolean        @default(false)
+  user               user           @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  blog_category      blog_category? @relation(fields: [categoryId], references: [id])
+  blog_comment       blog_comment[]
+  blog_like          blog_like[]
+
+  @@index([categoryId])
+  @@index([published])
+  @@index([slug])
+}
+
+model blog_category {
+  id          String  @id
+  slug        String  @unique
+  name        String
+  description String?
+  blog        blog[]
+}
+
+model blog_comment {
+  id          String   @id
+  blogId      String
+  userId      String?
+  authorName  String
+  authorEmail String?
+  content     String
+  createdAt   DateTime @default(now())
+  blog        blog     @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  user        user?    @relation(fields: [userId], references: [id])
+
+  @@index([blogId])
+  @@index([userId])
+}
+
+model blog_editor_profile {
+  user_id    String   @id
+  linkedin   String?
+  x          String?
+  facebook   String?
+  telegram   String?
+  bio        String?
+  updated_at DateTime @default(now())
+  user       user     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model blog_like {
+  id        String   @id
+  blogId    String
+  likeKey   String
+  createdAt DateTime @default(now())
+  blog      blog     @relation(fields: [blogId], references: [id], onDelete: Cascade)
+
+  @@unique([blogId, likeKey])
+  @@index([blogId])
+}
+
+model comment_vote {
+  id           String       @id
+  comment_id   String
+  user_id      String?
+  vote_type    String
+  user_ip      String?
+  created_at   DateTime     @default(now())
+  page_comment page_comment @relation(fields: [comment_id], references: [id], onDelete: Cascade)
+
+  @@unique([comment_id, user_id, user_ip])
+  @@index([comment_id])
+}
+
+model contributor_activity {
+  id            BigInt        @id @default(autoincrement())
+  pr_number     Int
+  repository_id Int?
+  actor         String
+  role          String?
+  action_type   String
+  occurred_at   DateTime      @db.Timestamp(6)
+  repositories  repositories? @relation(fields: [repository_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([actor], map: "contributor_activity_actor_index")
+  @@index([repository_id, occurred_at], map: "contributor_activity_repository_id_occurred_at_index")
+  @@index([action_type, occurred_at], map: "idx_contributor_activity_action_occurred")
+  @@index([pr_number, repository_id], map: "idx_contributor_activity_pr_repo")
+  @@index([role, occurred_at], map: "idx_contributor_activity_role_occurred")
+}
+
+model contributor_scores {
+  id             Int           @id @default(autoincrement())
+  actor          String
+  repository_id  Int?
+  total_score    Int?          @default(0)
+  commits_count  Int?          @default(0)
+  prs_created    Int?          @default(0)
+  prs_merged     Int?          @default(0)
+  reviews_count  Int?          @default(0)
+  comments_count Int?          @default(0)
+  first_activity DateTime?     @db.Timestamptz(6)
+  last_activity  DateTime?     @db.Timestamptz(6)
+  updated_at     DateTime?     @default(now()) @db.Timestamptz(6)
+  repositories   repositories? @relation(fields: [repository_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([actor, repository_id])
+  @@index([actor], map: "idx_contributor_scores_actor")
+  @@index([total_score], map: "idx_contributor_scores_score")
+}
+
+model eip_category_events {
+  id            BigInt        @id @default(autoincrement())
+  eip_id        Int?
+  repository_id Int?
+  from_category String?
+  to_category   String
+  commit_sha    String
+  changed_at    DateTime      @db.Timestamp(6)
+  eips          eips?         @relation(fields: [eip_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  repositories  repositories? @relation(fields: [repository_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([eip_id, commit_sha, to_category], map: "eip_category_events_unique")
+}
+
+model eip_content_events {
+  id            BigInt       @id @default(autoincrement())
+  eip_id        Int
+  repository_id Int
+  commit_sha    String
+  changed_at    DateTime     @db.Timestamp(6)
+  eips          eips         @relation(fields: [eip_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  repositories  repositories @relation(fields: [repository_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([eip_id, commit_sha], map: "eip_content_events_unique")
+  @@index([eip_id, changed_at], map: "idx_eip_content_events_eip_changed")
+  @@index([repository_id, changed_at], map: "idx_eip_content_events_repo_changed")
+}
+
+model eip_deadline_events {
+  id                BigInt        @id @default(autoincrement())
+  eip_id            Int?
+  repository_id     Int?
+  previous_deadline DateTime?     @db.Date
+  new_deadline      DateTime?     @db.Date
+  commit_sha        String
+  changed_at        DateTime      @db.Timestamp(6)
+  eips              eips?         @relation(fields: [eip_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  repositories      repositories? @relation(fields: [repository_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([eip_id, commit_sha], map: "eip_deadline_events_unique")
+}
+
+model eip_files {
+  id             Int           @id @default(autoincrement())
+  eip_id         Int?
+  repository_id  Int?
+  file_path      String
+  valid_from_sha String
+  valid_to_sha   String?
+  created_at     DateTime?     @default(now()) @db.Timestamp(6)
+  eips           eips?         @relation(fields: [eip_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  repositories   repositories? @relation(fields: [repository_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model eip_snapshots {
+  eip_id          Int           @id
+  repository_id   Int?
+  status          String
+  type            String?
+  category        String?
+  deadline        DateTime?     @db.Date
+  last_commit_sha String?
+  updated_at      DateTime      @db.Timestamp(6)
+  eips            eips          @relation(fields: [eip_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  repositories    repositories? @relation(fields: [repository_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([category], map: "idx_eip_snapshots_category")
+  @@index([repository_id], map: "idx_eip_snapshots_repository_id")
+  @@index([status], map: "idx_eip_snapshots_status")
+  @@index([status, repository_id], map: "idx_eip_snapshots_status_repo")
+  @@index([type], map: "idx_eip_snapshots_type")
+  @@index([updated_at], map: "idx_eip_snapshots_updated_at")
+}
+
+model eip_status_events {
+  id            BigInt        @id @default(autoincrement())
+  eip_id        Int?
+  repository_id Int?
+  from_status   String?
+  to_status     String
+  commit_sha    String
+  pr_number     Int?
+  changed_at    DateTime      @db.Timestamp(6)
+  eips          eips?         @relation(fields: [eip_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  repositories  repositories? @relation(fields: [repository_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([eip_id, commit_sha, to_status], map: "eip_status_events_unique")
+  @@index([changed_at], map: "idx_eip_status_events_changed_at")
+  @@index([eip_id, changed_at], map: "idx_eip_status_events_eip_changed")
+  @@index([repository_id, changed_at], map: "idx_eip_status_events_repo_changed")
+  @@index([to_status, changed_at], map: "idx_eip_status_events_to_status_changed")
+}
+
+model eip_type_events {
+  id            BigInt        @id @default(autoincrement())
+  eip_id        Int?
+  repository_id Int?
+  from_type     String?
+  to_type       String
+  commit_sha    String
+  changed_at    DateTime      @db.Timestamp(6)
+  eips          eips?         @relation(fields: [eip_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  repositories  repositories? @relation(fields: [repository_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([eip_id, commit_sha, to_type], map: "eip_type_events_unique")
+}
+
+model eips {
+  id                    Int                     @id @default(autoincrement())
+  eip_number            Int                     @unique
+  created_at            DateTime?               @db.Date
+  title                 String?
+  author                String?
+  eip_category_events   eip_category_events[]
+  eip_content_events    eip_content_events[]
+  eip_deadline_events   eip_deadline_events[]
+  eip_files             eip_files[]
+  eip_snapshots         eip_snapshots?
+  eip_status_events     eip_status_events[]
+  eip_type_events       eip_type_events[]
+  proposal_subscription proposal_subscription[]
+
+  @@index([created_at], map: "idx_eips_created_at")
+}
+
+model feedback {
+  id           String    @id
+  page_path    String
+  category     String
+  severity     String
+  content      String
+  status       String    @default("new")
+  is_anonymous Boolean   @default(false)
+  user_id      String?
+  created_at   DateTime  @default(now())
+  updated_at   DateTime
+  deleted_at   DateTime?
+  github_name  String?
+  user         user?     @relation(fields: [user_id], references: [id])
+
+  @@index([created_at])
+  @@index([page_path])
+  @@index([status])
+}
+
+model insights_monthly {
+  month_year String   @id
+  summary    Json
+  highlights Json?
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+}
+
+model issue_custom_tags {
+  id            Int          @id @default(autoincrement())
+  issue_number  Int
+  repository_id Int
+  tag           String       @db.VarChar(100)
+  created_at    DateTime?    @default(now()) @db.Timestamptz(6)
+  repositories  repositories @relation(fields: [repository_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([issue_number, repository_id, tag])
+  @@index([issue_number, repository_id], map: "idx_issue_custom_tags_issue")
+  @@index([tag], map: "idx_issue_custom_tags_tag")
+}
+
+model issue_eips {
+  issue_number  Int
+  repository_id Int
+  eip_number    Int
+  linked_at     DateTime     @default(now()) @db.Timestamptz(6)
+  repositories  repositories @relation(fields: [repository_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([issue_number, repository_id, eip_number])
+  @@index([eip_number], map: "issue_eips_eip_number_index")
+  @@index([repository_id, eip_number], map: "issue_eips_repository_id_eip_number_index")
+}
+
+model issue_events {
+  id            BigInt       @id @default(autoincrement())
+  issue_number  Int
+  repository_id Int
+  event_type    String
+  actor         String
+  actor_role    String?
+  github_id     String?      @unique
+  metadata      Json?
+  created_at    DateTime     @db.Timestamptz(6)
+  repositories  repositories @relation(fields: [repository_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([repository_id, issue_number], map: "idx_issue_events_repo")
+}
+
+model issues {
+  id            Int          @id @default(autoincrement())
+  issue_number  Int
+  repository_id Int
+  title         String?
+  author        String?
+  state         String?
+  created_at    DateTime?    @db.Timestamptz(6)
+  updated_at    DateTime?    @db.Timestamptz(6)
+  closed_at     DateTime?    @db.Timestamptz(6)
+  labels        String[]     @default([])
+  num_comments  Int?         @default(0)
+  body          String?
+  repositories  repositories @relation(fields: [repository_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([issue_number, repository_id])
+  @@index([created_at], map: "idx_issues_created")
+  @@index([labels], map: "idx_issues_labels", type: Gin)
+  @@index([repository_id, state], map: "idx_issues_repo_state")
+}
+
+model membership_tier {
+  id                   String   @id
+  name                 String   @unique
+  slug                 String   @unique
+  description          String?
+  priceMonthly         Float
+  priceYearly          Float?
+  features             String[]
+  requestLimit         Int      @default(10000)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime
+  stripePriceIdMonthly String?  @unique
+  stripePriceIdYearly  String?  @unique
+  stripeProductId      String?  @unique
+}
+
+model notification_outbox {
+  id                         String                   @id
+  user_id                    String
+  proposal_subscription_id   String?
+  dedupe_key                 String                   @unique
+  channel                    String                   @default("email")
+  template                   String
+  subject                    String
+  payload                    Json
+  status                     String                   @default("queued")
+  attempts                   Int                      @default(0)
+  last_attempt_at            DateTime?                @db.Timestamptz(6)
+  sent_at                    DateTime?                @db.Timestamptz(6)
+  failed_at                  DateTime?                @db.Timestamptz(6)
+  error                      String?
+  created_at                 DateTime                 @default(now()) @db.Timestamptz(6)
+  updated_at                 DateTime                 @default(now()) @db.Timestamptz(6)
+  repository_subscription_id String?
+  upgrade_subscription_id    String?
+  proposal_subscription      proposal_subscription?   @relation(fields: [proposal_subscription_id], references: [id], onUpdate: NoAction)
+  repository_subscription    repository_subscription? @relation(fields: [repository_subscription_id], references: [id], onUpdate: NoAction)
+  upgrade_subscription       upgrade_subscription?    @relation(fields: [upgrade_subscription_id], references: [id], onUpdate: NoAction)
+  user                       user                     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([status, created_at], map: "idx_notification_outbox_status_created")
+  @@index([user_id], map: "idx_notification_outbox_user")
+}
+
+model notifier_checkpoint {
+  key        String   @id
+  cursor     String?
+  updated_at DateTime @default(now()) @db.Timestamptz(6)
+}
+
+model page_comment {
+  id                 String         @id
+  page_path          String
+  parent_id          String?
+  content            String
+  is_anonymous       Boolean        @default(false)
+  user_id            String?
+  created_at         DateTime       @default(now())
+  updated_at         DateTime
+  deleted_at         DateTime?
+  comment_vote       comment_vote[]
+  page_comment       page_comment?  @relation("page_commentTopage_comment", fields: [parent_id], references: [id], onDelete: Cascade)
+  other_page_comment page_comment[] @relation("page_commentTopage_comment")
+  user               user?          @relation(fields: [user_id], references: [id])
+
+  @@index([created_at])
+  @@index([page_path])
+  @@index([parent_id])
+}
+
+model pgmigrations {
+  id     Int      @id @default(autoincrement())
+  name   String   @unique @db.VarChar(255)
+  run_on DateTime @db.Timestamp(6)
+}
+
+model pr_custom_tags {
+  id            Int          @id @default(autoincrement())
+  pr_number     Int
+  repository_id Int
+  tag           String       @db.VarChar(100)
+  created_at    DateTime?    @default(now()) @db.Timestamptz(6)
+  repositories  repositories @relation(fields: [repository_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([pr_number, repository_id, tag])
+  @@index([pr_number, repository_id], map: "idx_pr_custom_tags_pr")
+  @@index([tag], map: "idx_pr_custom_tags_tag")
+}
+
+model pr_events {
+  id            BigInt        @id @default(autoincrement())
+  pr_number     Int
+  repository_id Int?
+  event_type    String
+  actor         String
+  actor_role    String?
+  commit_sha    String?
+  github_id     String?       @unique
+  metadata      Json?
+  created_at    DateTime      @db.Timestamp(6)
+  repositories  repositories? @relation(fields: [repository_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([repository_id, pr_number], map: "pr_events_repository_id_pr_number_index")
+}
+
+model pr_governance_state {
+  pr_number                    Int
+  repository_id                Int
+  current_state                String
+  waiting_since                DateTime?    @db.Timestamp(6)
+  last_actor                   String?
+  last_event_type              String?
+  updated_at                   DateTime?    @default(now()) @db.Timestamp(6)
+  category                     String?
+  subcategory                  String?
+  needs_editor_attention       Boolean?
+  reason                       String?
+  has_other_participants       Boolean?     @default(false)
+  ethbot_needs_editor_review   Boolean?
+  has_merge_conflicts          Boolean?     @default(false)
+  has_stagnant_preamble_status Boolean?     @default(false)
+  opened_by_preamble_author    Boolean?
+  repositories                 repositories @relation(fields: [repository_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([repository_id, pr_number])
+}
+
+model pr_label_snapshot {
+  pr_number     Int
+  repository_id Int
+  month_year    String
+  labels        String[]     @default([])
+  created_at    DateTime     @default(now()) @db.Timestamptz(6)
+  repositories  repositories @relation(fields: [repository_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([repository_id, pr_number, month_year])
+  @@index([month_year], map: "idx_pr_label_snapshot_month")
+}
+
+model pr_monthly_board_stats {
+  month_year   String
+  category     String
+  subcategory  String
+  count        Int      @default(0)
+  last_updated DateTime @default(now()) @db.Timestamptz(6)
+
+  @@id([month_year, category, subcategory])
+  @@index([month_year], map: "idx_pr_monthly_board_stats_month")
+}
+
+model pr_monthly_snapshot {
+  pr_number        Int
+  repository_id    Int
+  month_year       String
+  state            String
+  governance_state String?
+  labels           String[]     @default([])
+  created_at       DateTime     @default(now()) @db.Timestamptz(6)
+  repositories     repositories @relation(fields: [repository_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([repository_id, pr_number, month_year])
+  @@index([month_year, state], map: "idx_pr_monthly_snapshot_month_state")
+}
+
+model pr_reviews {
+  id            BigInt       @id @default(autoincrement())
+  pr_number     Int
+  repository_id Int
+  reviewer      String
+  review_state  String
+  submitted_at  DateTime     @db.Timestamptz(6)
+  github_id     String?      @unique
+  repositories  repositories @relation(fields: [repository_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([repository_id, reviewer], map: "pr_reviews_repository_id_reviewer_index")
+  @@index([submitted_at], map: "pr_reviews_submitted_at_index")
+}
+
+model proposal_subscription {
+  id                  String                @id
+  user_id             String
+  eip_id              Int
+  repository_id       Int
+  filter              String                @default("all")
+  created_at          DateTime              @default(now()) @db.Timestamptz(6)
+  updated_at          DateTime              @default(now()) @db.Timestamptz(6)
+  notification_outbox notification_outbox[]
+  eips                eips                  @relation(fields: [eip_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  repositories        repositories          @relation(fields: [repository_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  user                user                  @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([user_id, eip_id, repository_id], map: "proposal_subscription_unique")
+  @@index([filter], map: "idx_proposal_subscription_filter")
+  @@index([repository_id, eip_id], map: "idx_proposal_subscription_repo_eip")
+  @@index([user_id], map: "idx_proposal_subscription_user")
+}
+
+model pull_request_eips {
+  pr_number     Int
+  repository_id Int
+  eip_number    Int
+  linked_at     DateTime     @default(now()) @db.Timestamptz(6)
+  repositories  repositories @relation(fields: [repository_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([pr_number, repository_id, eip_number])
+  @@index([repository_id, pr_number], map: "idx_pull_request_eips_repo_pr")
+  @@index([eip_number], map: "pull_request_eips_eip_number_index")
+  @@index([repository_id, eip_number], map: "pull_request_eips_repository_id_eip_number_index")
+}
+
+model pull_requests {
+  id               Int           @id @default(autoincrement())
+  pr_number        Int
+  repository_id    Int?
+  title            String?
+  author           String?
+  merged_at        DateTime?     @db.Timestamp(6)
+  closed_at        DateTime?     @db.Timestamp(6)
+  updated_at       DateTime?     @db.Timestamp(6)
+  state            String?
+  num_commits      Int?
+  num_files        Int?
+  num_participants Int?
+  num_comments     Int?          @default(0)
+  num_reviews      Int?          @default(0)
+  labels           String[]      @default([])
+  created_at       DateTime?     @default(now()) @db.Timestamp(6)
+  body             String?
+  repositories     repositories? @relation(fields: [repository_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([pr_number, repository_id], map: "pull_requests_unique")
+  @@index([closed_at], map: "idx_pull_requests_closed_at")
+  @@index([created_at], map: "idx_pull_requests_created_at")
+  @@index([labels], map: "idx_pull_requests_labels", type: Gin)
+  @@index([merged_at], map: "idx_pull_requests_merged_at")
+  @@index([repository_id, created_at], map: "idx_pull_requests_repo_created")
+  @@index([repository_id, state], map: "idx_pull_requests_repo_state")
+  @@index([state], map: "idx_pull_requests_state")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model repositories {
+  id                      Int                       @id @default(autoincrement())
+  name                    String                    @unique
+  type                    String?
+  active                  Boolean?                  @default(true)
+  contributor_activity    contributor_activity[]
+  contributor_scores      contributor_scores[]
+  eip_category_events     eip_category_events[]
+  eip_content_events      eip_content_events[]
+  eip_deadline_events     eip_deadline_events[]
+  eip_files               eip_files[]
+  eip_snapshots           eip_snapshots[]
+  eip_status_events       eip_status_events[]
+  eip_type_events         eip_type_events[]
+  issue_custom_tags       issue_custom_tags[]
+  issue_eips              issue_eips[]
+  issue_events            issue_events[]
+  issues                  issues[]
+  pr_custom_tags          pr_custom_tags[]
+  pr_events               pr_events[]
+  pr_governance_state     pr_governance_state[]
+  pr_label_snapshot       pr_label_snapshot[]
+  pr_monthly_snapshot     pr_monthly_snapshot[]
+  pr_reviews              pr_reviews[]
+  proposal_subscription   proposal_subscription[]
+  pull_request_eips       pull_request_eips[]
+  pull_requests           pull_requests[]
+  repository_subscription repository_subscription[]
+}
+
+model repository_subscription {
+  id                  String                @id
+  user_id             String
+  repository_id       Int
+  filter              String                @default("status")
+  created_at          DateTime              @default(now()) @db.Timestamptz(6)
+  updated_at          DateTime              @default(now()) @db.Timestamptz(6)
+  notification_outbox notification_outbox[]
+  repositories        repositories          @relation(fields: [repository_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  user                user                  @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([user_id, repository_id], map: "repository_subscription_unique")
+  @@index([filter], map: "idx_repository_subscription_filter")
+  @@index([repository_id], map: "idx_repository_subscription_repo")
+  @@index([user_id], map: "idx_repository_subscription_user")
+}
+
+model rip_commits {
+  id            BigInt   @id @default(autoincrement())
+  rip_id        Int?
+  commit_sha    String
+  commit_date   DateTime @db.Timestamp(6)
+  author        String?
+  message       String?
+  files_changed Int?
+  insertions    Int?
+  deletions     Int?
+  repo          String?  @default("RIPs")
+  rips          rips?    @relation(fields: [rip_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([rip_id, commit_sha], map: "rip_commits_unique")
+  @@index([commit_date], map: "idx_rip_commits_commit_date")
+}
+
+model rips {
+  id          Int           @id @default(autoincrement())
+  rip_number  Int           @unique
+  title       String?
+  status      String?
+  author      String?
+  created_at  DateTime?     @default(now()) @db.Timestamp(6)
+  rip_commits rip_commits[]
+
+  @@index([status], map: "idx_rips_status")
+}
+
+model scheduler_runs {
+  id                   BigInt    @id @default(autoincrement())
+  started_at           DateTime  @default(now()) @db.Timestamptz(6)
+  finished_at          DateTime? @db.Timestamptz(6)
+  status               String    @default("running")
+  last_repo            String?
+  error                String?
+  records_ingested     Int       @default(0)
+  rate_limit_remaining Int?
+
+  @@index([started_at], map: "idx_scheduler_runs_started_at")
+}
+
+model scheduler_state {
+  key        String    @id
+  value      String?
+  updated_at DateTime? @default(now()) @db.Timestamp(6)
+}
+
+model session {
+  id        String   @id
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+  user      user     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model upgrade_composition_current {
+  upgrade_id Int
+  eip_number Int
+  bucket     String?
+  updated_at DateTime? @db.Timestamp(6)
+
+  @@id([upgrade_id, eip_number])
+}
+
+model upgrade_composition_events {
+  id          BigInt    @id @default(autoincrement())
+  upgrade_id  Int?
+  meta_eip    Int?
+  eip_number  Int?
+  bucket      String?
+  event_type  String?
+  commit_sha  String?
+  commit_date DateTime? @db.Timestamp(6)
+  created_at  DateTime? @default(now()) @db.Timestamp(6)
+  upgrades    upgrades? @relation(fields: [upgrade_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([upgrade_id, commit_sha, eip_number, bucket, event_type], map: "upgrade_composition_events_unique")
+}
+
+model upgrade_meta_eip_events {
+  id         BigInt   @id @default(autoincrement())
+  upgrade_id Int
+  from_eip   Int?
+  to_eip     Int
+  commit_sha String
+  changed_at DateTime @db.Timestamptz(6)
+  upgrades   upgrades @relation(fields: [upgrade_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([upgrade_id, changed_at], map: "idx_upgrade_meta_eip_events_upgrade_changed")
+}
+
+model upgrade_subscription {
+  id                  String                @id
+  user_id             String
+  upgrade_id          Int
+  filter              String                @default("stage")
+  created_at          DateTime              @default(now()) @db.Timestamptz(6)
+  updated_at          DateTime              @default(now()) @db.Timestamptz(6)
+  notification_outbox notification_outbox[]
+  upgrades            upgrades              @relation(fields: [upgrade_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  user                user                  @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([user_id, upgrade_id], map: "upgrade_subscription_unique")
+  @@index([filter], map: "idx_upgrade_subscription_filter")
+  @@index([upgrade_id], map: "idx_upgrade_subscription_upgrade")
+  @@index([user_id], map: "idx_upgrade_subscription_user")
+}
+
+model upgrades {
+  id                         Int                          @id @default(autoincrement())
+  slug                       String                       @unique
+  name                       String?
+  meta_eip                   Int?
+  repo                       String?
+  file_path                  String?
+  created_at                 DateTime?                    @default(now()) @db.Timestamp(6)
+  upgrade_composition_events upgrade_composition_events[]
+  upgrade_meta_eip_events    upgrade_meta_eip_events[]
+  upgrade_subscription       upgrade_subscription[]
+}
+
+model user {
+  id                      String                    @id
+  name                    String
+  email                   String
+  emailVerified           Boolean                   @default(false)
+  image                   String?
+  createdAt               DateTime                  @default(now())
+  updatedAt               DateTime
+  avatarUrl               String?
+  membershipExpiresAt     DateTime?
+  membershipTier          String?
+  role                    String                    @default("user")
+  stripeCurrentPeriodEnd  DateTime?
+  stripeCustomerId        String?                   @unique
+  stripePriceId           String?
+  stripeSubscriptionId    String?                   @unique
+  account                 account[]
+  api_token               api_token[]
+  api_usage               api_usage[]
+  blog                    blog[]
+  blog_comment            blog_comment[]
+  blog_editor_profile     blog_editor_profile?
+  feedback                feedback[]
+  notification_outbox     notification_outbox[]
+  page_comment            page_comment[]
+  proposal_subscription   proposal_subscription[]
+  repository_subscription repository_subscription[]
+  session                 session[]
+  upgrade_subscription    upgrade_subscription[]
+  user_preferences        user_preferences?
+}
+
+model user_preferences {
+  user_id      String   @id
+  persona      String?
+  default_view Json?
+  created_at   DateTime @default(now())
+  updated_at   DateTime
+  user         user     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime
+}
+
+model video {
+  id             String   @id
+  youtubeUrl     String
+  youtubeVideoId String
+  title          String
+  description    String?
+  thumbnail      String?
+  published      Boolean  @default(false)
+  displayOrder   Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime
+  tags           String[] @default([])
+
+  @@index([published, displayOrder])
+}

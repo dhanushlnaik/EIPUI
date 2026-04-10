@@ -30,21 +30,23 @@ import AreaStatus from "@/components/AreaStatus2";
 import Banner from "@/components/NewsBanner";
 import NextLink from "next/link";
 import AreaC from "@/components/AreaC";
+import { client } from "@/lib/orpc";
 
 interface EIP {
   _id: string;
   eip: string;
-  title: string;
-  author: string;
+  title: string | null;
+  author: string | null;
   status: string;
   type: string;
   category: string;
-  created: string;
-  discussion: string;
-  deadline: string;
-  requires: string;
-  unique_ID: number;
-  __v: number;
+  created: string | Date | null;
+  discussion?: string | null;
+  deadline?: string | null;
+  requires?: string | null;
+  unique_ID?: number;
+  __v?: number;
+  repo?: "eip" | "erc" | "rip";
 }
 
 interface APIResponse {
@@ -62,7 +64,8 @@ interface EIP2 {
     date: string;
     count: number;
     category: string;
-    eips:any[];
+    eips: any[];
+    repo?: "eip" | "erc" | "rip";
   }[];
 }
 
@@ -73,18 +76,46 @@ const Status = () => {
   const [data2, setData2] = useState<APIResponse>();
   const [data3, setData3] = useState<EIP2[]>([]);
 
+  const normalizeGraphRows = (rows: any[]): EIP2[] =>
+    (rows || []).map((row) => ({
+      status: row.status,
+      eips: (row.eips || []).map((entry: any) => ({
+        ...entry,
+        status: entry.status || row.status,
+      })),
+    }));
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [allRes, graphRes] = await Promise.all([
-          fetch(`/api/new/all`),
-          fetch(`/api/new/graphsv2`),
+        const graphPromise = fetch(`/api/new/graphsv2`).then((res) => res.json());
+        const allPromise = client.home.getAllProposals();
+        const graphRpcPromise = client.home.getStatusTimelineV2();
+
+        const [allRpcResult, graphRpcResult, graphJson] = await Promise.allSettled([
+          allPromise,
+          graphRpcPromise,
+          graphPromise,
         ]);
 
-        const allJson: APIResponse = await allRes.json();
-        const graphJson = await graphRes.json();
-        setData2(allJson);
-        setData3(graphJson.eip?.concat(graphJson.erc?.concat(graphJson.rip)));
+        if (allRpcResult.status === "fulfilled") {
+          setData2(allRpcResult.value);
+        } else {
+          const allRes = await fetch(`/api/new/all`);
+          const allJson: APIResponse = await allRes.json();
+          setData2(allJson);
+        }
+
+        if (graphRpcResult.status === "fulfilled") {
+          const graphData = graphRpcResult.value;
+          setData3(normalizeGraphRows(graphData.eip?.concat(graphData.erc?.concat(graphData.rip)) || []));
+        } else if (graphJson.status === "fulfilled") {
+          const graphData = graphJson.value;
+          setData3(normalizeGraphRows(graphData.eip?.concat(graphData.erc?.concat(graphData.rip)) || []));
+        } else {
+          setData3([]);
+        }
+
         setIsLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);

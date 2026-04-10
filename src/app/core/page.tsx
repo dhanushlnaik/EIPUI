@@ -16,22 +16,23 @@ import CategoryDistributionChart from "@/components/CategoryDistributionChart";
 import StatusInsightsCard from "@/components/StatusInsightsCard";
 import FAQSection from "@/components/FAQSection";
 import { FiFileText, FiCheckCircle, FiUsers, FiCpu, FiGitPullRequest } from "react-icons/fi";
+import { client } from "@/lib/orpc";
 
 interface EIP {
   _id: string;
   eip: string;
-  title: string;
-  author: string;
+  title: string | null;
+  author: string | null;
   status: string;
   type: string;
   category: string;
-  created: string;
-  discussion: string;
-  deadline: string;
-  requires: string;
+  created: string | Date | null;
+  discussion?: string | null;
+  deadline?: string | null;
+  requires?: string | null;
   repo?: "eip" | "erc" | "rip";
-  unique_ID: number;
-  __v: number;
+  unique_ID?: number;
+  __v?: number;
 }
 
 interface APIResponse {
@@ -59,6 +60,15 @@ const Core = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        try {
+          const rpcData = await client.home.getAllProposals();
+          setData([...(rpcData.eip || []), ...(rpcData.erc || []), ...(rpcData.rip || [])]);
+          setIsLoading(false);
+          return;
+        } catch (rpcError) {
+          console.warn("oRPC failed for /core, falling back to REST:", rpcError);
+        }
+
         const response = await fetch(`/api/new/all`);
         const jsonData: APIResponse = await response.json();
         setData([...(jsonData.eip || []), ...(jsonData.erc || []), ...(jsonData.rip || [])]);
@@ -84,7 +94,13 @@ const Core = () => {
   }, [coreData]);
   const uniqueAuthors = useMemo(() => {
     const authors = new Set<string>();
-    coreData.forEach(item => item.author.split(",").forEach(author => authors.add(author.trim())));
+    coreData.forEach((item) =>
+      (item.author || "")
+        .split(",")
+        .map((author) => author.trim())
+        .filter(Boolean)
+        .forEach((author) => authors.add(author))
+    );
     return authors.size;
   }, [coreData]);
 

@@ -17,6 +17,7 @@ import Dashboard from "./Dashboard";
 import NextLink from "next/link";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { CSVLink } from "react-csv";
+import { client } from "@/lib/orpc";
 
 const getCat = (cat: string) => {
   switch (cat) {
@@ -80,7 +81,7 @@ interface EIP {
   status?: string;
   type?: string;
   category?: string;
-  created?: string;
+  created?: string | Date | null;
   discussion?: string;
   deadline?: string;
   requires?: string;
@@ -161,15 +162,21 @@ const AllChart: React.FC<ChartProps> = ({ type }) => {
       try {
         // Fetch both sources:
         // - v4 timeline for chart rendering
-        // - /api/new/all full proposal rows for metadata CSV export
-        const [v4Result, fullRowsResult] = await Promise.allSettled([
+        // - oRPC full proposal rows for metadata CSV export
+        const [v4Result, rpcResult] = await Promise.allSettled([
           fetch("/api/v4/home-chart"),
-          fetch("/api/new/all"),
+          client.home.getAllProposals(),
         ]);
 
-        if (fullRowsResult.status === "fulfilled" && fullRowsResult.value.ok) {
-          const jsonData: APIResponse = await fullRowsResult.value.json();
-          setData(jsonData);
+        if (rpcResult.status === "fulfilled") {
+          setData(rpcResult.value as APIResponse);
+        } else {
+          // Keep REST fallback while we roll out oRPC incrementally.
+          const fallbackResponse = await fetch("/api/new/all");
+          if (fallbackResponse.ok) {
+            const fallbackData: APIResponse = await fallbackResponse.json();
+            setData(fallbackData);
+          }
         }
 
         if (v4Result.status === "fulfilled" && v4Result.value.ok) {
