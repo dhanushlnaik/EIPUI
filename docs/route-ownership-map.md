@@ -253,6 +253,61 @@ This map is the migration guardrail for incremental routing work. A route can on
   - `src/pages/api/txtracker/fetchData3/index.tsx`
   - `src/pages/api/txtracker/fetchData4/index.tsx`
 
+## Batch 16 (Completed in this change)
+- `app` owns page routes:
+  - `/testv2`
+- `app` owns API routes:
+  - `/api/fetchData`
+  - `/api/fetchData1`
+  - `/api/fetchData2`
+  - `/api/fetchData3`
+  - `/api/fetchData4`
+- `pages` ownership removed:
+  - `src/pages/testv2/index.tsx`
+  - `src/pages/api/fetchData/index.tsx`
+  - `src/pages/api/fetchData1/index.tsx`
+  - `src/pages/api/fetchData2/index.tsx`
+  - `src/pages/api/fetchData3/index.tsx`
+  - `src/pages/api/fetchData4/index.tsx`
+
+## Batch 17 (Completed in this change)
+- `app` owns page routes:
+  - `/`
+  - `/home`
+- `app` owns API routes:
+  - `/api/count/views`
+  - `/api/count/viewCounter`
+  - `/api/count/like`
+  - `/api/count/dislike`
+- `pages` ownership removed:
+  - `src/pages/index.tsx`
+  - `src/pages/home/index.tsx`
+  - `src/pages/api/count/viewCounter.tsx`
+  - `src/pages/api/count/like.tsx`
+  - `src/pages/api/count/dislike.tsx`
+
+## Batch 18 (Completed in this change)
+- `app` owns page routes:
+  - `/profile`
+  - `/signin`
+  - `/signup`
+- `app` owns API routes:
+  - `/api/user/me`
+  - `/api/user/verify`
+  - `/api/user/update`
+  - `/api/GetUserStatus`
+  - `/api/stripe/cancel-subscription`
+- `pages` ownership removed:
+  - `src/pages/profile/index.tsx`
+  - `src/pages/signin/index.tsx`
+  - `src/pages/signup/index.tsx`
+  - `src/pages/signup/layout.tsx`
+  - `src/pages/api/user/me.ts`
+  - `src/pages/api/user/verify.ts`
+  - `src/pages/api/user/update.ts`
+  - `src/pages/api/GetUserStatus/index.tsx`
+  - `src/pages/api/stripe/cancel-subscription.ts`
+
 ## Guardrail
 - Run `npm run check:route-collisions` before merge.
 - A failing check means the same pathname exists in both routers and must be resolved before shipping.

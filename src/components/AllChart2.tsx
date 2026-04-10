@@ -95,6 +95,20 @@ interface APIResponse {
   rip: EIP[];
 }
 
+interface V4HomeChartResponse {
+  source: "v4";
+  categoryTimeline: Array<{
+    year: number;
+    category: string;
+    value: number;
+  }>;
+  statusTimeline: Array<{
+    year: number;
+    status: string;
+    value: number;
+  }>;
+}
+
 // Enhanced color palette - vibrant and distinct
 const categoryColors: Record<string, string> = {
   "Core": "rgb(59, 130, 246)", // Blue 500
@@ -136,6 +150,7 @@ interface ChartProps {
 
 const AllChart: React.FC<ChartProps> = ({ type }) => {
   const [data, setData] = useState<APIResponse>({ eip: [], erc: [], rip: [] });
+  const [v4ChartData, setV4ChartData] = useState<V4HomeChartResponse | null>(null);
   const bg = useColorModeValue("#f6f6f7", "#171923");
   const [isLoading, setIsLoading] = useState(true);
   const [chart, setchart] = useState("category");
@@ -144,8 +159,26 @@ const AllChart: React.FC<ChartProps> = ({ type }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // Primary source: v4 Postgres-backed timeline adapter.
+        const v4Response = await fetch("/api/v4/home-chart");
+        if (v4Response.ok) {
+          const v4JsonData: V4HomeChartResponse = await v4Response.json();
+          if (
+            Array.isArray(v4JsonData?.categoryTimeline) &&
+            Array.isArray(v4JsonData?.statusTimeline) &&
+            (v4JsonData.categoryTimeline.length > 0 || v4JsonData.statusTimeline.length > 0)
+          ) {
+            setV4ChartData(v4JsonData);
+            setCsvData([]);
+            setIsLoading(false);
+            return;
+          }
+        }
+
+        // Fallback source: legacy Mongo payload.
         const response = await fetch("/api/new/all");
         const jsonData: APIResponse = await response.json();
+        setV4ChartData(null);
         setData(jsonData);
         setIsLoading(false);
       } catch (error) {
@@ -172,25 +205,29 @@ const AllChart: React.FC<ChartProps> = ({ type }) => {
   // Use /api/new/all data: merge arrays and aggregate by created year
   const allData: EIP[] = [...(data?.eip || []), ...(data?.erc || []), ...(data?.rip || [])];
 
-  const transformedData = allData.reduce<TransformedData[]>((acc, item) => {
-    const year = item.created ? new Date(item.created).getFullYear() : new Date().getFullYear();
-    const baseCategory = item.repo === "rip" ? "RIPs" : getCat(item.category || "");
+  const transformedData = v4ChartData?.categoryTimeline?.length
+    ? v4ChartData.categoryTimeline
+    : allData.reduce<TransformedData[]>((acc, item) => {
+        const year = item.created ? new Date(item.created).getFullYear() : new Date().getFullYear();
+        const baseCategory = item.repo === "rip" ? "RIPs" : getCat(item.category || "");
 
-    const existingEntry = acc.find((entry) => entry.year === year && entry.category === baseCategory);
-    if (existingEntry) existingEntry.value += 1;
-    else acc.push({ category: baseCategory, year, value: 1 });
-    return acc;
-  }, []);
+        const existingEntry = acc.find((entry) => entry.year === year && entry.category === baseCategory);
+        if (existingEntry) existingEntry.value += 1;
+        else acc.push({ category: baseCategory, year, value: 1 });
+        return acc;
+      }, []);
 
-  const transformedData2 = allData.reduce<TransformedData2[]>((acc, item) => {
-    const year = item.created ? new Date(item.created).getFullYear() : new Date().getFullYear();
-    const status = getStatus(item.status || "");
+  const transformedData2 = v4ChartData?.statusTimeline?.length
+    ? v4ChartData.statusTimeline
+    : allData.reduce<TransformedData2[]>((acc, item) => {
+        const year = item.created ? new Date(item.created).getFullYear() : new Date().getFullYear();
+        const status = getStatus(item.status || "");
 
-    const existingEntry = acc.find((entry) => entry.year === year && entry.status === status);
-    if (existingEntry) existingEntry.value += 1;
-    else acc.push({ status, year, value: 1 } as any);
-    return acc;
-  }, []);
+        const existingEntry = acc.find((entry) => entry.year === year && entry.status === status);
+        if (existingEntry) existingEntry.value += 1;
+        else acc.push({ status, year, value: 1 } as any);
+        return acc;
+      }, []);
 
   // Prepare CSV data from /api/new/all (one row per current EIP entry)
   React.useEffect(() => {
@@ -491,36 +528,42 @@ return (
             </Link>
 
             <Flex gap={2} mt={{ base: 2, md: 0 }} align="center">
-              <CSVLink
-                data={csvData}
-                filename="eips_final_status_by_year.csv"
-                headers={[
-                  "SR No.",
-                  "Year",
-                  "Repo",
-                  "EIP",
-                  "EIP Number",
-                  "Title",
-                  "Category",
-                  "Original Category",
-                  "Final Status",
-                  "Original Status",
-                  "EIP Link"
-                ]}
-              >
-                <Button
-                  size="sm"
-                  colorScheme="blue"
-                  variant="solid"
-                  _hover={{
-                    transform: "translateY(-1px)",
-                    boxShadow: "md",
-                  }}
-                  transition="all 0.2s"
+              {csvData.length > 0 ? (
+                <CSVLink
+                  data={csvData}
+                  filename="eips_final_status_by_year.csv"
+                  headers={[
+                    "SR No.",
+                    "Year",
+                    "Repo",
+                    "EIP",
+                    "EIP Number",
+                    "Title",
+                    "Category",
+                    "Original Category",
+                    "Final Status",
+                    "Original Status",
+                    "EIP Link"
+                  ]}
                 >
-                  Download CSV
+                  <Button
+                    size="sm"
+                    colorScheme="blue"
+                    variant="solid"
+                    _hover={{
+                      transform: "translateY(-1px)",
+                      boxShadow: "md",
+                    }}
+                    transition="all 0.2s"
+                  >
+                    Download CSV
+                  </Button>
+                </CSVLink>
+              ) : (
+                <Button size="sm" colorScheme="blue" variant="outline" isDisabled>
+                  CSV Unavailable
                 </Button>
-              </CSVLink>
+              )}
 
               <Select
                 variant="outline"

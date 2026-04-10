@@ -102,6 +102,7 @@
     "octokit": "^2.1.0",
     "openai": "^4.97.0",
     "papaparse": "^5.5.3",
+    "pg": "^8.20.0",
     "postcss": "^8.4.24",
     "postcss-loader": "^8.1.1",
     "radix-ui": "^1.4.2",
@@ -176,6 +177,7 @@
     "@types/react-table": "^7.7.14",
     "@types/three": "^0.176.0",
     "css-loader": "^7.1.2",
+    "patch-package": "^8.0.1",
     "style-loader": "^4.0.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
