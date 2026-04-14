@@ -33,7 +33,51 @@ export const PopoverCloseButton = () => <Box />;
 export const AvatarFallback = Box;
 export const AvatarImage = Box;
 
-export const HoverCard = Box;
+const HoverCardBase = ({ children, className, ...props }: any) => (
+  <Box
+    role="group"
+    position="relative"
+    className={className}
+    {...props}
+  >
+    {children}
+  </Box>
+);
+const HoverCardTrigger = ({ children, asChild, ...props }: any) => {
+  if (asChild && React.isValidElement(children)) {
+    return React.cloneElement(children as any, {
+      ...(children as any).props,
+      ...props,
+    });
+  }
+  return <Box {...props}>{children}</Box>;
+};
+export const HoverCard = Object.assign(HoverCardBase, {
+  Root: ({ children, className, ...props }: any) => (
+    <Box role="group" position="relative" className={className} {...props}>
+      {children}
+    </Box>
+  ),
+  Trigger: HoverCardTrigger,
+  Positioner: ({ children, ...props }: any) => (
+    <Box
+      display="none"
+      position="absolute"
+      top="100%"
+      left="0"
+      pt={2}
+      zIndex={1200}
+      _groupHover={{ display: "block" }}
+      _groupFocusWithin={{ display: "block" }}
+      {...props}
+    >
+      {children}
+    </Box>
+  ),
+  Content: ({ children, ...props }: any) => <Box {...props}>{children}</Box>,
+  Arrow: (_props: any) => null,
+  Body: ({ children, ...props }: any) => <Box {...props}>{children}</Box>,
+});
 
 export const shouldForwardProp = (prop: string) => true;
 
