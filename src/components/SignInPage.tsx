@@ -1,30 +1,10 @@
-// update the frontend implementation in this and provide full code:
 "use client";
-
-import { 
-  Flex,
-  Heading,
-  Input,
-  Button,
-  InputGroup,
-  Stack,
-  InputLeftElement,
-  InputRightElement,
-  Box,
-  Link,
-  Avatar,
-  FormControl,
-  FormHelperText,
-  Divider,
-  Text,
-  useToast,
-  Alert,
-  AlertIcon,
-  Icon,
-  useColorModeValue,
-  IconButton,
-  AbsoluteCenter
-} from "@chakra-ui/react";
+import { InputLeftElement, InputRightElement } from "@/components/ui/compat";
+import { useToast } from "@/components/ui/use-toast";
+// update the frontend implementation in this and provide full code:
+;
+import { Steps, Flex, Heading, Input, Button, InputGroup, Stack, Box, Link, Avatar, Text, Alert, Icon, IconButton, AbsoluteCenter, Separator, Field } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
 import { FaGithub, FaGoogle, FaUserAlt, FaLock, FaEye, FaEyeSlash, FaArrowLeft } from "react-icons/fa";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
@@ -90,21 +70,19 @@ const SignIn = () => {
         {/* Back Arrow Button */}
         <IconButton
           aria-label="Go back"
-          icon={<FaArrowLeft />}
           size="lg"
           position="absolute"
           top={4}
           left={4}
           zIndex={10}
           variant="ghost"
-          colorScheme="teal"
+          colorPalette="teal"
           onClick={() => router.push("/")}
           fontSize="24px"
           _hover={{
             transform: "scale(1.1)",
             bg: "transparent"
-          }}
-        />
+          }}><FaArrowLeft /></IconButton>
 
         <Flex
           minH="100vh"
@@ -114,7 +92,7 @@ const SignIn = () => {
           px={4}
         >
           <Stack
-            spacing={8}
+            gap={8}
             mx="auto"
             maxW="md"
             w="full"
@@ -122,13 +100,7 @@ const SignIn = () => {
             px={6}
           >
             <Stack align="center">
-              <Avatar
-                size="xl"
-                bg="teal.500"
-                color="white"
-                icon={<FaUserAlt fontSize="1.5rem" />}
-                mb={2}
-              />
+              <Avatar.Root size="xl" bg="teal.500" color="white" mb={2}><Avatar.Fallback>{<FaUserAlt fontSize="1.5rem" />}</Avatar.Fallback></Avatar.Root>
               <Heading fontSize="3xl" textAlign="center" color="teal.500">
                 Welcome back
               </Heading>
@@ -138,10 +110,10 @@ const SignIn = () => {
             </Stack>
 
             {error && (
-              <Alert status="error" borderRadius="md">
-                <AlertIcon />
+              <Alert.Root status="error" borderRadius="md">
+                <Alert.Indicator />
                 {error}
-              </Alert>
+              </Alert.Root>
             )}
 
             <Box
@@ -151,8 +123,8 @@ const SignIn = () => {
               p={8}
             >
               <form onSubmit={handleSubmit}>
-                <Stack spacing={6}>
-                  <FormControl id="email">
+                <Stack gap={6}>
+                  <Field.Root id="email">
                     <InputGroup>
                       <InputLeftElement pointerEvents="none">
                         <Icon as={FaUserAlt} color={iconColor} />
@@ -176,9 +148,9 @@ const SignIn = () => {
                         required
                       />
                     </InputGroup>
-                  </FormControl>
+                  </Field.Root>
 
-                  <FormControl id="password">
+                  <Field.Root id="password">
                     <InputGroup>
                       <InputLeftElement pointerEvents="none">
                         <Icon as={FaLock} color={iconColor} />
@@ -227,14 +199,14 @@ const SignIn = () => {
                         Forgot password?
                       </Link>
                     </Flex>
-                  </FormControl>
+                  </Field.Root>
 
                   <Button
                     type="submit"
-                    colorScheme="teal"
+                    colorPalette="teal"
                     size="lg"
                     fontSize="md"
-                    isLoading={pending}
+                    loading={pending}
                     loadingText="Signing in..."
                     _hover={{
                       transform: "translateY(-1px)",
@@ -249,7 +221,7 @@ const SignIn = () => {
                 </Stack>
               </form>
 
-              <Divider my={6} borderColor="gray.300" />
+              <Separator my={6} borderColor="gray.300" />
 
               <Text textAlign="center" color="gray.600">
               Don't have an account?{" "}
@@ -265,33 +237,27 @@ const SignIn = () => {
             </Text>
             <br/>
 
-              <Stack spacing={4}>
+              <Stack gap={4}>
                 <Button
-                  leftIcon={<FaGoogle />}
                   variant="outline"
-                  colorScheme="teal"
+                  colorPalette="teal"
                   onClick={() => handleProvider("google")}
-                  isDisabled={pending}
+                  disabled={pending}
                   _hover={{
                     bg: "gray.500",
                     transform: "translateY(-1px)"
-                  }}
-                >
-                  Continue with Google
-                </Button>
+                  }}><FaGoogle />Continue with Google
+                                  </Button>
                 <Button
-                  leftIcon={<FaGithub />}
                   variant="outline"
-                  colorScheme="teal"
+                  colorPalette="teal"
                   onClick={() => handleProvider("github")}
-                  isDisabled={pending}
+                  disabled={pending}
                   _hover={{
                     bg: "gray.500",
                     transform: "translateY(-1px)"
-                  }}
-                >
-                  Continue with GitHub
-                </Button>
+                  }}><FaGithub />Continue with GitHub
+                                  </Button>
               </Stack>
             </Box>
 

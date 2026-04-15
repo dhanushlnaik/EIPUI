@@ -1,20 +1,7 @@
+import { TableContainer, Thead, Tbody, Tr, Th, Td } from "@/components/ui/compat";
 import React, { useEffect, useState } from "react";
-import {
-  Badge,
-  Box,
-  Link,
-  Table,
-  TableContainer,
-  Tbody,
-  Td,
-  Text,
-  Th,
-  Thead,
-  Tr,
-  Wrap,
-  WrapItem,
-  useColorModeValue,
-} from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Badge, Box, Link, Table, Text, Wrap, WrapItem } from "@chakra-ui/react";
 import Header from "@/components/Header";
 import CustomBox from "@/components/CustomBox";
 import StackedColumnChart from "@/components/DraftBarChart";
@@ -24,6 +11,7 @@ import { motion } from "framer-motion";
 import { usePathname } from "next/navigation";
 import DateTime from "@/components/DateTime";
 import NextLink from "next/link";
+import { getStatusTimelineV2Data } from "@/lib/statusTimelineClient";
 
 function getMonthName(monthNumber: number): string {
   const date = new Date();
@@ -60,8 +48,7 @@ const EmptyInsight = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`/api/new/graphsv2`);
-        const jsonData = await response.json();
+        const jsonData = await getStatusTimelineV2Data();
         console.log("rip data:",jsonData.rip);
         setData(jsonData.eip?.concat(jsonData.erc?.concat(jsonData.rip)));
         // setIsLoading(false);
@@ -151,117 +138,117 @@ const EmptyInsight = () => {
               transition={{ duration: 0.5 } as any}
               className="hover: cursor-pointer ease-in duration-200"
             >
-              <TableContainer>
-                <Table variant="simple" minW="50%" maxH={"50%"} layout="fixed">
-                  <Thead>
-                    <Tr>
-                      <Th minW="50px">Status</Th>
-                      <Th minW="200px">Numbers</Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody>
-                    <Tr>
-                      <Td minW="100px">
+              <Table.ScrollArea>
+                <Table.Root variant="simple" minW="50%" maxH={"50%"} layout="fixed">
+                  <Table.Header>
+                    <Table.Row>
+                      <Table.ColumnHeader minW="50px">Status</Table.ColumnHeader>
+                      <Table.ColumnHeader minW="200px">Numbers</Table.ColumnHeader>
+                    </Table.Row>
+                  </Table.Header>
+                  <Table.Body>
+                    <Table.Row>
+                      <Table.Cell minW="100px">
                         <Wrap>
                           <WrapItem>
-                            <Badge colorScheme={getStatusColor("Draft")}>
+                            <Badge colorPalette={getStatusColor("Draft")}>
                               Draft
                             </Badge>
                           </WrapItem>
                         </Wrap>
-                      </Td>
-                      <Td>
+                      </Table.Cell>
+                      <Table.Cell>
                         <Link
                           href={`/`}
                           className="text-blue-400 hover:cursor-pointer font-semibold"
                         >
                           0
                         </Link>
-                      </Td>
-                    </Tr>
+                      </Table.Cell>
+                    </Table.Row>
 
-                    <Tr>
-                      <Td minW="100px">
+                    <Table.Row>
+                      <Table.Cell minW="100px">
                         <Wrap>
                           <WrapItem>
-                            <Badge colorScheme={getStatusColor("Review")}>
+                            <Badge colorPalette={getStatusColor("Review")}>
                               Review
                             </Badge>
                           </WrapItem>
                         </Wrap>
-                      </Td>
-                      <Td>
+                      </Table.Cell>
+                      <Table.Cell>
                         <Link
                           href={`/`}
                           className="text-blue-400 hover:cursor-pointer font-semibold"
                         >
                           0
                         </Link>
-                      </Td>
-                    </Tr>
+                      </Table.Cell>
+                    </Table.Row>
 
-                    <Tr>
-                      <Td minW="100px">
+                    <Table.Row>
+                      <Table.Cell minW="100px">
                         <Wrap>
                           <WrapItem>
-                            <Badge colorScheme={getStatusColor("Last Call")}>
+                            <Badge colorPalette={getStatusColor("Last Call")}>
                               Last Call
                             </Badge>
                           </WrapItem>
                         </Wrap>
-                      </Td>
-                      <Td>
+                      </Table.Cell>
+                      <Table.Cell>
                         <Link
                           href={`/`}
                           className="text-blue-400 hover:cursor-pointer font-semibold"
                         >
                           0
                         </Link>
-                      </Td>
-                    </Tr>
+                      </Table.Cell>
+                    </Table.Row>
 
-                    <Tr>
-                      <Td minW="100px">
+                    <Table.Row>
+                      <Table.Cell minW="100px">
                         <Wrap>
                           <WrapItem>
-                            <Badge colorScheme={getStatusColor("Final")}>
+                            <Badge colorPalette={getStatusColor("Final")}>
                               Final
                             </Badge>
                           </WrapItem>
                         </Wrap>
-                      </Td>
-                      <Td>
+                      </Table.Cell>
+                      <Table.Cell>
                         <Link
                           href={`/`}
                           className="text-blue-400 hover:cursor-pointer font-semibold"
                         >
                           0
                         </Link>
-                      </Td>
-                    </Tr>
+                      </Table.Cell>
+                    </Table.Row>
 
-                    <Tr>
-                      <Td minW="100px">
+                    <Table.Row>
+                      <Table.Cell minW="100px">
                         <Wrap>
                           <WrapItem>
-                            <Badge colorScheme={getStatusColor("Last Call")}>
+                            <Badge colorPalette={getStatusColor("Last Call")}>
                               Stagnant
                             </Badge>
                           </WrapItem>
                         </Wrap>
-                      </Td>
-                      <Td>
+                      </Table.Cell>
+                      <Table.Cell>
                         <Link
                           href={`/`}
                           className="text-blue-400 hover:cursor-pointer font-semibold"
                         >
                           0
                         </Link>
-                      </Td>
-                    </Tr>
-                  </Tbody>
-                </Table>
-              </TableContainer>
+                      </Table.Cell>
+                    </Table.Row>
+                  </Table.Body>
+                </Table.Root>
+              </Table.ScrollArea>
               <Box className={"w-full"}>
                 <DateTime />
               </Box>

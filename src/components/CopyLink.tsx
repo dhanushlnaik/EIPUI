@@ -1,6 +1,9 @@
-import { IconButton, useToast, useColorModeValue, Tooltip, useBreakpointValue } from "@chakra-ui/react";
-import { CopyIcon, CheckIcon } from "@chakra-ui/icons";
+import { useToast } from "@/components/ui/use-toast";
+import { Steps, IconButton, useBreakpointValue, Icon } from "@chakra-ui/react";
+import { Tooltip } from '@/components/ui/tooltip';
+import { useColorModeValue } from "./ui/color-mode";
 import { useState } from "react";
+import { LuCheck, LuCopy } from 'react-icons/lu';
 
 // Reusable CopyLink component
 interface CopyLinkProps {
@@ -41,11 +44,10 @@ const CopyLink: React.FC<CopyLinkProps> = ({ link, style }) => {
   };
 
   return (
-    <Tooltip label={isCopied ? 'Copied' : 'Copy link'} hasArrow>
+    <Tooltip content={isCopied ? 'Copied' : 'Copy link'} showArrow>
       <IconButton
         onClick={copyToClipboard}
         aria-label={isCopied ? 'Copied' : 'Copy link'}
-        icon={isCopied ? <CheckIcon boxSize={iconSize} /> : <CopyIcon boxSize={iconSize} />}
         variant="outline"
         size="sm"
         bg={bg}
@@ -54,8 +56,7 @@ const CopyLink: React.FC<CopyLinkProps> = ({ link, style }) => {
         _active={{ transform: 'translateY(0)' }}
         borderRadius="md"
         aria-pressed={isCopied}
-        ml={2}
-      />
+        ml={2}>{isCopied ? <Icon as={LuCheck} boxSize={iconSize} /> : <Icon as={LuCopy} boxSize={iconSize} />}</IconButton>
     </Tooltip>
   );
 };

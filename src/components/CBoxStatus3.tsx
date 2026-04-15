@@ -1,27 +1,12 @@
+import { TableContainer, Thead, Tbody, Tr, Th, Td } from "@/components/ui/compat";
 import React, { useState, useEffect } from "react";
-import {
-  Badge,
-  Box,
-  Link,
-  Table,
-  TableContainer,
-  Tbody,
-  Td,
-  Text,
-  Th,
-  Thead,
-  Tr,
-  Wrap,
-  WrapItem,
-  useColorModeValue,
-  Select,
-  Button,
-} from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
+import { Badge, Box, Link, Table, Text, Wrap, WrapItem, Select, Button, Icon } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import DateTime from "@/components/DateTime";
-import { DownloadIcon } from "@chakra-ui/icons";
 import { Spinner } from "@chakra-ui/react";
 import axios from "axios";
+import { LuDownload } from 'react-icons/lu';
 
 interface EIP {
   _id: string;
@@ -280,8 +265,8 @@ const CBoxStatus: React.FC<CBoxProps> = ({ dataset,status, type }) => {
   const numRows = typeData?.length + 4;
 const rowHeight = 40; // Assuming each row has a height of 40px
 const maxHeight = `${numRows * rowHeight}px`;
-const rows = [];
-const standardTrackKeys = [];
+const rows: any[] = [];
+const standardTrackKeys: string[] = [];
 
 var total = 0;
 for (const key in result) {
@@ -395,14 +380,14 @@ for (const key of standardTrackKeys) {
   return (
     <>
       {isLoading ? ( // Show loader while data is loading
-        <Box
+        (<Box
           display="flex"
           justifyContent="center"
           alignItems="center"
           height="200px"
         >
           <Spinner />
-        </Box>
+        </Box>)
       ) : (
         <Box
           bgColor={bg}
@@ -440,7 +425,7 @@ for (const key of standardTrackKeys) {
   
             <Box>
               <Button
-                colorScheme="blue"
+                colorPalette="blue"
                 variant="outline"
                 fontSize={"14px"}
                 fontWeight={"bold"}
@@ -457,7 +442,7 @@ for (const key of standardTrackKeys) {
                   }
                 }}
               >
-                <DownloadIcon marginEnd={"1.5"} />
+                <Icon as={LuDownload} marginEnd={"1.5"} />
                 Download Reports
               </Button>
             </Box>

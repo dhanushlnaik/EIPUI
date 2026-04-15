@@ -1,13 +1,8 @@
 import React, { useState, useRef } from 'react';
-import {
-  Box,
-  HStack,
-  IconButton,
-  useColorModeValue,
-  Tooltip,
-  VStack,
-} from '@chakra-ui/react';
-import { AddIcon, MinusIcon, RepeatIcon } from '@chakra-ui/icons';
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, HStack, IconButton, VStack } from "@chakra-ui/react";
+import { Tooltip } from '@/components/ui/tooltip';
+import { LuMinus, LuPlus, LuRepeat } from 'react-icons/lu';
 
 interface ZoomableTimelineProps {
   svgPath: string;
@@ -60,7 +55,7 @@ const ZoomableTimeline: React.FC<ZoomableTimelineProps> = ({ svgPath, alt = 'Tim
           position="absolute" 
           top={3} 
           right={3} 
-          spacing={1.5} 
+          gap={1.5} 
           zIndex={10} 
           bg={useColorModeValue('rgba(255,255,255,0.95)', 'rgba(26,32,44,0.95)')}
           borderRadius="md" 
@@ -70,37 +65,31 @@ const ZoomableTimeline: React.FC<ZoomableTimelineProps> = ({ svgPath, alt = 'Tim
           border="1px solid"
           borderColor={useColorModeValue('gray.200', 'gray.600')}
         >
-          <Tooltip label="Zoom In">
+          <Tooltip content="Zoom In">
             <IconButton
               aria-label="Zoom in"
-              icon={<AddIcon />}
               size="xs"
               onClick={handleZoomIn}
-              isDisabled={scale >= 3}
+              disabled={scale >= 3}
               variant="ghost"
-              colorScheme="blue"
-            />
+              colorPalette="blue"><LuPlus /></IconButton>
           </Tooltip>
-          <Tooltip label="Zoom Out">
+          <Tooltip content="Zoom Out">
             <IconButton
               aria-label="Zoom out"
-              icon={<MinusIcon />}
               size="xs"
               onClick={handleZoomOut}
-              isDisabled={scale <= 0.5}
+              disabled={scale <= 0.5}
               variant="ghost"
-              colorScheme="blue"
-            />
+              colorPalette="blue"><LuMinus /></IconButton>
           </Tooltip>
-          <Tooltip label="Reset">
+          <Tooltip content="Reset">
             <IconButton
               aria-label="Reset zoom"
-              icon={<RepeatIcon />}
               size="xs"
               onClick={handleReset}
               variant="ghost"
-              colorScheme="blue"
-            />
+              colorPalette="blue"><LuRepeat /></IconButton>
           </Tooltip>
         </HStack>
 

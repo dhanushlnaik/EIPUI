@@ -1,19 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useColorModeValue } from "./ui/color-mode";
 import AllLayout from "@/components/Layout";
-import {
-  Box,
-  Text,
-  HStack,
-  VStack,
-  Flex,
-  Tooltip,
-  Button,
-  Spinner,
-  Select,
-} from "@chakra-ui/react";
-import { keyframes } from '@chakra-ui/system';
+import { Steps, Box, Text, HStack, VStack, Flex, Button, Spinner, NativeSelect } from "@chakra-ui/react";
+import { Tooltip } from '@/components/ui/tooltip';
+import { keyframes } from '@emotion/react';
 import { motion } from "framer-motion";
-import { useColorModeValue } from "@chakra-ui/react";
 
 // Define the structure of a network
 interface NetworkConfig {
@@ -193,7 +184,7 @@ const SlotCountdown: React.FC = () => {
   const renderSlotsView = () => (
     <>
       {/* First Row: 18 Boxes */}
-      <HStack spacing={1} wrap="wrap" justify="center" mb={2}>
+      <HStack gap={1} wrap="wrap" justify="center" mb={2}>
         {firstRowSlots?.map((slot) => {
           const isProcessed = slot < currentSlot;
           const isCurrent = slot === currentSlot;
@@ -203,11 +194,13 @@ const SlotCountdown: React.FC = () => {
           return (
             <Tooltip
               key={slot}
-              label={isProcessed ? `Epoch: ${epochOfSlot}, Block: ${blockOfSlot}` : undefined}
-              hasArrow
-              placement="top"
+              content={isProcessed ? `Epoch: ${epochOfSlot}, Block: ${blockOfSlot}` : undefined}
+              showArrow
               bg="gray.700"
               color="white"
+              positioning={{
+                placement: "top"
+              }}
             >
               <Box
                 w={{ base: "45px", md: "55px" }}
@@ -240,7 +233,7 @@ const SlotCountdown: React.FC = () => {
       </HStack>
   
       {/* Second Row: 14 Boxes + Text + Golden Box */}
-      <HStack spacing={1} wrap="wrap" justify="center">
+      <HStack gap={1} wrap="wrap" justify="center">
         {secondRowSlots?.map((slot) => {
           const isProcessed = slot < currentSlot;
           const isCurrent = slot === currentSlot;
@@ -250,11 +243,13 @@ const SlotCountdown: React.FC = () => {
           return (
             <Tooltip
               key={slot}
-              label={isProcessed ? `Epoch: ${epochOfSlot}, Block: ${blockOfSlot}` : undefined}
-              hasArrow
-              placement="top"
+              content={isProcessed ? `Epoch: ${epochOfSlot}, Block: ${blockOfSlot}` : undefined}
+              showArrow
               bg="gray.700"
               color="white"
+              positioning={{
+                placement: "top"
+              }}
             >
               <Box
                 w={{ base: "45px", md: "55px" }}
@@ -286,7 +281,7 @@ const SlotCountdown: React.FC = () => {
         })}
   
         {/* Vertical Stacked Text */}
-        <VStack spacing={0} align="center" justify="center" ml={2} pt={2} pb={2}>
+        <VStack gap={0} align="center" justify="center" ml={2} pt={2} pb={2}>
           {networks[network].target !== 999999999 ? (
             <>
               <Text fontSize="xs" fontWeight="bold" color="white">
@@ -308,11 +303,13 @@ const SlotCountdown: React.FC = () => {
   
         {/* Golden Box */}
         <Tooltip
-        label={`Target Slot: ${networks[network].target}, Date: May 07, 2025 (10:05:11 UTC)`}
-        hasArrow
-        placement="top"
+        content={`Target Slot: ${networks[network].target}, Date: May 07, 2025 (10:05:11 UTC)`}
+        showArrow
         bg="gray.700"
         color="white"
+        positioning={{
+          placement: "top"
+        }}
       >
         <Box
           w={{ base: "45px", md: "55px" }}
@@ -338,14 +335,16 @@ const SlotCountdown: React.FC = () => {
   );
 
   const renderEpochsView = () => (
-    <HStack spacing={1} wrap="wrap" justify="center">
+    <HStack gap={1} wrap="wrap" justify="center">
       {/* Current Epoch */}
       <Tooltip
-        label={`Epoch: ${currentEpoch}, Current Slot: ${currentSlot}`}
-        hasArrow
-        placement="top"
+        content={`Epoch: ${currentEpoch}, Current Slot: ${currentSlot}`}
+        showArrow
         bg="gray.700"
         color="white"
+        positioning={{
+          placement: "top"
+        }}
       >
         <Box
           w={{ base: "45px", md: "55px" }}
@@ -373,43 +372,45 @@ const SlotCountdown: React.FC = () => {
         return (
           <Tooltip
           key={epoch}
-          label={isCurrent ? `Epoch: ${currentEpoch}, Current Slot: ${currentSlot}` : undefined}
-          hasArrow
-          placement="top"
+          content={isCurrent ? `Epoch: ${currentEpoch}, Current Slot: ${currentSlot}` : undefined}
+          showArrow
           bg="gray.700"
           color="white"
+          positioning={{
+            placement: "top"
+          }}
         >
-          <Box
-            key={epoch}
-            w={{ base: "45px", md: "55px" }}
-            h={{ base: "45px", md: "55px" }}
-            borderRadius="md"
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            bg={
-              isTarget
-                ? "gold"
-                : isFuture
-                ? "blue.500"
-                : "purple.500"
-            }
-            color="white"
-            fontSize={{ base: "10px", md: "9px" }}
-            fontWeight="bold"
-            _hover={{
-              transform: "scale(1.1)",
-              transition: "transform 0.2s",
-            }}
-          >
-            {epoch}
-          </Box>
+            <Box
+              key={epoch}
+              w={{ base: "45px", md: "55px" }}
+              h={{ base: "45px", md: "55px" }}
+              borderRadius="md"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              bg={
+                isTarget
+                  ? "gold"
+                  : isFuture
+                  ? "blue.500"
+                  : "purple.500"
+              }
+              color="white"
+              fontSize={{ base: "10px", md: "9px" }}
+              fontWeight="bold"
+              _hover={{
+                transform: "scale(1.1)",
+                transition: "transform 0.2s",
+              }}
+            >
+              {epoch}
+            </Box>
           </Tooltip>
         );
       })}
 
       {/* Countdown Text */}
-      <VStack spacing={0} align="center" justify="center" ml={2} pt={2} pb={2}>
+      <VStack gap={0} align="center" justify="center" ml={2} pt={2} pb={2}>
         {networks[network].targetepoch !== 999999999 ? (
           <>
             <Text fontSize="xs" fontWeight="bold" color="white">
@@ -431,11 +432,13 @@ const SlotCountdown: React.FC = () => {
 
       {/* Target Epoch Box */}
       <Tooltip
-        label={`Target epoch: ${networks[network].targetepoch}, Date: May 07, 2025 (10:05:11 UTC)`}
-        hasArrow
-        placement="top"
+        content={`Target epoch: ${networks[network].targetepoch}, Date: May 07, 2025 (10:05:11 UTC)`}
+        showArrow
         bg="gray.700"
         color="white"
+        positioning={{
+          placement: "top"
+        }}
       >
       <Box
         w={{ base: "45px", md: "55px" }}
@@ -512,37 +515,42 @@ const SlotCountdown: React.FC = () => {
     width={{ base: "100%", md: "auto" }} // Full width on mobile
     textAlign={{ base: "center", md: "right" }} // Center on mobile
   >
-    <Select
-      value={viewMode}
-      onChange={(e) => setViewMode(e.target.value as "slots" | "epochs")}
-      width={{ base: "100%", md: "150px" }} // Full width on mobile
-      maxWidth={{ base: "200px", md: "150px" }} // Constrain width
-      bg={useColorModeValue("white", "gray.700")}
-      color={useColorModeValue("black", "white")}
-      mx="auto" // Center on mobile
-    >
-      <option value="epochs">Epoch</option>
-      <option value="slots">Slot</option>
-    </Select>
+    <NativeSelect.Root>
+      <NativeSelect.Field
+        value={viewMode}
+        onValueChange={(e) => setViewMode(e.target.value as "slots" | "epochs")}
+        // Full width on mobile
+        width={{ base: "100%", md: "150px" }}
+        // Constrain width
+        maxWidth={{ base: "200px", md: "150px" }}
+        bg={useColorModeValue("white", "gray.700")}
+        color={useColorModeValue("black", "white")}
+        // Center on mobile
+        mx="auto">
+        <option value="epochs">Epoch</option>
+        <option value="slots">Slot</option>
+      </NativeSelect.Field>
+      <NativeSelect.Indicator />
+    </NativeSelect.Root>
   </Box>
 </Flex>
 
           {/* Network Toggle Buttons */}
-          <HStack spacing={4} justify="center" mb={4}>
+          <HStack gap={4} justify="center" mb={4}>
             <Button
-              colorScheme={network === "holesky" ? "blue" : "gray"}
+              colorPalette={network === "holesky" ? "blue" : "gray"}
               onClick={() => handleNetworkChange("holesky")}
             >
               Holesky
             </Button>
             <Button
-              colorScheme={network === "sepolia" ? "blue" : "gray"}
+              colorPalette={network === "sepolia" ? "blue" : "gray"}
               onClick={() => handleNetworkChange("sepolia")}
             >
               Sepolia
             </Button>
             <Button
-              colorScheme={network === "mainnet" ? "blue" : "gray"}
+              colorPalette={network === "mainnet" ? "blue" : "gray"}
               onClick={() => handleNetworkChange("mainnet")}
             >
               Mainnet
@@ -592,7 +600,6 @@ const SlotCountdown: React.FC = () => {
           )}
         </Box>
       </motion.div>
-
       {/* Blinking Animation */}
       <style>
         {`

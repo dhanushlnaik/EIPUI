@@ -1,17 +1,6 @@
 import { ReactNode } from "react";
-import {
-  Box,
-  Container,
-  Stack,
-  SimpleGrid,
-  Text,
-  Link,
-  VisuallyHidden,
-  chakra,
-  useColorModeValue,
-  Button,
-  Flex,
-} from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Container, Stack, SimpleGrid, Text, Link, VisuallyHidden, chakra, Button, Flex } from "@chakra-ui/react";
 import { FaTwitter, FaYoutube, FaInstagram } from "react-icons/fa";
 import NextLink from "next/link";
 import { BsGithub, BsDiscord, BsTwitter, BsInstagram, BsYoutube, BsLinkedin, BsNewspaper } from 'react-icons/bs'
@@ -64,8 +53,6 @@ export default function LargeWithAppLinksAndSocial() {
   const year = new Date().getFullYear();
 
   return (
-
-
     <>
       <Box
         bg={useColorModeValue("gray.50", "gray.900")}
@@ -76,12 +63,12 @@ export default function LargeWithAppLinksAndSocial() {
         <Container maxW="7xl">
           <SimpleGrid
             columns={{ base: 1, md: 3 }}
-            spacing={{ base: 8, md: 8 }}
+            gap={{ base: 8, md: 8 }}
             alignItems="flex-start"
           >
             {/* EIPs Insight Section */}
             <Box>
-              <Stack spacing={5} h="100%" justify="space-between">
+              <Stack gap={5} h="100%" justify="space-between">
                 <Box>
                   <Text fontSize="xl" fontWeight="bold" color={useColorModeValue("gray.800", "white")} mb={4}>
                     EIPs Insight
@@ -121,12 +108,12 @@ export default function LargeWithAppLinksAndSocial() {
 
             {/* Links Section */}
             <Box>
-              <Stack spacing={4}>
+              <Stack gap={4}>
                 <Text fontSize="xl" fontWeight="bold" textDecoration="underline" textUnderlineOffset="4px">
                   Links
                 </Text>
                 
-                <SimpleGrid columns={2} spacing={4} spacingY={3}>
+                <SimpleGrid columns={2} gap={4} spacingY={3}>
                   <Box>
                     <NextLink href="/all">
                       <Text 
@@ -246,10 +233,10 @@ export default function LargeWithAppLinksAndSocial() {
 
             {/* Follow Us Section */}
             <Box>
-              <Stack spacing={4}>
+              <Stack gap={4}>
                 <Text fontSize="xl" fontWeight="bold">Follow Us</Text>
 
-                <SimpleGrid columns={2} spacing={4}>
+                <SimpleGrid columns={2} gap={4}>
                   <NextLink href="https://twitter.com/TeamAvarch" target="_blank">
                     <Flex align="center" gap={2} _hover={{ transform: "translateX(2px)" }} transition="transform 0.2s" cursor="pointer">
                       <BsTwitter size={18} />
@@ -282,7 +269,7 @@ export default function LargeWithAppLinksAndSocial() {
                 <NextLink href="https://buy.stripe.com/test_7sI7sXdHu9SL8JG001" target="_blank">
                   <Button 
                     variant="outline" 
-                    colorScheme="blue" 
+                    colorPalette="blue" 
                     size="sm"
                     w="full"
                     mt={4}

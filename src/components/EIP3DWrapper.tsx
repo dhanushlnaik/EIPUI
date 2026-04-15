@@ -1,5 +1,6 @@
+"use client";
 // components/EIP3DGraphWrapper.tsx
-'use client';
+
 
 import dynamic from 'next/dynamic';
 

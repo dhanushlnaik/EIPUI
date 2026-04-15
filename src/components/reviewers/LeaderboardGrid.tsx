@@ -1,26 +1,13 @@
 import React, { useState } from 'react';
-import {
-  Box,
-  Button,
-  Flex,
-  Grid,
-  Heading,
-  Text,
-  useColorModeValue,
-  Avatar,
-  Badge,
-  HStack,
-  VStack,
-  ButtonGroup,
-  IconButton,
-  Tooltip,
-} from '@chakra-ui/react';
-import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
+import { useColorModeValue } from "../ui/color-mode";
+import { Steps, Box, Button, Flex, Grid, Heading, Text, Avatar, Badge, HStack, VStack, ButtonGroup, IconButton } from "@chakra-ui/react";
+import { Tooltip } from '@/components/ui/tooltip';
 import { BsListUl, BsBarChartFill } from 'react-icons/bs';
 import { CSVLink } from 'react-csv';
 import CopyLink from '@/components/CopyLink';
 import dynamic from 'next/dynamic';
 import DateTime from '@/components/DateTime';
+import { LuEye, LuEyeOff } from 'react-icons/lu';
 
 const Bar = dynamic(() => import('@ant-design/plots').then((mod) => mod.Bar), { ssr: false });
 
@@ -80,25 +67,21 @@ const LeaderboardGrid: React.FC<LeaderboardGridProps> = ({
           {title}
           {copyLink && <CopyLink link={copyLink} />}
         </Heading>
-        <HStack spacing={2}>
-          <ButtonGroup size="sm" isAttached variant="outline">
-            <Tooltip label="List View">
+        <HStack gap={2}>
+          <ButtonGroup size="sm" attached variant="outline">
+            <Tooltip content="List View">
               <IconButton
                 aria-label="List view"
-                icon={<BsListUl />}
                 onClick={() => setViewMode('list')}
-                colorScheme={viewMode === 'list' ? 'blue' : 'gray'}
-                variant={viewMode === 'list' ? 'solid' : 'outline'}
-              />
+                colorPalette={viewMode === 'list' ? 'blue' : 'gray'}
+                variant={viewMode === 'list' ? 'solid' : 'outline'}><BsListUl /></IconButton>
             </Tooltip>
-            <Tooltip label="Chart View">
+            <Tooltip content="Chart View">
               <IconButton
                 aria-label="Chart view"
-                icon={<BsBarChartFill />}
                 onClick={() => setViewMode('chart')}
-                colorScheme={viewMode === 'chart' ? 'blue' : 'gray'}
-                variant={viewMode === 'chart' ? 'solid' : 'outline'}
-              />
+                colorPalette={viewMode === 'chart' ? 'blue' : 'gray'}
+                variant={viewMode === 'chart' ? 'solid' : 'outline'}><BsBarChartFill /></IconButton>
             </Tooltip>
           </ButtonGroup>
           <CSVLink
@@ -106,16 +89,15 @@ const LeaderboardGrid: React.FC<LeaderboardGridProps> = ({
             filename={csvFilename}
             onClick={onDownloadCSV}
           >
-            <Button size="sm" colorScheme="blue" isLoading={loading}>
+            <Button size="sm" colorPalette="blue" loading={loading}>
               Download CSV
             </Button>
           </CSVLink>
         </HStack>
       </Flex>
-
       {viewMode === 'list' ? (
         <>
-          <VStack spacing={3} align="stretch">
+          <VStack gap={3} align="stretch">
             {displayedData.map((item, index) => (
               <Box
                 key={item.reviewer}
@@ -128,22 +110,18 @@ const LeaderboardGrid: React.FC<LeaderboardGridProps> = ({
                 _hover={{ bg: hoverBg, transform: 'translateY(-2px)', boxShadow: 'md' }}
               >
                 <Flex justifyContent="space-between" alignItems="center">
-                  <HStack spacing={4}>
+                  <HStack gap={4}>
                     <Badge
                       fontSize="lg"
-                      colorScheme={index === 0 ? 'yellow' : index === 1 ? 'gray' : 'orange'}
+                      colorPalette={index === 0 ? 'yellow' : index === 1 ? 'gray' : 'orange'}
                       borderRadius="full"
                       px={3}
                       py={1}
                     >
                       #{(showAll ? 0 : 0) + index + 1}
                     </Badge>
-                    <Avatar
-                      size="md"
-                      name={item.reviewer}
-                      src={`https://github.com/${item.reviewer}.png?size=40`}
-                    />
-                    <VStack align="start" spacing={0}>
+                    <Avatar.Root size="md"><Avatar.Fallback name={item.reviewer} /><Avatar.Image src={`https://github.com/${item.reviewer}.png?size=40`} /></Avatar.Root>
+                    <VStack align="start" gap={0}>
                       <Text fontWeight="bold" fontSize="lg">
                         {item.reviewer}
                       </Text>
@@ -152,7 +130,7 @@ const LeaderboardGrid: React.FC<LeaderboardGridProps> = ({
                       </Text>
                     </VStack>
                   </HStack>
-                  <VStack align="end" spacing={0}>
+                  <VStack align="end" gap={0}>
                     <Text fontSize="2xl" fontWeight="bold" color="blue.500">
                       {item.count}
                     </Text>
@@ -170,7 +148,7 @@ const LeaderboardGrid: React.FC<LeaderboardGridProps> = ({
               mt={4}
               width="full"
               variant="outline"
-              colorScheme="blue"
+              colorPalette="blue"
               onClick={() => setShowAll(!showAll)}
             >
               {showAll ? 'Show Less' : `View More (${data.length - 1} more)`}
@@ -182,7 +160,6 @@ const LeaderboardGrid: React.FC<LeaderboardGridProps> = ({
           {barChartConfig && <Bar {...barChartConfig} />}
         </Box>
       )}
-
       <Box mt={4}>
         <DateTime />
       </Box>

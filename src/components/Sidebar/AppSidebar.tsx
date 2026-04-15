@@ -1,4 +1,7 @@
 "use client";
+import { MenuButton, MenuList, MenuDivider, shouldForwardProp } from "@/components/ui/compat";
+import { useToast } from "@/components/ui/use-toast";
+;
 import {
   FileText,
   Layers3,
@@ -13,26 +16,16 @@ import {
   ChevronLeft,
   ChevronDown,
 } from "lucide-react";
+import { useColorModeValue } from "../ui/color-mode";
 import { signOut } from 'next-auth/react';
-import { usePathname, useSearchParams } from 'next/navigation';
-import { IconButton, Tooltip } from "@chakra-ui/react";
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import { IconButton, Tooltip, Box, VStack, HStack, Text, Icon, Flex, Separator, Avatar, Menu, MenuItem, chakra } from "@chakra-ui/react";
 import { Variants } from "framer-motion";
-import {
-  Box,
-  VStack,
-  HStack,
-  Text,
-  Icon,
-  useColorModeValue,
-  Divider,
-  Flex,
-} from "@chakra-ui/react";
 
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSidebarStore } from "@/stores/useSidebarStore";
-import { children } from "cheerio/dist/commonjs/api/traversing";
 import {
   FiBarChart2,
   FiDatabase,
@@ -40,20 +33,7 @@ import {
   FiInfo,
   FiTool,
 } from "react-icons/fi";
-import {
-  Avatar,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  MenuDivider,
-  useToast,
-} from "@chakra-ui/react";
-import { useRouter } from "next/router";
-
-
-
-import { chakra, shouldForwardProp } from "@chakra-ui/react";
+// import { useRouter } from "next/router";
 import { isValidMotionProp } from "framer-motion";
 import { Rajdhani } from "next/font/google";
 import { useUserStore } from "@/stores/userStore";
@@ -105,10 +85,10 @@ function generateYearlyInsights() {
     { label: "Withdrawn", id: "Withdrawn" },
   ];
 
-  const years = [];
+  const years: any[] = [];
 
   for (let y = currentYear; y >= currentYear - 10; y--) {
-    const months = [];
+    const months: any[] = [];
 
     const endMonth = y === currentYear ? currentMonth : 11;
 
@@ -684,7 +664,7 @@ export default function AppSidebar() {
 
       {/* Main Items */}
       <VStack 
-        spacing={2} 
+        gap={2} 
         px={2} 
         align="stretch" 
         flex="1" 
@@ -726,10 +706,10 @@ export default function AppSidebar() {
         ))}
       </VStack>
 
-      <Divider borderColor={borderColor} my={2} />
+      <Separator borderColor={borderColor} my={2} />
 
       {/* Bottom Items */}
-      <VStack spacing={2} px={2} align="stretch">
+      <VStack gap={2} px={2} align="stretch">
         {bottomItems.map((item, index) => (
           <motion.div
             key={item.label}
@@ -776,13 +756,7 @@ export default function AppSidebar() {
       border="1px solid"
       borderColor={useColorModeValue("gray.200", "gray.600")}
     >
-      <Avatar
-        size="sm"
-        name={userData?.name}
-        src={userData?.image || undefined}
-        transition="all 0.2s"
-        _hover={{ transform: "scale(1.1)" }}
-      />
+      <Avatar.Root size="sm" transition="all 0.2s" _hover={{ transform: "scale(1.1)" }}><Avatar.Fallback name={userData?.name} /><Avatar.Image src={userData?.image || undefined} /></Avatar.Root>
       <Box flex="1" textAlign="left">
         <Text fontSize="sm" fontWeight="semibold" noOfLines={1}>
           {userData?.name || "Profile"}
@@ -838,44 +812,36 @@ export default function AppSidebar() {
       border="1px solid transparent"
       _active={{ transform: "scale(0.95)" }}
     >
-      <Avatar
-        size="sm"
-        name={userData?.name}
-        src={userData?.image || undefined}
-        transition="all 0.2s"
-        _hover={{ boxShadow: "lg" }}
-      />
+      <Avatar.Root size="sm" transition="all 0.2s" _hover={{ boxShadow: "lg" }}><Avatar.Fallback name={userData?.name} /><Avatar.Image src={userData?.image || undefined} /></Avatar.Root>
     </Box>
   </Tooltip>
         )}
       </Box>
 
     </Box>
-
-    {/* Flyout Menu */}
-    <AnimatePresence>
-      {flyoutMenu.isOpen && flyoutMenu.item && (
-        <Box
-          ref={flyoutRef}
-          position="fixed"
-          left={`${flyoutMenu.position.x}px`}
-          top={`${flyoutMenu.position.y}px`}
-          zIndex="60"
-          as={motion.div}
-          initial={{ opacity: 0, scale: 0.95, x: -10 }}
-          animate={{ opacity: 1, scale: 1, x: 0 }}
-          exit={{ opacity: 0, scale: 0.95, x: -10 }}
-          transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] } as any}
-        >
-          <FlyoutMenu 
-            item={flyoutMenu.item} 
-            onClose={() => setFlyoutMenu({ isOpen: false, item: null, position: { x: 0, y: 0 } })}
-          />
-        </Box>
-      )}
-    </AnimatePresence>
-  </>
-
+      {/* Flyout Menu */}
+      <AnimatePresence>
+        {flyoutMenu.isOpen && flyoutMenu.item && (
+          <Box
+            ref={flyoutRef}
+            position="fixed"
+            left={`${flyoutMenu.position.x}px`}
+            top={`${flyoutMenu.position.y}px`}
+            zIndex="60"
+            as={motion.div}
+            initial={{ opacity: 0, scale: 0.95, x: -10 }}
+            animate={{ opacity: 1, scale: 1, x: 0 }}
+            exit={{ opacity: 0, scale: 0.95, x: -10 }}
+            transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] } as any}
+          >
+            <FlyoutMenu 
+              item={flyoutMenu.item} 
+              onClose={() => setFlyoutMenu({ isOpen: false, item: null, position: { x: 0, y: 0 } })}
+            />
+          </Box>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
 
@@ -1013,7 +979,7 @@ export function SidebarItem({
         openDelay={300}
       >
         <HStack
-          spacing={3}
+          gap={3}
           px={depth > 0 ? 2 : 3}
           py={2.5}
           mx={1}
@@ -1148,7 +1114,6 @@ export function SidebarItem({
           )}
         </HStack>
       </Tooltip>
-
       {/* Submenu Items */}
       {hasChildren && (
         <AnimatePresence initial={false}>
@@ -1255,7 +1220,7 @@ function FlyoutMenu({ item, onClose }: { item: any; onClose: () => void }) {
       tabIndex={0}
       role="menuitem"
     >
-      <HStack spacing={2}>
+      <HStack gap={2}>
         {child.icon && <Icon as={child.icon} boxSize={4} />}
         <Text fontSize="sm" fontWeight={child.children?.length ? "semibold" : "normal"}>
           {child.label}

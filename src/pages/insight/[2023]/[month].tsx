@@ -1,17 +1,19 @@
 import React, { useEffect, useState, useLayoutEffect } from "react";
+import { useColorModeValue } from "../../../components/ui/color-mode";
 import { usePathname } from "next/navigation";
 import Header from "@/components/Header";
 import {
+  Steps,
   Box,
   Grid,
-  useColorModeValue,
   Text,
   Heading,
   useDisclosure,
   IconButton,
   Flex,
-  Collapse,
+  Collapsible,
   useToast,
+  Icon,
 } from "@chakra-ui/react";
 
 import AllLayout from "@/components/Layout";
@@ -21,8 +23,6 @@ import LoaderComponent from "@/components/Loader";
 import StackedColumnChart from "@/components/DraftBarChart";
 import NextLink from "next/link";
 
-import { ChevronUpIcon, ChevronDownIcon } from "@chakra-ui/icons";
-
 import InsightsAllStats from "@/components/InsightsAllStats";
 
 import { useRouter } from "next/router";
@@ -30,7 +30,10 @@ import { useRouter } from "next/router";
 import CopyLink from "@/components/CopyLink";
 
 import AreaStatus from "@/components/AreaStatus3";
+
 import { useScrollSpy } from "@/hooks/useScrollSpy";
+import { getStatusTimelineV2Data } from "@/lib/statusTimelineClient";
+import { LuChevronDown, LuChevronUp } from 'react-icons/lu';
 
 interface StatusChange {
   _id: string;
@@ -92,7 +95,7 @@ const Month = () => {
   const [data, setData] = useState<EIP[]>([]);
   const path = usePathname();
 
-  const { isOpen: showDropdown, onToggle: toggleDropdown } = useDisclosure();
+  const { open: showDropdown, onToggle: toggleDropdown } = useDisclosure();
   const [show, setShow] = useState(false);
 
   const toggleCollapse = () => setShow(!show);
@@ -118,8 +121,7 @@ const Month = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`/api/new/graphsv2`);
-        const jsonData = await response.json();
+        const jsonData = await getStatusTimelineV2Data();
         setData(jsonData.eip?.concat(jsonData.erc?.concat(jsonData.rip)));
         setIsLoading(false);
       } catch (error) {
@@ -190,7 +192,7 @@ const Month = () => {
       <AllLayout>
         {isLoading ? ( // Check if the data is still loading
           // Show loader if data is loading
-          <Box
+          (<Box
             display="flex"
             justifyContent="center"
             alignItems="center"
@@ -203,7 +205,7 @@ const Month = () => {
             >
               <LoaderComponent />
             </motion.div>
-          </Box>
+          </Box>)
         ) : (
           <>
             <motion.div
@@ -250,47 +252,48 @@ const Month = () => {
                     >
                       <IconButton
                         onClick={toggleCollapse}
-                        icon={
-                          show ? (
-                            <ChevronUpIcon boxSize={8} color="white" />
-                          ) : (
-                            <ChevronDownIcon boxSize={8} color="white" />
-                          )
-                        }
                         variant="ghost"
-                        h="24px" // Smaller height
+                        // Smaller height
+                        h="24px"
                         w="20px"
                         aria-label="Toggle Instructions"
-                        _hover={{ bg: "blue" }} // Maintain background color on hover
-                        _active={{ bg: "blue" }} // Maintain background color when active
-                        _focus={{ boxShadow: "none" }} // Remove focus outline
-                      />
+                        // Maintain background color on hover
+                        _hover={{ bg: "blue" }}
+                        // Maintain background color when active
+                        _active={{ bg: "blue" }}
+                        // Remove focus outline
+                        _focus={{ boxShadow: "none" }}>{show ? (
+                          <Icon as={LuChevronUp} boxSize={8} color="white" />
+                        ) : (
+                          <Icon as={LuChevronDown} boxSize={8} color="white" />
+                        )}</IconButton>
                     </Box>
                   </Flex>
-                  <Collapse in={show}>
-                    <Text
-                      fontSize="md"
-                      marginBottom={2}
-                      color={useColorModeValue("gray.800", "gray.200")}
-                    >
-                      <strong>Insight Summary:</strong> The numbers shown in the
-                      table represent the status changes or new drafts that
-                      appeared during a specific month. For a detailed view of
-                      this data, simply click on the numbers.
-                    </Text>
-
-                    <Text
-                      fontSize="md"
-                      marginBottom={2}
-                      color={useColorModeValue("gray.800", "gray.200")}
-                    >
-                      <strong>Graph Breakdown:</strong> Each graph focuses on a
-                      specific status, such as "Draft" or "Final." Within each
-                      status, the columns show the data divided by individual
-                      categories, giving you a clear breakdown of how many EIPs
-                      from each category transitioned to that status.
-                    </Text>
-                  </Collapse>
+                  <Collapsible.Root open={show}>
+                    <Collapsible.Content>
+                      <Text
+                        fontSize="md"
+                        marginBottom={2}
+                        color={useColorModeValue("gray.800", "gray.200")}
+                      >
+                        <strong>Insight Summary:</strong> The numbers shown in the
+                        table represent the status changes or new drafts that
+                        appeared during a specific month. For a detailed view of
+                        this data, simply click on the numbers.
+                      </Text>
+                      <Text
+                        fontSize="md"
+                        marginBottom={2}
+                        color={useColorModeValue("gray.800", "gray.200")}
+                      >
+                        <strong>Graph Breakdown:</strong> Each graph focuses on a
+                        specific status, such as "Draft" or "Final." Within each
+                        status, the columns show the data divided by individual
+                        categories, giving you a clear breakdown of how many EIPs
+                        from each category transitioned to that status.
+                      </Text>
+                    </Collapsible.Content>
+                  </Collapsible.Root>
                 </Box>
                 <Box id="Summary" mt={6}>
                   <InsightsAllStats />

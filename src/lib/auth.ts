@@ -4,15 +4,15 @@ import bcrypt from 'bcryptjs';
 import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
 
-const adminJwtSecret = process.env.ADMIN_JWT_SECRET;
-
-if (!adminJwtSecret || adminJwtSecret.trim().length < 32) {
-  throw new Error(
-    'ADMIN_JWT_SECRET must be set to a strong secret (at least 32 characters).'
-  );
+function getJwtSecret() {
+  const adminJwtSecret = process.env.ADMIN_JWT_SECRET;
+  if (!adminJwtSecret || adminJwtSecret.trim().length < 32) {
+    throw new Error(
+      'ADMIN_JWT_SECRET must be set to a strong secret (at least 32 characters).'
+    );
+  }
+  return new TextEncoder().encode(adminJwtSecret);
 }
-
-const JWT_SECRET = new TextEncoder().encode(adminJwtSecret);
 
 export interface AdminSession {
   userId: string;
@@ -76,6 +76,7 @@ export async function authenticateAdmin(username: string, password: string): Pro
  * Create JWT token for admin session
  */
 export async function createAdminToken(session: AdminSession): Promise<string> {
+  const JWT_SECRET = getJwtSecret();
   const token = await new SignJWT({ 
     userId: session.userId,
     username: session.username,
@@ -94,6 +95,7 @@ export async function createAdminToken(session: AdminSession): Promise<string> {
  */
 export async function verifyAdminToken(token: string): Promise<AdminSession | null> {
   try {
+    const JWT_SECRET = getJwtSecret();
     const { payload } = await jwtVerify(token, JWT_SECRET);
     
     return {

@@ -1,6 +1,8 @@
-import { Badge, Box, Link, Text, useColorModeValue, Flex } from "@chakra-ui/react";
+import { TableContainer } from "@/components/ui/compat";
+import { Steps, Badge, Box, Link, Text, Flex } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
 import React, { useState, useEffect } from "react";
-import { TableContainer } from "@chakra-ui/react";
+;
 import { CBadge, CCard, CCardBody, CCardFooter, CCardHeader, CSmartTable } from "@coreui/react-pro";
 import FlexBetween from "./FlexBetween";
 

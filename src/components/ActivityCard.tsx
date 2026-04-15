@@ -1,22 +1,7 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Flex,
-  Text,
-  Badge,
-  Icon,
-  HStack,
-  VStack,
-  Collapse,
-  Button,
-  Link,
-  Divider,
-  Code,
-  Wrap,
-  WrapItem,
-  useColorModeValue,
-  Tooltip,
-} from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Flex, Text, Badge, Icon, HStack, VStack, Collapsible, Button, Link, Code, Wrap, WrapItem, Separator } from "@chakra-ui/react";
+import { Tooltip } from '@/components/ui/tooltip';
 import {
   FiGitCommit,
   FiGitPullRequest,
@@ -87,7 +72,7 @@ export const ActivityCard: React.FC<ActivityCardProps> = ({ activity }) => {
   };
 
   const renderCommitDetails = () => (
-    <VStack align="start" spacing={3} mt={3}>
+    <VStack align="start" gap={3} mt={3}>
       {metadata.message && (
         <Box w="full">
           <Text fontWeight="semibold" fontSize="sm" mb={1}>
@@ -117,7 +102,7 @@ export const ActivityCard: React.FC<ActivityCardProps> = ({ activity }) => {
           </HStack>
         )}
         {metadata.verified !== undefined && (
-          <Badge colorScheme={metadata.verified ? "green" : "gray"}>
+          <Badge colorPalette={metadata.verified ? "green" : "gray"}>
             {metadata.verified ? "✓ Verified" : "Unverified"}
           </Badge>
         )}
@@ -148,7 +133,7 @@ export const ActivityCard: React.FC<ActivityCardProps> = ({ activity }) => {
   );
 
   const renderPRDetails = () => (
-    <VStack align="start" spacing={3} mt={3}>
+    <VStack align="start" gap={3} mt={3}>
       {metadata.body && (
         <Box w="full">
           <Text fontWeight="semibold" fontSize="sm" mb={1}>
@@ -174,7 +159,7 @@ export const ActivityCard: React.FC<ActivityCardProps> = ({ activity }) => {
       <Flex gap={4} flexWrap="wrap" fontSize="sm">
         {metadata.state && (
           <Badge
-            colorScheme={
+            colorPalette={
               metadata.state === "merged"
                 ? "purple"
                 : metadata.state === "open"
@@ -186,7 +171,7 @@ export const ActivityCard: React.FC<ActivityCardProps> = ({ activity }) => {
             {metadata.state}
           </Badge>
         )}
-        {metadata.draft && <Badge colorScheme="yellow">Draft</Badge>}
+        {metadata.draft && <Badge colorPalette="yellow">Draft</Badge>}
         {metadata.authorAssociation && (
           <Badge variant="outline">{metadata.authorAssociation}</Badge>
         )}
@@ -213,7 +198,7 @@ export const ActivityCard: React.FC<ActivityCardProps> = ({ activity }) => {
           <Wrap>
             {metadata.labels.map((label, idx) => (
               <WrapItem key={idx}>
-                <Badge colorScheme="blue" fontSize="xs">
+                <Badge colorPalette="blue" fontSize="xs">
                   {label}
                 </Badge>
               </WrapItem>
@@ -260,7 +245,7 @@ export const ActivityCard: React.FC<ActivityCardProps> = ({ activity }) => {
   );
 
   const renderReviewDetails = () => (
-    <VStack align="start" spacing={3} mt={3}>
+    <VStack align="start" gap={3} mt={3}>
       {metadata.reviewBody && (
         <Box w="full">
           <Text fontWeight="semibold" fontSize="sm" mb={1}>
@@ -286,7 +271,7 @@ export const ActivityCard: React.FC<ActivityCardProps> = ({ activity }) => {
       <Flex gap={4} flexWrap="wrap" fontSize="sm">
         {metadata.reviewState && (
           <Badge
-            colorScheme={
+            colorPalette={
               metadata.reviewState === "APPROVED"
                 ? "green"
                 : metadata.reviewState === "CHANGES_REQUESTED"
@@ -316,7 +301,7 @@ export const ActivityCard: React.FC<ActivityCardProps> = ({ activity }) => {
   );
 
   const renderCommentDetails = () => (
-    <VStack align="start" spacing={3} mt={3}>
+    <VStack align="start" gap={3} mt={3}>
       {metadata.commentBody && (
         <Box w="full">
           <Text fontWeight="semibold" fontSize="sm" mb={1}>
@@ -369,7 +354,7 @@ export const ActivityCard: React.FC<ActivityCardProps> = ({ activity }) => {
     }
 
     return (
-      <HStack spacing={4} fontSize="sm" mt={3}>
+      <HStack gap={4} fontSize="sm" mt={3}>
         {metadata.changedFiles !== undefined && (
           <HStack>
             <Icon as={FiFile} />
@@ -378,14 +363,14 @@ export const ActivityCard: React.FC<ActivityCardProps> = ({ activity }) => {
           </HStack>
         )}
         {metadata.additions !== undefined && (
-          <Tooltip label="Lines added">
+          <Tooltip content="Lines added">
             <Text color="green.500" fontWeight="medium">
               +{metadata.additions}
             </Text>
           </Tooltip>
         )}
         {metadata.deletions !== undefined && (
-          <Tooltip label="Lines deleted">
+          <Tooltip content="Lines deleted">
             <Text color="red.500" fontWeight="medium">
               -{metadata.deletions}
             </Text>
@@ -419,13 +404,13 @@ export const ActivityCard: React.FC<ActivityCardProps> = ({ activity }) => {
         />
         <Box flex={1}>
           <HStack justify="space-between" mb={2} flexWrap="wrap">
-            <HStack spacing={2}>
-              <Badge colorScheme={ACTIVITY_COLORS[activityType]}>
+            <HStack gap={2}>
+              <Badge colorPalette={ACTIVITY_COLORS[activityType]}>
                 {getActivityLabel(activityType)}
               </Badge>
               <Badge variant="outline">{repository.split("/")[1]}</Badge>
               {metadata.number && (
-                <Badge colorScheme="gray">#{metadata.number}</Badge>
+                <Badge colorPalette="gray">#{metadata.number}</Badge>
               )}
             </HStack>
             <Text fontSize="sm" color="gray.500">
@@ -434,7 +419,7 @@ export const ActivityCard: React.FC<ActivityCardProps> = ({ activity }) => {
           </HStack>
 
           {(metadata.title || metadata.message) && (
-            <Text fontWeight="medium" mb={1} noOfLines={isExpanded ? undefined : 2}>
+            <Text fontWeight="medium" mb={1} lineClamp={isExpanded ? undefined : 2}>
               {metadata.title || metadata.message?.split("\n")[0]}
             </Text>
           )}
@@ -442,14 +427,9 @@ export const ActivityCard: React.FC<ActivityCardProps> = ({ activity }) => {
           {renderCodeChanges()}
 
           {metadata.htmlUrl && (
-            <Link href={metadata.htmlUrl} isExternal mt={2}>
-              <Button
-                size="xs"
-                variant="ghost"
-                leftIcon={<Icon as={FiExternalLink} />}
-              >
-                View on GitHub
-              </Button>
+            <Link href={metadata.htmlUrl} mt={2} target='_blank' rel='noopener noreferrer'>
+              <Button size="xs" variant="ghost"><Icon as={FiExternalLink} />View on GitHub
+                              </Button>
             </Link>
           )}
 
@@ -457,36 +437,32 @@ export const ActivityCard: React.FC<ActivityCardProps> = ({ activity }) => {
             size="xs"
             variant="ghost"
             onClick={() => setIsExpanded(!isExpanded)}
-            leftIcon={<Icon as={isExpanded ? FiChevronUp : FiChevronDown} />}
-            mt={2}
-          >
-            {isExpanded ? "Show Less" : "Show Details"}
-          </Button>
+            mt={2}><Icon as={isExpanded ? FiChevronUp : FiChevronDown} />{isExpanded ? "Show Less" : "Show Details"}</Button>
 
-          <Collapse in={isExpanded} animateOpacity>
-            <Divider my={3} />
-            
-            {activityType === "COMMIT" && renderCommitDetails()}
-            {(activityType === "PR_OPENED" ||
-              activityType === "PR_MERGED" ||
-              activityType === "PR_CLOSED") &&
-              renderPRDetails()}
-            {(activityType === "REVIEW_APPROVED" ||
-              activityType === "REVIEW_COMMENTED" ||
-              activityType === "REVIEW_CHANGES_REQUESTED") &&
-              renderReviewDetails()}
-            {(activityType === "ISSUE_COMMENT" ||
-              activityType === "PR_COMMENT") &&
-              renderCommentDetails()}
-
-            {metadata.authorAssociation && (
-              <HStack mt={3} fontSize="sm">
-                <Icon as={FiUser} />
-                <Text color="gray.500">Association:</Text>
-                <Badge variant="outline">{metadata.authorAssociation}</Badge>
-              </HStack>
-            )}
-          </Collapse>
+          <Collapsible.Root open={isExpanded}>
+            <Collapsible.Content>
+              <Separator my={3} />
+              {activityType === "COMMIT" && renderCommitDetails()}
+              {(activityType === "PR_OPENED" ||
+                activityType === "PR_MERGED" ||
+                activityType === "PR_CLOSED") &&
+                renderPRDetails()}
+              {(activityType === "REVIEW_APPROVED" ||
+                activityType === "REVIEW_COMMENTED" ||
+                activityType === "REVIEW_CHANGES_REQUESTED") &&
+                renderReviewDetails()}
+              {(activityType === "ISSUE_COMMENT" ||
+                activityType === "PR_COMMENT") &&
+                renderCommentDetails()}
+              {metadata.authorAssociation && (
+                <HStack mt={3} fontSize="sm">
+                  <Icon as={FiUser} />
+                  <Text color="gray.500">Association:</Text>
+                  <Badge variant="outline">{metadata.authorAssociation}</Badge>
+                </HStack>
+              )}
+            </Collapsible.Content>
+          </Collapsible.Root>
         </Box>
       </Flex>
     </Box>

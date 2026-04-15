@@ -1,4 +1,5 @@
 import React from 'react';
+import { useColorModeValue } from "./ui/color-mode";
 // Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -7,7 +8,7 @@ import 'swiper/css/scrollbar';
 
 // Import Swiper styles
 import 'swiper/css';
-import {Box, Button, IconButton, Link, useColorModeValue} from "@chakra-ui/react";
+import { Steps, Box, Button, IconButton, Link } from "@chakra-ui/react";
 import AwesomeSlider from "react-awesome-slider";
 import {Youtube} from "react-feather";
 
@@ -24,7 +25,7 @@ const handleImageClick = (link: any) => {
 const FeaturedVideos: React.FC<FeaturedVideosProps> = ({title, summary, link}: FeaturedVideosProps) => {
     const bg = useColorModeValue("#f6f6f7", "#171923");
 
-    return(
+    return (
         <Box className='w-full flex items-center justify-between rounded-3xl p-6 md:p-12 md:hover:cursor-pointer ease-in duration-200'
              borderRadius="0.55rem"
              bgColor={bg}
@@ -43,7 +44,7 @@ const FeaturedVideos: React.FC<FeaturedVideosProps> = ({title, summary, link}: F
                 <div className='mt-2 flex items-center pt-4'>
                     <Link href={link} target="_blank">
                         <Button
-                            colorScheme="red"
+                            colorPalette="red"
                             variant="outline"
                             fontSize={{lg:'18px',md:'15px', base:'12px'}}
                             fontWeight={'bold'}
@@ -98,7 +99,7 @@ const FeaturedVideos: React.FC<FeaturedVideosProps> = ({title, summary, link}: F
                 </AwesomeSlider>
             </div>
         </Box>
-    )
+    );
 }
 
 export default FeaturedVideos;

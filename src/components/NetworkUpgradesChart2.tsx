@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from "react";
+import { useColorModeValue } from "./ui/color-mode";
 import dynamic from "next/dynamic";
-import { Box, useColorModeValue, Flex, Heading, Button } from "@chakra-ui/react";
+import { Steps, Box, Flex, Heading, Button } from "@chakra-ui/react";
 import axios from "axios";
 import CopyLink from "./CopyLink";
 const Column = dynamic(() => import("@ant-design/plots").then(mod => mod.Column), { ssr: false });

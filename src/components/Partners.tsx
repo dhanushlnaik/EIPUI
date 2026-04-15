@@ -1,5 +1,6 @@
 import React from 'react';
-import { Box, Heading, Flex, Image, useColorModeValue, VStack, Link as ChakraLink, HStack, Icon } from '@chakra-ui/react';
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Heading, Flex, Image, VStack, Link as ChakraLink, HStack, Icon } from "@chakra-ui/react";
 import { FaHandshake } from 'react-icons/fa';
 
 const Partners: React.FC = () => {
@@ -27,8 +28,8 @@ const Partners: React.FC = () => {
       borderColor={useColorModeValue('gray.200', 'gray.700')}
       boxShadow={useColorModeValue('sm', 'md')}
     >
-      <VStack spacing={4} align="stretch">
-        <HStack spacing={3}>
+      <VStack gap={4} align="stretch">
+        <HStack gap={3}>
           <Icon as={FaHandshake} boxSize={8} color={useColorModeValue('blue.500', 'blue.400')} />
           <Heading
             as="h2"
@@ -49,12 +50,12 @@ const Partners: React.FC = () => {
           wrap="wrap"
         >
           {partners.map((partner, index) => (
-            <ChakraLink 
+            <ChakraLink
               key={partner.name}
-              href={partner.url} 
-              isExternal 
+              href={partner.url}
               _hover={{ textDecoration: 'none' }}
-            >
+              target='_blank'
+              rel='noopener noreferrer'>
               <Box
                 p={2}
                 borderRadius="md"
@@ -72,9 +73,7 @@ const Partners: React.FC = () => {
                   src={partner.gif}
                   alt={`${partner.name} logo`}
                   boxSize={{ base: "120px", md: "150px" }}
-                  objectFit="contain"
-                  fallbackSrc="/logos/octant.svg"
-                />
+                  objectFit="contain" />
               </Box>
             </ChakraLink>
           ))}

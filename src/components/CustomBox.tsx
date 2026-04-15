@@ -1,19 +1,6 @@
-import {
-  Badge,
-  Box,
-  Link,
-  Table,
-  TableContainer,
-  Tbody,
-  Td,
-  Text,
-  Th,
-  Thead,
-  Tr,
-  Wrap,
-  WrapItem,
-  useColorModeValue,
-} from "@chakra-ui/react";
+import { TableContainer, Thead, Tbody, Tr, Th, Td } from "@/components/ui/compat";
+import { Steps, Badge, Box, Link, Table, Text, Wrap, WrapItem } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
 import { motion } from "framer-motion";
 import DateTime from "@/components/DateTime";
 import React from "react";
@@ -134,28 +121,28 @@ const CustomBox: React.FC<CustomBoxProps> = ({
       transition={{ duration: 0.5 } as any}
       className="hover: cursor-pointer ease-in duration-200 overflow-y-hidden h-full"
     >
-      <TableContainer>
-        <Table variant="simple" minW="50%" maxH={"50%"} layout="fixed">
-          <Thead>
-            <Tr>
-              <Th minW="50px">Status</Th>
-              <Th minW="200px">Numbers</Th>
-              <Th minW={"200px"}>Percentage</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
+      <Table.ScrollArea>
+        <Table.Root variant="simple" minW="50%" maxH={"50%"} layout="fixed">
+          <Table.Header>
+            <Table.Row>
+              <Table.ColumnHeader minW="50px">Status</Table.ColumnHeader>
+              <Table.ColumnHeader minW="200px">Numbers</Table.ColumnHeader>
+              <Table.ColumnHeader minW={"200px"}>Percentage</Table.ColumnHeader>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
             {data.sort(sortByCustomOrder)?.map((entry, index) => (
-              <Tr key={index}>
-                <Td minW="100px">
+              <Table.Row key={index}>
+                <Table.Cell minW="100px">
                   <Wrap>
                     <WrapItem>
-                      <Badge colorScheme={getStatusColor(entry._id)}>
+                      <Badge colorPalette={getStatusColor(entry._id)}>
                         {entry._id}
                       </Badge>
                     </WrapItem>
                   </Wrap>
-                </Td>
-                <Td>
+                </Table.Cell>
+                <Table.Cell>
                   <Link
                     href={`/monthly/${
                       type === "EIPs"
@@ -170,15 +157,15 @@ const CustomBox: React.FC<CustomBoxProps> = ({
                   >
                     {entry.count}
                   </Link>
-                </Td>
-                <Td className={"text-blue-400"}>
+                </Table.Cell>
+                <Table.Cell className={"text-blue-400"}>
                   {((entry.count / per) * 100).toFixed(2)}%
-                </Td>
-              </Tr>
+                </Table.Cell>
+              </Table.Row>
             ))}
-          </Tbody>
-        </Table>
-      </TableContainer>
+          </Table.Body>
+        </Table.Root>
+      </Table.ScrollArea>
       <Box className={"w-full"}>
         <DateTime />
       </Box>

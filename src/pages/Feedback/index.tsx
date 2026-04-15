@@ -1,18 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useColorModeValue } from "../../components/ui/color-mode";
 import axios from 'axios';
 import AllLayout from "@/components/Layout";
 import CloseableAdCard from "@/components/CloseableAdCard";
-import {
-  Box,
-  Text,
-  Avatar,
-  Button,
-  Input,
-  VStack,
-  Spinner,
-  useColorModeValue,
-  Flex,
-} from '@chakra-ui/react';
+import { Steps, Box, Text, Avatar, Button, Input, VStack, Spinner, Flex } from '@chakra-ui/react';
 import ReactMarkdown from 'react-markdown';
 
 interface Comment {
@@ -78,101 +69,100 @@ const Feedback: React.FC = () => {
     }
   };
 
-  return (<>
-    <AllLayout>
-      <Box minH="100vh"  py={8}>
-        <Text
-          fontSize="4xl"
-          fontWeight="bold"
-          textAlign="center"
-          color="#30A0E0"
-          mb={8}
-        >
-          Feedback
-        </Text>
+  return (
+    <>
+      <AllLayout>
+        <Box minH="100vh"  py={8}>
+          <Text
+            fontSize="4xl"
+            fontWeight="bold"
+            textAlign="center"
+            color="#30A0E0"
+            mb={8}
+          >
+            Feedback
+          </Text>
 
-        {/* EtherWorld Advertisement */}
-        <Box my={4} width="100%">
-          {/* <CloseableAdCard /> */}
-        </Box>
-
-        {isLoading ? (
-          <Box display="flex" justifyContent="center" alignItems="center" height="200px">
-            <Spinner />
+          {/* EtherWorld Advertisement */}
+          <Box my={4} width="100%">
+            {/* <CloseableAdCard /> */}
           </Box>
-        ) : (
-          <Box maxW="6xl" mx="auto">
-            {comments?.length === 0 ? (
-              <Text textAlign="center" fontSize="xl" color={textColor} mt={8}>
-                No feedback yet!
-              </Text>
-            ) : (
-              comments?.map((comment, index) => (
-                <Flex
-                  key={comment.id}
-                  flexDirection={index % 2 === 0 ? 'row' : 'row-reverse'}
-                  alignItems="center"
-                  mb={8}
-                >
-                  <Avatar
-                    size="xl"
-                    src={comment.profileImage}
-                    bg={comment.profileImage ? undefined : 'black'}
-                    mr={index % 2 === 0 ? 4 : 0}
-                    ml={index % 2 === 0 ? 0 : 4}
-                  />
-                  <Box
-                    bg={cardBg}
-                    p={6}
-                    borderRadius="md"
-                    shadow="md"
-                    maxW="400px"
-                  >
-                    <Text fontSize="lg" fontWeight="bold" color={textColor}>
-                      {comment.author}
-                    </Text>
-                    <div style={{ color: 'black' }}>
-                      <ReactMarkdown>
-                        {comment.content.split('\r\n\r\n')[0]}
-                      </ReactMarkdown>
-                    </div>
 
-                  </Box>
-                </Flex>
-              ))
-            )}
-
-            <Box mt={12} p={6} bg={cardBg} borderRadius="md">
-              <Text fontSize="xl" fontWeight="bold" mb={4} color={textColor}>
-                Add Your Feedback
-              </Text>
-              <VStack spacing={4}>
-                <Input
-                  placeholder="Your GitHub Username (e.g., octocat)"
-                  value={githubProfile}
-                  onChange={(e) => {
-                    setGithubProfile(e.target.value);
-                    setAuthorName(e.target.value);
-                  }}
-                  bg={bg}
-                  color={textColor}
-                />
-                <Input
-                  placeholder="Write a comment..."
-                  value={newComment}
-                  onChange={(e) => setNewComment(e.target.value)}
-                  bg={bg}
-                  color={textColor}
-                />
-                <Button colorScheme="blue" onClick={handleAddComment}>
-                  Submit
-                </Button>
-              </VStack>
+          {isLoading ? (
+            <Box display="flex" justifyContent="center" alignItems="center" height="200px">
+              <Spinner />
             </Box>
-          </Box>
-        )}
-      </Box>
-    </AllLayout>
+          ) : (
+            <Box maxW="6xl" mx="auto">
+              {comments?.length === 0 ? (
+                <Text textAlign="center" fontSize="xl" color={textColor} mt={8}>
+                  No feedback yet!
+                </Text>
+              ) : (
+                comments?.map((comment, index) => (
+                  <Flex
+                    key={comment.id}
+                    flexDirection={index % 2 === 0 ? 'row' : 'row-reverse'}
+                    alignItems="center"
+                    mb={8}
+                  >
+                    <Avatar.Root
+                      size="xl"
+                      bg={comment.profileImage ? undefined : 'black'}
+                      mr={index % 2 === 0 ? 4 : 0}
+                      ml={index % 2 === 0 ? 0 : 4}><Avatar.Fallback /><Avatar.Image src={comment.profileImage} /></Avatar.Root>
+                    <Box
+                      bg={cardBg}
+                      p={6}
+                      borderRadius="md"
+                      shadow="md"
+                      maxW="400px"
+                    >
+                      <Text fontSize="lg" fontWeight="bold" color={textColor}>
+                        {comment.author}
+                      </Text>
+                      <div style={{ color: 'black' }}>
+                        <ReactMarkdown>
+                          {comment.content.split('\r\n\r\n')[0]}
+                        </ReactMarkdown>
+                      </div>
+
+                    </Box>
+                  </Flex>
+                ))
+              )}
+
+              <Box mt={12} p={6} bg={cardBg} borderRadius="md">
+                <Text fontSize="xl" fontWeight="bold" mb={4} color={textColor}>
+                  Add Your Feedback
+                </Text>
+                <VStack gap={4}>
+                  <Input
+                    placeholder="Your GitHub Username (e.g., octocat)"
+                    value={githubProfile}
+                    onValueChange={(e) => {
+                      setGithubProfile(e.target.value);
+                      setAuthorName(e.target.value);
+                    }}
+                    bg={bg}
+                    color={textColor}
+                  />
+                  <Input
+                    placeholder="Write a comment..."
+                    value={newComment}
+                    onValueChange={(e) => setNewComment(e.target.value)}
+                    bg={bg}
+                    color={textColor}
+                  />
+                  <Button colorPalette="blue" onClick={handleAddComment}>
+                    Submit
+                  </Button>
+                </VStack>
+              </Box>
+            </Box>
+          )}
+        </Box>
+      </AllLayout>
     </>
   );
 };

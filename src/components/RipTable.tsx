@@ -1,16 +1,7 @@
 "use client";
-import {
-    Box,
-    Text,
-    useColorModeValue,
-    Wrap,
-    WrapItem,
-    Badge,
-    Link,
-    Flex,
-    Button,
-    Spinner
-} from "@chakra-ui/react";
+;
+import { Steps, Box, Text, Wrap, WrapItem, Badge, Link, Flex, Button, Spinner } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { CCardBody, CSmartTable } from "@coreui/react-pro";
@@ -137,8 +128,6 @@ const RipTable: React.FC<RipTableProps> = ({ dataset, cat, status }) => {
             transition={{ duration: 0.5 } as any}
             className="ease-in duration-200"
         >
-
-
             <CCardBody>
                 <>
                     <h2 className="text-blue-400 font-semibold text-4xl">
@@ -225,7 +214,7 @@ const RipTable: React.FC<RipTableProps> = ({ dataset, cat, status }) => {
                                         <Link href={`/${item.repo === 'erc' ? "ercs/erc" : item.repo === 'rip' ? "rips/rip" : "eips/eip"}-${item.eip}`}>
                                             <Wrap>
                                                 <WrapItem>
-                                                    <Badge colorScheme={getStatusColor(item.status)}>
+                                                    <Badge colorPalette={getStatusColor(item.status)}>
                                                         {item["#"]}
                                                     </Badge>
                                                 </WrapItem>
@@ -241,7 +230,7 @@ const RipTable: React.FC<RipTableProps> = ({ dataset, cat, status }) => {
                                         <Link href={`/rips/rip-${item.rip}`}>
                                             <Wrap>
                                                 <WrapItem>
-                                                    <Badge colorScheme={getStatusColor(item.status)}>
+                                                    <Badge colorPalette={getStatusColor(item.status)}>
                                                         {item.rip}
                                                     </Badge>
                                                 </WrapItem>
@@ -333,7 +322,7 @@ const RipTable: React.FC<RipTableProps> = ({ dataset, cat, status }) => {
                                     >
                                         <Wrap>
                                             <WrapItem>
-                                                <Badge colorScheme={getStatusColor(item.status)}>
+                                                <Badge colorPalette={getStatusColor(item.status)}>
                                                     {item.status}
                                                 </Badge>
                                             </WrapItem>

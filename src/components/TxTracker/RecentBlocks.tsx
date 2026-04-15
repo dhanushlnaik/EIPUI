@@ -1,21 +1,8 @@
+import { Thead, Tbody, Tr, Th, Td } from "@/components/ui/compat";
 import React, { useMemo } from 'react';
-import {
-  Box,
-  Text,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  useColorModeValue,
-  Icon,
-  Tooltip,
-  Skeleton,
-  Flex,
-  HStack,
-  Badge
-} from '@chakra-ui/react';
+import { useColorModeValue } from "../ui/color-mode";
+import { Steps, Box, Text, Table, Icon, Skeleton, Flex, HStack, Badge } from "@chakra-ui/react";
+import { Tooltip } from '@/components/ui/tooltip';
 import { FaCube, FaGasPump, FaFire, FaCoins } from 'react-icons/fa';
 import Web3 from 'web3';
 import { convertEthToUSD, convertGweiToUSD } from './ethereumService';
@@ -113,49 +100,48 @@ const RecentBlocks = ({
           </Text>
         </Box>
       </Flex>
-
       <Box px={{ base: 3, md: 5 }} py={{ base: 4, md: 5 }} overflowX="auto">
-        <Table
+        <Table.Root
           size="sm"
           variant="unstyled"
           minW="900px"
-          sx={{
-            'th, td': { whiteSpace: 'nowrap' }
+          css={{
+            '& th, td': { whiteSpace: 'nowrap' }
           }}
         >
-          <Thead>
-            <Tr bg={tableHeaderBg}>
-              <Th {...colStyles} textAlign="left">Block</Th>
-              <Th {...colStyles} textAlign="right">
-                <HStack spacing={1} justify="flex-end">
+          <Table.Header>
+            <Table.Row bg={tableHeaderBg}>
+              <Table.ColumnHeader {...colStyles} textAlign="left">Block</Table.ColumnHeader>
+              <Table.ColumnHeader {...colStyles} textAlign="right">
+                <HStack gap={1} justify="flex-end">
                   <Icon as={FaGasPump} /> Gas Target
                 </HStack>
-              </Th>
-              <Th {...colStyles} textAlign="right">Gas Used</Th>
-              <Th {...colStyles} textAlign="right">Txs</Th>
-              <Th {...colStyles} textAlign="right">Time</Th>
-              <Th {...colStyles} textAlign="right">
-                <HStack spacing={1} justify="flex-end">
+              </Table.ColumnHeader>
+              <Table.ColumnHeader {...colStyles} textAlign="right">Gas Used</Table.ColumnHeader>
+              <Table.ColumnHeader {...colStyles} textAlign="right">Txs</Table.ColumnHeader>
+              <Table.ColumnHeader {...colStyles} textAlign="right">Time</Table.ColumnHeader>
+              <Table.ColumnHeader {...colStyles} textAlign="right">
+                <HStack gap={1} justify="flex-end">
                   <Icon as={FaCoins} /> Base Fee
                 </HStack>
-              </Th>
-              <Th {...colStyles} textAlign="right">
-                <HStack spacing={1} justify="flex-end">
+              </Table.ColumnHeader>
+              <Table.ColumnHeader {...colStyles} textAlign="right">
+                <HStack gap={1} justify="flex-end">
                   <Icon as={FaFire} /> Burned
                 </HStack>
-              </Th>
-            </Tr>
-          </Thead>
-          <Tbody>
+              </Table.ColumnHeader>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
             {isLoading &&
               skeletonRows.map((_, i) => (
-                <Tr key={i}>
+                <Table.Row key={i}>
                   {Array.from({ length: 7 }).map((__, c) => (
-                    <Td key={c} py={3}>
+                    <Table.Cell key={c} py={3}>
                       <Skeleton h="14px" w={c === 0 ? '60px' : '48px'} borderRadius="md" />
-                    </Td>
+                    </Table.Cell>
                   ))}
-                </Tr>
+                </Table.Row>
               ))}
             {!isLoading &&
               data.map((block) => {
@@ -181,24 +167,24 @@ const RecentBlocks = ({
                   : '-';
 
                 return (
-                  <Tr
+                  <Table.Row
                     key={number}
                     bg={rowBg}
                     _hover={{ bg: rowHover }}
                     transition="0.2s"
                   >
-                    <Td fontWeight="semibold" color={textPrimary}>
+                    <Table.Cell fontWeight="semibold" color={textPrimary}>
                       {nf(number, 0)}
-                    </Td>
-                    <Td textAlign="right" color={textPrimary}>
+                    </Table.Cell>
+                    <Table.Cell textAlign="right" color={textPrimary}>
                       {nf(gasTarget, 0)}
-                    </Td>
-                    <Td textAlign="right">
-                      <HStack spacing={1} justify="flex-end">
+                    </Table.Cell>
+                    <Table.Cell textAlign="right">
+                      <HStack gap={1} justify="flex-end">
                         <Text color={textPrimary}>{nf(gasUsed, 0)}</Text>
                         <Badge
                           fontSize="0.6rem"
-                          colorScheme={
+                          colorPalette={
                             gasUsed / gasTarget > 0.95
                               ? 'red'
                               : gasUsed / gasTarget > 0.8
@@ -212,29 +198,29 @@ const RecentBlocks = ({
                           {gasPct}
                         </Badge>
                       </HStack>
-                    </Td>
-                    <Td textAlign="right" color={textPrimary}>
+                    </Table.Cell>
+                    <Table.Cell textAlign="right" color={textPrimary}>
                       {nf(txCount, 0)}
-                    </Td>
-                    <Td textAlign="right" color={textSecondary} fontSize="sm">
+                    </Table.Cell>
+                    <Table.Cell textAlign="right" color={textSecondary} fontSize="sm">
                       {time.toLocaleTimeString(undefined, {
                         hour: '2-digit',
                         minute: '2-digit',
                         second: '2-digit'
                       })}
-                    </Td>
-                    <Td textAlign="right">
+                    </Table.Cell>
+                    <Table.Cell textAlign="right">
                       {baseFeeGwei !== null ? (
                         <Tooltip
-                          hasArrow
-                          label={`≈ $${nf(
+                          showArrow
+                          content={`≈ $${nf(
                             convertGweiToUSD(baseFeeGwei, ethPriceInUSD),
                             4
                           )} USD`}
                           bg="purple.600"
                           color="white"
                         >
-                          <HStack spacing={1} justify="flex-end">
+                          <HStack gap={1} justify="flex-end">
                             <Text color="purple.400" fontWeight="medium">
                               {nf(baseFeeGwei, 2)} gwei
                             </Text>
@@ -243,12 +229,12 @@ const RecentBlocks = ({
                       ) : (
                         <Text>-</Text>
                       )}
-                    </Td>
-                    <Td textAlign="right">
+                    </Table.Cell>
+                    <Table.Cell textAlign="right">
                       {burnedEth !== null ? (
                         <Tooltip
-                          hasArrow
-                          label={`≈ $${nf(
+                          showArrow
+                          content={`≈ $${nf(
                             convertEthToUSD(burnedEth, ethPriceInUSD),
                             2
                           )} USD`}
@@ -262,12 +248,12 @@ const RecentBlocks = ({
                       ) : (
                         <Text>-</Text>
                       )}
-                    </Td>
-                  </Tr>
+                    </Table.Cell>
+                  </Table.Row>
                 );
               })}
-          </Tbody>
-        </Table>
+          </Table.Body>
+        </Table.Root>
       </Box>
     </Box>
   );

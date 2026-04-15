@@ -1,5 +1,5 @@
 import React from "react";
-import { useColorModeValue } from "@chakra-ui/react";
+import { useColorModeValue } from "../ui/color-mode";
 import {
   AreaChart,
   Area,

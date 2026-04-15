@@ -1,6 +1,7 @@
 ﻿import React, { useEffect, useRef } from "react";
+import { useColorModeValue } from "./ui/color-mode";
 import Header from "./Header";
-import { Box, useColorModeValue, Text } from "@chakra-ui/react";
+import { Steps, Box, Text } from "@chakra-ui/react";
 import Image from "next/image";
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';

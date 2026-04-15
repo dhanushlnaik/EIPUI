@@ -1,29 +1,13 @@
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  useColorModeValue,
-  Text,
-  Select,
-  Input,
-  SimpleGrid,
-  Button,
-  Flex,
-  IconButton,
-  Tooltip,
-  Spinner,
-  Avatar,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-} from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Text, NativeSelect, Input, SimpleGrid, Button, Flex, IconButton, Spinner, Avatar, Menu, Icon, Portal } from "@chakra-ui/react";
+import { Tooltip } from '@/components/ui/tooltip';
 import { saveAs } from "file-saver";
 import AllLayout from "./Layout";
 import NextLink from "next/link";
-// import AuthorEIPCounter from './AuthorBoard';
-import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
-import { SearchIcon } from "@chakra-ui/icons";
 import axios from "axios";
+
+import { LuChevronDown, LuChevronUp, LuSearch } from 'react-icons/lu';
 
 interface EIP {
   _id: string;
@@ -240,35 +224,31 @@ const Author: React.FC<AuthorProps> = ({ defaultQuery }) => {
           />
 
           {/* Dropdown Menu */}
-          <Menu>
-            <MenuButton
-              as={Button}
-              rightIcon={<ChevronDownIcon />}
-              colorScheme="blue"
-              size="md"
-              width="200px" // Fixed width
-            >
-              Authors
-            </MenuButton>
-            <MenuList>
-              <MenuItem onClick={() => (window.location.href = "/SearchEip")}>
-                EIP
-              </MenuItem>
-              <MenuItem
-                onClick={() => (window.location.href = "/SearchEipTitle")}
-              >
-                Title
-              </MenuItem>
-              <MenuItem
-                onClick={() => (window.location.href = "/SearchPRSandISSUES")}
-              >
-                PR/ISSUE
-              </MenuItem>
-            </MenuList>
-          </Menu>
+          <Menu.Root>
+            <Menu.Trigger asChild><Button
+                colorPalette="blue"
+                size="md"
+                // Fixed width
+                width="200px">Authors
+                            <LuChevronDown /></Button></Menu.Trigger>
+            <Portal><Menu.Positioner><Menu.Content>
+                  <Menu.Item onSelect={() => (window.location.href = "/SearchEip")} value='item-0'>
+                    EIP
+                  </Menu.Item>
+                  <Menu.Item
+                    onSelect={() => (window.location.href = "/SearchEipTitle")}
+                    value='item-1'>
+                    Title
+                  </Menu.Item>
+                  <Menu.Item
+                    onSelect={() => (window.location.href = "/SearchPRSandISSUES")}
+                    value='item-2'>
+                    PR/ISSUE
+                  </Menu.Item>
+                </Menu.Content></Menu.Positioner></Portal>
+          </Menu.Root>
         </Flex>
       </Box>
-
       <Box p={4}>
         {/* <AuthorEIPCounter eips={data}/> */}
 
@@ -311,15 +291,12 @@ const Author: React.FC<AuthorProps> = ({ defaultQuery }) => {
                   display="flex"
                   alignItems="center"
                 >
-                  <Avatar
-                    size="sm"
-                    src={
-                      author.name.startsWith("@")
-                        ? `https://github.com/${author.name.slice(1)}.png`
-                        : ""
-                    }
-                    bg={author.name.startsWith("@") ? undefined : "black"}
-                  />
+                  <Avatar.Root size="sm" bg={author.name.startsWith("@") ? undefined : "black"}><Avatar.Fallback /><Avatar.Image
+                      src={
+                        author.name.startsWith("@")
+                          ? `https://github.com/${author.name.slice(1)}.png`
+                          : ""
+                      } /></Avatar.Root>
                   <Text fontSize="xs" fontWeight="bold" ml={1} mr={1}>
                     {author.name} ({author.count})
                   </Text>
@@ -327,9 +304,8 @@ const Author: React.FC<AuthorProps> = ({ defaultQuery }) => {
               ))}
 
               {visibleCount < authorCounts?.length && (
-                <Tooltip label="Expand" fontSize="md">
+                <Tooltip content="Expand" fontSize="md">
                   <IconButton
-                    icon={<ChevronDownIcon fontWeight="bold" />}
                     aria-label="View More"
                     onClick={handleExpand}
                     variant="ghost"
@@ -337,18 +313,20 @@ const Author: React.FC<AuthorProps> = ({ defaultQuery }) => {
                     color="white"
                     ml={2}
                     fontSize="xl"
-                    borderRadius="full" // Corrected the property for rounded circle
-                    w="40px" // Added fixed width
-                    h="40px" // Added fixed height
-                    _hover={{ bg: "blue.400", transform: "scale(1.1)" }} // Adjusted hover behavior
-                  />
+                    // Corrected the property for rounded circle
+                    borderRadius="full"
+                    // Added fixed width
+                    w="40px"
+                    // Added fixed height
+                    h="40px"
+                    // Adjusted hover behavior
+                    _hover={{ bg: "blue.400", transform: "scale(1.1)" }}><Icon as={LuChevronDown} fontWeight="bold" /></IconButton>
                 </Tooltip>
               )}
 
               {visibleCount > 20 && (
-                <Tooltip label="Collapse" fontSize="md">
+                <Tooltip content="Collapse" fontSize="md">
                   <IconButton
-                    icon={<ChevronUpIcon fontWeight="bold" />}
                     aria-label="View More"
                     onClick={handleCollapse}
                     variant="ghost"
@@ -356,11 +334,14 @@ const Author: React.FC<AuthorProps> = ({ defaultQuery }) => {
                     color="white"
                     ml={2}
                     fontSize="xl"
-                    borderRadius="full" // Corrected the property for rounded circle
-                    w="40px" // Added fixed width
-                    h="40px" // Added fixed height
-                    _hover={{ bg: "blue.400", transform: "scale(1.1)" }} // Adjusted hover behavior
-                  />
+                    // Corrected the property for rounded circle
+                    borderRadius="full"
+                    // Added fixed width
+                    w="40px"
+                    // Added fixed height
+                    h="40px"
+                    // Adjusted hover behavior
+                    _hover={{ bg: "blue.400", transform: "scale(1.1)" }}><Icon as={LuChevronUp} fontWeight="bold" /></IconButton>
                 </Tooltip>
               )}
             </Flex>
@@ -395,7 +376,7 @@ const Author: React.FC<AuthorProps> = ({ defaultQuery }) => {
               id="Search EIP"
             >
               <Button
-                colorScheme="blue"
+                colorPalette="blue"
                 onClick={async () => {
                   try {
                     // Trigger the CSV conversion and download
@@ -440,7 +421,7 @@ const Author: React.FC<AuthorProps> = ({ defaultQuery }) => {
             </Box>
 
             {/* Display Cards */}
-            <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 5 }} spacing={6}>
+            <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 5 }} gap={6}>
               {paginatedData?.map((item) => (
                 <NextLink
                   key={item._id}
@@ -589,24 +570,23 @@ const Author: React.FC<AuthorProps> = ({ defaultQuery }) => {
                             }}
                             onClick={() => setSelectedAuthor(firstAuthor)} // Set selected author
                           >
-                            <Avatar
+                            <Avatar.Root
                               size="xs"
-                              src={
-                                firstAuthor.includes("@") &&
-                                firstAuthor.includes(")")
-                                  ? `https://github.com/${firstAuthor.slice(
-                                      firstAuthor.indexOf("@") + 1,
-                                      firstAuthor.indexOf(")")
-                                    )}.png`
-                                  : ""
-                              }
                               bg={
                                 firstAuthor.includes("@") &&
                                 firstAuthor.includes(")")
                                   ? undefined
                                   : "black"
-                              }
-                            />
+                              }><Avatar.Fallback /><Avatar.Image
+                                src={
+                                  firstAuthor.includes("@") &&
+                                  firstAuthor.includes(")")
+                                    ? `https://github.com/${firstAuthor.slice(
+                                        firstAuthor.indexOf("@") + 1,
+                                        firstAuthor.indexOf(")")
+                                      )}.png`
+                                    : ""
+                                } /></Avatar.Root>
                             <Box
                               display="flex"
                               alignItems="center"

@@ -1,17 +1,6 @@
-import { 
-  Box, 
-  VStack, 
-  Heading, 
-  Text, 
-  useColorModeValue,
-  Flex,
-  Icon,
-  Progress,
-  Badge,
-  Container,
-  Stack,
-  HStack
-} from '@chakra-ui/react';
+import { Progress } from "@/components/ui/compat";
+import { Steps, Box, VStack, Heading, Text, Flex, Icon, Badge, Container, Stack, HStack } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
 import { motion } from 'framer-motion';
 import { FaCogs, FaRocket, FaTools } from 'react-icons/fa';
 import { BsArrowUpRight } from 'react-icons/bs';
@@ -53,7 +42,6 @@ const MaintenancePage = () => {
         backgroundImage="radial-gradient(circle at 25px 25px, #2C7A7B 2px, transparent 0)"
         backgroundSize="50px 50px"
       />
-      
       <Container maxW="2xl" px={6}>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -81,7 +69,7 @@ const MaintenancePage = () => {
               bgGradient={headingBgGradient}
             />
             {/* Header with Icon and Title */}
-            <Stack spacing={6} align="center">
+            <Stack gap={6} align="center">
               <Box position="relative">
                 <motion.div
                   animate={{ rotate: 360 }}
@@ -101,7 +89,7 @@ const MaintenancePage = () => {
 
               {/* Badge */}
               <Badge 
-                colorScheme="teal" 
+                colorPalette="teal" 
                 px={4} 
                 py={2} 
                 borderRadius="full"
@@ -152,14 +140,17 @@ const MaintenancePage = () => {
 
               {/* Progress Section */}
               <Box w="full" maxW="sm">
-                <Progress 
-                  size="md" 
-                  colorScheme="teal" 
-                  isIndeterminate 
+                <Progress.Root
+                  size="md"
+                  colorPalette="teal"
+                  indeterminate
                   borderRadius="full"
                   bg={useColorModeValue('gray.100', 'gray.700')}
-                  mb={3}
-                />
+                  mb={3}>
+                  <Progress.Track>
+                    <Progress.Range />
+                  </Progress.Track>
+                </Progress.Root>
                 <HStack justify="space-between" fontSize="sm" color={textColor}>
                   <Text>Deploying updates...</Text>
                   <Text fontWeight="medium">~5 minutes</Text>
@@ -169,7 +160,7 @@ const MaintenancePage = () => {
               {/* Info Cards */}
               <Stack 
                 direction={{ base: "column", sm: "row" }} 
-                spacing={4} 
+                gap={4} 
                 w="full"
               >
                 <Box 

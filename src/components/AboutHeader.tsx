@@ -1,5 +1,6 @@
 import React from 'react';
-import { Heading, Text, Box, Flex, Image, useColorModeValue, VStack } from '@chakra-ui/react';
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Heading, Text, Box, Flex, Image, VStack } from "@chakra-ui/react";
 
 export default function AboutHeader() {
   const mainHeadingColor = useColorModeValue("#30A0E0", "#4FD1FF");
@@ -29,7 +30,7 @@ export default function AboutHeader() {
         borderRadius: "2xl",
       }}
     >
-      <VStack spacing={6} align="center" position="relative" zIndex={1}>
+      <VStack gap={6} align="center" position="relative" zIndex={1}>
         <Flex justify="center" align="center" direction={{ base: 'column', md: 'row' }} gap={8}>
           <Box
             bg="white"
@@ -46,7 +47,7 @@ export default function AboutHeader() {
               objectFit="cover"
             />
           </Box>
-          <VStack align={{ base: 'center', md: 'start' }} spacing={3}>
+          <VStack align={{ base: 'center', md: 'start' }} gap={3}>
             <Heading
               as="h1"
               size="3xl"

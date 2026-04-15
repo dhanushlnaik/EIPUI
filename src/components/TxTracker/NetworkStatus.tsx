@@ -1,20 +1,8 @@
+import { Stat } from "@/components/ui/compat";
 import React, { useState, useEffect } from 'react';
-import {
-  Box,
-  Text,
-  Flex,
-  Icon,
-  useColorModeValue,
-  HStack,
-  VStack,
-  Badge,
-  Tooltip,
-  SimpleGrid,
-  Stat,
-  StatLabel,
-  StatNumber,
-  StatHelpText
-} from '@chakra-ui/react';
+import { useColorModeValue } from "../ui/color-mode";
+import { Steps, Box, Text, Flex, Icon, HStack, VStack, Badge, SimpleGrid } from "@chakra-ui/react";
+import { Tooltip } from '@/components/ui/tooltip';
 import { 
   FaNetworkWired, 
   FaGasPump, 
@@ -105,7 +93,7 @@ const NetworkStatus = ({ network = 'mainnet', ethPriceInUSD = 2500 }: NetworkSta
         mb={6}
       >
         <Flex align="center" justify="space-between" mb={6}>
-          <HStack spacing={3}>
+          <HStack gap={3}>
             <Flex
               w="50px"
               h="50px"
@@ -116,7 +104,7 @@ const NetworkStatus = ({ network = 'mainnet', ethPriceInUSD = 2500 }: NetworkSta
             >
               <Icon as={FaNetworkWired} color="white" boxSize={6} />
             </Flex>
-            <VStack align="start" spacing={0}>
+            <VStack align="start" gap={0}>
               <Text fontSize="xl" fontWeight="bold" color={textColor}>
                 🔄 Loading Network Status...
               </Text>
@@ -126,14 +114,13 @@ const NetworkStatus = ({ network = 'mainnet', ethPriceInUSD = 2500 }: NetworkSta
             </VStack>
           </HStack>
           
-          <HStack spacing={2}>
+          <HStack gap={2}>
             <Icon as={FaSignal} boxSize={4} color="yellow.400" />
-            <Badge colorScheme="yellow" variant="solid" fontSize="sm" px={3} py={1} borderRadius="full">
+            <Badge colorPalette="yellow" variant="solid" fontSize="sm" px={3} py={1} borderRadius="full">
               CONNECTING...
             </Badge>
           </HStack>
         </Flex>
-        
         <Text fontSize="sm" color={subColor} textAlign="center">
           📡 Connecting to MongoDB data sources...
         </Text>
@@ -166,7 +153,7 @@ const NetworkStatus = ({ network = 'mainnet', ethPriceInUSD = 2500 }: NetworkSta
     >
       {/* Header */}
       <Flex align="center" justify="space-between" mb={6}>
-        <HStack spacing={3}>
+        <HStack gap={3}>
           <Flex
             w="50px"
             h="50px"
@@ -178,7 +165,7 @@ const NetworkStatus = ({ network = 'mainnet', ethPriceInUSD = 2500 }: NetworkSta
           >
             <Icon as={FaNetworkWired} color="white" boxSize={6} />
           </Flex>
-          <VStack align="start" spacing={0}>
+          <VStack align="start" gap={0}>
             <Text fontSize="xl" fontWeight="bold" color={textColor}>
               Ethereum Network Status
             </Text>
@@ -188,14 +175,14 @@ const NetworkStatus = ({ network = 'mainnet', ethPriceInUSD = 2500 }: NetworkSta
           </VStack>
         </HStack>
         
-        <HStack spacing={2}>
+        <HStack gap={2}>
           <Icon 
             as={FaSignal} 
             boxSize={4} 
             color={isConnected ? 'green.400' : 'red.400'} 
           />
           <Badge 
-            colorScheme={isConnected ? 'green' : 'red'} 
+            colorPalette={isConnected ? 'green' : 'red'} 
             variant="solid" 
             fontSize="sm"
             px={3}
@@ -206,102 +193,100 @@ const NetworkStatus = ({ network = 'mainnet', ethPriceInUSD = 2500 }: NetworkSta
           </Badge>
         </HStack>
       </Flex>
-
       {/* Status Grid */}
-      <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={4}>
+      <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} gap={4}>
         {/* Network Congestion */}
-        <Stat
+        <Stat.Root
           bg={useColorModeValue('whiteAlpha.700', 'whiteAlpha.100')}
           borderRadius="lg"
           p={4}
           border="1px solid"
           borderColor={`${networkStatus.color}.200`}
         >
-          <HStack spacing={2} mb={1}>
+          <HStack gap={2} mb={1}>
             <Icon as={FaTachometerAlt} color={`${networkStatus.color}.500`} />
-            <StatLabel fontSize="xs" color={subColor}>NETWORK SPEED</StatLabel>
-            <Tooltip label={networkStatus.description} hasArrow>
+            <Stat.Label fontSize="xs" color={subColor}>NETWORK SPEED</Stat.Label>
+            <Tooltip content={networkStatus.description} showArrow>
               <Icon as={FaInfoCircle} boxSize={3} color={subColor} />
             </Tooltip>
           </HStack>
-          <StatNumber fontSize="lg" color={textColor}>
+          <Stat.ValueText fontSize="lg" color={textColor}>
             {networkStatus.level}
-          </StatNumber>
-          <StatHelpText fontSize="xs">
+          </Stat.ValueText>
+          <Stat.HelpText fontSize="xs">
             {gasUsedPercent}% capacity used
-          </StatHelpText>
-        </Stat>
+          </Stat.HelpText>
+        </Stat.Root>
 
         {/* ETH Price */}
-        <Stat
+        <Stat.Root
           bg={useColorModeValue('whiteAlpha.700', 'whiteAlpha.100')}
           borderRadius="lg"
           p={4}
           border="1px solid"
           borderColor="blue.200"
         >
-          <HStack spacing={2} mb={1}>
+          <HStack gap={2} mb={1}>
             <Icon as={FaDollarSign} color="blue.500" />
-            <StatLabel fontSize="xs" color={subColor}>ETH PRICE</StatLabel>
-            <Tooltip label="Current Ethereum price in USD" hasArrow>
+            <Stat.Label fontSize="xs" color={subColor}>ETH PRICE</Stat.Label>
+            <Tooltip content="Current Ethereum price in USD" showArrow>
               <Icon as={FaInfoCircle} boxSize={3} color={subColor} />
             </Tooltip>
           </HStack>
-          <StatNumber fontSize="lg" color={textColor}>
+          <Stat.ValueText fontSize="lg" color={textColor}>
             ${ethPriceInUSD.toLocaleString()}
-          </StatNumber>
-          <StatHelpText fontSize="xs">
+          </Stat.ValueText>
+          <Stat.HelpText fontSize="xs">
             Live market price
-          </StatHelpText>
-        </Stat>
+          </Stat.HelpText>
+        </Stat.Root>
 
         {/* Gas Price */}
-        <Stat
+        <Stat.Root
           bg={useColorModeValue('whiteAlpha.700', 'whiteAlpha.100')}
           borderRadius="lg"
           p={4}
           border="1px solid"
           borderColor="orange.200"
         >
-          <HStack spacing={2} mb={1}>
+          <HStack gap={2} mb={1}>
             <Icon as={FaGasPump} color="orange.500" />
-            <StatLabel fontSize="xs" color={subColor}>BASE GAS FEE</StatLabel>
-            <Tooltip label="Minimum fee to send a transaction right now" hasArrow>
+            <Stat.Label fontSize="xs" color={subColor}>BASE GAS FEE</Stat.Label>
+            <Tooltip content="Minimum fee to send a transaction right now" showArrow>
               <Icon as={FaInfoCircle} boxSize={3} color={subColor} />
             </Tooltip>
           </HStack>
-          <StatNumber fontSize="lg" color={textColor}>
+          <Stat.ValueText fontSize="lg" color={textColor}>
             {mongoData ? mongoData.baseFeeGwei.toFixed(1) : '0'} gwei
-          </StatNumber>
-          <StatHelpText fontSize="xs">
+          </Stat.ValueText>
+          <Stat.HelpText fontSize="xs">
             Current base fee
-          </StatHelpText>
-        </Stat>
+          </Stat.HelpText>
+        </Stat.Root>
 
         {/* Transaction Cost */}
-        <Stat
+        <Stat.Root
           bg={useColorModeValue('whiteAlpha.700', 'whiteAlpha.100')}
           borderRadius="lg"
           p={4}
           border="1px solid"
           borderColor="purple.200"
         >
-          <HStack spacing={2} mb={1}>
+          <HStack gap={2} mb={1}>
             <Icon as={FaDollarSign} color="purple.500" />
-            <StatLabel fontSize="xs" color={subColor}>SIMPLE TX COST</StatLabel>
-            <Tooltip label="Cost to send ETH to another wallet (21,000 gas)" hasArrow>
+            <Stat.Label fontSize="xs" color={subColor}>SIMPLE TX COST</Stat.Label>
+            <Tooltip content="Cost to send ETH to another wallet (21,000 gas)" showArrow>
               <Icon as={FaInfoCircle} boxSize={3} color={subColor} />
             </Tooltip>
           </HStack>
-          <StatNumber fontSize="lg" color={textColor}>
+          <Stat.ValueText fontSize="lg" color={textColor}>
             ~${estimatedTxCost}
-          </StatNumber>
-          <StatHelpText fontSize="xs">
+          </Stat.ValueText>
+          <Stat.HelpText fontSize="xs">
             ETH transfer estimate
-          </StatHelpText>
-        </Stat>
+          </Stat.HelpText>
+        </Stat.Root>
       </SimpleGrid>
-
       {/* Network Health Explanation */}
       <Box
         mt={4}

@@ -474,7 +474,8 @@
 // };
 
 import React, { useEffect, useRef, useState } from "react";
-import { Box, Flex, Text, VStack, useColorModeValue } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Flex, Text, VStack } from "@chakra-ui/react";
 
 interface TimelineItem {
   status: string;
@@ -537,7 +538,6 @@ export const ResponsiveSnakeTimeline: React.FC<ResponsiveSnakeTimelineProps> = (
           </VStack>
         ))}
       </Flex>
-
       {/* Render actual timeline */}
       {rows.map((row, rowIndex) => {
         const isReversed = rowIndex % 2 === 1;
@@ -563,7 +563,7 @@ export const ResponsiveSnakeTimeline: React.FC<ResponsiveSnakeTimelineProps> = (
                   gap={2}
                   wrap="nowrap"
                 >
-                  <VStack spacing={3} minW="120px" maxW="120px">
+                  <VStack gap={3} minW="120px" maxW="120px">
                     <Box
                       p="5"
                       bg={useColorModeValue("white", "gray.800")}
@@ -587,9 +587,8 @@ export const ResponsiveSnakeTimeline: React.FC<ResponsiveSnakeTimelineProps> = (
                       </Text>
                     </Box>
                   </VStack>
-
                   {nextItem && (
-                    <VStack align="center" spacing={1}>
+                    <VStack align="center" gap={1}>
                       <Box
                         h="1px"
                         w="80px"

@@ -39,7 +39,7 @@
 
 // import React, { useEffect, useState } from "react";
 // import dynamic from "next/dynamic";
-// import { Flex, Heading, Button,Box, useColorModeValue, Spinner } from "@chakra-ui/react";
+// import { Flex, Heading, Button, Box, useColorModeValue, Spinner } from "@chakra-ui/react";
 // import { useWindowSize } from "react-use";
 // import DateTime from "@/components/DateTime";
 // import { motion } from "framer-motion";
@@ -297,21 +297,14 @@
 // export default AreaStatus;
 
 import React, { useEffect, useState } from "react";
+import { useColorModeValue } from "./ui/color-mode";
 import dynamic from "next/dynamic";
-import {
-  Flex,
-  Heading,
-  Button,
-  Box,
-  useColorModeValue,
-  Spinner,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
+import { Steps, Flex, Heading, Button, Box, Spinner, Stack, Text } from "@chakra-ui/react";
 import { useWindowSize } from "react-use";
 import DateTime from "@/components/DateTime";
 import { motion } from "framer-motion";
 import axios from "axios";
+import { getStatusTimelineV2Data } from "@/lib/statusTimelineClient";
 
 const getCat = (cat: string) => {
   switch (cat) {
@@ -381,8 +374,7 @@ const AreaStatus: React.FC<AreaCProps> = ({ type }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`/api/new/graphsv2`);
-        const jsonData = await response.json();
+        const jsonData = await getStatusTimelineV2Data();
         setData(jsonData.eip?.concat(jsonData.erc?.concat(jsonData.rip)));
         if (type === "EIPs" && jsonData.eip) {
           setData(jsonData.eip.filter((item: any) => item.category !== "ERCs"));
@@ -543,7 +535,7 @@ const AreaStatus: React.FC<AreaCProps> = ({ type }) => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: "easeInOut" }}
           >
-            <Spinner size="xl" thickness="4px" color={buttonBg} />
+            <Spinner size="xl" borderWidth="4px" color={buttonBg} />
           </motion.div>
         </Box>
       ) : (

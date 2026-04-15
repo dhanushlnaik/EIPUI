@@ -1,24 +1,8 @@
+import { Thead, Tbody, Tr, Th, Td } from "@/components/ui/compat";
 import React, { useState, useMemo } from 'react';
-import {
-  Box,
-  Heading,
-  Text,
-  useColorModeValue,
-  Flex,
-  Button,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  Avatar,
-  Badge,
-  Input,
-  HStack,
-  IconButton,
-  Tooltip,
-} from '@chakra-ui/react';
+import { useColorModeValue } from "../ui/color-mode";
+import { Steps, Box, Heading, Text, Flex, Button, Table, Avatar, Badge, Input, HStack, IconButton } from "@chakra-ui/react";
+import { Tooltip } from '@/components/ui/tooltip';
 import { FiDownload, FiSearch, FiArrowUp, FiArrowDown } from 'react-icons/fi';
 import { CSVLink } from 'react-csv';
 import axios from 'axios';
@@ -129,84 +113,77 @@ const EditorComparisonTable: React.FC<EditorComparisonTableProps> = ({
             filename={`editor-comparison-${timePeriod}-${repository}.csv`}
             onClick={handleDownload}
           >
-            <Button size="md" leftIcon={<FiDownload />} colorScheme="blue">
-              Export
-            </Button>
+            <Button size="md" colorPalette="blue"><FiDownload />Export
+                          </Button>
           </CSVLink>
         </HStack>
       </Flex>
-
       <Box overflowX="auto">
-        <Table variant="simple" size="sm">
-          <Thead>
-            <Tr>
-              <Th>Rank</Th>
-              <Th>Name</Th>
-              <Th>Type</Th>
-              <Th cursor="pointer" onClick={() => handleSort('totalReviews')}>
-                <HStack spacing={1}>
+        <Table.Root variant="simple" size="sm">
+          <Table.Header>
+            <Table.Row>
+              <Table.ColumnHeader>Rank</Table.ColumnHeader>
+              <Table.ColumnHeader>Name</Table.ColumnHeader>
+              <Table.ColumnHeader>Type</Table.ColumnHeader>
+              <Table.ColumnHeader cursor="pointer" onClick={() => handleSort('totalReviews')}>
+                <HStack gap={1}>
                   <Text>Reviews</Text>
                   <SortIcon field="totalReviews" />
                 </HStack>
-              </Th>
-              <Th>EIPs</Th>
-              <Th>ERCs</Th>
-              <Th>RIPs</Th>
-              <Th cursor="pointer" onClick={() => handleSort('approvalRate')}>
-                <HStack spacing={1}>
+              </Table.ColumnHeader>
+              <Table.ColumnHeader>EIPs</Table.ColumnHeader>
+              <Table.ColumnHeader>ERCs</Table.ColumnHeader>
+              <Table.ColumnHeader>RIPs</Table.ColumnHeader>
+              <Table.ColumnHeader cursor="pointer" onClick={() => handleSort('approvalRate')}>
+                <HStack gap={1}>
                   <Text>Approval %</Text>
                   <SortIcon field="approvalRate" />
                 </HStack>
-              </Th>
-              <Th cursor="pointer" onClick={() => handleSort('avgResponseTime')}>
-                <HStack spacing={1}>
+              </Table.ColumnHeader>
+              <Table.ColumnHeader cursor="pointer" onClick={() => handleSort('avgResponseTime')}>
+                <HStack gap={1}>
                   <Text>Avg Response</Text>
                   <SortIcon field="avgResponseTime" />
                 </HStack>
-              </Th>
-              <Th>Last Activity</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
+              </Table.ColumnHeader>
+              <Table.ColumnHeader>Last Activity</Table.ColumnHeader>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
             {filteredAndSorted.map((person: any, index: number) => (
-              <Tr key={person.name} _hover={{ bg: useColorModeValue('gray.50', 'gray.700') }}>
-                <Td>
-                  <Badge colorScheme={index < 3 ? 'yellow' : 'blue'}>
+              <Table.Row key={person.name} _hover={{ bg: useColorModeValue('gray.50', 'gray.700') }}>
+                <Table.Cell>
+                  <Badge colorPalette={index < 3 ? 'yellow' : 'blue'}>
                     #{index + 1}
                   </Badge>
-                </Td>
-                <Td>
+                </Table.Cell>
+                <Table.Cell>
                   <HStack>
-                    <Avatar
-                      size="xs"
-                      name={person.name}
-                      src={`https://github.com/${person.name}.png?size=40`}
-                    />
+                    <Avatar.Root size="xs"><Avatar.Fallback name={person.name} /><Avatar.Image src={`https://github.com/${person.name}.png?size=40`} /></Avatar.Root>
                     <Text fontWeight="medium">{person.name}</Text>
                   </HStack>
-                </Td>
-                <Td>
-                  <Badge colorScheme={person.type === 'Editor' ? 'purple' : 'green'}>
+                </Table.Cell>
+                <Table.Cell>
+                  <Badge colorPalette={person.type === 'Editor' ? 'purple' : 'green'}>
                     {person.type}
                   </Badge>
-                </Td>
-                <Td fontWeight="semibold">{person.totalReviews}</Td>
-                <Td>{person.eips || 0}</Td>
-                <Td>{person.ercs || 0}</Td>
-                <Td>{person.rips || 0}</Td>
-                <Td>
-                  <Badge colorScheme={person.approvalRate > 70 ? 'green' : 'yellow'}>
+                </Table.Cell>
+                <Table.Cell fontWeight="semibold">{person.totalReviews}</Table.Cell>
+                <Table.Cell>{person.eips || 0}</Table.Cell>
+                <Table.Cell>{person.ercs || 0}</Table.Cell>
+                <Table.Cell>{person.rips || 0}</Table.Cell>
+                <Table.Cell>
+                  <Badge colorPalette={person.approvalRate > 70 ? 'green' : 'yellow'}>
                     {person.approvalRate}%
                   </Badge>
-                </Td>
-                <Td>{person.avgResponseTime}h</Td>
-                <Td fontSize="xs" color="gray.500">{person.lastActivity}</Td>
-              </Tr>
+                </Table.Cell>
+                <Table.Cell>{person.avgResponseTime}h</Table.Cell>
+                <Table.Cell fontSize="xs" color="gray.500">{person.lastActivity}</Table.Cell>
+              </Table.Row>
             ))}
-          </Tbody>
-        </Table>
+          </Table.Body>
+        </Table.Root>
       </Box>
-
       {filteredAndSorted.length === 0 && (
         <Flex justify="center" align="center" py={8}>
           <Text color="gray.500">No results found</Text>

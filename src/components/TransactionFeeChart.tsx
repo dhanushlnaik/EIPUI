@@ -1,9 +1,10 @@
-import { Box, Text, useColorModeValue, Flex, Button, Heading, Collapse, IconButton } from "@chakra-ui/react";
+import { Steps, Box, Text, Flex, Button, Heading, Collapsible, IconButton, Icon } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import { convertGweiToUSD } from "./ethereumService";
 import CalendarHeatmap from 'react-calendar-heatmap';
-import { ChevronUpIcon, ChevronDownIcon } from "@chakra-ui/icons";
+import { LuChevronDown, LuChevronUp } from 'react-icons/lu';
 
 // Dynamically import the Line chart to avoid SSR issues
 const Line = dynamic(() => import("@ant-design/plots").then((mod) => mod.Line), { ssr: false });
@@ -65,7 +66,7 @@ const TransactionFeeChart = ({ data, data1, data2, data3, ethPriceInUSD }: { dat
 
   const generateHeatmapData = () => {
     const now = new Date();
-    const heatmapData = [];
+    const heatmapData: { date: string; count: number }[] = [];
 
     // Function to convert 12-hour format to 24-hour format
     const convertTo24Hour = (timeStr: string) => {
@@ -180,87 +181,85 @@ const TransactionFeeChart = ({ data, data1, data2, data3, ethPriceInUSD }: { dat
       >
         <IconButton
           onClick={toggleCollapse}
-          icon={show ? <ChevronUpIcon boxSize={8} color="white" /> : <ChevronDownIcon boxSize={8} color="white" />}
           variant="ghost"
-          h="24px" // Smaller height
-           w="20px"
+          // Smaller height
+          h="24px"
+          w="20px"
           aria-label="Toggle Instructions"
-         bg="blue"
-        />
+          bg="blue">{show ? <Icon as={LuChevronUp} boxSize={8} color="white" /> : <Icon as={LuChevronDown} boxSize={8} color="white" />}</IconButton>
       </Box>
             </Flex>
       
-            <Collapse in={show}>
-  <Heading
-    as="h4"
-    size="md"
-    marginBottom={4}
-    color={useColorModeValue("#3182CE", "blue.300")}
-  >
-    How to calculate the gas for a transaction?
-  </Heading>
-  <Text
-    fontSize="md"
-    marginBottom={2}
-    color={useColorModeValue("gray.800", "gray.200")}
-    className="text-justify"
-  >
-    The total gas cost for a transaction depends on three factors:
-    <br />
-    1. <strong>Gas Limit</strong>: The maximum amount of gas you're willing to spend. Simple ETH transfers use 21,000 gas, while smart contract interactions can use 100,000–500,000 gas or more.
-    <br />
-    2. <strong>Base Fee</strong>: The minimum gas price required to include your transaction in a block. This fluctuates based on network demand.
-    <br />
-    3. <strong>Priority Fee (Tip)</strong>: An additional amount paid to miners to prioritize your transaction.
-    <br />
-    <br />
-    The total gas cost is calculated as:
-    <br />
-    <strong>Total Gas Cost = (Base Fee + Priority Fee) * Gas Limit</strong>
-    <br />
-    <br />
-    For example, if the base fee is 10 Gwei, the priority fee is 2 Gwei, and the gas limit is 21,000, the total gas cost would be:
-    <br />
-    <strong>(10 + 2) * 21,000 = 252,000 Gwei = 0.000252 ETH</strong>
-    <br />
-    At an ETH price of $3,000, this would be <strong>$0.756</strong>.
-  </Text>
-
-  <Heading
-    as="h4"
-    size="md"
-    marginBottom={4}
-    color={useColorModeValue("#3182CE", "blue.300")}
-  >
-    Why do transactions often cost $3–$4 or more?
-  </Heading>
-  <Text
-    fontSize="md"
-    marginBottom={2}
-    color={useColorModeValue("gray.800", "gray.200")}
-    className="text-justify"
-  >
-    Transactions often cost $3–$4 or more because:
-    <br />
-    1. <strong>Complex Transactions</strong>: Interacting with smart contracts (e.g., swapping tokens or minting NFTs) requires more gas (e.g., 100,000–500,000 gas units).
-    <br />
-    2. <strong>Network Congestion</strong>: During high demand, the base fee can spike (e.g., 50–100 Gwei or more).
-    <br />
-    3. <strong>Priority Fees</strong>: To ensure fast processing, you may need to pay a higher priority fee (e.g., 5–10 Gwei).
-    <br />
-    <br />
-    For example, a transaction with a base fee of 50 Gwei, a priority fee of 5 Gwei, and a gas limit of 100,000 would cost:
-    <br />
-    <strong>(50 + 5) * 100,000 = 5,500,000 Gwei = 0.0055 ETH</strong>
-    <br />
-    At an ETH price of $3,000, this would be <strong>$16.50</strong>.
-  </Text>
-</Collapse>
+            <Collapsible.Root open={show}>
+              <Collapsible.Content>
+                <Heading
+                  as="h4"
+                  size="md"
+                  marginBottom={4}
+                  color={useColorModeValue("#3182CE", "blue.300")}
+                >
+                  How to calculate the gas for a transaction?
+                </Heading>
+                <Text
+                  fontSize="md"
+                  marginBottom={2}
+                  color={useColorModeValue("gray.800", "gray.200")}
+                  className="text-justify"
+                >
+                  The total gas cost for a transaction depends on three factors:
+                  <br />
+                  1. <strong>Gas Limit</strong>: The maximum amount of gas you're willing to spend. Simple ETH transfers use 21,000 gas, while smart contract interactions can use 100,000–500,000 gas or more.
+                  <br />
+                  2. <strong>Base Fee</strong>: The minimum gas price required to include your transaction in a block. This fluctuates based on network demand.
+                  <br />
+                  3. <strong>Priority Fee (Tip)</strong>: An additional amount paid to miners to prioritize your transaction.
+                  <br />
+                  <br />
+                  The total gas cost is calculated as:
+                  <br />
+                  <strong>Total Gas Cost = (Base Fee + Priority Fee) * Gas Limit</strong>
+                  <br />
+                  <br />
+                  For example, if the base fee is 10 Gwei, the priority fee is 2 Gwei, and the gas limit is 21,000, the total gas cost would be:
+                  <br />
+                  <strong>(10 + 2) * 21,000 = 252,000 Gwei = 0.000252 ETH</strong>
+                  <br />
+                  At an ETH price of $3,000, this would be <strong>$0.756</strong>.
+                </Text>
+                <Heading
+                  as="h4"
+                  size="md"
+                  marginBottom={4}
+                  color={useColorModeValue("#3182CE", "blue.300")}
+                >
+                  Why do transactions often cost $3–$4 or more?
+                </Heading>
+                <Text
+                  fontSize="md"
+                  marginBottom={2}
+                  color={useColorModeValue("gray.800", "gray.200")}
+                  className="text-justify"
+                >
+                  Transactions often cost $3–$4 or more because:
+                  <br />
+                  1. <strong>Complex Transactions</strong>: Interacting with smart contracts (e.g., swapping tokens or minting NFTs) requires more gas (e.g., 100,000–500,000 gas units).
+                  <br />
+                  2. <strong>Network Congestion</strong>: During high demand, the base fee can spike (e.g., 50–100 Gwei or more).
+                  <br />
+                  3. <strong>Priority Fees</strong>: To ensure fast processing, you may need to pay a higher priority fee (e.g., 5–10 Gwei).
+                  <br />
+                  <br />
+                  For example, a transaction with a base fee of 50 Gwei, a priority fee of 5 Gwei, and a gas limit of 100,000 would cost:
+                  <br />
+                  <strong>(50 + 5) * 100,000 = 5,500,000 Gwei = 0.0055 ETH</strong>
+                  <br />
+                  At an ETH price of $3,000, this would be <strong>$16.50</strong>.
+                </Text>
+              </Collapsible.Content>
+            </Collapsible.Root>
       
            
           </Box>
-      
-
       <Text
         fontSize={20}
         fontWeight="bold"
@@ -270,7 +269,6 @@ const TransactionFeeChart = ({ data, data1, data2, data3, ethPriceInUSD }: { dat
       >
         {getDisplayName(dataType)} Trend
       </Text>
-
       {/* Tabs for selecting data type */}
       <Flex mb={4} gap={2} wrap="wrap">
         <Flex mb={4} gap={4} wrap="wrap">
@@ -301,12 +299,10 @@ const TransactionFeeChart = ({ data, data1, data2, data3, ethPriceInUSD }: { dat
         </Flex>
       </Flex>
       <br />
-
       {/* Render the Line chart with the provided config */}
       <Box width="100%" height={300}>
         <Line {...chartConfig} />
       </Box>
-
       {/* Render the Heatmap */}
       {/* <Box width="100%" mt={10}>
         <Text fontSize={16} fontWeight="bold" mb={2} color={textColor}>

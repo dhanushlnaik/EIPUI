@@ -1,8 +1,10 @@
+"use client";
 // components/FloatingContributionIcon.tsx
-'use client';
-
+;
 import React from 'react';
-import { Box, IconButton, Tooltip, useColorModeValue } from '@chakra-ui/react';
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, IconButton } from "@chakra-ui/react";
+import { Tooltip } from '@/components/ui/tooltip';
 import { FaBug } from 'react-icons/fa';
 import { FaGithub } from 'react-icons/fa';
 import { usePathname } from 'next/navigation';
@@ -50,32 +52,34 @@ const FloatingContributionIcon = () => {
       zIndex="1000"
       borderRadius="50%"
     >
-      <Tooltip label="View in Github!" placement="left" zIndex={10001}>
+      <Tooltip content="View in Github!" zIndex={10001} positioning={{
+        placement: "left"
+      }}>
         <IconButton
           aria-label="Contribute"
-          icon={<FaGithub />}
           size="lg"
-          colorScheme="teal"
+          colorPalette="teal"
           borderRadius="50%"
           onClick={() => window.open(githubUrl, '_blank')}
-          sx={{
+          css={{
             boxShadow: `
                             0 5px 15px rgba(0, 0, 0, 0.3),
                             0 10px 30px rgba(0, 0, 0, 0.2),
                             inset 0 -3px 5px rgba(255, 255, 255, 0.2)
                           `,
+
             transition: 'box-shadow 0.2s ease',
             bgGradient: useColorModeValue(headingBgGradientLight, headingBgGradientDark),
             color: useColorModeValue(headingColorLight, headingColorDark),
-            _hover: {
+
+            '& _hover': {
               boxShadow: `
                               0 8px 20px rgba(0, 0, 0, 0.4),
                               0 15px 40px rgba(0, 0, 0, 0.3),
                               inset 0 -5px 10px rgba(255, 255, 255, 0.3)
                             `,
-            },
-          }}
-        />
+            }
+          }}><FaGithub /></IconButton>
       </Tooltip>
     </Box>
   );

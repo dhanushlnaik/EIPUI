@@ -1,18 +1,9 @@
 "use client";
+import { Stat } from "@/components/ui/compat";
 
-import {
-  Box,
-  Grid,
-  Text,
-  Flex,
-  Badge,
-  Stat,
-  StatLabel,
-  StatNumber,
-  StatHelpText,
-  useColorModeValue,
-  Icon,
-} from "@chakra-ui/react";
+;
+import { Steps, Box, Grid, Text, Flex, Badge, Icon } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
 import EIPChartWrapper from "./EIPChart";
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -403,7 +394,7 @@ const DashboardCards = () => {
                 <Box key={i}>
                   <Text fontWeight="medium" fontSize="sm">
                     {item.id}{" "}
-                    <Badge ml={2} colorScheme={item.typeColor}>
+                    <Badge ml={2} colorPalette={item.typeColor}>
                       {item.type}
                     </Badge>
                   </Text>

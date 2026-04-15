@@ -1,16 +1,6 @@
 import React from 'react';
-import {
-  Box,
-  Text,
-  Stack,
-  useColorModeValue,
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  AccordionIcon,
-  Flex,
-} from '@chakra-ui/react';
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Text, Stack, Accordion, Flex } from "@chakra-ui/react";
 import { motion } from 'framer-motion';
 import CopyLink from './CopyLink';
 
@@ -99,10 +89,10 @@ const FAQ: React.FC = () => {
           </Box>
 
             {/* FAQ Items */}
-            <Accordion allowMultiple>
-              <Stack spacing={2}>
+            <Accordion.Root multiple>
+              <Stack gap={2}>
                 {faqData.map((faq, index) => (
-                  <AccordionItem
+                  <Accordion.Item
                     key={index}
                     border="1px solid"
                     borderColor={useColorModeValue("gray.200", "gray.600")}
@@ -118,8 +108,8 @@ const FAQ: React.FC = () => {
                       )
                     }}
                     transition="all 0.2s ease"
-                  >
-                    <AccordionButton
+                    value='item-0'>
+                    <Accordion.ItemTrigger
                       p={4}
                       _hover={{ bg: glassHover }}
                       transition="all 0.2s"
@@ -129,21 +119,21 @@ const FAQ: React.FC = () => {
                           {faq.question}
                         </Text>
                       </Box>
-                      <AccordionIcon />
-                    </AccordionButton>
-                    <AccordionPanel pb={4} px={4}>
-                      <Text 
-                        color={textColor} 
-                        lineHeight="1.6" 
-                        fontSize="sm"
-                      >
-                        {faq.answer}
-                      </Text>
-                    </AccordionPanel>
-                  </AccordionItem>
+                      <Accordion.ItemIndicator />
+                    </Accordion.ItemTrigger>
+                    <Accordion.ItemContent pb={4} px={4}><Accordion.ItemBody>
+                        <Text 
+                          color={textColor} 
+                          lineHeight="1.6" 
+                          fontSize="sm"
+                        >
+                          {faq.answer}
+                        </Text>
+                      </Accordion.ItemBody></Accordion.ItemContent>
+                  </Accordion.Item>
                 ))}
               </Stack>
-            </Accordion>
+            </Accordion.Root>
         </MotionBox>
       </Box>
     </>

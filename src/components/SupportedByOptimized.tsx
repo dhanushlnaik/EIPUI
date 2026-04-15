@@ -1,13 +1,6 @@
 import React from 'react';
-import {
-  Box,
-  Text,
-  Image,
-  useColorModeValue,
-  Link,
-  Button,
-  Icon,
-} from '@chakra-ui/react';
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Text, Image, Link, Button, Icon } from "@chakra-ui/react";
 import { FiHeart } from 'react-icons/fi';
 import Header from './Header';
 import {
@@ -96,10 +89,10 @@ const SupporterCard = ({
     >
       <Link
         href={supporter.url}
-        isExternal
         _hover={{ textDecoration: 'none' }}
         onClick={(e) => e.stopPropagation()}
-      >
+        target='_blank'
+        rel='noopener noreferrer'>
         <Box
           bg={bgColor}
           borderRadius="xl"
@@ -201,7 +194,6 @@ export default function SupportedByOptimized() {
         bgGradient="linear(90deg, #667eea 0%, #764ba2 50%, #0fdb8b 100%)"
         opacity={0.8}
       />
-
       {/* Header */}
       <Header
         title="Supported by"
@@ -209,7 +201,6 @@ export default function SupportedByOptimized() {
         description=""
         sectionId="supported-by"
       />
-
       {/* Continuous Scrolling Gallery Container */}
       <Box
         mt={6}
@@ -223,16 +214,17 @@ export default function SupportedByOptimized() {
           display="flex"
           alignItems="center"
           width="max-content"
-          sx={{
+          css={{
             animation: isPaused || prefersReducedMotion ? 'none' : `scroll ${animationDuration} linear infinite`,
-            '@keyframes scroll': {
+
+            '& @keyframes scroll': {
               '0%': {
                 transform: 'translateX(0)',
               },
               '100%': {
                 transform: 'translateX(-33.333%)',
               },
-            },
+            }
           }}
         >
           {duplicatedSupporters.map((supporter, index) => (
@@ -266,13 +258,12 @@ export default function SupportedByOptimized() {
           zIndex={1}
         />
       </Box>
-
       {/* Support CTA */}
       <Box mt={8} textAlign="center">
         <Link href="/donate" _hover={{ textDecoration: 'none' }}>
           <Button
             size="lg"
-            colorScheme="blue"
+            colorPalette="blue"
             bgGradient="linear(135deg, #667eea 0%, #764ba2 100%)"
             color="white"
             _hover={{
@@ -284,15 +275,12 @@ export default function SupportedByOptimized() {
               transform: 'translateY(0)',
             }}
             transition="all 0.2s"
-            leftIcon={<Icon as={FiHeart} />}
             borderRadius="xl"
             px={8}
             py={6}
             fontWeight="700"
-            fontSize="md"
-          >
-            Support Our Mission
-          </Button>
+            fontSize="md"><Icon as={FiHeart} />Support Our Mission
+                      </Button>
         </Link>
         <Text
           mt={3}

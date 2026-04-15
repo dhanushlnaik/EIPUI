@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { useColorModeValue } from "./ui/color-mode";
 import { BsFillShareFill } from "react-icons/bs";
-import { Box, useColorModeValue } from "@chakra-ui/react";
+import { Steps, Box } from "@chakra-ui/react";
 import { BsTwitter } from "react-icons/bs";
 import { AiFillEye } from "react-icons/ai";
 import NextLink from "next/link";

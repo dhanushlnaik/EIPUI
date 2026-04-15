@@ -1,4 +1,6 @@
-import { Tabs, TabList, Tab, TabPanels, TabPanel, Box, Text, useColorModeValue } from '@chakra-ui/react';
+import { TabList, Tab, TabPanels, TabPanel } from "@/components/ui/compat";
+import { Steps, Tabs, Box, Text } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
 import React from 'react';
 
 interface TransactionTabsProps {
@@ -15,8 +17,8 @@ export const TransactionTabs: React.FC<TransactionTabsProps> = ({ transactions }
   const borderColor = useColorModeValue('gray.200', 'gray.600');
 
   return (
-    <Tabs variant="unstyled">
-      <TabList>
+    <Tabs.Root unstyled>
+      <Tabs.List>
         {['All', '0', '1', '2', '3', '4']?.map((tab, index) => (
           <Tab
             key={index}
@@ -40,8 +42,7 @@ export const TransactionTabs: React.FC<TransactionTabsProps> = ({ transactions }
             {tab}
           </Tab>
         ))}
-      </TabList>
-
+      </Tabs.List>
       <TabPanels mt={4}>
         <TabPanel>
           <Box borderRadius="lg" borderWidth="1px" borderColor={borderColor} bg={panelBg} p={4}>
@@ -82,6 +83,6 @@ export const TransactionTabs: React.FC<TransactionTabsProps> = ({ transactions }
           </TabPanel>
         ))}
       </TabPanels>
-    </Tabs>
+    </Tabs.Root>
   );
 };

@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion';
-import { Box, Text, useColorModeValue, Link, HStack, IconButton, Tooltip } from '@chakra-ui/react';
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Text, Link, HStack, IconButton } from "@chakra-ui/react";
+import { Tooltip } from '@/components/ui/tooltip';
 import { FiCode, FiBookmark } from 'react-icons/fi';
 import React from 'react';
 import { usePathname } from 'next/navigation';
@@ -50,7 +52,7 @@ const Header: React.FC<HeaderProps> = ({ title, subtitle }) => {
 
   return (
     <Box>
-      <HStack spacing={4} alignItems="center">
+      <HStack gap={4} alignItems="center">
         <Text
           as={motion.div}
           initial={{ opacity: 0, y: -20 }}
@@ -66,20 +68,18 @@ const Header: React.FC<HeaderProps> = ({ title, subtitle }) => {
         </Text>
         <HStack>
           {commitLink && (
-            <Tooltip label="View Commit History">
+            <Tooltip content="View Commit History">
               <IconButton
                 as={Link}
                 href={commitLink}
                 isExternal
                 aria-label="View Commit History"
-                icon={<FiCode size={32} />}
                 size="lg"
                 color={useColorModeValue(headingColorLight, headingColorDark)}
-                variant="ghost"
-              />
+                variant="ghost"><FiCode size={32} /></IconButton>
             </Tooltip>
           )}
-          <Tooltip label={bookmarkState ? "Remove bookmark" : "Add bookmark"}>
+          <Tooltip content={bookmarkState ? "Remove bookmark" : "Add bookmark"}>
             <Box
               position="relative"
               borderRadius="md"
@@ -88,7 +88,6 @@ const Header: React.FC<HeaderProps> = ({ title, subtitle }) => {
             >
               <IconButton
                 aria-label={bookmarkState ? "Remove bookmark" : "Add bookmark"}
-                icon={<FiBookmark size={32} />}
                 size="lg"
                 onClick={handleBookmarkClick}
                 color={bookmarkState ? "white" : useColorModeValue(headingColorLight, headingColorDark)}
@@ -97,8 +96,7 @@ const Header: React.FC<HeaderProps> = ({ title, subtitle }) => {
                 zIndex={1}
                 _hover={{
                   bg: "transparent"
-                }}
-              />
+                }}><FiBookmark size={32} /></IconButton>
               {bookmarkState && (
                 <Box
                   position="absolute"

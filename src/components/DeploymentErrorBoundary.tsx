@@ -1,18 +1,6 @@
 import React, { Component, ReactNode } from 'react';
-import { 
-  Box, 
-  VStack, 
-  Heading, 
-  Text, 
-  Button, 
-  HStack,
-  Icon,
-  Badge,
-  Divider,
-  useColorModeValue,
-  CircularProgress,
-  CircularProgressLabel
-} from '@chakra-ui/react';
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, VStack, Heading, Text, Button, HStack, Icon, Badge, ProgressCircle, CircularProgressLabel, Separator } from "@chakra-ui/react";
 import { FaEnvelope, FaRedo, FaCog, FaExclamationTriangle } from 'react-icons/fa';
 import MaintenancePage from './MaintenancePage';
 
@@ -146,7 +134,6 @@ Best regards`);
             backgroundImage="radial-gradient(circle at 2px 2px, white 1px, transparent 0)"
             backgroundSize="40px 40px"
           />
-          
           <Box
             maxW="500px"
             w="full"
@@ -155,7 +142,7 @@ Best regards`);
             zIndex={1}
           >
             <VStack 
-              spacing={6} 
+              gap={6} 
               textAlign="center" 
               p={8}
               bg="rgba(255, 255, 255, 0.95)"
@@ -176,7 +163,7 @@ Best regards`);
               </Box>
 
               {/* Title and Description */}
-              <VStack spacing={3}>
+              <VStack gap={3}>
                 <Heading size="lg" color="gray.800" fontWeight="bold">
                   Oops! Something went wrong
                 </Heading>
@@ -186,34 +173,35 @@ Best regards`);
               </VStack>
 
               {/* Status Badge */}
-              <Badge colorScheme="orange" px={3} py={1} borderRadius="full" fontSize="sm">
-                <HStack spacing={1}>
+              <Badge colorPalette="orange" px={3} py={1} borderRadius="full" fontSize="sm">
+                <HStack gap={1}>
                   <Icon as={FaCog} boxSize={3} />
                   <Text>System Issue Detected</Text>
                 </HStack>
               </Badge>
 
-              <Divider />
+              <Separator />
 
               {/* Auto-refresh Section */}
               {this.state.autoRefreshEnabled && (
-                <VStack spacing={4}>
+                <VStack gap={4}>
                   <Text color="gray.700" fontSize="sm" fontWeight="medium">
                     Auto-refresh in
                   </Text>
                   
                   <Box position="relative">
-                    <CircularProgress 
-                      value={(600 - this.state.countdown) / 600 * 100} 
+                    <ProgressCircle.Root
+                      value={(600 - this.state.countdown) / 600 * 100}
                       size="80px"
-                      color="blue.500"
-                      trackColor="gray.200"
-                      thickness={6}
-                    >
-                      <CircularProgressLabel fontSize="sm" fontWeight="bold" color="gray.700">
-                        {this.formatTime(this.state.countdown)}
-                      </CircularProgressLabel>
-                    </CircularProgress>
+                      trackColor="gray.200">
+                      <ProgressCircle.Circle
+                        css={{
+                          "--thickness": 6
+                        }}>
+                        <ProgressCircle.Track />
+                        <ProgressCircle.Range stroke="blue.500" />
+                      </ProgressCircle.Circle>
+                    </ProgressCircle.Root>
                   </Box>
                   
                   <Text fontSize="xs" color="gray.500" maxW="300px">
@@ -224,31 +212,25 @@ Best regards`);
               )}
 
               {/* Action Buttons */}
-              <HStack spacing={4} flexWrap="wrap" justify="center">
-                <Button 
-                  colorScheme="blue" 
-                  leftIcon={<Icon as={FaRedo} />}
+              <HStack gap={4} flexWrap="wrap" justify="center">
+                <Button
+                  colorPalette="blue"
                   onClick={() => window.location.reload()}
                   size="md"
                   borderRadius="lg"
                   _hover={{ transform: 'translateY(-2px)', shadow: 'lg' }}
-                  transition="all 0.2s"
-                >
-                  Refresh Now
-                </Button>
+                  transition="all 0.2s"><Icon as={FaRedo} />Refresh Now
+                                  </Button>
                 
-                <Button 
-                  colorScheme="gray"
-                  variant="outline" 
-                  leftIcon={<Icon as={FaEnvelope} />}
+                <Button
+                  colorPalette="gray"
+                  variant="outline"
                   onClick={this.handleContactDev}
                   size="md"
                   borderRadius="lg"
                   _hover={{ transform: 'translateY(-2px)', shadow: 'md' }}
-                  transition="all 0.2s"
-                >
-                  Contact Dev Team
-                </Button>
+                  transition="all 0.2s"><Icon as={FaEnvelope} />Contact Dev Team
+                                  </Button>
               </HStack>
 
               {/* Stop Auto-refresh Option */}

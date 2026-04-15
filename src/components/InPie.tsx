@@ -1,6 +1,7 @@
 import React from 'react';
+import { useColorModeValue } from "./ui/color-mode";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-import { Box, Card, CardFooter, CardHeader, Stack, StackDivider, Text, Divider, useColorModeValue } from '@chakra-ui/react';
+import { Steps, Box, Card, Stack, Text, Separator } from "@chakra-ui/react";
 import FlexBetween from './FlexBetween';
 import { motion } from 'framer-motion';
 import LoaderComponent from './Loader';
@@ -150,30 +151,30 @@ export const PieC: React.FC<CustomBoxProps> = ({ data, status , year, month}) =>
 
   if (Object.values(transformedData)?.reduce((total, value) => total + value, 0) === 0) {
     return (
-        <Box
-        bgColor={bg}
-        marginTop={'2rem'}
-        marginBottom={'2rem'}
-        p="0.5rem"
-        borderRadius="0.35rem"
-        display="flex"
-        flexDirection="column"
-        justifyContent="center"
-        alignItems="center"
-        height={500}
-        overflowX="auto"
-        _hover={{
-          border: '1px',
-          borderColor: '#30A0E0',
-        }}
-        className="hover: cursor-pointer ease-in duration-200"
-      >
+      <Box
+      bgColor={bg}
+      marginTop={'2rem'}
+      marginBottom={'2rem'}
+      p="0.5rem"
+      borderRadius="0.35rem"
+      display="flex"
+      flexDirection="column"
+      justifyContent="center"
+      alignItems="center"
+      height={500}
+      overflowX="auto"
+      _hover={{
+        border: '1px',
+        borderColor: '#30A0E0',
+      }}
+      className="hover: cursor-pointer ease-in duration-200"
+    >
         <Text textAlign="left" fontSize="lg" fontWeight="bold" color="#30A0E0" paddingTop="1rem">
           {status} : {Object.values(transformedData)?.reduce((total, value) => total + value, 0)}
         </Text>
-        <Divider mt="1rem" mb="1rem" />
+        <Separator mt="1rem" mb="1rem" />
       </Box>
-    )
+    );
   }
 
   return (
@@ -206,7 +207,7 @@ export const PieC: React.FC<CustomBoxProps> = ({ data, status , year, month}) =>
         </Text>
       </NextLink>
       </Box>
-      <Divider mt="1rem" mb="1rem" />
+      <Separator mt="1rem" mb="1rem" />
       <Box width="60%" maxWidth={500} maxHeight={400}>
       <Pie {...config}/>
       </Box>

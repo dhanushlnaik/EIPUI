@@ -1,14 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
-import {
-  Box,
-  Text,
-  Image,
-  useColorModeValue,
-  Link,
-  Button,
-  Icon,
-  Flex,
-} from '@chakra-ui/react';
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Text, Image, Link, Button, Icon, Flex } from "@chakra-ui/react";
 import { FiHeart } from 'react-icons/fi';
 import CopyLink from './CopyLink';
 
@@ -103,10 +95,10 @@ const SupporterCard = ({ supporter }: {
     >
       <Link
         href={supporter.url}
-        isExternal
         _hover={{ textDecoration: 'none' }}
         onClick={(e) => e.stopPropagation()}
-      >
+        target='_blank'
+        rel='noopener noreferrer'>
         <Box
           bg={bgColor}
           borderRadius="lg"
@@ -227,7 +219,6 @@ export default function SupportedBy() {
         bgGradient="linear(90deg, #667eea 0%, #764ba2 50%, #0fdb8b 100%)"
         opacity={0.6}
       />
-
       {/* Improved Header with Subtitle */}
       <Box mb={4}>
         <Flex alignItems="center" mb={3} gap={3} direction="row" textAlign="left" justifyContent="center">
@@ -252,7 +243,6 @@ export default function SupportedBy() {
           Proudly backed by leading organizations in the Ethereum ecosystem
         </Text>
       </Box>
-
       {/* Continuous Scrolling Gallery Container */}
       <Box
         position="relative"
@@ -265,17 +255,18 @@ export default function SupportedBy() {
           display="flex"
           alignItems="center"
           width="max-content"
-          sx={{
+          css={{
             animation: 'scroll 50s linear infinite',
             willChange: 'transform',
-            '@keyframes scroll': {
+
+            '& @keyframes scroll': {
               '0%': {
                 transform: 'translateX(0)',
               },
               '100%': {
                 transform: 'translateX(-33.333%)', // Move by one set of 4 items
               },
-            },
+            }
           }}
         >
           {duplicatedSupporters.map((supporter, index) => (
@@ -308,13 +299,12 @@ export default function SupportedBy() {
           zIndex={1}
         />
       </Box>
-
       {/* Support CTA */}
       <Box mt={6} textAlign="center">
         <Link href="/donate" _hover={{ textDecoration: 'none' }}>
           <Button
             size="lg"
-            colorScheme="blue"
+            colorPalette="blue"
             bgGradient="linear(135deg, #667eea 0%, #764ba2 100%)"
             color="white"
             _hover={{
@@ -326,15 +316,12 @@ export default function SupportedBy() {
               transform: 'translateY(0)',
             }}
             transition="all 0.2s"
-            leftIcon={<Icon as={FiHeart} />}
             borderRadius="xl"
             px={8}
             py={6}
             fontWeight="700"
-            fontSize="md"
-          >
-            Support Our Mission
-          </Button>
+            fontSize="md"><Icon as={FiHeart} />Support Our Mission
+                      </Button>
         </Link>
         <Text
           mt={3}

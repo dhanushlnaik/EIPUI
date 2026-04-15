@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { useColorModeValue } from "./ui/color-mode";
 import { useWindowSize } from "react-use";
-import { Box, useColorModeValue, Button, Flex, Heading } from "@chakra-ui/react";
+import { Steps, Box, Button, Flex, Heading } from "@chakra-ui/react";
 import dynamic from "next/dynamic";
 import axios from "axios";
 

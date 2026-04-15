@@ -1,3 +1,4 @@
+"use client";
 // // import React, { useEffect, useState } from "react";
 // // import { Box, Icon, useColorModeValue, Text, Spinner, Button, Flex, Heading } from "@chakra-ui/react";
 // // import DateTime from "@/components/DateTime";
@@ -256,17 +257,9 @@
 
 // // export default EIPStatusDonut;
 
-// "use client";
+// 
 // import React, { useEffect, useState, useMemo } from "react";
-// import {
-//   Box,
-//   Button,
-//   Flex,
-//   Text,
-//   useColorModeValue,
-//   Spinner,
-//   SimpleGrid,
-// } from "@chakra-ui/react";
+// import { //   Box, //   Button, //   Flex, //   Text, //   useColorModeValue, //   Spinner, //   SimpleGrid, // } from "@chakra-ui/react";
 // import axios from "axios";
 // import NextLink from "next/link";
 // import DateTime from "@/components/DateTime";
@@ -436,16 +429,10 @@
 // export default RIPStatusDonut;
 
 
-"use client";
+;
 import React, { useEffect, useState, useMemo } from "react";
-import {
-  Box,
-  Button,
-  Flex,
-  Text,
-  useColorModeValue,
-  Spinner,
-} from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Button, Flex, Text, Spinner } from "@chakra-ui/react";
 import axios from "axios";
 import DateTime from "@/components/DateTime";
 

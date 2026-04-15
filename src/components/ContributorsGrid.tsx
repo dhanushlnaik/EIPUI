@@ -1,29 +1,7 @@
+import { useDisclosure } from "@/components/ui/compat";
 import React, { useState, useEffect } from 'react';
-import {
-  Box,
-  Heading,
-  SimpleGrid,
-  Avatar,
-  Text,
-  VStack,
-  Link,
-  useColorModeValue,
-  Button,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalCloseButton,
-  useDisclosure,
-  HStack,
-  Image,
-  Flex,
-  Stack,
-  IconButton,
-  Badge,
-  Icon,
-} from '@chakra-ui/react';
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Heading, SimpleGrid, Avatar, Text, VStack, Link, Button, HStack, Image, Flex, Stack, IconButton, Badge, Icon, Dialog, Portal } from "@chakra-ui/react";
 import { motion } from 'framer-motion';
 import { FaGithub, FaTwitter, FaLinkedin, FaUsers } from 'react-icons/fa';
 
@@ -105,7 +83,7 @@ const coreContributors = [
 ];
 
 export default function ContributorsGrid() {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { open, onOpen, onClose } = useDisclosure();
   const [selected, setSelected] = useState<any | null>(null);
   const cardBg = useColorModeValue("white", "gray.800");
   const textColor = useColorModeValue("gray.700", "gray.200");
@@ -189,8 +167,7 @@ export default function ContributorsGrid() {
       >
         <Icon as={FaUsers} boxSize="200px" />
       </Box>
-      
-      <HStack spacing={3} mb={6} position="relative">
+      <HStack gap={3} mb={6} position="relative">
         <Icon as={FaUsers} boxSize={8} color={accent} />
         <Heading 
           as="h2" 
@@ -202,8 +179,7 @@ export default function ContributorsGrid() {
           Our Team
         </Heading>
       </HStack>
-
-      <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4 }} spacing={6}>
+      <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4 }} gap={6}>
         {itemsToRender.map((contrib: any, idx: number) => (
           <MotionBox
             key={idx}
@@ -238,12 +214,10 @@ export default function ContributorsGrid() {
               transition="transform 0.3s ease"
               _groupHover={{ transform: 'scaleX(1)' }}
             />
-            <VStack spacing={3} align="stretch" w="full">
-              <VStack spacing={3}>
+            <VStack gap={3} align="stretch" w="full">
+              <VStack gap={3}>
                 <Box position="relative">
-                  <Avatar
-                    src={contrib.avatar}
-                    name={contrib.name}
+                  <Avatar.Root
                     size="2xl"
                     cursor="pointer"
                     onClick={() => { setSelected(contrib); onOpen(); }}
@@ -253,8 +227,7 @@ export default function ContributorsGrid() {
                     _groupHover={{ 
                       transform: 'scale(1.1) rotate(5deg)',
                       boxShadow: `0 10px 30px ${accent}40`
-                    }}
-                  />
+                    }}><Avatar.Fallback name={contrib.name} /><Avatar.Image src={contrib.avatar} /></Avatar.Root>
                   <Box
                     position="absolute"
                     bottom="0"
@@ -264,7 +237,7 @@ export default function ContributorsGrid() {
                     p={1}
                   >
                     <Badge 
-                      colorScheme="green" 
+                      colorPalette="green" 
                       variant="solid" 
                       fontSize="0.6em"
                       borderRadius="full"
@@ -274,7 +247,7 @@ export default function ContributorsGrid() {
                   </Box>
                 </Box>
                 
-                <VStack spacing={1}>
+                <VStack gap={1}>
                   <Text 
                     fontWeight="800" 
                     color={textColor} 
@@ -286,7 +259,7 @@ export default function ContributorsGrid() {
                   </Text>
                   {contrib.role && (
                     <Badge 
-                      colorScheme="purple" 
+                      colorPalette="purple" 
                       variant="subtle"
                       fontSize="xs"
                       px={3}
@@ -301,7 +274,7 @@ export default function ContributorsGrid() {
 
 
 
-              <HStack spacing={3} pt={2} justify="center">
+              <HStack gap={3} pt={2} justify="center">
                 {contrib.github && (
                   <IconButton
                     as="a"
@@ -309,14 +282,12 @@ export default function ContributorsGrid() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="Github"
-                    icon={<FaGithub />}
                     size="sm"
                     variant="ghost"
-                    colorScheme="purple"
+                    colorPalette="purple"
                     onClick={(e) => e.stopPropagation()}
                     transition="all 0.2s"
-                    _hover={{ transform: 'translateY(-2px)' }}
-                  />
+                    _hover={{ transform: 'translateY(-2px)' }}><FaGithub /></IconButton>
                 )}
                 {contrib.twitter && (
                   <IconButton
@@ -325,14 +296,12 @@ export default function ContributorsGrid() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="Twitter"
-                    icon={<FaTwitter />}
                     size="sm"
                     variant="ghost"
-                    colorScheme="purple"
+                    colorPalette="purple"
                     onClick={(e) => e.stopPropagation()}
                     transition="all 0.2s"
-                    _hover={{ transform: 'translateY(-2px)' }}
-                  />
+                    _hover={{ transform: 'translateY(-2px)' }}><FaTwitter /></IconButton>
                 )}
                 {contrib.linkedin && (
                   <IconButton
@@ -341,14 +310,12 @@ export default function ContributorsGrid() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="LinkedIn"
-                    icon={<FaLinkedin />}
                     size="sm"
                     variant="ghost"
-                    colorScheme="purple"
+                    colorPalette="purple"
                     onClick={(e) => e.stopPropagation()}
                     transition="all 0.2s"
-                    _hover={{ transform: 'translateY(-2px)' }}
-                  />
+                    _hover={{ transform: 'translateY(-2px)' }}><FaLinkedin /></IconButton>
                 )}
                 {contrib.farcaster && (
                   <IconButton
@@ -357,27 +324,24 @@ export default function ContributorsGrid() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="Farcaster"
-                    icon={<Image src="/farcaster-logo.png" alt="Farcaster" boxSize="16px" />}
                     size="sm"
                     variant="ghost"
-                    colorScheme="purple"
+                    colorPalette="purple"
                     onClick={(e) => e.stopPropagation()}
                     transition="all 0.2s"
-                    _hover={{ transform: 'translateY(-2px)' }}
-                  />
+                    _hover={{ transform: 'translateY(-2px)' }}><Image src="/farcaster-logo.png" alt="Farcaster" boxSize="16px" /></IconButton>
                 )}
               </HStack>
             </VStack>
           </MotionBox>
         ))}
       </SimpleGrid>
-
       {!loading && totalCount > visible && (
         <Box textAlign="center" mt={8}>
           <Button 
             onClick={() => setVisible(v => v + 6)} 
             size="md" 
-            colorScheme="purple"
+            colorPalette="purple"
             variant="outline"
             _hover={{ transform: 'scale(1.05)' }}
             transition="all 0.2s"
@@ -386,92 +350,87 @@ export default function ContributorsGrid() {
           </Button>
         </Box>
       )}
-
       {/* Contributor detail modal */}
-      <Modal isOpen={isOpen} onClose={onClose} isCentered size="xl">
-        <ModalOverlay backdropFilter="blur(10px)" />
-        <ModalContent bg={cardBg} borderRadius="2xl">
-          <ModalHeader>
-            <VStack spacing={2} align="start">
-              <Text fontSize="2xl" fontWeight="800" color={headingColor}>
-                {selected?.name}
-              </Text>
-              {selected?.role && (
-                <Badge colorScheme="purple" fontSize="sm" px={3} py={1}>
-                  {selected?.role}
-                </Badge>
-              )}
-            </VStack>
-          </ModalHeader>
-          <ModalCloseButton />
-          <ModalBody pb={6}>
-            <VStack spacing={6} align="center">
-              <Avatar 
-                src={selected?.avatar} 
-                name={selected?.name} 
-                size="2xl"
-                borderWidth="3px"
-                borderColor={accent}
-              />
+      <Dialog.Root open={open} placement='center' size='xl' onOpenChange={e => {
+        if (!e.open) {
+          onClose();
+        }
+      }}>
+        <Portal>
 
-              <HStack spacing={4} justify="center">
-                {selected?.github && (
-                  <IconButton
-                    as="a"
-                    href={selected?.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="GitHub"
-                    icon={<FaGithub />}
-                    colorScheme="purple"
-                    variant="ghost"
-                    size="lg"
-                  />
-                )}
-                {selected?.twitter && (
-                  <IconButton
-                    as="a"
-                    href={selected?.twitter}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Twitter"
-                    icon={<FaTwitter />}
-                    colorScheme="purple"
-                    variant="ghost"
-                    size="lg"
-                  />
-                )}
-                {selected?.linkedin && (
-                  <IconButton
-                    as="a"
-                    href={selected?.linkedin}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="LinkedIn"
-                    icon={<FaLinkedin />}
-                    colorScheme="purple"
-                    variant="ghost"
-                    size="lg"
-                  />
-                )}
-                {selected?.farcaster && (
-                  <IconButton
-                    as="a"
-                    href={selected?.farcaster}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Farcaster"
-                    icon={<Image src="/farcaster-logo.png" alt="Farcaster" boxSize="20px" />}
-                    colorScheme="purple"
-                    variant="ghost"
-                    size="lg"
-                  />
-                )}
-              </HStack>
-            </VStack>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
+          <Dialog.Backdrop backdropFilter="blur(10px)" />
+          <Dialog.Positioner>
+            <Dialog.Content bg={cardBg} borderRadius="2xl">
+              <Dialog.Header>
+                <VStack gap={2} align="start">
+                  <Text fontSize="2xl" fontWeight="800" color={headingColor}>
+                    {selected?.name}
+                  </Text>
+                  {selected?.role && (
+                    <Badge colorPalette="purple" fontSize="sm" px={3} py={1}>
+                      {selected?.role}
+                    </Badge>
+                  )}
+                </VStack>
+              </Dialog.Header>
+              <Dialog.CloseTrigger />
+              <Dialog.Body pb={6}>
+                <VStack gap={6} align="center">
+                  <Avatar.Root size="2xl" borderWidth="3px" borderColor={accent}><Avatar.Fallback name={selected?.name} /><Avatar.Image src={selected?.avatar} /></Avatar.Root>
+
+                  <HStack gap={4} justify="center">
+                    {selected?.github && (
+                      <IconButton
+                        as="a"
+                        href={selected?.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="GitHub"
+                        colorPalette="purple"
+                        variant="ghost"
+                        size="lg"><FaGithub /></IconButton>
+                    )}
+                    {selected?.twitter && (
+                      <IconButton
+                        as="a"
+                        href={selected?.twitter}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Twitter"
+                        colorPalette="purple"
+                        variant="ghost"
+                        size="lg"><FaTwitter /></IconButton>
+                    )}
+                    {selected?.linkedin && (
+                      <IconButton
+                        as="a"
+                        href={selected?.linkedin}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="LinkedIn"
+                        colorPalette="purple"
+                        variant="ghost"
+                        size="lg"><FaLinkedin /></IconButton>
+                    )}
+                    {selected?.farcaster && (
+                      <IconButton
+                        as="a"
+                        href={selected?.farcaster}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Farcaster"
+                        colorPalette="purple"
+                        variant="ghost"
+                        size="lg"><Image src="/farcaster-logo.png" alt="Farcaster" boxSize="20px" /></IconButton>
+                    )}
+                  </HStack>
+                </VStack>
+              </Dialog.Body>
+            </Dialog.Content>
+          </Dialog.Positioner>
+
+        </Portal>
+      </Dialog.Root>
     </Box>
   );
 }

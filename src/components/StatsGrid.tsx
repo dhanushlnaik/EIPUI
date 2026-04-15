@@ -1,18 +1,7 @@
+import { Stat } from "@/components/ui/compat";
 import React, { useEffect, useState } from 'react';
-import {
-  Box,
-  SimpleGrid,
-  Stat,
-  StatLabel,
-  StatNumber,
-  StatHelpText,
-  useColorModeValue,
-  Icon,
-  VStack,
-  HStack,
-  Spinner,
-  Text,
-} from '@chakra-ui/react';
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, SimpleGrid, Icon, VStack, HStack, Spinner, Text } from "@chakra-ui/react";
 import { motion, useAnimation } from 'framer-motion';
 import { FiCode, FiGitPullRequest, FiUsers, FiFileText, FiGitBranch, FiLayers, FiTag } from 'react-icons/fi';
 import Header from './Header';
@@ -106,7 +95,7 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, subtitle, icon, delay
           transition="opacity 0.3s"
         />
 
-        <VStack align="stretch" spacing={3}>
+        <VStack align="stretch" gap={3}>
           {/* Icon */}
           <HStack justify="space-between" align="start">
             <Box
@@ -130,8 +119,8 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, subtitle, icon, delay
           </HStack>
 
           {/* Number with count-up animation */}
-          <Stat>
-            <StatNumber
+          <Stat.Root>
+            <Stat.ValueText
               fontSize={{ base: '2xl', md: '3xl' }}
               fontWeight="700"
               bgGradient={gradient}
@@ -139,23 +128,23 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, subtitle, icon, delay
               letterSpacing="-0.01em"
             >
               {count.toLocaleString()}
-            </StatNumber>
-            <StatLabel
+            </Stat.ValueText>
+            <Stat.Label
               fontSize={{ base: 'sm', md: 'md' }}
               fontWeight="600"
               color={useColorModeValue('gray.700', 'gray.200')}
               mt={1}
             >
               {title}
-            </StatLabel>
-            <StatHelpText
+            </Stat.Label>
+            <Stat.HelpText
               fontSize="xs"
               color={useColorModeValue('gray.500', 'gray.400')}
               mt={0.5}
             >
               {subtitle}
-            </StatHelpText>
-          </Stat>
+            </Stat.HelpText>
+          </Stat.Root>
         </VStack>
 
         {/* Subtle glow effect on hover */}
@@ -288,7 +277,9 @@ const StatsGrid: React.FC = () => {
     return (
       <Box 
         id="platform-stats"
-        sx={{ scrollMarginTop: "100px" }}
+        css={{
+          scrollMarginTop: "100px"
+        }}
         bg={useColorModeValue("white", "gray.800")}
         borderRadius="xl"
         boxShadow="sm"
@@ -298,7 +289,7 @@ const StatsGrid: React.FC = () => {
         mb={8}
         textAlign="center"
       >
-        <Spinner size="xl" color="blue.500" thickness="4px" />
+        <Spinner size="xl" color="blue.500" borderWidth="4px" />
         <Text mt={4} color={useColorModeValue('gray.600', 'gray.400')}>
           Loading stats...
         </Text>
@@ -309,7 +300,9 @@ const StatsGrid: React.FC = () => {
   return (
     <Box 
       id="platform-stats"
-      sx={{ scrollMarginTop: "100px" }}
+      css={{
+        scrollMarginTop: "100px"
+      }}
       bg={useColorModeValue("white", "gray.800")}
       borderRadius="xl"
       boxShadow="sm"
@@ -325,18 +318,16 @@ const StatsGrid: React.FC = () => {
         description=""
         sectionId="platform-stats"
       />
-
       {/* Error Message */}
       {error && (
         <Text fontSize="sm" color="orange.400" mb={4}>
           {error} - showing latest snapshot
         </Text>
       )}
-
       {/* Stats Grid - 4 columns on desktop, responsive */}
       <SimpleGrid 
         columns={{ base: 1, sm: 2, md: 3, lg: 4 }} 
-        spacing={{ base: 4, md: 5 }}
+        gap={{ base: 4, md: 5 }}
         mt={6}
       >
         {statsData.map((stat, index) => (

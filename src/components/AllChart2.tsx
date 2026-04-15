@@ -1,22 +1,15 @@
 import React, { useEffect, useState } from "react";
+import { useColorModeValue } from "./ui/color-mode";
 import dynamic from "next/dynamic";
-import {
-  Box,
-  useColorModeValue,
-  Spinner,
-  Text,
-  Select,
-  Flex,
-  Link,
-  Button,
-} from "@chakra-ui/react";
+import { Steps, Box, Spinner, Text, NativeSelect, Flex, Link, Button } from "@chakra-ui/react";
 import { useWindowSize } from "react-use";
 import { motion } from "framer-motion";
 import DateTime from "@/components/DateTime";
 import Dashboard from "./Dashboard";
 import NextLink from "next/link";
-import { ChevronDownIcon } from "@chakra-ui/icons";
 import { CSVLink } from "react-csv";
+import { client } from "@/lib/orpc";
+import { LuChevronDown } from 'react-icons/lu';
 
 const getCat = (cat: string) => {
   switch (cat) {
@@ -80,7 +73,7 @@ interface EIP {
   status?: string;
   type?: string;
   category?: string;
-  created?: string;
+  created?: string | Date | null;
   discussion?: string;
   deadline?: string;
   requires?: string;
@@ -93,6 +86,20 @@ interface APIResponse {
   eip: EIP[];
   erc: EIP[];
   rip: EIP[];
+}
+
+interface V4HomeChartResponse {
+  source: "v4";
+  categoryTimeline: Array<{
+    year: number;
+    category: string;
+    value: number;
+  }>;
+  statusTimeline: Array<{
+    year: number;
+    status: string;
+    value: number;
+  }>;
 }
 
 // Enhanced color palette - vibrant and distinct
@@ -127,7 +134,7 @@ const fallbackColors: string[] = [
   "rgb(249, 115, 22)", // Orange 500
 ];
 
- 
+
 
 interface ChartProps {
   type: string;
@@ -136,6 +143,7 @@ interface ChartProps {
 
 const AllChart: React.FC<ChartProps> = ({ type }) => {
   const [data, setData] = useState<APIResponse>({ eip: [], erc: [], rip: [] });
+  const [v4ChartData, setV4ChartData] = useState<V4HomeChartResponse | null>(null);
   const bg = useColorModeValue("#f6f6f7", "#171923");
   const [isLoading, setIsLoading] = useState(true);
   const [chart, setchart] = useState("category");
@@ -144,9 +152,40 @@ const AllChart: React.FC<ChartProps> = ({ type }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("/api/new/all");
-        const jsonData: APIResponse = await response.json();
-        setData(jsonData);
+        // Fetch both sources:
+        // - v4 timeline for chart rendering
+        // - oRPC full proposal rows for metadata CSV export
+        const [v4Result, rpcResult] = await Promise.allSettled([
+          fetch("/api/v4/home-chart"),
+          client.home.getAllProposals(),
+        ]);
+
+        if (rpcResult.status === "fulfilled") {
+          setData(rpcResult.value as APIResponse);
+        } else {
+          // Keep REST fallback while we roll out oRPC incrementally.
+          const fallbackResponse = await fetch("/api/new/all");
+          if (fallbackResponse.ok) {
+            const fallbackData: APIResponse = await fallbackResponse.json();
+            setData(fallbackData);
+          }
+        }
+
+        if (v4Result.status === "fulfilled" && v4Result.value.ok) {
+          const v4JsonData: V4HomeChartResponse = await v4Result.value.json();
+          if (
+            Array.isArray(v4JsonData?.categoryTimeline) &&
+            Array.isArray(v4JsonData?.statusTimeline) &&
+            (v4JsonData.categoryTimeline.length > 0 || v4JsonData.statusTimeline.length > 0)
+          ) {
+            setV4ChartData(v4JsonData);
+          } else {
+            setV4ChartData(null);
+          }
+        } else {
+          setV4ChartData(null);
+        }
+
         setIsLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -172,27 +211,31 @@ const AllChart: React.FC<ChartProps> = ({ type }) => {
   // Use /api/new/all data: merge arrays and aggregate by created year
   const allData: EIP[] = [...(data?.eip || []), ...(data?.erc || []), ...(data?.rip || [])];
 
-  const transformedData = allData.reduce<TransformedData[]>((acc, item) => {
-    const year = item.created ? new Date(item.created).getFullYear() : new Date().getFullYear();
-    const baseCategory = item.repo === "rip" ? "RIPs" : getCat(item.category || "");
+  const transformedData = v4ChartData?.categoryTimeline?.length
+    ? v4ChartData.categoryTimeline
+    : allData.reduce<TransformedData[]>((acc, item) => {
+        const year = item.created ? new Date(item.created).getFullYear() : new Date().getFullYear();
+        const baseCategory = item.repo === "rip" ? "RIPs" : getCat(item.category || "");
 
-    const existingEntry = acc.find((entry) => entry.year === year && entry.category === baseCategory);
-    if (existingEntry) existingEntry.value += 1;
-    else acc.push({ category: baseCategory, year, value: 1 });
-    return acc;
-  }, []);
+        const existingEntry = acc.find((entry) => entry.year === year && entry.category === baseCategory);
+        if (existingEntry) existingEntry.value += 1;
+        else acc.push({ category: baseCategory, year, value: 1 });
+        return acc;
+      }, []);
 
-  const transformedData2 = allData.reduce<TransformedData2[]>((acc, item) => {
-    const year = item.created ? new Date(item.created).getFullYear() : new Date().getFullYear();
-    const status = getStatus(item.status || "");
+  const transformedData2 = v4ChartData?.statusTimeline?.length
+    ? v4ChartData.statusTimeline
+    : allData.reduce<TransformedData2[]>((acc, item) => {
+        const year = item.created ? new Date(item.created).getFullYear() : new Date().getFullYear();
+        const status = getStatus(item.status || "");
 
-    const existingEntry = acc.find((entry) => entry.year === year && entry.status === status);
-    if (existingEntry) existingEntry.value += 1;
-    else acc.push({ status, year, value: 1 } as any);
-    return acc;
-  }, []);
+        const existingEntry = acc.find((entry) => entry.year === year && entry.status === status);
+        if (existingEntry) existingEntry.value += 1;
+        else acc.push({ status, year, value: 1 } as any);
+        return acc;
+      }, []);
 
-  // Prepare CSV data from /api/new/all (one row per current EIP entry)
+  // Prepare CSV data from full proposal rows (/api/new/all).
   React.useEffect(() => {
     const rows: any[] = [];
     let srNumber = 1;
@@ -491,52 +534,60 @@ return (
             </Link>
 
             <Flex gap={2} mt={{ base: 2, md: 0 }} align="center">
-              <CSVLink
-                data={csvData}
-                filename="eips_final_status_by_year.csv"
-                headers={[
-                  "SR No.",
-                  "Year",
-                  "Repo",
-                  "EIP",
-                  "EIP Number",
-                  "Title",
-                  "Category",
-                  "Original Category",
-                  "Final Status",
-                  "Original Status",
-                  "EIP Link"
-                ]}
-              >
-                <Button
-                  size="sm"
-                  colorScheme="blue"
-                  variant="solid"
-                  _hover={{
-                    transform: "translateY(-1px)",
-                    boxShadow: "md",
-                  }}
-                  transition="all 0.2s"
+              {csvData.length > 0 ? (
+                <CSVLink
+                  data={csvData}
+                  filename="eips_final_status_by_year.csv"
+                  headers={[
+                    "SR No.",
+                    "Year",
+                    "Repo",
+                    "EIP",
+                    "EIP Number",
+                    "Title",
+                    "Category",
+                    "Original Category",
+                    "Final Status",
+                    "Original Status",
+                    "EIP Link",
+                  ]}
                 >
-                  Download CSV
+                  <Button
+                    size="sm"
+                    colorPalette="blue"
+                    variant="solid"
+                    _hover={{
+                      transform: "translateY(-1px)",
+                      boxShadow: "md",
+                    }}
+                    transition="all 0.2s"
+                  >
+                    Download CSV
+                  </Button>
+                </CSVLink>
+              ) : (
+                <Button size="sm" colorPalette="blue" variant="outline" disabled>
+                  CSV Unavailable
                 </Button>
-              </CSVLink>
+              )}
 
-              <Select
-                variant="outline"
-                value={chart}
-                size="md"
-                bg="#30A0E0"
-                color="black"
-                border="2px solid black"
-                borderRadius="0.5rem"
-                onChange={(e) => setchart(e.target.value)}
-                _hover={{ borderColor: "black" }}
-                width={{ base: "100%", md: "auto" }}
-              >
-                <option value="category">Category</option>
-                <option value="status">Status</option>
-              </Select>
+              <NativeSelect.Root>
+                <NativeSelect.Field
+                  variant="outline"
+                  value={chart}
+                  size="md"
+                  bg="#30A0E0"
+                  color="black"
+                  border="2px solid black"
+                  borderRadius="0.5rem"
+                  onValueChange={(e) => setchart(e.target.value)}
+                  _hover={{ borderColor: "black" }}
+                  width={{ base: "100%", md: "auto" }}>
+                  <option value="category">Category</option>
+                  <option value="status">Status</option>
+                </NativeSelect.Field>
+                <NativeSelect.Indicator />
+              </NativeSelect.Root>
             </Flex>
           </Flex>
 

@@ -1,44 +1,9 @@
+import { PopoverCloseButton } from "@/components/ui/compat";
+import { InputRightElement, TableContainer, Thead, Tbody, Tr, Th, Td } from "@/components/ui/compat";
+import { useToast } from "@/components/ui/use-toast";
 import React, { useState, useEffect } from "react";
-import {
-  Box,
-  Button,
-  ButtonGroup,
-  Input,
-  Text,
-  VStack,
-  HStack,
-  Textarea,
-  Select,
-  useToast,
-  IconButton,
-  Switch,
-  Table,
-  TableContainer,
-  Tbody,
-  Td,
-  Th,
-  InputGroup,
-  InputRightElement,
-  Thead,
-  Tr,
-  Flex,
-  Wrap,
-  WrapItem,
-  Spinner,
-} from "@chakra-ui/react";
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverArrow,
-  PopoverCloseButton,
-  PopoverHeader,
-  PopoverBody,
-} from "@chakra-ui/react";
-import { InfoOutlineIcon, SearchIcon } from "@chakra-ui/icons";
-import { DownloadIcon, CheckIcon, AddIcon } from "@chakra-ui/icons";
-import { ViewIcon, EditIcon, ViewOffIcon } from "@chakra-ui/icons";
-import { AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay } from "@chakra-ui/react";
+import { Box, Button, ButtonGroup, Input, Text, VStack, HStack, Textarea, Select, IconButton, Switch, Table, InputGroup, Flex, Wrap, WrapItem, Spinner, Dialog, Portal, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverHeader, PopoverBody } from "@chakra-ui/react";
+import { Info as InfoOutlineIcon, Search as SearchIcon, Download as DownloadIcon, Check as CheckIcon, Plus as AddIcon, Eye as ViewIcon, Edit as EditIcon, EyeOff as ViewOffIcon } from "lucide-react";
 import { BiColumns } from "react-icons/bi";
 import {
   FaBold,
@@ -54,7 +19,7 @@ import {
   FaMinus,
   FaImage,
 } from "react-icons/fa";
-// import { IconButton, Text, HStack } from '@chakra-ui/react';
+// import { IconButton, Text, HStack } from "@chakra-ui/react";
 import { MarkdownViewer } from "react-github-markdown";
 import { ErrorList } from "./ErrorToast";
 import axios from "axios";
@@ -775,7 +740,7 @@ Copyright and related rights waived via [CC0](../LICENSE.md).
         /\[ERC-(\d+)\]\(https:\/\/eips\.ethereum\.org\/ERCS\/erc-(\d+)\)/g; // Match ERC links
 
       // Array to store all matches
-      const matches = [];
+      const matches: { type: string; num: string }[] = [];
 
       // Collect matches from each regex
       let match;
@@ -964,860 +929,866 @@ Copyright and related rights waived via [CC0](../LICENSE.md).
 
   return (
     <>
+      <Dialog.Root
+        open={isErrorDialogOpen}
+        initialFocusEl={() => cancelRef.current}
+        role='alertdialog'
+        onOpenChange={e => {
+          if (!e.open) {
+            setIsErrorDialogOpen(false);
+          }
+        }}>
+        <Portal>
 
+          <Dialog.Backdrop>
+            <Dialog.Positioner>
+              <Dialog.Content>
+                <Dialog.Header fontSize="lg" fontWeight="bold">
+                  Template Error Details
+                </Dialog.Header>
+                <Dialog.Body>
+                  <ul>
+                    {detailedErrors.map((err, idx) => (
+                      <li key={idx} style={{ marginBottom: 8, color: "#d53f8c" }}>
+                        {err}
+                      </li>
+                    ))}
+                  </ul>
+                </Dialog.Body>
+                <Dialog.Footer>
+                  <Button ref={cancelRef} onClick={() => setIsErrorDialogOpen(false)}>
+                    Close
+                  </Button>
+                </Dialog.Footer>
+              </Dialog.Content>
+            </Dialog.Positioner>
+          </Dialog.Backdrop>
 
-
-<AlertDialog
-  isOpen={isErrorDialogOpen}
-  leastDestructiveRef={cancelRef}
-  onClose={() => setIsErrorDialogOpen(false)}
->
-  <AlertDialogOverlay>
-    <AlertDialogContent>
-      <AlertDialogHeader fontSize="lg" fontWeight="bold">
-        Template Error Details
-      </AlertDialogHeader>
-      <AlertDialogBody>
-        <ul>
-          {detailedErrors.map((err, idx) => (
-            <li key={idx} style={{ marginBottom: 8, color: "#d53f8c" }}>
-              {err}
-            </li>
-          ))}
-        </ul>
-      </AlertDialogBody>
-      <AlertDialogFooter>
-        <Button ref={cancelRef} onClick={() => setIsErrorDialogOpen(false)}>
-          Close
-        </Button>
-      </AlertDialogFooter>
-    </AlertDialogContent>
-  </AlertDialogOverlay>
-</AlertDialog>
-
-    <FeedbackWidget/>
-    <Box
-      p={5}
-      mx="auto"
-      bg="gray.200"
-      _dark={{ bg: "gray.900", color: "gray.200" }}
-      color="black"
-      borderRadius="lg"
-      id="EipTemplateEditor"
-    >
+        </Portal>
+</Dialog.Root>
+      <FeedbackWidget/>
       <Box
-        p={4}
-        bg="gray.300"
-        _dark={{ bg: "gray.800" }}
-        borderRadius="md"
-        display="flex"
-        flexWrap="wrap"
-        justifyContent="space-between"
-        alignItems="center"
-        gap={4} // Adds spacing between rows when wrapped
+        p={5}
+        mx="auto"
+        bg="gray.200"
+        _dark={{ bg: "gray.900", color: "gray.200" }}
+        color="black"
+        borderRadius="lg"
+        id="EipTemplateEditor"
       >
-        <HStack spacing={4} flexWrap="wrap">
-          <Flex align="center" justify="space-between">
-            <ButtonGroup size="md" isAttached>
+        <Box
+          p={4}
+          bg="gray.300"
+          _dark={{ bg: "gray.800" }}
+          borderRadius="md"
+          display="flex"
+          flexWrap="wrap"
+          justifyContent="space-between"
+          alignItems="center"
+          gap={4} // Adds spacing between rows when wrapped
+        >
+          <HStack gap={4} flexWrap="wrap">
+            <Flex align="center" justify="space-between">
+              <ButtonGroup size="md" isAttached>
+                <Button
+                  colorScheme="green"
+                  variant={activeTab2 === "new" ? "solid" : "outline"}
+                  onClick={() => setActiveTab2("new")}
+                  flex="1" // Equal size buttons
+                >
+                  {activeTab === "eip"
+                    ? "New EIP"
+                    : activeTab === "erc"
+                    ? "New ERC"
+                    : activeTab === "rip"
+                    ? "New RIP"
+                    : "New"}
+                </Button>
+                <Button
+                  colorScheme="green"
+                  variant={activeTab2 === "import" ? "solid" : "outline"}
+                  onClick={() => setActiveTab2("import")}
+                  flex="1" // Equal size buttons
+                >
+                  {activeTab === "eip"
+                    ? "Import an EIP"
+                    : activeTab === "erc"
+                    ? "Import and ERC"
+                    : activeTab === "rip"
+                    ? "Import an RIP"
+                    : "Import"}
+                </Button>
+              </ButtonGroup>
+            </Flex>
+
+            <Flex align="center" justify="space-between">
+              {activeTab2 === "import" && (
+                <InputGroup
+                  maxW="300px"
+                  // minW="200px"
+                  colorScheme="green"
+                >
+                  <Input
+                    placeholder={`Enter ${activeTab.toUpperCase()} number`}
+                    value={searchNumber}
+                    onChange={(e) => setSearchNumber(e.target.value)}
+                    _placeholder={{ color: "blue.500" }}
+                    borderColor="blue.500"
+                    _hover={{ borderColor: "blue.600" }}
+                    _focus={{
+                      borderColor: "blue.700",
+                      boxShadow: "0 0 0 1px blue.700",
+                    }}
+                    width="100%" // Ensures it takes full width inside its container
+                  />
+                  <InputRightElement>
+                    <IconButton
+                      aria-label="Search"
+                      icon={<SearchIcon />}
+                      colorScheme="blue"
+                      onClick={handleImport}
+                      isLoading={isLoading}
+                    />
+                  </InputRightElement>
+                </InputGroup>
+              )}
+            </Flex>
+
+            <ButtonGroup size="md" isAttached pl={2}>
               <Button
-                colorScheme="green"
-                variant={activeTab2 === "new" ? "solid" : "outline"}
-                onClick={() => setActiveTab2("new")}
+                colorScheme="blue"
+                variant={activeTab === "eip" ? "solid" : "outline"}
+                onClick={() => setActiveTab("eip")}
                 flex="1" // Equal size buttons
               >
-                {activeTab === "eip"
-                  ? "New EIP"
-                  : activeTab === "erc"
-                  ? "New ERC"
-                  : activeTab === "rip"
-                  ? "New RIP"
-                  : "New"}
+                EIPs
               </Button>
               <Button
-                colorScheme="green"
-                variant={activeTab2 === "import" ? "solid" : "outline"}
-                onClick={() => setActiveTab2("import")}
+                colorScheme="blue"
+                variant={activeTab === "erc" ? "solid" : "outline"}
+                onClick={() => setActiveTab("erc")}
                 flex="1" // Equal size buttons
               >
-                {activeTab === "eip"
-                  ? "Import an EIP"
-                  : activeTab === "erc"
-                  ? "Import and ERC"
-                  : activeTab === "rip"
-                  ? "Import an RIP"
-                  : "Import"}
+                ERCs
+              </Button>
+              <Button
+                colorScheme="blue"
+                variant={activeTab === "rip" ? "solid" : "outline"}
+                onClick={() => setActiveTab("rip")}
+                flex="1" // Equal size buttons
+              >
+                RIPs
               </Button>
             </ButtonGroup>
-          </Flex>
 
-          <Flex align="center" justify="space-between">
-            {activeTab2 === "import" && (
-              <InputGroup
-                maxW="300px"
-                // minW="200px"
-                colorScheme="green"
-              >
-                <Input
-                  placeholder={`Enter ${activeTab.toUpperCase()} number`}
-                  value={searchNumber}
-                  onChange={(e) => setSearchNumber(e.target.value)}
-                  _placeholder={{ color: "blue.500" }}
-                  borderColor="blue.500"
-                  _hover={{ borderColor: "blue.600" }}
-                  _focus={{
-                    borderColor: "blue.700",
-                    boxShadow: "0 0 0 1px blue.700",
-                  }}
-                  width="100%" // Ensures it takes full width inside its container
+            {/* Popover for instructions */}
+            <Popover>
+              <PopoverTrigger>
+                <IconButton
+                  aria-label="More info"
+                  icon={<InfoOutlineIcon />}
+                  size="md"
+                  colorScheme="blue"
+                  variant="ghost"
                 />
-                <InputRightElement>
-                  <IconButton
-                    aria-label="Search"
-                    icon={<SearchIcon />}
-                    colorScheme="blue"
-                    onClick={handleImport}
-                    isLoading={isLoading}
-                  />
-                </InputRightElement>
-              </InputGroup>
-            )}
-          </Flex>
+              </PopoverTrigger>
+              <PopoverContent>
+                <PopoverArrow />
+                <PopoverCloseButton />
+                <PopoverHeader>Instructions</PopoverHeader>
+                <PopoverBody>
+                  This form is for EIPs and ERCs and not for RIPs.
+                </PopoverBody>
+              </PopoverContent>
+            </Popover>
 
-          <ButtonGroup size="md" isAttached pl={2}>
-            <Button
-              colorScheme="blue"
-              variant={activeTab === "eip" ? "solid" : "outline"}
-              onClick={() => setActiveTab("eip")}
-              flex="1" // Equal size buttons
-            >
-              EIPs
-            </Button>
-            <Button
-              colorScheme="blue"
-              variant={activeTab === "erc" ? "solid" : "outline"}
-              onClick={() => setActiveTab("erc")}
-              flex="1" // Equal size buttons
-            >
-              ERCs
-            </Button>
-            <Button
-              colorScheme="blue"
-              variant={activeTab === "rip" ? "solid" : "outline"}
-              onClick={() => setActiveTab("rip")}
-              flex="1" // Equal size buttons
-            >
-              RIPs
-            </Button>
-          </ButtonGroup>
-
-          {/* Popover for instructions */}
-          <Popover>
-            <PopoverTrigger>
-              <IconButton
-                aria-label="More info"
-                icon={<InfoOutlineIcon />}
-                size="md"
+            <ButtonGroup paddingLeft={2} size="md" isAttached>
+              <Button
+                leftIcon={<BiColumns />}
                 colorScheme="blue"
-                variant="ghost"
-              />
-            </PopoverTrigger>
-            <PopoverContent>
-              <PopoverArrow />
-              <PopoverCloseButton />
-              <PopoverHeader>Instructions</PopoverHeader>
-              <PopoverBody>
-                This form is for EIPs and ERCs and not for RIPs.
-              </PopoverBody>
-            </PopoverContent>
-          </Popover>
+                variant={viewMode === "split" ? "solid" : "outline"}
+                _hover={{ bg: viewMode !== "split" ? "blue.700" : undefined }}
+                _dark={{
+                  bg: viewMode === "split" ? "blue.500" : "transparent",
+                  color: viewMode === "split" ? "white" : "blue.300",
+                  borderColor: "blue.300",
+                }}
+                onClick={() => setViewMode("split")}
+              >
+                Split
+              </Button>
+              <Button
+                leftIcon={<EditIcon />}
+                colorScheme="blue"
+                variant={viewMode === "edit" ? "solid" : "outline"}
+                _hover={{ bg: viewMode !== "edit" ? "blue.700" : undefined }}
+                _dark={{
+                  bg: viewMode === "edit" ? "blue.500" : "transparent",
+                  color: viewMode === "edit" ? "white" : "blue.300",
+                  borderColor: "blue.300",
+                }}
+                onClick={() => setViewMode("edit")}
+              >
+                Edit
+              </Button>
+              <Button
+                leftIcon={<ViewIcon />}
+                colorScheme="blue"
+                variant={viewMode === "output" ? "solid" : "outline"}
+                _hover={{ bg: viewMode !== "output" ? "blue.700" : undefined }}
+                _dark={{
+                  bg: viewMode === "output" ? "blue.500" : "transparent",
+                  color: viewMode === "output" ? "white" : "blue.300",
+                  borderColor: "blue.300",
+                }}
+                onClick={() => setViewMode("output")}
+              >
+                Output
+              </Button>
+            </ButtonGroup>
+          </HStack>
+        </Box>
 
-          <ButtonGroup paddingLeft={2} size="md" isAttached>
-            <Button
-              leftIcon={<BiColumns />}
-              colorScheme="blue"
-              variant={viewMode === "split" ? "solid" : "outline"}
-              _hover={{ bg: viewMode !== "split" ? "blue.700" : undefined }}
-              _dark={{
-                bg: viewMode === "split" ? "blue.500" : "transparent",
-                color: viewMode === "split" ? "white" : "blue.300",
-                borderColor: "blue.300",
+        <Box
+          display="flex"
+          flexDirection={["column", "column", "row"]} // Stacks vertically on small screens
+          height="800px"
+          mt={4}
+          gap={4} // Adds spacing between editor and output
+          _dark={{
+            bg: "gray.800",
+            color: "gray.200",
+          }}
+        >
+          {(viewMode === "edit" || viewMode === "split") && (
+            <Box
+              flex="1"
+              p={4}
+              minWidth={["100%", "50%"]}
+              overflowY="auto"
+              bg="gray.100"
+              _dark={{ bg: "gray.700" }}
+              borderRadius="md"
+              boxShadow="sm"
+              fontSize={["sm", "md", "lg"]} // Adjust font size based on screen size
+              sx={{
+                "&::-webkit-scrollbar": {
+                  width: "8px", // Width of the scrollbar
+                },
+                "&::-webkit-scrollbar-thumb": {
+                  background: "#3182ce", // Color of the scrollbar thumb
+                  borderRadius: "4px", // Rounded edges for the thumb
+                },
+                "&::-webkit-scrollbar-thumb:hover": {
+                  background: "#2b6cb0", // Darker color on hover
+                },
+                "&::-webkit-scrollbar-track": {
+                  background: "#edf2f7", // Light background for the track
+                },
               }}
-              onClick={() => setViewMode("split")}
             >
-              Split
-            </Button>
-            <Button
-              leftIcon={<EditIcon />}
-              colorScheme="blue"
-              variant={viewMode === "edit" ? "solid" : "outline"}
-              _hover={{ bg: viewMode !== "edit" ? "blue.700" : undefined }}
-              _dark={{
-                bg: viewMode === "edit" ? "blue.500" : "transparent",
-                color: viewMode === "edit" ? "white" : "blue.300",
-                borderColor: "blue.300",
-              }}
-              onClick={() => setViewMode("edit")}
-            >
-              Edit
-            </Button>
-            <Button
-              leftIcon={<ViewIcon />}
-              colorScheme="blue"
-              variant={viewMode === "output" ? "solid" : "outline"}
-              _hover={{ bg: viewMode !== "output" ? "blue.700" : undefined }}
-              _dark={{
-                bg: viewMode === "output" ? "blue.500" : "transparent",
-                color: viewMode === "output" ? "white" : "blue.300",
-                borderColor: "blue.300",
-              }}
-              onClick={() => setViewMode("output")}
-            >
-              Output
-            </Button>
-          </ButtonGroup>
-        </HStack>
-      </Box>
+              <VStack gap={5}>
+                <Text fontSize={["sm", "md", "3xl"]} fontWeight="bold">
+                  {activeTab === "eip"
+                    ? "Document an EIP"
+                    : activeTab === "erc"
+                    ? "Document an ERC"
+                    : activeTab === "rip"
+                    ? "Document an RIP"
+                    : "Document a Template"}
+                </Text>
 
-      <Box
-        display="flex"
-        flexDirection={["column", "column", "row"]} // Stacks vertically on small screens
-        height="800px"
-        mt={4}
-        gap={4} // Adds spacing between editor and output
-        _dark={{
-          bg: "gray.800",
-          color: "gray.200",
-        }}
-      >
-        {(viewMode === "edit" || viewMode === "split") && (
-          <Box
-            flex="1"
-            p={4}
-            minWidth={["100%", "50%"]}
-            overflowY="auto"
-            bg="gray.100"
-            _dark={{ bg: "gray.700" }}
-            borderRadius="md"
-            boxShadow="sm"
-            fontSize={["sm", "md", "lg"]} // Adjust font size based on screen size
-            sx={{
-              "&::-webkit-scrollbar": {
-                width: "8px", // Width of the scrollbar
-              },
-              "&::-webkit-scrollbar-thumb": {
-                background: "#3182ce", // Color of the scrollbar thumb
-                borderRadius: "4px", // Rounded edges for the thumb
-              },
-              "&::-webkit-scrollbar-thumb:hover": {
-                background: "#2b6cb0", // Darker color on hover
-              },
-              "&::-webkit-scrollbar-track": {
-                background: "#edf2f7", // Light background for the track
-              },
-            }}
-          >
-            <VStack spacing={5}>
-              <Text fontSize={["sm", "md", "3xl"]} fontWeight="bold">
-                {activeTab === "eip"
-                  ? "Document an EIP"
-                  : activeTab === "erc"
-                  ? "Document an ERC"
-                  : activeTab === "rip"
-                  ? "Document an RIP"
-                  : "Document a Template"}
-              </Text>
-
-              {steps?.map((step, index) => (
-                <Box key={index} w="100%">
-                  <Box mb={4}>
-                    <Text
-                      fontSize="lg"
-                      fontWeight="bold"
-                      display="inline-block"
-                      mr={2}
-                    >
-                      {step.label}
-                    </Text>
-                    <Popover>
-                      <PopoverTrigger>
-                        <IconButton
-                          aria-label="More info"
-                          icon={<InfoOutlineIcon />}
-                          size="sm"
-                          colorScheme="blue"
-                          variant="ghost"
-                        />
-                      </PopoverTrigger>
-                      <PopoverContent>
-                        <PopoverArrow />
-                        <PopoverCloseButton />
-                        <PopoverHeader>{step.label} Instruction</PopoverHeader>
-                        <PopoverBody fontSize="xs">
-                          {instructions[step.label] ||
-                            "No instructions available for this label."}
-                          {step.label === "Test Cases" && (
-                            <>
-                              <br />
-                              <br />
-                              For linking external resources properly, visit:{" "}
-                              <a
-                                href="https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1.md#linking-to-external-resources"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                style={{
-                                  color: "blue",
-                                  textDecoration: "underline",
-                                }}
-                              >
-                                Link
-                              </a>
-                            </>
-                          )}
-                        </PopoverBody>
-                      </PopoverContent>
-                    </Popover>
-                  </Box>
-                  {step.type === "input" && (
-                    <Input
-                      disabled={
-                        step.key === "last-call-deadline" &&
-                        templateData["status"] !== "Last Call"
-                      }
-                      placeholder={
-                        step.label === "Title"
-                          ? "Enter title"
-                          : step.label === "Description"
-                          ? "Enter description"
-                          : step.label === "Author"
-                          ? "FirstName LastName (@GitHubUsername), FirstName LastName <foo@bar.com>"
-                          : step.label === "Discussions To"
-                          ? "https://ethereum-magicians.org/t/eip-7600-hardfork-meta-prague-electra/18205"
-                          : step.label === "Created"
-                          ? "YYYY-MM-DD"
-                          : step.label === "Requires"
-                          ? "2537, 2935, 6110, 7002, 7251, 7549, 7594, 7685, 7702"
-                          : step.label
-                      }
-                      value={templateData[step.key] || ""}
-                      onChange={(e) =>
-                        handleInputChange(step.key, e.target.value)
-                      }
-                      borderWidth="2px"
-                    />
-                  )}
-                  {step.type === "textarea" && (
-                    <Box>
-                      {step.label !== "Description" && (
-                        <HStack spacing={2} mb={2} wrap="wrap">
-                          <Wrap spacing={2}>
-                            {/* Bold */}
-                            <WrapItem>
-                              <IconButton
-                                icon={<FaBold />}
-                                aria-label="Bold"
-                                size="sm"
-                                onClick={() =>
-                                  handleMarkdownInsert(step.key, "**bold** ")
-                                }
-                              />
-                            </WrapItem>
-
-                            {/* Italic */}
-                            <WrapItem>
-                              <IconButton
-                                icon={<FaItalic />}
-                                aria-label="Italic"
-                                size="sm"
-                                onClick={() =>
-                                  handleMarkdownInsert(step.key, "*italic* ")
-                                }
-                              />
-                            </WrapItem>
-
-                            {/* H1 */}
-                            <WrapItem>
-                              <IconButton
-                                icon={<FaHeading />}
-                                aria-label="H1"
-                                size="sm"
-                                fontSize="lg"
-                                onClick={() =>
-                                  handleMarkdownInsert(
-                                    step.key,
-                                    "# Heading 1\n"
-                                  )
-                                }
-                              />
-                            </WrapItem>
-
-                            {/* H2 */}
-                            <WrapItem>
-                              <IconButton
-                                icon={<FaHeading />}
-                                aria-label="H2"
-                                size="sm"
-                                fontSize="md"
-                                onClick={() =>
-                                  handleMarkdownInsert(
-                                    step.key,
-                                    "## Heading 2\n"
-                                  )
-                                }
-                              />
-                            </WrapItem>
-
-                            {/* H3 */}
-                            <WrapItem>
-                              <IconButton
-                                icon={<FaHeading />}
-                                aria-label="H3"
-                                size="sm"
-                                fontSize="sm"
-                                onClick={() =>
-                                  handleMarkdownInsert(
-                                    step.key,
-                                    "### Heading 3\n"
-                                  )
-                                }
-                              />
-                            </WrapItem>
-
-                            {/* Code */}
-                            <WrapItem>
-                              <IconButton
-                                icon={<FaCode />}
-                                aria-label="Code"
-                                size="sm"
-                                onClick={() =>
-                                  handleMarkdownInsert(step.key, "`code` ")
-                                }
-                              />
-                            </WrapItem>
-
-                            {/* Quote */}
-                            <WrapItem>
-                              <IconButton
-                                icon={<FaQuoteLeft />}
-                                aria-label="Quote"
-                                size="sm"
-                                onClick={() =>
-                                  handleMarkdownInsert(step.key, "> quote\n")
-                                }
-                              />
-                            </WrapItem>
-
-                            {/* Generic List */}
-                            <WrapItem>
-                              <IconButton
-                                icon={<FaListUl />}
-                                aria-label="Generic List"
-                                size="sm"
-                                onClick={() =>
-                                  handleMarkdownInsert(step.key, "- \n")
-                                }
-                              />
-                            </WrapItem>
-
-                            {/* Numbered List */}
-                            <WrapItem>
-                              <IconButton
-                                icon={<FaListOl />}
-                                aria-label="Numbered List"
-                                size="sm"
-                                onClick={() =>
-                                  handleMarkdownInsert(step.key, "1. \n")
-                                }
-                              />
-                            </WrapItem>
-
-                            {/* Checklist */}
-                            <WrapItem>
-                              <IconButton
-                                icon={<FaCheckSquare />}
-                                aria-label="Checklist"
-                                size="sm"
-                                onClick={() =>
-                                  handleMarkdownInsert(step.key, "- [ ] item\n")
-                                }
-                              />
-                            </WrapItem>
-
-                            {/* Create Link */}
-                            <WrapItem>
-                              <IconButton
-                                icon={<FaLink />}
-                                aria-label="Create Link"
-                                size="sm"
-                                onClick={() =>
-                                  handleMarkdownInsert(step.key, "[link](url) ")
-                                }
-                              />
-                            </WrapItem>
-
-                            {/* Insert Table */}
-                            <WrapItem>
-                              <IconButton
-                                icon={<FaTable />}
-                                aria-label="Insert Table"
-                                size="sm"
-                                onClick={() =>
-                                  handleMarkdownInsert(
-                                    step.key,
-                                    "| Header | Header |\n|-------|-------|\n| Cell  | Cell  |\n"
-                                  )
-                                }
-                              />
-                            </WrapItem>
-
-                            {/* Horizontal Line */}
-                            <WrapItem>
-                              <IconButton
-                                icon={<FaMinus />}
-                                aria-label="Horizontal Line"
-                                size="sm"
-                                onClick={() =>
-                                  handleMarkdownInsert(step.key, "---\n")
-                                }
-                              />
-                            </WrapItem>
-                          </Wrap>
-                        </HStack>
-                      )}
-
-                      {step.label !== "Description" && (
-                        <Textarea
-                          placeholder={
-                            step.label === "Abstract"
-                              ? "Provide a short, technical summary of the EIP"
-                              : step.label === "Motivation"
-                              ? "Explain why the current protocol is inadequate and the problem this EIP solves"
-                              : step.label === "Specification"
-                              ? "Describe the syntax and semantics of the proposed change in detail"
-                              : step.label === "Rationale"
-                              ? "Describe why design decisions were made and any alternatives considered"
-                              : step.label === "Backwards Compatibility"
-                              ? "Explain any incompatibilities and how they are addressed"
-                              : step.label === "Test Cases"
-                              ? "Include input/expected output pairs or refer to test files"
-                              : step.label === "Reference Implementation"
-                              ? "Provide an example or reference implementation"
-                              : step.label === "Security Considerations"
-                              ? "Discuss security implications, risks, and how they are addressed"
-                              : step.label
-                          }
-                          value={templateData[step.key] || ""}
-                          onKeyDown={(e) => {
-                            const inputValue = (e.target as HTMLTextAreaElement)
-                              .value;
-
-                            if (
-                              e.key === " " ||
-                              e.key === "." ||
-                              e.key === "Tab"
-                            ) {
-                              if (activeTab === "eip") {
-                                // For 'eip'
-                                let plainValue = inputValue.replace(
-                                  /\[EIP-(\d+)\]\(.*?eip-(\d+)\.md\)/gi,
-                                  "EIP-$1"
-                                );
-
-                                const updatedValue = plainValue.replace(
-                                  /\b(EIP-(\d+))\b(?!\]\(.*?\))/gi,
-                                  (_, fullMatch, number) =>
-                                    `[EIP-${number}](./eip-${number}.md)`
-                                );
-
-                                handleInputChange(step.key, updatedValue);
-                              } else if (activeTab === "erc") {
-                                let newvalue = inputValue;
-                                if (inputValue.match(/\b(EIP-\d+)\b/i)) {
-                                  // Match 'EIP-xxxx' or 'eip-xxxx' but ignore cases where it is already in square brackets '[EIP-xxxx]' or './eip-xxxx'
-                                  let updatedValue = inputValue.replace(
-                                    /(^|[^./\[\]])\b(EIP-(\d+))\b(?!\]\(.*?\))/gi, // Refined regex to handle './eip-xxxx' and '[EIP-xxxx]'
-                                    (match, prefix, fullMatch, number) =>
-                                      `${prefix}[EIP-${number}]` // Add brackets around EIP-xxxx
-                                  );
-                                  newvalue = updatedValue;
-                                }
-                                let plainValue = newvalue.replace(
-                                  /\[ERC-(\d+)\]\(.*?eip-(\d+)\.md\)/gi,
-                                  "ERC-$1"
-                                );
-
-                                const updatedValue = plainValue.replace(
-                                  /\b(ERC-(\d+))\b(?!\]\(.*?\))/gi,
-                                  (_, fullMatch, number) =>
-                                    `[ERC-${number}](./eip-${number}.md)`
-                                );
-                                handleInputChange(step.key, updatedValue);
-                              } else {
-                                let newvalue = inputValue;
-                                if (inputValue.match(/\b(EIP-\d+)\b/i)) {
-                                  // Match 'EIP-xxxx' or 'eip-xxxx' but ignore cases where it is already in square brackets '[EIP-xxxx]' or '/eip-xxxx'
-                                  newvalue = inputValue.replace(
-                                    /(^|[^./\[\]])\b(EIP-(\d+))\b(?!\]\(.*?\))(?!\/eip-\d+)/gi, // Refined regex to handle './eip-xxxx', '[EIP-xxxx]' and '/eip-xxxx'
-                                    (match, prefix, fullMatch, number) =>
-                                      `${prefix}[EIP-${number}](https://eips.ethereum.org/EIPS/eip-${number})` // Convert to link format
-                                  );
-                                }
-
-                                if (newvalue.match(/\b(ERC-\d+)\b/i)) {
-                                  // Match 'ERC-xxxx' or 'erc-xxxx' but ignore cases where it is already in square brackets '[ERC-xxxx]' or '/erc-xxxx'
-                                  newvalue = newvalue.replace(
-                                    /(^|[^./\[\]])\b(ERC-(\d+))\b(?!\]\(.*?\))(?!\/erc-\d+)/gi, // Refined regex to handle './erc-xxxx', '[ERC-xxxx]' and '/erc-xxxx'
-                                    (match, prefix, fullMatch, number) =>
-                                      `${prefix}[ERC-${number}](https://eips.ethereum.org/ERCS/erc-${number})` // Convert to link format
-                                  );
-                                }
-                                let plainValue = newvalue.replace(
-                                  /\[RIP-(\d+)\]\(.*?Rip-(\d+)\.md\)/gi,
-                                  "RIP-$1"
-                                );
-
-                                const updatedValue = plainValue.replace(
-                                  /\b(RIP-(\d+))\b(?!\]\(.*?\))/gi,
-                                  (_, fullMatch, number) =>
-                                    `[RIP-${number}](./Rip-${number}.md)`
-                                );
-                                handleInputChange(step.key, updatedValue);
-                              }
-                            }
-                          }}
-                          onChange={(e) =>
-                            handleInputChange(step.key, e.target.value)
-                          } // Normal change handling
-                          size="lg"
-                          resize="vertical"
-                          height="300px"
-                          width="100%"
-                          borderWidth="2px"
-                        />
-                      )}
-
-                      {step.label === "Description" && (
-                        <Textarea
-                          placeholder={
-                            "Provide a simple summary of your proposal in one sentence"
-                          }
-                          value={templateData[step.key] || ""}
-                          onChange={(e) =>
-                            handleInputChange(step.key, e.target.value)
-                          } // Normal change handling
-                          size="lg"
-                          resize="vertical"
-                          height="200px"
-                          width="100%"
-                          borderWidth="2px"
-                        />
-                      )}
+                {steps?.map((step, index) => (
+                  <Box key={index} w="100%">
+                    <Box mb={4}>
+                      <Text
+                        fontSize="lg"
+                        fontWeight="bold"
+                        display="inline-block"
+                        mr={2}
+                      >
+                        {step.label}
+                      </Text>
+                      <Popover>
+                        <PopoverTrigger>
+                          <IconButton
+                            aria-label="More info"
+                            icon={<InfoOutlineIcon />}
+                            size="sm"
+                            colorScheme="blue"
+                            variant="ghost"
+                          />
+                        </PopoverTrigger>
+                        <PopoverContent>
+                          <PopoverArrow />
+                          <PopoverCloseButton />
+                          <PopoverHeader>{step.label} Instruction</PopoverHeader>
+                          <PopoverBody fontSize="xs">
+                            {instructions[step.label] ||
+                              "No instructions available for this label."}
+                            {step.label === "Test Cases" && (
+                              <>
+                                <br />
+                                <br />
+                                For linking external resources properly, visit:{" "}
+                                <a
+                                  href="https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1.md#linking-to-external-resources"
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  style={{
+                                    color: "blue",
+                                    textDecoration: "underline",
+                                  }}
+                                >
+                                  Link
+                                </a>
+                              </>
+                            )}
+                          </PopoverBody>
+                        </PopoverContent>
+                      </Popover>
                     </Box>
-                  )}
-
-                  {step.type === "select" && (
-                    <Select
-                      placeholder={`Select ${step.label}`}
-                      value={templateData[step.key] || ""}
-                      onChange={(e) =>
-                        handleInputChange(step.key, e.target.value)
-                      }
-                      borderWidth="2px"
-                      disabled={
-                        step.key === "category" &&
-                        templateData["type"] !== "Standards Track"
-                      }
-                    >
-                      {step.options?.map((option, idx) => (
-                        <option key={idx} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </Select>
-                  )}
-                </Box>
-              ))}
-            </VStack>
-          </Box>
-        )}
-        {(viewMode === "output" || viewMode === "split") && (
-          <Box
-            flex="1"
-            p={4}
-            minWidth={["100%", "50%"]}
-            bg="gray.100"
-            _dark={{ bg: "gray.700" }}
-            borderRadius="md"
-            boxShadow="sm"
-            overflowY="auto"
-            whiteSpace="pre-wrap"
-            fontSize={["sm", "md", "lg"]} // Adjust font size based on screen size
-            sx={{
-              "&::-webkit-scrollbar": {
-                width: "8px", // Width of the scrollbar
-              },
-              "&::-webkit-scrollbar-thumb": {
-                background: "#3182ce", // Color of the scrollbar thumb
-                borderRadius: "4px", // Rounded edges for the thumb
-              },
-              "&::-webkit-scrollbar-thumb:hover": {
-                background: "#2b6cb0", // Darker color on hover
-              },
-              "&::-webkit-scrollbar-track": {
-                background: "#edf2f7", // Light background for the track
-              },
-            }}
-          >
-            {/* <Text fontFamily="monospace">{renderTemplate()}</Text> */}
-            <Box p={6} maxW="900px" mx="auto">
-              <VStack spacing={4} align="start">
-                <Box display="flex" justifyContent="space-between" w="full">
-                  <Text fontSize="lg" fontWeight="bold">
-                    {preview ? "Markdown Preview" : "Markdown Code"}
-                  </Text>
-                  <HStack spacing={4} flexWrap="wrap">
-                    <Button
-                      // leftIcon={<BiColumns />}
-                      colorScheme="blue"
-                      variant={preview === false ? "solid" : "outline"}
-                      _hover={{
-                        bg: preview !== false ? "blue.700" : undefined,
-                      }}
-                      _dark={{
-                        bg: preview === false ? "blue.500" : "transparent",
-                        color: preview === false ? "white" : "blue.300",
-                        borderColor: "blue.300",
-                      }}
-                      onClick={() => setPreview(false)}
-                    >
-                      Code
-                    </Button>
-
-                    <Button
-                      // leftIcon={<ViewIcon />}
-                      colorScheme="blue"
-                      variant={preview === true ? "solid" : "outline"}
-                      _hover={{ bg: preview !== true ? "blue.700" : undefined }}
-                      _dark={{
-                        bg: preview === true ? "blue.500" : "transparent",
-                        color: preview === true ? "white" : "blue.300",
-                        borderColor: "blue.300",
-                      }}
-                      onClick={() => setPreview(true)}
-                    >
-                      Preview
-                    </Button>
-                  </HStack>
-                </Box>
-                <Box
-                  w="full"
-                  p={4}
-                  borderRadius="md"
-                  bg={preview ? "gray.100" : "gray.900"}
-                  color={preview ? "black" : "white"}
-                  _dark={{
-                    bg: preview ? "gray.700" : "gray.800",
-                    color: preview ? "white" : "gray.300",
-                  }}
-                  overflow="auto"
-                  // maxH="600px"
-                >
-                  {preview ? (
-                    <Box
-                      w="full"
-                      p={4}
-                      borderRadius="md"
-                      bg={"gray.900"}
-                      color={preview ? "black" : "white"}
-                      _dark={{
-                        bg: "gray.900",
-                        color: preview ? "white" : "gray.300",
-                      }}
-                      overflow="auto"
-                    >
-                      {tableRows?.length > 0 && (
-                        <TableContainer mt={4}>
-                          <Table variant="striped" colorScheme="blue">
-                            <Thead>
-                              <Tr>
-                                <Th color="white">Field</Th>
-                                <Th color="white">Value</Th>
-                              </Tr>
-                            </Thead>
-                            <Tbody>
-                              {tableRows?.map((row, index) => (
-                                <Tr key={index}>
-                                  <Td color="white">{row[0]}</Td>
-                                  <Td color="white">{row[1]}</Td>
-                                </Tr>
-                              ))}
-                            </Tbody>
-                          </Table>
-                        </TableContainer>
-                      )}
-                      <br />
-                      <MarkdownViewer
-                        value={markdownValue}
-                        isDarkTheme={preview}
+                    {step.type === "input" && (
+                      <Input
+                        disabled={
+                          step.key === "last-call-deadline" &&
+                          templateData["status"] !== "Last Call"
+                        }
+                        placeholder={
+                          step.label === "Title"
+                            ? "Enter title"
+                            : step.label === "Description"
+                            ? "Enter description"
+                            : step.label === "Author"
+                            ? "FirstName LastName (@GitHubUsername), FirstName LastName <foo@bar.com>"
+                            : step.label === "Discussions To"
+                            ? "https://ethereum-magicians.org/t/eip-7600-hardfork-meta-prague-electra/18205"
+                            : step.label === "Created"
+                            ? "YYYY-MM-DD"
+                            : step.label === "Requires"
+                            ? "2537, 2935, 6110, 7002, 7251, 7549, 7594, 7685, 7702"
+                            : step.label
+                        }
+                        value={templateData[step.key] || ""}
+                        onChange={(e) =>
+                          handleInputChange(step.key, e.target.value)
+                        }
+                        borderWidth="2px"
                       />
-                    </Box>
-                  ) : (
-                    <Box as="pre" fontFamily="monospace" fontSize="sm">
-                      {renderTemplate()}
-                    </Box>
-                  )}
-                </Box>
+                    )}
+                    {step.type === "textarea" && (
+                      <Box>
+                        {step.label !== "Description" && (
+                          <HStack gap={2} mb={2} wrap="wrap">
+                            <Wrap spacing={2}>
+                              {/* Bold */}
+                              <WrapItem>
+                                <IconButton
+                                  icon={<FaBold />}
+                                  aria-label="Bold"
+                                  size="sm"
+                                  onClick={() =>
+                                    handleMarkdownInsert(step.key, "**bold** ")
+                                  }
+                                />
+                              </WrapItem>
+
+                              {/* Italic */}
+                              <WrapItem>
+                                <IconButton
+                                  icon={<FaItalic />}
+                                  aria-label="Italic"
+                                  size="sm"
+                                  onClick={() =>
+                                    handleMarkdownInsert(step.key, "*italic* ")
+                                  }
+                                />
+                              </WrapItem>
+
+                              {/* H1 */}
+                              <WrapItem>
+                                <IconButton
+                                  icon={<FaHeading />}
+                                  aria-label="H1"
+                                  size="sm"
+                                  fontSize="lg"
+                                  onClick={() =>
+                                    handleMarkdownInsert(
+                                      step.key,
+                                      "# Heading 1\n"
+                                    )
+                                  }
+                                />
+                              </WrapItem>
+
+                              {/* H2 */}
+                              <WrapItem>
+                                <IconButton
+                                  icon={<FaHeading />}
+                                  aria-label="H2"
+                                  size="sm"
+                                  fontSize="md"
+                                  onClick={() =>
+                                    handleMarkdownInsert(
+                                      step.key,
+                                      "## Heading 2\n"
+                                    )
+                                  }
+                                />
+                              </WrapItem>
+
+                              {/* H3 */}
+                              <WrapItem>
+                                <IconButton
+                                  icon={<FaHeading />}
+                                  aria-label="H3"
+                                  size="sm"
+                                  fontSize="sm"
+                                  onClick={() =>
+                                    handleMarkdownInsert(
+                                      step.key,
+                                      "### Heading 3\n"
+                                    )
+                                  }
+                                />
+                              </WrapItem>
+
+                              {/* Code */}
+                              <WrapItem>
+                                <IconButton
+                                  icon={<FaCode />}
+                                  aria-label="Code"
+                                  size="sm"
+                                  onClick={() =>
+                                    handleMarkdownInsert(step.key, "`code` ")
+                                  }
+                                />
+                              </WrapItem>
+
+                              {/* Quote */}
+                              <WrapItem>
+                                <IconButton
+                                  icon={<FaQuoteLeft />}
+                                  aria-label="Quote"
+                                  size="sm"
+                                  onClick={() =>
+                                    handleMarkdownInsert(step.key, "> quote\n")
+                                  }
+                                />
+                              </WrapItem>
+
+                              {/* Generic List */}
+                              <WrapItem>
+                                <IconButton
+                                  icon={<FaListUl />}
+                                  aria-label="Generic List"
+                                  size="sm"
+                                  onClick={() =>
+                                    handleMarkdownInsert(step.key, "- \n")
+                                  }
+                                />
+                              </WrapItem>
+
+                              {/* Numbered List */}
+                              <WrapItem>
+                                <IconButton
+                                  icon={<FaListOl />}
+                                  aria-label="Numbered List"
+                                  size="sm"
+                                  onClick={() =>
+                                    handleMarkdownInsert(step.key, "1. \n")
+                                  }
+                                />
+                              </WrapItem>
+
+                              {/* Checklist */}
+                              <WrapItem>
+                                <IconButton
+                                  icon={<FaCheckSquare />}
+                                  aria-label="Checklist"
+                                  size="sm"
+                                  onClick={() =>
+                                    handleMarkdownInsert(step.key, "- [ ] item\n")
+                                  }
+                                />
+                              </WrapItem>
+
+                              {/* Create Link */}
+                              <WrapItem>
+                                <IconButton
+                                  icon={<FaLink />}
+                                  aria-label="Create Link"
+                                  size="sm"
+                                  onClick={() =>
+                                    handleMarkdownInsert(step.key, "[link](url) ")
+                                  }
+                                />
+                              </WrapItem>
+
+                              {/* Insert Table */}
+                              <WrapItem>
+                                <IconButton
+                                  icon={<FaTable />}
+                                  aria-label="Insert Table"
+                                  size="sm"
+                                  onClick={() =>
+                                    handleMarkdownInsert(
+                                      step.key,
+                                      "| Header | Header |\n|-------|-------|\n| Cell  | Cell  |\n"
+                                    )
+                                  }
+                                />
+                              </WrapItem>
+
+                              {/* Horizontal Line */}
+                              <WrapItem>
+                                <IconButton
+                                  icon={<FaMinus />}
+                                  aria-label="Horizontal Line"
+                                  size="sm"
+                                  onClick={() =>
+                                    handleMarkdownInsert(step.key, "---\n")
+                                  }
+                                />
+                              </WrapItem>
+                            </Wrap>
+                          </HStack>
+                        )}
+
+                        {step.label !== "Description" && (
+                          <Textarea
+                            placeholder={
+                              step.label === "Abstract"
+                                ? "Provide a short, technical summary of the EIP"
+                                : step.label === "Motivation"
+                                ? "Explain why the current protocol is inadequate and the problem this EIP solves"
+                                : step.label === "Specification"
+                                ? "Describe the syntax and semantics of the proposed change in detail"
+                                : step.label === "Rationale"
+                                ? "Describe why design decisions were made and any alternatives considered"
+                                : step.label === "Backwards Compatibility"
+                                ? "Explain any incompatibilities and how they are addressed"
+                                : step.label === "Test Cases"
+                                ? "Include input/expected output pairs or refer to test files"
+                                : step.label === "Reference Implementation"
+                                ? "Provide an example or reference implementation"
+                                : step.label === "Security Considerations"
+                                ? "Discuss security implications, risks, and how they are addressed"
+                                : step.label
+                            }
+                            value={templateData[step.key] || ""}
+                            onKeyDown={(e) => {
+                              const inputValue = (e.target as HTMLTextAreaElement)
+                                .value;
+
+                              if (
+                                e.key === " " ||
+                                e.key === "." ||
+                                e.key === "Tab"
+                              ) {
+                                if (activeTab === "eip") {
+                                  // For 'eip'
+                                  let plainValue = inputValue.replace(
+                                    /\[EIP-(\d+)\]\(.*?eip-(\d+)\.md\)/gi,
+                                    "EIP-$1"
+                                  );
+
+                                  const updatedValue = plainValue.replace(
+                                    /\b(EIP-(\d+))\b(?!\]\(.*?\))/gi,
+                                    (_, fullMatch, number) =>
+                                      `[EIP-${number}](./eip-${number}.md)`
+                                  );
+
+                                  handleInputChange(step.key, updatedValue);
+                                } else if (activeTab === "erc") {
+                                  let newvalue = inputValue;
+                                  if (inputValue.match(/\b(EIP-\d+)\b/i)) {
+                                    // Match 'EIP-xxxx' or 'eip-xxxx' but ignore cases where it is already in square brackets '[EIP-xxxx]' or './eip-xxxx'
+                                    let updatedValue = inputValue.replace(
+                                      /(^|[^./\[\]])\b(EIP-(\d+))\b(?!\]\(.*?\))/gi, // Refined regex to handle './eip-xxxx' and '[EIP-xxxx]'
+                                      (match, prefix, fullMatch, number) =>
+                                        `${prefix}[EIP-${number}]` // Add brackets around EIP-xxxx
+                                    );
+                                    newvalue = updatedValue;
+                                  }
+                                  let plainValue = newvalue.replace(
+                                    /\[ERC-(\d+)\]\(.*?eip-(\d+)\.md\)/gi,
+                                    "ERC-$1"
+                                  );
+
+                                  const updatedValue = plainValue.replace(
+                                    /\b(ERC-(\d+))\b(?!\]\(.*?\))/gi,
+                                    (_, fullMatch, number) =>
+                                      `[ERC-${number}](./eip-${number}.md)`
+                                  );
+                                  handleInputChange(step.key, updatedValue);
+                                } else {
+                                  let newvalue = inputValue;
+                                  if (inputValue.match(/\b(EIP-\d+)\b/i)) {
+                                    // Match 'EIP-xxxx' or 'eip-xxxx' but ignore cases where it is already in square brackets '[EIP-xxxx]' or '/eip-xxxx'
+                                    newvalue = inputValue.replace(
+                                      /(^|[^./\[\]])\b(EIP-(\d+))\b(?!\]\(.*?\))(?!\/eip-\d+)/gi, // Refined regex to handle './eip-xxxx', '[EIP-xxxx]' and '/eip-xxxx'
+                                      (match, prefix, fullMatch, number) =>
+                                        `${prefix}[EIP-${number}](https://eips.ethereum.org/EIPS/eip-${number})` // Convert to link format
+                                    );
+                                  }
+
+                                  if (newvalue.match(/\b(ERC-\d+)\b/i)) {
+                                    // Match 'ERC-xxxx' or 'erc-xxxx' but ignore cases where it is already in square brackets '[ERC-xxxx]' or '/erc-xxxx'
+                                    newvalue = newvalue.replace(
+                                      /(^|[^./\[\]])\b(ERC-(\d+))\b(?!\]\(.*?\))(?!\/erc-\d+)/gi, // Refined regex to handle './erc-xxxx', '[ERC-xxxx]' and '/erc-xxxx'
+                                      (match, prefix, fullMatch, number) =>
+                                        `${prefix}[ERC-${number}](https://eips.ethereum.org/ERCS/erc-${number})` // Convert to link format
+                                    );
+                                  }
+                                  let plainValue = newvalue.replace(
+                                    /\[RIP-(\d+)\]\(.*?Rip-(\d+)\.md\)/gi,
+                                    "RIP-$1"
+                                  );
+
+                                  const updatedValue = plainValue.replace(
+                                    /\b(RIP-(\d+))\b(?!\]\(.*?\))/gi,
+                                    (_, fullMatch, number) =>
+                                      `[RIP-${number}](./Rip-${number}.md)`
+                                  );
+                                  handleInputChange(step.key, updatedValue);
+                                }
+                              }
+                            }}
+                            onChange={(e) =>
+                              handleInputChange(step.key, e.target.value)
+                            } // Normal change handling
+                            size="lg"
+                            resize="vertical"
+                            height="300px"
+                            width="100%"
+                            borderWidth="2px"
+                          />
+                        )}
+
+                        {step.label === "Description" && (
+                          <Textarea
+                            placeholder={
+                              "Provide a simple summary of your proposal in one sentence"
+                            }
+                            value={templateData[step.key] || ""}
+                            onChange={(e) =>
+                              handleInputChange(step.key, e.target.value)
+                            } // Normal change handling
+                            size="lg"
+                            resize="vertical"
+                            height="200px"
+                            width="100%"
+                            borderWidth="2px"
+                          />
+                        )}
+                      </Box>
+                    )}
+
+                    {step.type === "select" && (
+                      <Select
+                        placeholder={`Select ${step.label}`}
+                        value={templateData[step.key] || ""}
+                        onChange={(e) =>
+                          handleInputChange(step.key, e.target.value)
+                        }
+                        borderWidth="2px"
+                        disabled={
+                          step.key === "category" &&
+                          templateData["type"] !== "Standards Track"
+                        }
+                      >
+                        {step.options?.map((option, idx) => (
+                          <option key={idx} value={option}>
+                            {option}
+                          </option>
+                        ))}
+                      </Select>
+                    )}
+                  </Box>
+                ))}
               </VStack>
             </Box>
-          </Box>
-        )}
+          )}
+          {(viewMode === "output" || viewMode === "split") && (
+            <Box
+              flex="1"
+              p={4}
+              minWidth={["100%", "50%"]}
+              bg="gray.100"
+              _dark={{ bg: "gray.700" }}
+              borderRadius="md"
+              boxShadow="sm"
+              overflowY="auto"
+              whiteSpace="pre-wrap"
+              fontSize={["sm", "md", "lg"]} // Adjust font size based on screen size
+              sx={{
+                "&::-webkit-scrollbar": {
+                  width: "8px", // Width of the scrollbar
+                },
+                "&::-webkit-scrollbar-thumb": {
+                  background: "#3182ce", // Color of the scrollbar thumb
+                  borderRadius: "4px", // Rounded edges for the thumb
+                },
+                "&::-webkit-scrollbar-thumb:hover": {
+                  background: "#2b6cb0", // Darker color on hover
+                },
+                "&::-webkit-scrollbar-track": {
+                  background: "#edf2f7", // Light background for the track
+                },
+              }}
+            >
+              {/* <Text fontFamily="monospace">{renderTemplate()}</Text> */}
+              <Box p={6} maxW="900px" mx="auto">
+                <VStack gap={4} align="start">
+                  <Box display="flex" justifyContent="space-between" w="full">
+                    <Text fontSize="lg" fontWeight="bold">
+                      {preview ? "Markdown Preview" : "Markdown Code"}
+                    </Text>
+                    <HStack gap={4} flexWrap="wrap">
+                      <Button
+                        // leftIcon={<BiColumns />}
+                        colorScheme="blue"
+                        variant={preview === false ? "solid" : "outline"}
+                        _hover={{
+                          bg: preview !== false ? "blue.700" : undefined,
+                        }}
+                        _dark={{
+                          bg: preview === false ? "blue.500" : "transparent",
+                          color: preview === false ? "white" : "blue.300",
+                          borderColor: "blue.300",
+                        }}
+                        onClick={() => setPreview(false)}
+                      >
+                        Code
+                      </Button>
+
+                      <Button
+                        // leftIcon={<ViewIcon />}
+                        colorScheme="blue"
+                        variant={preview === true ? "solid" : "outline"}
+                        _hover={{ bg: preview !== true ? "blue.700" : undefined }}
+                        _dark={{
+                          bg: preview === true ? "blue.500" : "transparent",
+                          color: preview === true ? "white" : "blue.300",
+                          borderColor: "blue.300",
+                        }}
+                        onClick={() => setPreview(true)}
+                      >
+                        Preview
+                      </Button>
+                    </HStack>
+                  </Box>
+                  <Box
+                    w="full"
+                    p={4}
+                    borderRadius="md"
+                    bg={preview ? "gray.100" : "gray.900"}
+                    color={preview ? "black" : "white"}
+                    _dark={{
+                      bg: preview ? "gray.700" : "gray.800",
+                      color: preview ? "white" : "gray.300",
+                    }}
+                    overflow="auto"
+                    // maxH="600px"
+                  >
+                    {preview ? (
+                      <Box
+                        w="full"
+                        p={4}
+                        borderRadius="md"
+                        bg={"gray.900"}
+                        color={preview ? "black" : "white"}
+                        _dark={{
+                          bg: "gray.900",
+                          color: preview ? "white" : "gray.300",
+                        }}
+                        overflow="auto"
+                      >
+                        {tableRows?.length > 0 && (
+                          <TableContainer mt={4}>
+                            <Table variant="striped" colorScheme="blue">
+                              <Thead>
+                                <Tr>
+                                  <Th color="white">Field</Th>
+                                  <Th color="white">Value</Th>
+                                </Tr>
+                              </Thead>
+                              <Tbody>
+                                {tableRows?.map((row, index) => (
+                                  <Tr key={index}>
+                                    <Td color="white">{row[0]}</Td>
+                                    <Td color="white">{row[1]}</Td>
+                                  </Tr>
+                                ))}
+                              </Tbody>
+                            </Table>
+                          </TableContainer>
+                        )}
+                        <br />
+                        <MarkdownViewer
+                          value={markdownValue}
+                          isDarkTheme={preview}
+                        />
+                      </Box>
+                    ) : (
+                      <Box as="pre" fontFamily="monospace" fontSize="sm">
+                        {renderTemplate()}
+                      </Box>
+                    )}
+                  </Box>
+                </VStack>
+              </Box>
+            </Box>
+          )}
+        </Box>
+        <br />
+        <Box
+          p={4}
+          bg="gray.300"
+          _dark={{ bg: "gray.800" }}
+          borderRadius="md"
+          display="flex"
+          flexWrap="wrap"
+          justifyContent="space-between"
+          alignItems="center"
+          gap={4} // Adds spacing between rows when wrapped
+        >
+          <HStack gap={4} flexWrap="wrap">
+            <Flex align="center" justify="space-between"></Flex>
+          </HStack>
+          <HStack gap={4} flexWrap="wrap">
+            <Button
+              rightIcon={isLoading ? <Spinner size="sm" /> : <CheckIcon />}
+              colorScheme="blue"
+              mt={[4, 0]} // Adds spacing for smaller screens
+              _dark={{
+                bg: "blue.600",
+                color: "white",
+                _hover: { bg: "blue.700" },
+              }}
+              onClick={handleValidate}
+              isDisabled={isLoading} // Disable button while loading
+            >
+              {isLoading ? "Validating..." : "Validate"}
+            </Button>
+            <Button
+              rightIcon={<DownloadIcon />}
+              colorScheme="blue"
+              mt={[4, 0]} // Adds spacing for smaller screens
+              _dark={{
+                bg: "blue.600",
+                color: "white",
+                _hover: { bg: "blue.700" },
+              }}
+              onClick={handleDownload}
+              isDisabled={!validated} // Disable button while loading
+            >
+              {"Download"}
+            </Button>
+          </HStack>
+        </Box>
       </Box>
-      <br />
-      <Box
-        p={4}
-        bg="gray.300"
-        _dark={{ bg: "gray.800" }}
-        borderRadius="md"
-        display="flex"
-        flexWrap="wrap"
-        justifyContent="space-between"
-        alignItems="center"
-        gap={4} // Adds spacing between rows when wrapped
-      >
-        <HStack spacing={4} flexWrap="wrap">
-          <Flex align="center" justify="space-between"></Flex>
-        </HStack>
-        <HStack spacing={4} flexWrap="wrap">
-          <Button
-            rightIcon={isLoading ? <Spinner size="sm" /> : <CheckIcon />}
-            colorScheme="blue"
-            mt={[4, 0]} // Adds spacing for smaller screens
-            _dark={{
-              bg: "blue.600",
-              color: "white",
-              _hover: { bg: "blue.700" },
-            }}
-            onClick={handleValidate}
-            isDisabled={isLoading} // Disable button while loading
-          >
-            {isLoading ? "Validating..." : "Validate"}
-          </Button>
-          <Button
-            rightIcon={<DownloadIcon />}
-            colorScheme="blue"
-            mt={[4, 0]} // Adds spacing for smaller screens
-            _dark={{
-              bg: "blue.600",
-              color: "white",
-              _hover: { bg: "blue.700" },
-            }}
-            onClick={handleDownload}
-            isDisabled={!validated} // Disable button while loading
-          >
-            {"Download"}
-          </Button>
-        </HStack>
-      </Box>
-    </Box>
     </>
   );
 };

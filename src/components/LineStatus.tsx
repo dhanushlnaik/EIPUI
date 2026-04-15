@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useColorModeValue } from "./ui/color-mode";
 import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -11,7 +12,7 @@ import {
   Legend,
 } from 'chart.js';
 import { mockEIP } from '@/data/eipdata';
-import { Box, useColorModeValue } from '@chakra-ui/react';
+import { Steps, Box } from "@chakra-ui/react";
 import { motion } from 'framer-motion';
 
 ChartJS.register(
@@ -40,7 +41,7 @@ interface Counts {
 interface TabProps {
     cat: string;
   }
-  
+
 const LineStatus: React.FC<TabProps> = ({cat }) => {
   const groupedEips: GroupedEips = {};
   for (const eip of mockEIP) {

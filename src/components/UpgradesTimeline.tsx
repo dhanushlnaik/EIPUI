@@ -1,5 +1,5 @@
 import TimelineChart from '@/components/TimelineChart';
-import { Heading, Box } from '@chakra-ui/react';
+import { Steps, Heading, Box } from "@chakra-ui/react";
 import { prop } from 'cheerio/dist/commonjs/api/attributes';
 
 interface Props {

@@ -1,23 +1,7 @@
+import { useDisclosure } from "@/components/ui/compat";
 import React, { useEffect, useState } from 'react';
-import {
-  Box,
-  Button,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverBody,
-  PopoverArrow,
-  useColorModeValue,
-  VStack,
-  HStack,
-  Text,
-  Icon,
-  Spinner,
-  SimpleGrid,
-  useDisclosure,
-  Portal,
-  Fade,
-} from '@chakra-ui/react';
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Button, Popover, VStack, HStack, Text, Icon, Spinner, SimpleGrid, Portal, Presence } from "@chakra-ui/react";
 import { motion } from 'framer-motion';
 import { 
   FiFileText, 
@@ -76,7 +60,7 @@ const StatItem: React.FC<StatItemProps> = ({ icon, label, value, gradient, delay
       whileHover={{ scale: 1.02 }}
     >
       <HStack
-        spacing={3}
+        gap={3}
         p={3}
         borderRadius="lg"
         border="1px solid"
@@ -98,7 +82,7 @@ const StatItem: React.FC<StatItemProps> = ({ icon, label, value, gradient, delay
         >
           <Icon as={icon} boxSize={4} color="white" />
         </Box>
-        <VStack align="start" spacing={0} flex={1}>
+        <VStack align="start" gap={0} flex={1}>
           <Text 
             fontSize="xs" 
             fontWeight="500" 
@@ -122,7 +106,7 @@ const StatItem: React.FC<StatItemProps> = ({ icon, label, value, gradient, delay
 };
 
 const StatsDropdownButton: React.FC = () => {
-  const { isOpen, onToggle, onClose } = useDisclosure();
+  const { open, onToggle, onClose } = useDisclosure();
   const [stats, setStats] = useState({
     eips: 0,
     ercs: 0,
@@ -219,14 +203,20 @@ const StatsDropdownButton: React.FC = () => {
   ];
 
   return (
-    <Popover
-      isOpen={isOpen}
-      onClose={onClose}
-      placement="bottom-start"
-      closeOnBlur={true}
-      strategy="fixed"
-    >
-      <PopoverTrigger>
+    <Popover.Root
+      open={open}
+      closeOnInteractOutside={true}
+      onOpenChange={e => {
+        if (e.open)
+          {} else {
+          onClose();
+        }
+      }}
+      positioning={{
+        placement: 'bottom-start',
+        strategy: 'fixed'
+      }}>
+      <Popover.Trigger asChild>
         <Button
           onClick={onToggle}
           color="#F5F5F5"
@@ -244,7 +234,6 @@ const StatsDropdownButton: React.FC = () => {
             sm: "5px 10px",
             base: "5px 10px",
           }}
-          rightIcon={isOpen ? <FiChevronUp /> : <FiChevronDown />}
           bgColor="#30A0E0"
           _hover={{
             bgColor: useColorModeValue("#2B6CB0", "#4A5568"),
@@ -255,77 +244,80 @@ const StatsDropdownButton: React.FC = () => {
           _active={{
             transform: 'translateY(0)',
           }}
-          transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
-          leftIcon={<BsBarChart />}
-        >
-          Platform Stats
-        </Button>
-      </PopoverTrigger>
-      
+          transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"><BsBarChart />Platform Stats
+                  {open ? <FiChevronUp /> : <FiChevronDown />}</Button>
+      </Popover.Trigger>
       <Portal>
-        <PopoverContent
-          bg={popoverBg}
-          borderColor={borderColor}
-          boxShadow={shadowColor}
-          borderRadius="xl"
-          width={{ base: "340px", sm: "380px", md: "420px" }}
-          _focus={{ boxShadow: shadowColor }}
-        >
-          <PopoverArrow bg={popoverBg} borderColor={borderColor} />
-          <PopoverBody p={4}>
-            <Fade in={isOpen}>
-              <VStack spacing={4} align="stretch">
-                {/* Header */}
-                <HStack spacing={2} mb={1}>
-                  <Icon as={FiBarChart2} boxSize={5} color="blue.500" />
-                  <Text fontSize="lg" fontWeight="700">
-                    Live Statistics
-                  </Text>
-                </HStack>
-
-                {loading ? (
-                  <Box textAlign="center" py={8}>
-                    <Spinner size="lg" color="blue.500" thickness="3px" />
-                    <Text mt={3} fontSize="sm" color="gray.500">
-                      Loading stats...
+        <Popover.Positioner>
+          <Popover.Content
+            bg={popoverBg}
+            borderColor={borderColor}
+            boxShadow={shadowColor}
+            borderRadius="xl"
+            width={{ base: "340px", sm: "380px", md: "420px" }}
+            _focus={{ boxShadow: shadowColor }}>
+            <Popover.Arrow bg={popoverBg} borderColor={borderColor} />
+            <Popover.Body p={4}>
+              <Presence
+                present={open}
+                animationName={{
+                  _open: 'fade-in',
+                  _closed: 'fade-out'
+                }}
+                animationDuration='moderate'>
+                <VStack gap={4} align="stretch">
+                  {/* Header */}
+                  <HStack gap={2} mb={1}>
+                    <Icon as={FiBarChart2} boxSize={5} color="blue.500" />
+                    <Text fontSize="lg" fontWeight="700">
+                      Live Statistics
                     </Text>
-                  </Box>
-                ) : (
-                  <VStack spacing={2} align="stretch">
-                    {statsData.map((stat, index) => (
-                      <StatItem
-                        key={stat.label}
-                        {...stat}
-                        delay={0.05 * index}
-                      />
-                    ))}
-                  </VStack>
-                )}
+                  </HStack>
 
-                {/* Footer with total */}
-                {!loading && (
-                  <Box
-                    mt={2}
-                    p={3}
-                    borderRadius="lg"
-                    bgGradient="linear(135deg, #667eea 0%, #764ba2 100%)"
-                  >
-                    <HStack justify="space-between" color="white">
-                      <Text fontSize="sm" fontWeight="600">
-                        Total Tracked Items
+                  {loading ? (
+                    <Box textAlign="center" py={8}>
+                      <Spinner size="lg" color="blue.500" borderWidth="3px" />
+                      <Text mt={3} fontSize="sm" color="gray.500">
+                        Loading stats...
                       </Text>
-                      <Text fontSize="xl" fontWeight="700">
-                        {(stats.eips + stats.ercs + stats.rips).toLocaleString()}
-                      </Text>
-                    </HStack>
-                  </Box>
-                )}
-              </VStack>
-            </Fade>
-          </PopoverBody>
-        </PopoverContent>
+                    </Box>
+                  ) : (
+                    <VStack gap={2} align="stretch">
+                      {statsData.map((stat, index) => (
+                        <StatItem
+                          key={stat.label}
+                          {...stat}
+                          delay={0.05 * index}
+                        />
+                      ))}
+                    </VStack>
+                  )}
+
+                  {/* Footer with total */}
+                  {!loading && (
+                    <Box
+                      mt={2}
+                      p={3}
+                      borderRadius="lg"
+                      bgGradient="linear(135deg, #667eea 0%, #764ba2 100%)"
+                    >
+                      <HStack justify="space-between" color="white">
+                        <Text fontSize="sm" fontWeight="600">
+                          Total Tracked Items
+                        </Text>
+                        <Text fontSize="xl" fontWeight="700">
+                          {(stats.eips + stats.ercs + stats.rips).toLocaleString()}
+                        </Text>
+                      </HStack>
+                    </Box>
+                  )}
+                </VStack>
+              </Presence>
+            </Popover.Body>
+          </Popover.Content>
+        </Popover.Positioner>
       </Portal>
-    </Popover>
+    </Popover.Root>
   );
 };
 

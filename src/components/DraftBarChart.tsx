@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { useColorModeValue } from "./ui/color-mode";
 import dynamic from "next/dynamic";
-import { Flex, Button, Heading,Box, useColorModeValue, Spinner } from "@chakra-ui/react";
+import { Steps, Flex, Button, Heading, Box, Spinner } from "@chakra-ui/react";
 import { useWindowSize } from "react-use";
 import DateTime from "@/components/DateTime";
 import { motion } from "framer-motion";
@@ -410,7 +411,7 @@ const StackedColumnChart: React.FC<AreaCProps> = ({ dataset, status }) => {
             {`${status}`}
           </Heading>
           {/* Assuming a download option exists for the yearly data as well */}
-          <Button colorScheme="blue" onClick={async () => {
+          <Button colorPalette="blue" onClick={async () => {
     try {
       // Trigger the CSV conversion and download
       downloadData();

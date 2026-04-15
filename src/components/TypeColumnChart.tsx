@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
+import { useColorModeValue } from "./ui/color-mode";
 import {useWindowSize} from "react-use";
-import {useColorModeValue} from "@chakra-ui/react";
 
 
 interface AreaProps {

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { useColorModeValue } from "../../../components/ui/color-mode";
 import { usePathname } from 'next/navigation';
 import Header from '@/components/Header';
-import { Box, Grid, useColorModeValue, Text } from '@chakra-ui/react';
+import { Steps, Box, Grid, Text } from '@chakra-ui/react';
 import CustomBox from '@/components/CustomBox';
 import OtherBox from '@/components/OtherStats';
 import { PieC } from '@/components/InPie';
@@ -127,7 +128,7 @@ const Monthd = () => {
         <AllLayout>
             {isLoading ? ( // Check if the data is still loading
                 // Show loader if data is loading
-                <Box
+                (<Box
                     display="flex"
                     justifyContent="center"
                     alignItems="center"
@@ -141,7 +142,7 @@ const Monthd = () => {
                         {/* Your loader component */}
                         <LoaderComponent />
                     </motion.div>
-                </Box>
+                </Box>)
             ) : (
                 <motion.div
                     initial={{ opacity: 0 }}

@@ -1,19 +1,10 @@
-import { 
-  SimpleGrid, 
-  Box, 
-  Button, 
-  VStack, 
-  Text, 
-  useColorModeValue,
-  Collapse,
-  Flex,
-  Badge,
-  Divider
-} from "@chakra-ui/react";
+import { Divider } from "@/components/ui/compat";
+import { Steps, SimpleGrid, Box, Button, VStack, Text, Collapsible, Flex, Badge } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
 import { useState } from "react";
-import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 import DeclinedEIPCard from "./DeclinedForInclusion";
 import Header from "@/components/Header";
+import { LuChevronDown, LuChevronUp } from 'react-icons/lu';
 
 interface DeclinedEIP {
   id: string;
@@ -513,10 +504,10 @@ export default function DeclinedEIPListPage({
         borderBottom="1px solid"
         borderColor={useColorModeValue('gray.200', 'gray.700')}
       >
-        <VStack spacing={4} align="start">
+        <VStack gap={4} align="start">
           <Flex align="center" gap={4} wrap="wrap">
             <Badge 
-              colorScheme="red" 
+              colorPalette="red" 
               variant="solid" 
               px={3} 
               py={1} 
@@ -553,12 +544,11 @@ export default function DeclinedEIPListPage({
           </Text>
         </VStack>
       </Box>
-
       {/* Professional Content Section */}
       <Box px={8} py={6}>
         <SimpleGrid 
           columns={{ base: 1, md: 2, lg: 3 }} 
-          spacing={6}
+          gap={6}
           mb={hasMoreItems ? 6 : 0}
         >
           {displayedData.map(eip => (
@@ -571,10 +561,9 @@ export default function DeclinedEIPListPage({
           <Flex justify="center" mt={6}>
             <Button
               variant="outline"
-              colorScheme="blue"
+              colorPalette="blue"
               size="md"
               onClick={() => setShowAll(!showAll)}
-              leftIcon={showAll ? <ChevronUpIcon /> : <ChevronDownIcon />}
               px={6}
               py={3}
               borderRadius="full"
@@ -588,17 +577,13 @@ export default function DeclinedEIPListPage({
                 transform: "translateY(0px)"
               }}
               transition="all 0.3s ease"
-              boxShadow="md"
-            >
-              {showAll 
+              boxShadow="md">{showAll ? <LuChevronUp /> : <LuChevronDown />}{showAll 
                 ? `Show Less` 
                 : `Show ${data.length - INITIAL_COUNT} More EIPs`
-              }
-            </Button>
+              }</Button>
           </Flex>
         )}
       </Box>
-
       {/* Professional Footer */}
       <Box 
         bg={useColorModeValue('gray.50', 'gray.800')} 

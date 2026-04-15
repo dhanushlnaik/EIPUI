@@ -1,15 +1,6 @@
 import React from 'react';
-import {
-  Box,
-  Heading,
-  Text,
-  VStack,
-  HStack,
-  useColorModeValue,
-  Button,
-  Link as ChakraLink,
-  Icon,
-} from '@chakra-ui/react';
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Heading, Text, VStack, HStack, Button, Link as ChakraLink, Icon } from "@chakra-ui/react";
 import { FaHeart } from 'react-icons/fa';
 
 const grants = [
@@ -75,8 +66,8 @@ export default function FundingDetails() {
       borderColor={borderColor}
       boxShadow={useColorModeValue('sm', 'md')}
     >
-      <VStack spacing={4} align="center">
-        <HStack spacing={3}>
+      <VStack gap={4} align="center">
+        <HStack gap={3}>
           <Icon as={FaHeart} boxSize={7} color={useColorModeValue('pink.500', 'pink.400')} />
           <Heading 
             fontSize={{ base: "xl", md: "2xl" }} 
@@ -91,14 +82,14 @@ export default function FundingDetails() {
         <Text color={textColor} fontSize="sm" textAlign="center">
           We welcome contributions, partnerships, and funding opportunities.
         </Text>
-        <HStack spacing={2} flexWrap="wrap" justify="center">
+        <HStack gap={2} flexWrap="wrap" justify="center">
           <Button
             as={ChakraLink}
             href="https://github.com/AvarchLLC/EIPsInsight"
             target="_blank"
             rel="noopener noreferrer"
             size="sm"
-            colorScheme="blue"
+            colorPalette="blue"
             variant="outline"
           >
             GitHub
@@ -107,7 +98,7 @@ export default function FundingDetails() {
             as={ChakraLink}
             href="mailto:team@avarch.org"
             size="sm"
-            colorScheme="blue"
+            colorPalette="blue"
           >
             Contact
           </Button>
@@ -117,7 +108,7 @@ export default function FundingDetails() {
             target="_blank"
             rel="noopener noreferrer"
             size="sm"
-            colorScheme="blue"
+            colorPalette="blue"
             variant="outline"
           >
             Discord
@@ -126,7 +117,7 @@ export default function FundingDetails() {
             as={ChakraLink}
             href="/donate"
             size="sm"
-            colorScheme="pink"
+            colorPalette="pink"
             variant="outline"
           >
             Donate

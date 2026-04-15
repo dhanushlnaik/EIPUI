@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useColorModeValue } from '@chakra-ui/react';
+import { useColorModeValue } from "./ui/color-mode";
 
 interface ContributorLastUpdatedDateTimeProps {
   name: string;

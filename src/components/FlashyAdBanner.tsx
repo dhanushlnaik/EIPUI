@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Box, Flex, Text, Button, useColorModeValue, CloseButton } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Flex, Text, Button, CloseButton } from "@chakra-ui/react";
 import { keyframes } from "@emotion/react";
 import { FiStar, FiZap, FiTrendingUp } from "react-icons/fi";
 import { trackFeatureUsage } from "@/utils/analytics";
@@ -163,13 +164,12 @@ export default function FlashyAdBanner({
         bottom="0"
         backgroundImage="linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)"
         backgroundSize="200% 100%"
-        sx={{
-          animation: `${shimmerWave} 3s infinite`,
+        css={{
+          animation: `${shimmerWave} 3s infinite`
         }}
         pointerEvents="none"
         zIndex={1}
       />
-
       <Flex
         direction={{ base: "column", md: "row" }}
         align="center"
@@ -183,24 +183,24 @@ export default function FlashyAdBanner({
           {/* Animated icons */}
           <Flex gap={2}>
             <Box
-              sx={{
-                animation: `${bounce} 1.5s ease-in-out infinite`,
+              css={{
+                animation: `${bounce} 1.5s ease-in-out infinite`
               }}
               color="yellow.300"
             >
               <FiStar size={24} />
             </Box>
             <Box
-              sx={{
-                animation: `${blink} 1s ease-in-out infinite`,
+              css={{
+                animation: `${blink} 1s ease-in-out infinite`
               }}
               color="yellow.200"
             >
               <FiZap size={24} />
             </Box>
             <Box
-              sx={{
-                animation: iconRotate ? `${rotate} 1s linear` : "none",
+              css={{
+                animation: iconRotate ? `${rotate} 1s linear` : "none"
               }}
               color="yellow.400"
             >
@@ -236,13 +236,13 @@ export default function FlashyAdBanner({
             href={ctaLink}
             onClick={handleCtaClick}
             size={{ base: "sm", md: "md" }}
-            colorScheme="yellow"
+            colorPalette="yellow"
             color="gray.800"
             fontWeight="bold"
             px={6}
             boxShadow="0 0 20px rgba(255, 255, 0, 0.5)"
-            sx={{
-              animation: `${blink} 2s ease-in-out infinite`,
+            css={{
+              animation: `${blink} 2s ease-in-out infinite`
             }}
             _hover={{
               transform: "scale(1.15)",
@@ -267,7 +267,6 @@ export default function FlashyAdBanner({
           )}
         </Flex>
       </Flex>
-
       {/* Bottom attention line */}
       <Box
         position="absolute"
@@ -276,8 +275,8 @@ export default function FlashyAdBanner({
         right="0"
         height="4px"
         bgGradient="linear-gradient(90deg, transparent, yellow.400, transparent)"
-        sx={{
-          animation: `${shimmerWave} 2s infinite`,
+        css={{
+          animation: `${shimmerWave} 2s infinite`
         }}
       />
     </Box>

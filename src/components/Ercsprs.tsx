@@ -1,14 +1,5 @@
-import {
-  Box,
-  Flex,
-  Heading,
-  Text,
-  HStack,
-  VStack,
-  Badge,
-  Icon,
-  useColorModeValue
-} from "@chakra-ui/react";
+import { Steps, Box, Flex, Heading, Text, HStack, VStack, Badge, Icon } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
 import { FaClock, FaRegClock } from 'react-icons/fa';
 import React, { useState, useEffect, useLayoutEffect } from "react";
 import dynamic from "next/dynamic";
@@ -390,237 +381,234 @@ const donutData = Object.entries(editorReviews)
 
   return (
     <>
-  {/* Row 1: Chart and Recently Closed/Merged */}
-  <Flex
-    direction={{ base: "column", md: "row" }}
-    gap={4}
-    ml="4rem"
-    mr="2rem"
-    mb="2rem"
-    id="ERC Activity"
-  >
-    {/* ERCs Activity Chart */}
-    <Box
-      bgColor={bg}
-      padding="1rem"
-      borderRadius="0.55rem"
-      flex={1}
-      minW="300px"
-    >
-      <Flex align="center" mb="1rem">
-        <FaClock style={{ marginRight: "0.5rem" }} />
-        <Heading color={useColorModeValue("#3182CE", "blue.300")} size="md">
-          ERCs Activity
-        </Heading>
-      </Flex>
-      {renderChart()}
-      <LastUpdatedDateTime name="Prs&IssueData"/>
-    </Box>
-
-    {/* Recently Closed/Merged PRs */}
-    <Box
-      bgColor={bg}
-      padding="1rem"
-      borderRadius="0.55rem"
-      flex={1}
-      minW="300px"
-    >
-      <Flex align="center" mb="1rem">
-        <FaClock style={{ marginRight: "0.5rem" }} />
-        <Heading color={useColorModeValue("#3182CE", "blue.300")} size="md">
-          Recently Closed/Merged PRs
-        </Heading>
-      </Flex>
-      <Box maxH="400px" overflowY="auto">
-        <VStack align="stretch" spacing={4}>
-          {recentPRs.map((pr) => {
-            const status = pr.merged_at ? "Merged" : "Closed";
-            const statusColor = pr.merged_at ? "purple" : "red";
-            const date = pr.merged_at || pr.closed_at;
-
-            return (
-              <a
-                key={pr.prNumber}
-                href={`https://github.com/ethereum/ERCs/pull/${pr.prNumber}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Box
-                  p={4}
-                  bg={useColorModeValue("white", "gray.800")}
-                  borderRadius="xl"
-                  boxShadow="sm"
-                  _hover={{ boxShadow: "md" }}
-                >
-                  <HStack justify="space-between" wrap="wrap">
-                    <HStack spacing={2} wrap="wrap">
-                      <Badge colorScheme="blue" px={2} py={1} borderRadius="full">
-                        #{pr.prNumber}
-                      </Badge>
-                      <Badge colorScheme={statusColor} px={2} py={1} borderRadius="full">
-                        {status}
-                      </Badge>
-                    </HStack>
-                    <HStack spacing={2} align="center">
-                      <Icon as={FaRegClock} fontSize="sm" />
-                      <Text fontSize="xs" color="gray.500">
-                        {date ? new Date(date).toLocaleString(undefined, {
-                          year: 'numeric',
-                          month: '2-digit',
-                          day: '2-digit',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                          second: '2-digit',
-                          hour12: false
-                        }) : "N/A"}
-                      </Text>
-                    </HStack>
-                  </HStack>
-                  <Box mt={2}>
-                    <Text fontSize="md" fontWeight="semibold" color={useColorModeValue("gray.800", "white")}>
-                      {pr.prTitle}
-                    </Text>
-                  </Box>
-                </Box>
-              </a>
-            );
-          })}
-        </VStack>
-      </Box>
-      <LastUpdatedDateTime name="Prs&IssueData"/>
-    </Box>
-  </Flex>
-
-  {/* Row 2: Donut Chart and Editor Reviews */}
-  <Flex
-    direction={{ base: "column", md: "row" }}
-    gap={4}
-    ml="4rem"
-    mr="2rem"
-    mb="2rem"
-  >
-    {/* Donut Chart */}
-    <Box
-      bgColor={bg}
-      padding="1rem"
-      borderRadius="0.55rem"
-      flex={1}
-      minW="300px"
-    >
-      <Flex align="center" mb="1rem">
-        <FaClock style={{ marginRight: "0.5rem" }} />
-        <Heading color={useColorModeValue("#3182CE", "blue.300")} size="md">
-          Review Activity (Last 24 Hours)
-        </Heading>
-      </Flex>
-      {!hasReviews ? (
-        <Text color="gray.500">No reviews in last 24 hours</Text>
-      ) : (
-        <Box>
-        <Pie {...config} />
-        <LastUpdatedDateTime name="ERCReviews"/>
+      {/* Row 1: Chart and Recently Closed/Merged */}
+      <Flex
+        direction={{ base: "column", md: "row" }}
+        gap={4}
+        ml="4rem"
+        mr="2rem"
+        mb="2rem"
+        id="ERC Activity"
+      >
+        {/* ERCs Activity Chart */}
+        <Box
+          bgColor={bg}
+          padding="1rem"
+          borderRadius="0.55rem"
+          flex={1}
+          minW="300px"
+        >
+          <Flex align="center" mb="1rem">
+            <FaClock style={{ marginRight: "0.5rem" }} />
+            <Heading color={useColorModeValue("#3182CE", "blue.300")} size="md">
+              ERCs Activity
+            </Heading>
+          </Flex>
+          {renderChart()}
+          <LastUpdatedDateTime name="Prs&IssueData"/>
         </Box>
-      )}
-    </Box>
 
-    {/* Editor Reviews Table */}
-    <Box
-      bgColor={bg}
-      padding="1rem"
-      borderRadius="0.55rem"
-      flex={1}
-      minW="300px"
-    >
-      <Flex align="center" mb="1rem">
-        <FaClock style={{ marginRight: "0.5rem" }} />
-        <Heading color={useColorModeValue("#3182CE", "blue.300")} size="md">
-          Editor Reviews(Last 24 Hours)
-        </Heading>
+        {/* Recently Closed/Merged PRs */}
+        <Box
+          bgColor={bg}
+          padding="1rem"
+          borderRadius="0.55rem"
+          flex={1}
+          minW="300px"
+        >
+          <Flex align="center" mb="1rem">
+            <FaClock style={{ marginRight: "0.5rem" }} />
+            <Heading color={useColorModeValue("#3182CE", "blue.300")} size="md">
+              Recently Closed/Merged PRs
+            </Heading>
+          </Flex>
+          <Box maxH="400px" overflowY="auto">
+            <VStack align="stretch" gap={4}>
+              {recentPRs.map((pr) => {
+                const status = pr.merged_at ? "Merged" : "Closed";
+                const statusColor = pr.merged_at ? "purple" : "red";
+                const date = pr.merged_at || pr.closed_at;
+
+                return (
+                  <a
+                    key={pr.prNumber}
+                    href={`https://github.com/ethereum/ERCs/pull/${pr.prNumber}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Box
+                      p={4}
+                      bg={useColorModeValue("white", "gray.800")}
+                      borderRadius="xl"
+                      boxShadow="sm"
+                      _hover={{ boxShadow: "md" }}
+                    >
+                      <HStack justify="space-between" wrap="wrap">
+                        <HStack gap={2} wrap="wrap">
+                          <Badge colorPalette="blue" px={2} py={1} borderRadius="full">
+                            #{pr.prNumber}
+                          </Badge>
+                          <Badge colorPalette={statusColor} px={2} py={1} borderRadius="full">
+                            {status}
+                          </Badge>
+                        </HStack>
+                        <HStack gap={2} align="center">
+                          <Icon as={FaRegClock} fontSize="sm" />
+                          <Text fontSize="xs" color="gray.500">
+                            {date ? new Date(date).toLocaleString(undefined, {
+                              year: 'numeric',
+                              month: '2-digit',
+                              day: '2-digit',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              second: '2-digit',
+                              hour12: false
+                            }) : "N/A"}
+                          </Text>
+                        </HStack>
+                      </HStack>
+                      <Box mt={2}>
+                        <Text fontSize="md" fontWeight="semibold" color={useColorModeValue("gray.800", "white")}>
+                          {pr.prTitle}
+                        </Text>
+                      </Box>
+                    </Box>
+                  </a>
+                );
+              })}
+            </VStack>
+          </Box>
+          <LastUpdatedDateTime name="Prs&IssueData"/>
+        </Box>
       </Flex>
-      {!hasReviews && (
-        <Text color="gray.500">No reviews in last 24 hours</Text>
-      )
-      }
-      {hasReviews && (
-        <Box maxH="400px" overflowY="auto">
-          <VStack align="stretch" spacing={4}>
-            
-                  {allReviews.map((pr) => {
-                    let status = "Open";
-                    let statusColor = "teal";
+      {/* Row 2: Donut Chart and Editor Reviews */}
+      <Flex
+        direction={{ base: "column", md: "row" }}
+        gap={4}
+        ml="4rem"
+        mr="2rem"
+        mb="2rem"
+      >
+        {/* Donut Chart */}
+        <Box
+          bgColor={bg}
+          padding="1rem"
+          borderRadius="0.55rem"
+          flex={1}
+          minW="300px"
+        >
+          <Flex align="center" mb="1rem">
+            <FaClock style={{ marginRight: "0.5rem" }} />
+            <Heading color={useColorModeValue("#3182CE", "blue.300")} size="md">
+              Review Activity (Last 24 Hours)
+            </Heading>
+          </Flex>
+          {!hasReviews ? (
+            <Text color="gray.500">No reviews in last 24 hours</Text>
+          ) : (
+            <Box>
+            <Pie {...config} />
+            <LastUpdatedDateTime name="ERCReviews"/>
+            </Box>
+          )}
+        </Box>
 
-                    if (pr.merged_at) {
-                      status = "Merged";
-                      statusColor = "purple";
-                    } else if (pr.closed_at) {
-                      status = "Closed";
-                      statusColor = "red";
-                    }
-
-                    const date = pr.reviewDate;
-
-                    return (
-                      <a
-                        key={pr.prNumber}
-                        href={`https://github.com/ethereum/ERCs/pull/${pr.prNumber}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <Box
-                          p={4}
-                          bg={useColorModeValue("white", "gray.800")}
-                          borderRadius="xl"
-                          boxShadow="sm"
-                          _hover={{ boxShadow: "md" }}
-                          mb={2}
-                        >
-                          <HStack justify="space-between" wrap="wrap">
-                            <HStack spacing={2} wrap="wrap">
-                              <Badge colorScheme="blue" px={2} py={1} borderRadius="full">
-                                #{pr.prNumber}
-                              </Badge>
-                              {/* <Badge colorScheme={statusColor} px={2} py={1} borderRadius="full">
-                                {status}
-                              </Badge> */}
-                              <Badge colorScheme="teal" px={2} py={1} borderRadius="full">
-                                Reviewer:{pr.reviewer}
-                              </Badge>
-                            </HStack>
-                            <HStack spacing={2} align="center">
-                              <Icon as={FaRegClock} fontSize="sm" />
-                              <Text fontSize="xs" color="gray.500">
-                                {date ? new Date(date).toLocaleString(undefined, {
-                                  year: 'numeric',
-                                  month: '2-digit',
-                                  day: '2-digit',
-                                  hour: '2-digit',
-                                  minute: '2-digit',
-                                  second: '2-digit',
-                                  hour12: false
-                                }) : "N/A"}
-                              </Text>
-                            </HStack>
-                          </HStack>
-                          <Box mt={2}>
-                            <Text fontSize="md" fontWeight="semibold" color={useColorModeValue("gray.800", "white")}>
-                              {pr.prTitle}
-                            </Text>
-                          </Box>
-                        </Box>
-                      </a>
-                    );
-                  })}
+        {/* Editor Reviews Table */}
+        <Box
+          bgColor={bg}
+          padding="1rem"
+          borderRadius="0.55rem"
+          flex={1}
+          minW="300px"
+        >
+          <Flex align="center" mb="1rem">
+            <FaClock style={{ marginRight: "0.5rem" }} />
+            <Heading color={useColorModeValue("#3182CE", "blue.300")} size="md">
+              Editor Reviews(Last 24 Hours)
+            </Heading>
+          </Flex>
+          {!hasReviews && (
+            <Text color="gray.500">No reviews in last 24 hours</Text>
+          )
+          }
+          {hasReviews && (
+            <Box maxH="400px" overflowY="auto">
+              <VStack align="stretch" gap={4}>
                 
-          </VStack>
-          
+                      {allReviews.map((pr) => {
+                        let status = "Open";
+                        let statusColor = "teal";
+
+                        if (pr.merged_at) {
+                          status = "Merged";
+                          statusColor = "purple";
+                        } else if (pr.closed_at) {
+                          status = "Closed";
+                          statusColor = "red";
+                        }
+
+                        const date = pr.reviewDate;
+
+                        return (
+                          <a
+                            key={pr.prNumber}
+                            href={`https://github.com/ethereum/ERCs/pull/${pr.prNumber}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <Box
+                              p={4}
+                              bg={useColorModeValue("white", "gray.800")}
+                              borderRadius="xl"
+                              boxShadow="sm"
+                              _hover={{ boxShadow: "md" }}
+                              mb={2}
+                            >
+                              <HStack justify="space-between" wrap="wrap">
+                                <HStack gap={2} wrap="wrap">
+                                  <Badge colorPalette="blue" px={2} py={1} borderRadius="full">
+                                    #{pr.prNumber}
+                                  </Badge>
+                                  {/* <Badge colorScheme={statusColor} px={2} py={1} borderRadius="full">
+                                    {status}
+                                  </Badge> */}
+                                  <Badge colorPalette="teal" px={2} py={1} borderRadius="full">
+                                    Reviewer:{pr.reviewer}
+                                  </Badge>
+                                </HStack>
+                                <HStack gap={2} align="center">
+                                  <Icon as={FaRegClock} fontSize="sm" />
+                                  <Text fontSize="xs" color="gray.500">
+                                    {date ? new Date(date).toLocaleString(undefined, {
+                                      year: 'numeric',
+                                      month: '2-digit',
+                                      day: '2-digit',
+                                      hour: '2-digit',
+                                      minute: '2-digit',
+                                      second: '2-digit',
+                                      hour12: false
+                                    }) : "N/A"}
+                                  </Text>
+                                </HStack>
+                              </HStack>
+                              <Box mt={2}>
+                                <Text fontSize="md" fontWeight="semibold" color={useColorModeValue("gray.800", "white")}>
+                                  {pr.prTitle}
+                                </Text>
+                              </Box>
+                            </Box>
+                          </a>
+                        );
+                      })}
+                    
+              </VStack>
+              
+            </Box>
+          )}
+          <LastUpdatedDateTime name="ERCReviews"/>
         </Box>
-      )}
-      <LastUpdatedDateTime name="ERCReviews"/>
-    </Box>
-  </Flex>
-</>
-
-
+      </Flex>
+    </>
   );
 };
 

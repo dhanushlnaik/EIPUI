@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Text, Code, Button, VStack, Badge } from '@chakra-ui/react';
+import { Steps, Box, Text, Code, Button, VStack, Badge } from "@chakra-ui/react";
 import MongoDataService, { type LatestValues } from '@/services/MongoDataService';
 
 const MongoDataDebug = () => {
@@ -72,17 +72,17 @@ const MongoDataDebug = () => {
 
   return (
     <Box p={6} bg="gray.50" borderRadius="lg" border="2px solid orange.300" mb={4}>
-      <VStack spacing={4} align="stretch">
+      <VStack gap={4} align="stretch">
         <Box>
           <Text fontSize="lg" fontWeight="bold" color="orange.600">
             🔍 MongoDB Service Debug Panel
           </Text>
-          <Badge colorScheme="orange" mt={2}>
+          <Badge colorPalette="orange" mt={2}>
             Status: {serviceStatus}
           </Badge>
         </Box>
 
-        <Button onClick={testAPIRoutes} colorScheme="blue" size="sm">
+        <Button onClick={testAPIRoutes} colorPalette="blue" size="sm">
           🧪 Test API Routes
         </Button>
 

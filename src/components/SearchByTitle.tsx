@@ -1,29 +1,14 @@
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  useColorModeValue,
-  Text,
-  Input,
-  SimpleGrid,
-  Button,
-  Flex,
-  IconButton,
-  Tooltip,
-  Spinner,
-  Avatar,
-  Menu,
-  MenuItem,
-  MenuButton,
-  MenuList,
-} from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Text, Input, SimpleGrid, Button, Flex, IconButton, Spinner, Avatar, Menu, Portal } from "@chakra-ui/react";
+import { Tooltip } from '@/components/ui/tooltip';
 import { saveAs } from "file-saver";
 import AllLayout from "./Layout";
 import NextLink from "next/link";
-// import AuthorEIPCounter from './AuthorBoard';
-import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
-import { SearchIcon } from "@chakra-ui/icons";
 import axios from "axios";
 import FeedbackWidget from "./FeedbackWidget";
+
+import { LuChevronDown, LuChevronUp, LuSearch } from 'react-icons/lu';
 
 interface EIP {
   _id: string;
@@ -246,32 +231,29 @@ const SearchByTitle: React.FC<AuthorProps> = ({ defaultQuery }) => {
               boxShadow: "0 0 0 2px rgba(66, 153, 225, 0.6)",
             }}
           />
-          <Menu>
-            <MenuButton
-              as={Button}
-              rightIcon={<ChevronDownIcon />}
-              colorScheme="blue"
-              size="md"
-              width="200px" // Fixed width
-            >
-              Title
-            </MenuButton>
-            <MenuList>
-              <MenuItem onClick={() => (window.location.href = "/SearchEip")}>
-                Authors
-              </MenuItem>
-              <MenuItem
-                onClick={() => (window.location.href = "/SearchEipTitle")}
-              >
-                EIP
-              </MenuItem>
-              <MenuItem
-                onClick={() => (window.location.href = "/SearchPRSandISSUES")}
-              >
-                PR/ISSUE
-              </MenuItem>
-            </MenuList>
-          </Menu>
+          <Menu.Root>
+            <Menu.Trigger asChild><Button
+                colorPalette="blue"
+                size="md"
+                // Fixed width
+                width="200px">Title
+                            <LuChevronDown /></Button></Menu.Trigger>
+            <Portal><Menu.Positioner><Menu.Content>
+                  <Menu.Item onSelect={() => (window.location.href = "/SearchEip")} value='item-0'>
+                    Authors
+                  </Menu.Item>
+                  <Menu.Item
+                    onSelect={() => (window.location.href = "/SearchEipTitle")}
+                    value='item-1'>
+                    EIP
+                  </Menu.Item>
+                  <Menu.Item
+                    onSelect={() => (window.location.href = "/SearchPRSandISSUES")}
+                    value='item-2'>
+                    PR/ISSUE
+                  </Menu.Item>
+                </Menu.Content></Menu.Positioner></Portal>
+          </Menu.Root>
         </Flex>
       </Box>
       <Box p={4}>
@@ -400,7 +382,7 @@ const SearchByTitle: React.FC<AuthorProps> = ({ defaultQuery }) => {
               gap={4}
             >
               <Button
-                colorScheme="blue"
+                colorPalette="blue"
                 onClick={async () => {
                   try {
                     // Trigger the CSV conversion and download
@@ -419,7 +401,7 @@ const SearchByTitle: React.FC<AuthorProps> = ({ defaultQuery }) => {
             </Box>
 
             {/* Display Cards */}
-            <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 5 }} spacing={6}>
+            <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 5 }} gap={6}>
               {paginatedData?.map((item) => (
                 <NextLink
                   key={item._id}
@@ -568,24 +550,23 @@ const SearchByTitle: React.FC<AuthorProps> = ({ defaultQuery }) => {
                             }}
                             onClick={() => setSelectedAuthor(firstAuthor)} // Set selected author
                           >
-                            <Avatar
+                            <Avatar.Root
                               size="xs"
-                              src={
-                                firstAuthor.includes("@") &&
-                                firstAuthor.includes(")")
-                                  ? `https://github.com/${firstAuthor.slice(
-                                      firstAuthor.indexOf("@") + 1,
-                                      firstAuthor.indexOf(")")
-                                    )}.png`
-                                  : ""
-                              }
                               bg={
                                 firstAuthor.includes("@") &&
                                 firstAuthor.includes(")")
                                   ? undefined
                                   : "black"
-                              }
-                            />
+                              }><Avatar.Fallback /><Avatar.Image
+                                src={
+                                  firstAuthor.includes("@") &&
+                                  firstAuthor.includes(")")
+                                    ? `https://github.com/${firstAuthor.slice(
+                                        firstAuthor.indexOf("@") + 1,
+                                        firstAuthor.indexOf(")")
+                                      )}.png`
+                                    : ""
+                                } /></Avatar.Root>
                             <Box
                               display="flex"
                               alignItems="center"

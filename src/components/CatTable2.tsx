@@ -1,12 +1,5 @@
-// // import {
-// //     Box,
-// //     Text,
-// //     useColorModeValue,
-// //     Wrap,
-// //     WrapItem,
-// //     Badge,
-// //     Link,
-// //   } from "@chakra-ui/react";
+import { useToast } from "@/components/ui/use-toast";
+// // import { // //     Box, // //     Text, // //     useColorModeValue, // //     Wrap, // //     WrapItem, // //     Badge, // //     Link, // // } from "@chakra-ui/react";
 // //   import React, { useEffect, useState, useMemo } from "react";
 // //   import { motion } from "framer-motion";
 
@@ -357,17 +350,7 @@
 
 // //   export default StatusTable;
 
-// import {
-//   Box,
-//   Text,
-//   useColorModeValue,
-//   Wrap,
-//   WrapItem,
-//   Badge,
-//   Link,
-//   HStack,
-//   Button,
-// } from "@chakra-ui/react";
+// import { //   Box, //   Text, //   useColorModeValue, //   Wrap, //   WrapItem, //   Badge, //   Link, //   HStack, //   Button, // } from "@chakra-ui/react";
 // import React, { useState } from "react";
 // import { motion } from "framer-motion";
 
@@ -552,19 +535,8 @@
 // export default StatusTable;
 
 
-import {
-  Box,
-  Text,
-  useColorModeValue,
-  Wrap,
-  WrapItem,
-  Badge,
-  Link,
-  HStack,
-  Button,
-  Stack,
-  useToast,
-} from "@chakra-ui/react";
+import { Steps, Box, Text, Wrap, WrapItem, Badge, Link, HStack, Button, Stack } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
 import React from "react";
 import { motion } from "framer-motion";
 import DateTime from "./DateTime";
@@ -709,7 +681,6 @@ const StatusTable: React.FC<AreaCProps> = ({ cat, dataset, status }) => {
       transition="all 0.4s ease-in-out"
       id={"Satus Activity"}
     >
-
       <Stack direction="row" justify="space-between" align="center" mb={4}>
         <Text fontSize="2xl" fontWeight="bold" color="blue.400">
           {status} Recent Activity's
@@ -722,7 +693,6 @@ const StatusTable: React.FC<AreaCProps> = ({ cat, dataset, status }) => {
           Download CSV
         </Button>
       </Stack>
-
       <Box
         maxHeight="500px"
         overflowY="auto"
@@ -731,21 +701,21 @@ const StatusTable: React.FC<AreaCProps> = ({ cat, dataset, status }) => {
         css={{
           scrollbarWidth: "thin",
           scrollbarColor: "#CBD5E0 transparent",
-        }}
-        sx={{
-          "&::-webkit-scrollbar": {
+          '& &::-webkit-scrollbar': {
             width: "6px",
           },
-          "&::-webkit-scrollbar-thumb": {
+
+          '& &::-webkit-scrollbar-thumb': {
             background: useColorModeValue("#cbd5e0", "#4A5568"),
             borderRadius: "12px",
           },
-          "&::-webkit-scrollbar-track": {
+
+          '& &::-webkit-scrollbar-track': {
             background: "transparent",
-          },
+          }
         }}
       >
-        <Stack spacing={4}>
+        <Stack gap={4}>
           {filteredData.map((item, idx) => (
             <Box key={idx} w="100%">
               <Box
@@ -757,14 +727,14 @@ const StatusTable: React.FC<AreaCProps> = ({ cat, dataset, status }) => {
                 bg={useColorModeValue("white", "gray.800")}
                 _hover={{ borderColor: "blue.400", boxShadow: "md" }}
               >
-                <HStack spacing={2} wrap="wrap" mb={2}>
-                  <Badge colorScheme="blue" px={2} py={1} borderRadius="full">
+                <HStack gap={2} wrap="wrap" mb={2}>
+                  <Badge colorPalette="blue" px={2} py={1} borderRadius="full">
                     eip-{item.eip}
                   </Badge>
-                  <Badge colorScheme={getColorByType(item.type)} borderRadius="full" fontSize="2xs">
+                  <Badge colorPalette={getColorByType(item.type)} borderRadius="full" fontSize="2xs">
                     {item.type}
                   </Badge>
-                  <Badge colorScheme={getColorByType(item.status)} variant="subtle" borderRadius="full" fontSize="2xs">
+                  <Badge colorPalette={getColorByType(item.status)} variant="subtle" borderRadius="full" fontSize="2xs">
                     {item.status}
                   </Badge>
                 </HStack>
@@ -782,7 +752,7 @@ const StatusTable: React.FC<AreaCProps> = ({ cat, dataset, status }) => {
                   <Text fontSize="xs" fontWeight="bold" color="gray.500" mr={2}>
                     By:
                   </Text>
-                  <Wrap spacing={1}>
+                  <Wrap gap={1}>
                     {factorAuthor(item.author).map((a, i) => (
                       <WrapItem key={i}>
                         <Link
@@ -803,7 +773,6 @@ const StatusTable: React.FC<AreaCProps> = ({ cat, dataset, status }) => {
           ))}
         </Stack>
       </Box>
-
       <Box overflowX={{ base: "auto", md: "visible" }} mt={6}>
         <DateTime />
       </Box>

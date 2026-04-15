@@ -1,13 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import { useColorModeValue } from "./ui/color-mode";
 import AllLayout from '@/components/Layout';
-import {
-    Badge,
-    Box, Button,
-    Text,
-    useColorModeValue,
-    Wrap,
-    WrapItem,
-} from '@chakra-ui/react';
+import { Steps, Badge, Box, Button, Text, Wrap, WrapItem } from "@chakra-ui/react";
 import NextLink from 'next/link';
 import { BiGitMerge, BiLockAlt, BiGitBranch } from 'react-icons/bi';
 import SearchBox from "@/components/SearchBox";
@@ -168,7 +162,7 @@ const issuePage: React.FC<issuePageProps> = ({ Type,number }) => {
     );
     const gitActionsBotCount = gitActionsBotFiltered?.length;
 
-    return(
+    return (
         <>
             <AllLayout>
                 <>
@@ -226,15 +220,15 @@ const issuePage: React.FC<issuePageProps> = ({ Type,number }) => {
         <Wrap justify={{ base: 'center', lg: 'flex-start' }}>
             <WrapItem>
                 {data?.state === 'merged' ? (
-                    <Badge variant={'solid'} colorScheme={'purple'} display={'flex'} className={'text-3xl px-4 py-2 rounded-xl space-x-2'}>
+                    <Badge variant={'solid'} colorPalette={'purple'} display={'flex'} className={'text-3xl px-4 py-2 rounded-xl space-x-2'}>
                         <BiGitMerge /> Merged
                     </Badge>
                 ) : data?.state === 'closed' ? (
-                    <Badge variant={'solid'} colorScheme={'red'} display={'flex'} className={'text-3xl px-4 py-2 rounded-xl space-x-2'}>
+                    <Badge variant={'solid'} colorPalette={'red'} display={'flex'} className={'text-3xl px-4 py-2 rounded-xl space-x-2'}>
                         <BiLockAlt /> Closed
                     </Badge>
                 ) : data?.state === 'open' ? (
-                    <Badge variant={'solid'} colorScheme={'green'} display={'flex'} className={'text-3xl px-4 py-2 rounded-xl space-x-2'}>
+                    <Badge variant={'solid'} colorPalette={'green'} display={'flex'} className={'text-3xl px-4 py-2 rounded-xl space-x-2'}>
                         <BiGitBranch /> Open
                     </Badge>
                 ) : null}
@@ -260,7 +254,7 @@ const issuePage: React.FC<issuePageProps> = ({ Type,number }) => {
                         {data?.issueDetails?.labels?.map(item => (
                             <Wrap>
                                 <WrapItem>
-                                    <Badge colorScheme={getLabelColor(item)} paddingX={4} paddingY={2} className={'rounded-full'}>
+                                    <Badge colorPalette={getLabelColor(item)} paddingX={4} paddingY={2} className={'rounded-full'}>
                                         {item}
                                     </Badge>
                                 </WrapItem>
@@ -301,7 +295,7 @@ const issuePage: React.FC<issuePageProps> = ({ Type,number }) => {
         <div className="flex items-center space-x-4 pb-6">
             <Text className="text-lg md:text-2xl font-bold">Link:</Text>
              <NextLink href={`${data?.url}`} target="_blank">
-            <Button variant="outline" colorScheme="purple">
+            <Button variant="outline" colorPalette="purple">
                 <Text className="text-sm">Go to Github Issue Page</Text>
             </Button>
             </NextLink>
@@ -325,7 +319,7 @@ const issuePage: React.FC<issuePageProps> = ({ Type,number }) => {
                         <td className={'text-xl pb-10 rounded'}>
                             <Wrap>
                                 <WrapItem>
-                                    <Badge colorScheme={'gray'} className={'rounded-full'} fontSize={'2xl'} paddingX={4} paddingY={2}>
+                                    <Badge colorPalette={'gray'} className={'rounded-full'} fontSize={'2xl'} paddingX={4} paddingY={2}>
                                         {ethBotCount}
                                     </Badge>
                                 </WrapItem>
@@ -348,7 +342,7 @@ const issuePage: React.FC<issuePageProps> = ({ Type,number }) => {
                         <td className={'text-xl'}>
                             <Wrap>
                                 <WrapItem>
-                                    <Badge colorScheme={'gray'} className={'rounded-full'} fontSize={'2xl'} paddingX={4} paddingY={2}>
+                                    <Badge colorPalette={'gray'} className={'rounded-full'} fontSize={'2xl'} paddingX={4} paddingY={2}>
                                         {gitActionsBotCount}
                                     </Badge>
                                 </WrapItem>

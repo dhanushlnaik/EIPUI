@@ -1,27 +1,9 @@
 "use client";
-
+import { useToast } from "@/components/ui/use-toast";
+;
 import { useState, useEffect } from 'react';
-import {
-  Box,
-  VStack,
-  HStack,
-  Button,
-  Textarea,
-  Text,
-  Avatar,
-  IconButton,
-  Collapse,
-  Divider,
-  useColorModeValue,
-  Badge,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  useToast,
-  Flex,
-  Spinner,
-} from '@chakra-ui/react';
+import { useColorModeValue } from "../ui/color-mode";
+import { Steps, Box, VStack, HStack, Button, Textarea, Text, Avatar, IconButton, Collapsible, Badge, Menu, Flex, Spinner, Separator, Portal } from "@chakra-ui/react";
 import {
   FaArrowUp,
   FaReply,
@@ -128,34 +110,30 @@ function CommentItem({
         _hover={{ bg: hoverBg }}
         transition="all 0.2s"
       >
-        <HStack align="start" spacing={3}>
+        <HStack align="start" gap={3}>
           {/* Avatar */}
-          <Avatar
-            size="sm"
-            name={comment.user.display_name || comment.user.username}
-            src={comment.user.avatar_url}
-          />
+          <Avatar.Root size="sm"><Avatar.Fallback name={comment.user.display_name || comment.user.username} /><Avatar.Image src={comment.user.avatar_url} /></Avatar.Root>
 
-          <VStack align="start" flex={1} spacing={2}>
+          <VStack align="start" flex={1} gap={2}>
             {/* Header */}
             <HStack justify="space-between" width="full">
-              <HStack spacing={2}>
+              <HStack gap={2}>
                 <Text fontWeight="semibold" fontSize="sm">
                   {comment.user.display_name || comment.user.username}
                 </Text>
                 {isAdmin && (
-                  <Badge colorScheme="purple" fontSize="xs">
+                  <Badge colorPalette="purple" fontSize="xs">
                     Admin
                   </Badge>
                 )}
-                <HStack spacing={1} color="gray.500">
+                <HStack gap={1} color="gray.500">
                   <FaRegClock size={12} />
                   <Text fontSize="xs">
                     {formatDistanceToNow(new Date(comment.created_at), { addSuffix: true })}
                   </Text>
                 </HStack>
                 {comment.is_edited && (
-                  <Badge colorScheme="gray" fontSize="xs">
+                  <Badge colorPalette="gray" fontSize="xs">
                     edited
                   </Badge>
                 )}
@@ -163,31 +141,26 @@ function CommentItem({
 
               {/* Actions Menu */}
               {(isOwner || isAdmin) && (
-                <Menu>
-                  <MenuButton
-                    as={IconButton}
-                    icon={<FaEllipsisV />}
-                    variant="ghost"
-                    size="xs"
-                  />
-                  <MenuList>
-                    {isOwner && (
-                      <MenuItem icon={<FaEdit />} onClick={() => onEdit(comment)}>
-                        Edit
-                      </MenuItem>
-                    )}
-                    {(isOwner || isAdmin) && (
-                      <MenuItem
-                        icon={<FaTrash />}
-                        onClick={() => onDelete(comment.id)}
-                        color="red.500"
-                      >
-                        Delete
-                      </MenuItem>
-                    )}
-                    <MenuItem icon={<FaFlag />}>Report</MenuItem>
-                  </MenuList>
-                </Menu>
+                <Menu.Root>
+                  <Menu.Trigger asChild><IconButton icon={<FaEllipsisV />} variant="ghost" size="xs"></IconButton></Menu.Trigger>
+                  <Portal><Menu.Positioner><Menu.Content>
+                        {isOwner && (
+                          <Menu.Item icon={<FaEdit />} onSelect={() => onEdit(comment)} value='item-0'>
+                            Edit
+                          </Menu.Item>
+                        )}
+                        {(isOwner || isAdmin) && (
+                          <Menu.Item
+                            icon={<FaTrash />}
+                            onSelect={() => onDelete(comment.id)}
+                            color="red.500"
+                            value='item-1'>
+                            Delete
+                          </Menu.Item>
+                        )}
+                        <Menu.Item icon={<FaFlag />} value='item-2'>Report</Menu.Item>
+                      </Menu.Content></Menu.Positioner></Portal>
+                </Menu.Root>
               )}
             </HStack>
 
@@ -197,47 +170,38 @@ function CommentItem({
             </Text>
 
             {/* Actions */}
-            <HStack spacing={3} pt={2}>
+            <HStack gap={3} pt={2}>
               <Button
-                leftIcon={<FaArrowUp />}
                 size="xs"
                 variant={hasUpvoted ? 'solid' : 'ghost'}
-                colorScheme={hasUpvoted ? 'green' : 'gray'}
-                onClick={handleUpvote}
-              >
-                {upvoteCount}
-              </Button>
+                colorPalette={hasUpvoted ? 'green' : 'gray'}
+                onClick={handleUpvote}><FaArrowUp />{upvoteCount}</Button>
 
               {canReply && (
-                <Button
-                  leftIcon={<FaReply />}
-                  size="xs"
-                  variant="ghost"
-                  onClick={() => setShowReplyBox(!showReplyBox)}
-                >
-                  Reply
-                </Button>
+                <Button size="xs" variant="ghost" onClick={() => setShowReplyBox(!showReplyBox)}><FaReply />Reply
+                                  </Button>
               )}
             </HStack>
 
             {/* Reply Box */}
-            <Collapse in={showReplyBox} animateOpacity>
-              <Box pt={3} width="full">
-                <CommentForm
-                  parentCommentId={comment.id}
-                  onSuccess={() => setShowReplyBox(false)}
-                  placeholder="Write a reply..."
-                  compact
-                />
-              </Box>
-            </Collapse>
+            <Collapsible.Root open={showReplyBox}>
+              <Collapsible.Content>
+                <Box pt={3} width="full">
+                  <CommentForm
+                    parentCommentId={comment.id}
+                    onSuccess={() => setShowReplyBox(false)}
+                    placeholder="Write a reply..."
+                    compact
+                  />
+                </Box>
+              </Collapsible.Content>
+            </Collapsible.Root>
           </VStack>
         </HStack>
       </Box>
-
       {/* Nested Replies */}
       {comment.replies && comment.replies.length > 0 && (
-        <VStack align="stretch" mt={2} spacing={2}>
+        <VStack align="stretch" mt={2} gap={2}>
           {comment.replies.map((reply) => (
             <CommentItem
               key={reply.id}
@@ -309,7 +273,7 @@ function CommentForm({
   };
 
   return (
-    <VStack spacing={3} align="stretch">
+    <VStack gap={3} align="stretch">
       <Textarea
         value={content}
         onChange={(e) => setContent(e.target.value)}
@@ -323,11 +287,11 @@ function CommentForm({
           {content.length}/5000
         </Text>
         <Button
-          colorScheme="blue"
+          colorPalette="blue"
           size="sm"
           onClick={handleSubmit}
-          isLoading={isSubmitting}
-          isDisabled={!content.trim() || content.length > 5000}
+          loading={isSubmitting}
+          disabled={!content.trim() || content.length > 5000}
         >
           {parentCommentId ? 'Reply' : 'Post Comment'}
         </Button>
@@ -393,20 +357,20 @@ export default function CommentsSection({
       p={6}
       mt={8}
     >
-      <VStack align="stretch" spacing={6}>
+      <VStack align="stretch" gap={6}>
         {/* Header */}
         <Flex justify="space-between" align="center">
           <HStack>
             <Text fontSize="2xl" fontWeight="bold">
               Comments
             </Text>
-            <Badge colorScheme="blue" fontSize="md">
+            <Badge colorPalette="blue" fontSize="md">
               {comments.length}
             </Badge>
           </HStack>
 
           {/* Sort Options */}
-          <HStack spacing={2}>
+          <HStack gap={2}>
             <Button
               size="sm"
               variant={sortBy === 'newest' ? 'solid' : 'ghost'}
@@ -424,7 +388,7 @@ export default function CommentsSection({
           </HStack>
         </Flex>
 
-        <Divider />
+        <Separator />
 
         {/* Comment Form */}
         {userId ? (
@@ -437,13 +401,13 @@ export default function CommentsSection({
             textAlign="center"
           >
             <Text>Please login to post a comment</Text>
-            <Button mt={2} colorScheme="blue" size="sm">
+            <Button mt={2} colorPalette="blue" size="sm">
               Login
             </Button>
           </Box>
         )}
 
-        <Divider />
+        <Separator />
 
         {/* Comments List */}
         {isLoading ? (
@@ -455,7 +419,7 @@ export default function CommentsSection({
             <Text color="gray.500">No comments yet. Be the first to comment!</Text>
           </Box>
         ) : (
-          <VStack align="stretch" spacing={4}>
+          <VStack align="stretch" gap={4}>
             <AnimatePresence>
               {comments.map((comment) => (
                 <CommentItem

@@ -1,23 +1,14 @@
 import React, { useEffect, useState } from "react";
+import { useColorModeValue } from "./ui/color-mode";
 import dynamic from "next/dynamic";
-import {
-  Flex,
-  Heading,
-  Button,
-  Box,
-  useColorModeValue,
-  Spinner,
-  ButtonGroup,
-  Select,
-  HStack,
-  Text,
-  Tooltip,
-} from "@chakra-ui/react";
+import { Steps, Flex, Heading, Button, Box, Spinner, ButtonGroup, NativeSelect, HStack, Text } from "@chakra-ui/react";
+import { Tooltip } from '@/components/ui/tooltip';
 import { useWindowSize } from "react-use";
 import DateTime from "@/components/DateTime";
 import { motion } from "framer-motion";
 import axios from "axios";
-import { InfoOutlineIcon } from "@chakra-ui/icons";
+import { getStatusTimelineV2Data } from "@/lib/statusTimelineClient";
+import { LuInfo } from 'react-icons/lu';
 
 const getCat = (cat: string) => {
   switch (cat) {
@@ -89,8 +80,7 @@ const StackedColumnChart: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`/api/new/graphsv2`);
-        const jsonData = await response.json();
+        const jsonData = await getStatusTimelineV2Data();
         const combinedData = jsonData.eip?.concat(jsonData.erc?.concat(jsonData.rip));
         setData(combinedData);
         
@@ -408,80 +398,88 @@ slider: {
           <Flex justifyContent="space-between" alignItems="center" marginBottom="1rem" wrap="wrap" gap="1rem">
             <Box>
               
-              <HStack spacing={4} mt={2} wrap="wrap">
+              <HStack gap={4} mt={2} wrap="wrap">
                 <Box>
                   <Text fontSize="sm" mb={1}>Start Date</Text>
                   <HStack>
-                    <Select 
-                      value={startMonth} 
-                      onChange={handleStartMonthChange}
-                      size="sm"
-                      width="100px"
-                    >
-                      {months.map((_, index) => (
-                        <option key={index + 1} value={index + 1}>
-                          {months[index]}
-                        </option>
-                      ))}
-                    </Select>
-                    <Select 
-                      value={startYear} 
-                      onChange={handleStartYearChange}
-                      size="sm"
-                      width="90px"
-                    >
-                      {allYears.map((year) => (
-                        <option key={year} value={year}>
-                          {year}
-                        </option>
-                      ))}
-                    </Select>
+                    <NativeSelect.Root>
+                      <NativeSelect.Field
+                        value={startMonth}
+                        onValueChange={handleStartMonthChange}
+                        size="sm"
+                        width="100px">
+                        {months.map((_, index) => (
+                          <option key={index + 1} value={index + 1}>
+                            {months[index]}
+                          </option>
+                        ))}
+                      </NativeSelect.Field>
+                      <NativeSelect.Indicator />
+                    </NativeSelect.Root>
+                    <NativeSelect.Root>
+                      <NativeSelect.Field
+                        value={startYear}
+                        onValueChange={handleStartYearChange}
+                        size="sm"
+                        width="90px">
+                        {allYears.map((year) => (
+                          <option key={year} value={year}>
+                            {year}
+                          </option>
+                        ))}
+                      </NativeSelect.Field>
+                      <NativeSelect.Indicator />
+                    </NativeSelect.Root>
                   </HStack>
                 </Box>
                 
                 <Box>
                   <Text fontSize="sm" mb={1}>End Date</Text>
                   <HStack>
-                    <Select 
-                      value={endMonth} 
-                      onChange={handleEndMonthChange}
-                      size="sm"
-                      width="100px"
-                    >
-                      {months.map((_, index) => (
-                        <option key={index + 1} value={index + 1}>
-                          {months[index]}
-                        </option>
-                      ))}
-                    </Select>
-                    <Select 
-                      value={endYear} 
-                      onChange={handleEndYearChange}
-                      size="sm"
-                      width="90px"
-                    >
-                      {allYears.map((year) => (
-                        <option key={year} value={year}>
-                          {year}
-                        </option>
-                      ))}
-                    </Select>
+                    <NativeSelect.Root>
+                      <NativeSelect.Field
+                        value={endMonth}
+                        onValueChange={handleEndMonthChange}
+                        size="sm"
+                        width="100px">
+                        {months.map((_, index) => (
+                          <option key={index + 1} value={index + 1}>
+                            {months[index]}
+                          </option>
+                        ))}
+                      </NativeSelect.Field>
+                      <NativeSelect.Indicator />
+                    </NativeSelect.Root>
+                    <NativeSelect.Root>
+                      <NativeSelect.Field
+                        value={endYear}
+                        onValueChange={handleEndYearChange}
+                        size="sm"
+                        width="90px">
+                        {allYears.map((year) => (
+                          <option key={year} value={year}>
+                            {year}
+                          </option>
+                        ))}
+                      </NativeSelect.Field>
+                      <NativeSelect.Indicator />
+                    </NativeSelect.Root>
                   </HStack>
                 </Box>
               </HStack>
             </Box>
             
             <Flex direction="row" gap={2}>
-              <ButtonGroup size="sm" isAttached variant="outline">
+              <ButtonGroup size="sm" attached variant="outline">
                 <Button
-                  colorScheme="blue"
+                  colorPalette="blue"
                   variant={viewMode === "status" ? "solid" : "outline"}
                   onClick={() => setViewMode("status")}
                 >
                   Status View
                 </Button>
                 <Button
-                  colorScheme="blue"
+                  colorPalette="blue"
                   variant={viewMode === "category" ? "solid" : "outline"}
                   onClick={() => setViewMode("category")}
                 >
@@ -491,7 +489,7 @@ slider: {
 
               
               <Button
-                colorScheme="blue"
+                colorPalette="blue"
                 size="sm"
                 onClick={async () => {
                   try {

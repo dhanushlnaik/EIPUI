@@ -1,19 +1,12 @@
-import {
-  Box,
-  Text,
-  useColorModeValue,
-  Select,
-  Spinner,
-  Button,
-  Flex,
-  Heading
-} from "@chakra-ui/react";
+import { Steps, Box, Text, NativeSelect, Spinner, Button, Flex, Heading } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
 import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
 import LoaderComponent from "./Loader";
 import DateTime from "@/components/DateTime";
 import NextLink from "next/link";
 import axios from "axios";
+import { getStatusTimelineV2Data } from "@/lib/statusTimelineClient";
 
 interface AreaProps {
   data: MappedDataItem[];
@@ -194,8 +187,7 @@ const AreaC: React.FC<AreaCProps> = ({ type }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`/api/new/graphsv2`);
-        const jsonData = await response.json();
+        const jsonData = await getStatusTimelineV2Data();
         setData(jsonData);
         if (type === "EIPs" && jsonData.eip) {
           setTypeData(jsonData.eip);
@@ -429,35 +421,38 @@ const AreaC: React.FC<AreaCProps> = ({ type }) => {
           }] `}
         </Text>
       </NextLink>
-      <Select
-        variant="outline"
-        placeholder="Select Option"
-        value={selectedStatus}
-        onChange={handleChangeStatus}
-        className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-blue-500"
-        size="sm" // Set the select size to small
-      >
-        <option value="Final">Final</option>
-        <option value="Review">Review</option>
-        <option value="Last Call">Last Call</option>
-        <option value="Stagnant">Stagnant</option>
-        <option value="Draft">Draft</option>
-        <option value="Living">Living</option>
-      </Select>
+      <NativeSelect.Root>
+        <NativeSelect.Field
+          variant="outline"
+          placeholder="Select Option"
+          value={selectedStatus}
+          onValueChange={handleChangeStatus}
+          className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-blue-500"
+          // Set the select size to small
+          size="sm">
+          <option value="Final">Final</option>
+          <option value="Review">Review</option>
+          <option value="Last Call">Last Call</option>
+          <option value="Stagnant">Stagnant</option>
+          <option value="Draft">Draft</option>
+          <option value="Living">Living</option>
+        </NativeSelect.Field>
+        <NativeSelect.Indicator />
+      </NativeSelect.Root>
       <Box>
         {isLoading ? (
           // Show loading spinner while chart is rendering
-          <Box
+          (<Box
             display="flex"
             justifyContent="center"
             alignItems="center"
             height="200px"
           >
             <Spinner />
-          </Box>
+          </Box>)
         ) : (
           // Show chart when it's ready
-          <>
+          (<>
             <br />
             <Flex justifyContent="space-between" alignItems="center" marginBottom="0.5rem">
               <Heading size="md" color={headingColor}>
@@ -480,7 +475,7 @@ const AreaC: React.FC<AreaCProps> = ({ type }) => {
                 }}>Download CSV</Button>
             </Flex>
             <Area {...config} />
-          </>
+          </>)
         )}
       </Box>
     </Box>

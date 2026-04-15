@@ -1,14 +1,8 @@
 import React, { useState, useEffect } from "react";
-import {
-  Box,
-  Text,
-  Badge,
-  HStack,
-  VStack,
-  useColorModeValue,
-  Tooltip,
-} from "@chakra-ui/react";
-import { keyframes } from '@chakra-ui/system';
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Text, Badge, HStack, VStack } from "@chakra-ui/react";
+import { Tooltip } from '@/components/ui/tooltip';
+import { keyframes } from '@emotion/react';
 import { motion } from "framer-motion";
 import { useRouter } from 'next/router';
 
@@ -112,9 +106,11 @@ const FusakaCountdownBadge: React.FC<FusakaCountdownBadgeProps> = ({
   if (variant === 'compact') {
     return (
       <Tooltip 
-        label={`Click to view FUSAKA upgrade details for ${nextNetwork.name}`} 
-        placement="top"
-        isDisabled={!clickable}
+        content={`Click to view FUSAKA upgrade details for ${nextNetwork.name}`} 
+        disabled={!clickable}
+        positioning={{
+          placement: "top"
+        }}
       >
         <motion.div
           whileHover={clickable ? { scale: 1.05 } : {}}
@@ -123,7 +119,7 @@ const FusakaCountdownBadge: React.FC<FusakaCountdownBadgeProps> = ({
         >
           <Badge
             variant="outline"
-            colorScheme={timeData.isLive ? "yellow" : "yellow"}
+            colorPalette={timeData.isLive ? "yellow" : "yellow"}
             p={2}
             borderRadius="lg"
             cursor={clickable ? "pointer" : "default"}
@@ -139,7 +135,7 @@ const FusakaCountdownBadge: React.FC<FusakaCountdownBadgeProps> = ({
             } : {}}
             transition="all 0.3s"
           >
-            <HStack spacing={1}>
+            <HStack gap={1}>
               {showIcon && <Text fontSize="xs">🦓</Text>}
               <Text fontSize="xs" fontWeight="bold">
                 {timeData.isLive ? 'Fusaka countdown' : `Fusaka in ${timeData.timeString}`}
@@ -154,9 +150,11 @@ const FusakaCountdownBadge: React.FC<FusakaCountdownBadgeProps> = ({
   // Detailed variant
   return (
     <Tooltip 
-      label={`Click to view FUSAKA upgrade details`} 
-      placement="top"
-      isDisabled={!clickable}
+      content={`Click to view FUSAKA upgrade details`} 
+      disabled={!clickable}
+      positioning={{
+        placement: "top"
+      }}
     >
       <motion.div
         whileHover={clickable ? { scale: 1.02 } : {}}
@@ -180,8 +178,8 @@ const FusakaCountdownBadge: React.FC<FusakaCountdownBadgeProps> = ({
           transition="all 0.3s"
           maxW="200px"
         >
-          <VStack spacing={2}>
-            <HStack spacing={2}>
+          <VStack gap={2}>
+            <HStack gap={2}>
               {showIcon && (
                 <Box
                   bg="linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)"
@@ -192,7 +190,7 @@ const FusakaCountdownBadge: React.FC<FusakaCountdownBadgeProps> = ({
                   <Text fontSize="sm">🦓</Text>
                 </Box>
               )}
-              <VStack spacing={0} align="start">
+              <VStack gap={0} align="start">
                 <Text fontSize="sm" fontWeight="bold" color={accentColor}>
                   FUSAKA Upgrade
                 </Text>
@@ -204,11 +202,11 @@ const FusakaCountdownBadge: React.FC<FusakaCountdownBadgeProps> = ({
             
             <Box textAlign="center">
               {timeData.isLive ? (
-                <Badge colorScheme="yellow" fontSize="xs" p={1}>
+                <Badge colorPalette="yellow" fontSize="xs" p={1}>
                   🦓 Countdown Active!
                 </Badge>
               ) : (
-                <VStack spacing={1}>
+                <VStack gap={1}>
                   <Text fontSize="lg" fontWeight="bold" color={accentColor}>
                     {timeData.timeString}
                   </Text>
@@ -222,7 +220,7 @@ const FusakaCountdownBadge: React.FC<FusakaCountdownBadgeProps> = ({
               )}
             </Box>
 
-            <Badge colorScheme="yellow" fontSize="9px" variant="subtle">
+            <Badge colorPalette="yellow" fontSize="9px" variant="subtle">
               Click for details
             </Badge>
           </VStack>

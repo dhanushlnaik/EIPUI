@@ -1,20 +1,9 @@
 import React, { useMemo, useState } from 'react';
-import {
-  Box,
-  Flex,
-  Heading,
-  Spinner,
-  Text,
-  useColorModeValue,
-  VStack,
-  HStack,
-  Badge,
-  IconButton,
-  Collapse,
-} from '@chakra-ui/react';
-import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
+import { useColorModeValue } from "../ui/color-mode";
+import { Steps, Box, Flex, Heading, Spinner, Text, VStack, HStack, Badge, IconButton, Collapsible } from "@chakra-ui/react";
 import dynamic from 'next/dynamic';
 import CopyLink from '@/components/CopyLink';
+import { LuChevronDown, LuChevronUp } from 'react-icons/lu';
 
 const Column = dynamic(() => import('@ant-design/plots').then((mod) => mod.Column), {
   ssr: false,
@@ -157,7 +146,6 @@ const ActiveEditorsChart: React.FC<ActiveEditorsChartProps> = ({
       <Text fontSize="sm" color="gray.500" mb={4}>
         Total contributions by each editor/reviewer across EIPs, ERCs, and RIPs repositories
       </Text>
-
       {/* Collapsible Reviewer Totals Summary */}
       <Box mb={4}>
         <Flex 
@@ -173,41 +161,37 @@ const ActiveEditorsChart: React.FC<ActiveEditorsChartProps> = ({
           <Heading size="sm" flex={1} color={headingColor}>
             Total Reviews by Editor
           </Heading>
-          <IconButton
-            aria-label="Toggle totals"
-            icon={showTotals ? <ChevronUpIcon /> : <ChevronDownIcon />}
-            size="sm"
-            variant="ghost"
-          />
+          <IconButton aria-label="Toggle totals" size="sm" variant="ghost">{showTotals ? <LuChevronUp /> : <LuChevronDown />}</IconButton>
         </Flex>
-        <Collapse in={showTotals} animateOpacity>
-          <Box p={4} bg={useColorModeValue('blue.50', 'gray.700')} borderRadius="md" mt={2}>
-            <Flex flexWrap="wrap" gap={3}>
-              {reviewerTotals.map((item, index) => (
-                <HStack
-                  key={item.reviewer}
-                  p={2}
-                  px={4}
-                  bg={bg}
-                  borderRadius="full"
-                  borderWidth="1px"
-                  borderColor={borderColor}
-                  spacing={2}
-                >
-                  <Badge colorScheme="blue" fontSize="sm">
-                    #{index + 1}
-                  </Badge>
-                  <Text fontWeight="medium">{item.reviewer}</Text>
-                  <Badge colorScheme="green" fontSize="md">
-                    {item.total}
-                  </Badge>
-                </HStack>
-              ))}
-            </Flex>
-          </Box>
-        </Collapse>
+        <Collapsible.Root open={showTotals}>
+          <Collapsible.Content>
+            <Box p={4} bg={useColorModeValue('blue.50', 'gray.700')} borderRadius="md" mt={2}>
+              <Flex flexWrap="wrap" gap={3}>
+                {reviewerTotals.map((item, index) => (
+                  <HStack
+                    key={item.reviewer}
+                    p={2}
+                    px={4}
+                    bg={bg}
+                    borderRadius="full"
+                    borderWidth="1px"
+                    borderColor={borderColor}
+                    gap={2}
+                  >
+                    <Badge colorPalette="blue" fontSize="sm">
+                      #{index + 1}
+                    </Badge>
+                    <Text fontWeight="medium">{item.reviewer}</Text>
+                    <Badge colorPalette="green" fontSize="md">
+                      {item.total}
+                    </Badge>
+                  </HStack>
+                ))}
+              </Flex>
+            </Box>
+          </Collapsible.Content>
+        </Collapsible.Root>
       </Box>
-
       {/* Stacked Bar Chart */}
       {loading ? (
         <Flex justify="center" align="center" height="400px">

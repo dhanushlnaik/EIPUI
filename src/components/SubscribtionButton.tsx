@@ -1,4 +1,5 @@
-// "use client";
+"use client";
+// 
 // import { useState } from "react";
 // import { useSession } from "next-auth/react";
 // import { SubscribeForm } from "@/components/SubscriptionForm";
@@ -46,7 +47,7 @@
 //         </button>
 //     );
 // }
-"use client";
+
 import { useEffect, useState } from "react";
 import { useSession, signIn } from "next-auth/react";
 

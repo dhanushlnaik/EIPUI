@@ -1,4 +1,5 @@
-import { Box, Flex, Text, useColorMode, Icon, Spacer } from '@chakra-ui/react';
+import { Steps, Box, Flex, Text, Icon, Spacer } from "@chakra-ui/react";
+import { useColorMode } from "./ui/color-mode";
 import { FaEthereum } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import { fetchEthPriceInUSD } from './ethereumService';

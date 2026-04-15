@@ -1,26 +1,12 @@
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  useColorModeValue,
-  Text,
-  Input,
-  SimpleGrid,
-  Button,
-  Flex,
-  IconButton,
-  Tooltip,
-  Spinner,
-  Avatar,
-  Menu,
-  MenuItem,
-  MenuList,
-  MenuButton,
-} from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Text, Input, SimpleGrid, Button, Flex, IconButton, Spinner, Avatar, Menu, Portal } from "@chakra-ui/react";
+import { Tooltip } from '@/components/ui/tooltip';
 import { saveAs } from "file-saver";
 import NextLink from "next/link";
-import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 import axios from "axios";
 import FeedbackWidget from "./FeedbackWidget";
+import { LuChevronDown, LuChevronUp } from 'react-icons/lu';
 
 interface AuthorProps {
   defaultQuery: string;
@@ -162,30 +148,23 @@ const SearchByEip: React.FC<AuthorProps> = ({ defaultQuery }) => {
               boxShadow: "0 0 0 2px rgba(66, 153, 225, 0.6)",
             }}
           />
-          <Menu>
-            <MenuButton
-              as={Button}
-              rightIcon={<ChevronDownIcon />}
-              colorScheme="blue"
-              size="md"
-              width="200px"
-            >
-              PR/ISSUE
-            </MenuButton>
-            <MenuList>
-              <MenuItem onClick={() => (window.location.href = "/SearchEip")}>
-                EIP
-              </MenuItem>
-              <MenuItem onClick={() => (window.location.href = "/authors")}>
-                Authors
-              </MenuItem>
-              <MenuItem
-                onClick={() => (window.location.href = "/SearchEipTitle")}
-              >
-                Title
-              </MenuItem>
-            </MenuList>
-          </Menu>
+          <Menu.Root>
+            <Menu.Trigger asChild><Button colorPalette="blue" size="md" width="200px">PR/ISSUE
+                            <LuChevronDown /></Button></Menu.Trigger>
+            <Portal><Menu.Positioner><Menu.Content>
+                  <Menu.Item onSelect={() => (window.location.href = "/SearchEip")} value='item-0'>
+                    EIP
+                  </Menu.Item>
+                  <Menu.Item onSelect={() => (window.location.href = "/authors")} value='item-1'>
+                    Authors
+                  </Menu.Item>
+                  <Menu.Item
+                    onSelect={() => (window.location.href = "/SearchEipTitle")}
+                    value='item-2'>
+                    Title
+                  </Menu.Item>
+                </Menu.Content></Menu.Positioner></Portal>
+          </Menu.Root>
         </Flex>
       </Box>
       <Box p={4}>
@@ -204,7 +183,7 @@ const SearchByEip: React.FC<AuthorProps> = ({ defaultQuery }) => {
               gap={4}
             >
               <Button
-                colorScheme="blue"
+                colorPalette="blue"
                 onClick={async () => {
                   try {
                     // Trigger the CSV conversion and download
@@ -223,7 +202,7 @@ const SearchByEip: React.FC<AuthorProps> = ({ defaultQuery }) => {
             </Box>
 
             {/* Display Cards */}
-            <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 5 }} spacing={6}>
+            <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 5 }} gap={6}>
               {paginatedData?.map((item) => (
                 <NextLink
                   href={`/${
@@ -270,7 +249,7 @@ const SearchByEip: React.FC<AuthorProps> = ({ defaultQuery }) => {
                       fontSize="md"
                       fontWeight="semibold"
                       color={useColorModeValue("gray.800", "gray.300")}
-                      noOfLines={3} // Allow wrapping into 3 lines
+                      lineClamp={3} // Allow wrapping into 3 lines
                       marginBottom="0.75rem"
                       lineHeight="1.4"
                     >

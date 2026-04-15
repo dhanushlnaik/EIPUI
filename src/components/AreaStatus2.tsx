@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { useColorModeValue } from "./ui/color-mode";
 import dynamic from "next/dynamic";
-import { Flex, Heading, Button,Box, useColorModeValue, Spinner } from "@chakra-ui/react";
+import { Steps, Flex, Heading, Button, Box, Spinner } from "@chakra-ui/react";
 import { useWindowSize } from "react-use";
 import DateTime from "@/components/DateTime";
 import { motion } from "framer-motion";
 import axios from "axios";
+import { getStatusTimelineV2Data } from "@/lib/statusTimelineClient";
 const getCat = (cat: string) => {
   switch (cat) {
     case "Standards Track":
@@ -61,8 +63,7 @@ const StackedColumnChart: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`/api/new/graphsv2`);
-        const jsonData = await response.json();
+        const jsonData = await getStatusTimelineV2Data();
         setData(jsonData.eip?.concat(jsonData.erc?.concat(jsonData.rip)));
         setIsLoading(false);
       } catch (error) {
@@ -218,7 +219,7 @@ const StackedColumnChart: React.FC = () => {
             {`Draft vs Final`}
           </Heading>
           {/* Assuming a download option exists for the yearly data as well */}
-          <Button colorScheme="blue" onClick={async () => {
+          <Button colorPalette="blue" onClick={async () => {
     try {
       // Trigger the CSV conversion and download
       downloadData();

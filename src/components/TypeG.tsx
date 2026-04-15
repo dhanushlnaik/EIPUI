@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Box, Grid, Text, useColorModeValue } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Grid, Text } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 
 import TypeGraphs from "@/components/STypeCharts";

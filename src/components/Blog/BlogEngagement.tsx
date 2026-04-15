@@ -1,16 +1,9 @@
 "use client";
-
+;
 import { useState, useEffect } from 'react';
-import { 
-  Box, 
-  HStack, 
-  IconButton, 
-  Text, 
-  Tooltip,
-  useColorModeValue,
-  VStack,
-  Spinner
-} from '@chakra-ui/react';
+import { useColorModeValue } from "../ui/color-mode";
+import { Steps, Box, HStack, IconButton, Text, VStack, Spinner } from "@chakra-ui/react";
+import { Tooltip } from '@/components/ui/tooltip';
 import { 
   FaHeart, 
   FaRegHeart, 
@@ -135,29 +128,27 @@ export default function BlogEngagement({ slug, userId }: BlogEngagementProps) {
       borderRadius="lg"
       boxShadow="sm"
     >
-      <VStack spacing={4} align="stretch">
+      <VStack gap={4} align="stretch">
         <Text fontSize="sm" fontWeight="semibold" color={iconColor}>
           Engagement
         </Text>
 
         {/* Upvote */}
         <HStack justify="space-between">
-          <HStack spacing={2}>
-            <Tooltip label={userId ? 'Toggle upvote' : 'Login to upvote'}>
+          <HStack gap={2}>
+            <Tooltip content={userId ? 'Toggle upvote' : 'Login to upvote'}>
               <IconButton
                 aria-label="Upvote"
-                icon={stats.has_user_upvoted ? <FaHeart /> : <FaRegHeart />}
                 size="sm"
                 variant="ghost"
                 color={stats.has_user_upvoted ? activeColor : iconColor}
                 onClick={handleUpvote}
-                isLoading={isUpvoting}
+                loading={isUpvoting}
                 _hover={{
                   color: activeColor,
                   transform: 'scale(1.1)',
                 }}
-                transition="all 0.2s"
-              />
+                transition="all 0.2s">{stats.has_user_upvoted ? <FaHeart /> : <FaRegHeart />}</IconButton>
             </Tooltip>
             <Text fontSize="sm">Upvotes</Text>
           </HStack>
@@ -168,7 +159,7 @@ export default function BlogEngagement({ slug, userId }: BlogEngagementProps) {
 
         {/* Views */}
         <HStack justify="space-between">
-          <HStack spacing={2}>
+          <HStack gap={2}>
             <FaEye color={iconColor} />
             <Text fontSize="sm">Views</Text>
           </HStack>
@@ -179,7 +170,7 @@ export default function BlogEngagement({ slug, userId }: BlogEngagementProps) {
 
         {/* Comments */}
         <HStack justify="space-between">
-          <HStack spacing={2}>
+          <HStack gap={2}>
             <FaComment color={iconColor} />
             <Text fontSize="sm">Comments</Text>
           </HStack>
@@ -191,7 +182,7 @@ export default function BlogEngagement({ slug, userId }: BlogEngagementProps) {
         {/* Downloads (if applicable) */}
         {stats.download_count > 0 && (
           <HStack justify="space-between">
-            <HStack spacing={2}>
+            <HStack gap={2}>
               <FaDownload color={iconColor} />
               <Text fontSize="sm">Downloads</Text>
             </HStack>

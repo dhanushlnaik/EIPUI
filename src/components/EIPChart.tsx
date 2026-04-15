@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import React, { useState } from 'react';
 import ReactECharts from 'echarts-for-react';
 import { useAllEipsData } from '@/hooks/useAllEipsData';

@@ -1,6 +1,6 @@
 import React from 'react';
+import { useColorModeValue } from "./ui/color-mode";
 import { motion } from 'framer-motion';
-import { useColorModeValue } from '@chakra-ui/react';
 import Logo from './Logo';
 
 const LoaderComponent = () => {

@@ -1,21 +1,19 @@
 import React, { useState, useEffect, useLayoutEffect } from "react";
+import { useColorModeValue } from "../../components/ui/color-mode";
 import CloseableAdCard from "@/components/CloseableAdCard";
 import AllLayout from "@/components/Layout";
 import {
   Box,
   Spinner,
-  useColorModeValue,
   Wrap,
   WrapItem,
   Text,
   List,
-  UnorderedList,
-  ListItem,
   Heading,
   Flex,
   Image,
   SimpleGrid,
-  Grid
+  Grid,
 } from "@chakra-ui/react";
 import SlotCountdown from "@/components/SlotCountdown";
 import NLink from "next/link";
@@ -34,9 +32,9 @@ import NetworkUpgradesChart2 from "@/components/NetworkUpgradesChart2";
 import { FaSyncAlt } from "react-icons/fa";
 import { useRouter } from "next/router";
 import Graph from "@/components/NetworkUpgradesGraph";
-import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 import { IconButton } from '@chakra-ui/react';
 import { useRef } from 'react';
+import { LuChevronLeft, LuChevronRight } from 'react-icons/lu';
 
 
 const sepolia_key = process.env.NEXT_PUBLIC_SEPOLIA_API as string;
@@ -145,7 +143,12 @@ const All = () => {
           >
             {title}
           </Text>
-          <Link href={link} color="blue.400" fontSize="xs" isExternal>
+          <Link
+            href={link}
+            color="blue.400"
+            fontSize="xs"
+            target='_blank'
+            rel='noopener noreferrer'>
             Read More
           </Link>
         </Box>
@@ -565,15 +568,13 @@ const All = () => {
                 {/* Left arrow */}
                 <IconButton
                   aria-label="Scroll left"
-                  icon={<ChevronLeftIcon />}
                   position="absolute"
                   left={0}
                   zIndex={1}
                   onClick={scrollLeft}
                   bg="white"
                   boxShadow="md"
-                  _hover={{ bg: "gray.100" }}
-                />
+                  _hover={{ bg: "gray.100" }}><LuChevronLeft /></IconButton>
 
                 {/* Cards container */}
                 <Flex
@@ -618,15 +619,13 @@ const All = () => {
                 {/* Right arrow */}
                 <IconButton
                   aria-label="Scroll right"
-                  icon={<ChevronRightIcon />}
                   position="absolute"
                   right={0}
                   zIndex={1}
                   onClick={scrollRight}
                   bg="white"
                   boxShadow="md"
-                  _hover={{ bg: "gray.100" }}
-                />
+                  _hover={{ bg: "gray.100" }}><LuChevronRight /></IconButton>
               </Flex>
 
 

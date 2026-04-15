@@ -1,16 +1,7 @@
+import { Stat } from "@/components/ui/compat";
 import React from 'react';
-import {
-  Box,
-  Grid,
-  Stat,
-  StatLabel,
-  StatNumber,
-  StatHelpText,
-  StatArrow,
-  useColorModeValue,
-  Flex,
-  Icon,
-} from '@chakra-ui/react';
+import { useColorModeValue } from "../ui/color-mode";
+import { Steps, Box, Grid, Flex, Icon } from "@chakra-ui/react";
 import { FiUsers, FiCheckCircle, FiClock, FiTrendingUp } from 'react-icons/fi';
 
 interface EditorMetricsCardsProps {
@@ -74,20 +65,20 @@ const EditorMetricsCards: React.FC<EditorMetricsCardsProps> = ({ data }) => {
           _hover={{ transform: 'translateY(-2px)' }}
         >
           <Flex justify="space-between" align="flex-start" mb={3}>
-            <Stat>
-              <StatLabel fontSize="sm" color="gray.500">
+            <Stat.Root>
+              <Stat.Label fontSize="sm" color="gray.500">
                 {metric.label}
-              </StatLabel>
-              <StatNumber fontSize="2xl" fontWeight="bold" color={iconColor}>
+              </Stat.Label>
+              <Stat.ValueText fontSize="2xl" fontWeight="bold" color={iconColor}>
                 {metric.value}{metric.suffix || ''}
-              </StatNumber>
+              </Stat.ValueText>
               {metric.change !== 0 && (
-                <StatHelpText mb={0}>
-                  <StatArrow type={metric.change > 0 ? 'increase' : 'decrease'} />
+                <Stat.HelpText mb={0}>
+                  <Stat.DownIndicator />
                   {Math.abs(metric.change)}%
-                </StatHelpText>
+                </Stat.HelpText>
               )}
-            </Stat>
+            </Stat.Root>
             <Flex
               bg={iconBg}
               p={3}

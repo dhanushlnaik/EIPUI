@@ -7,6 +7,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { useColorModeValue } from "./ui/color-mode";
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -16,7 +17,7 @@ ChartJS.register(
   Legend
 );
 import dynamic from "next/dynamic";
-import { Box, useColorModeValue } from "@chakra-ui/react";
+import { Steps, Box } from "@chakra-ui/react";
 import DateTime from "./DateTime";
 
 interface CustomProps {

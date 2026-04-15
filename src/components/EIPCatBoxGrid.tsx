@@ -1,5 +1,6 @@
 import CatBox from "@/components/CatBox";
-import { Box, Icon, Text, useColorModeValue } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Icon, Text } from "@chakra-ui/react";
 import { BookOpen, Briefcase, Link, Radio } from "react-feather";
 import React, { useEffect, useState } from "react";
 

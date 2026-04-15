@@ -1,25 +1,8 @@
+import { Thead, Tbody, Tr, Th, Td } from "@/components/ui/compat";
 import React, { useState } from 'react';
-import {
-  Box,
-  Grid,
-  Heading,
-  Text,
-  useColorModeValue,
-  Avatar,
-  Badge,
-  Flex,
-  VStack,
-  HStack,
-  Button,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  IconButton,
-  Tooltip,
-} from '@chakra-ui/react';
+import { useColorModeValue } from "../ui/color-mode";
+import { Steps, Box, Grid, Heading, Text, Avatar, Badge, Flex, VStack, HStack, Button, Table, IconButton } from "@chakra-ui/react";
+import { Tooltip } from '@/components/ui/tooltip';
 import { FiDownload, FiAward } from 'react-icons/fi';
 import { CSVLink } from 'react-csv';
 import axios from 'axios';
@@ -86,19 +69,15 @@ const EditorLeaderboard: React.FC<EditorLeaderboardProps> = ({
         <Flex align="center" gap={4}>
           <Badge
             fontSize="xl"
-            colorScheme={index < 3 ? (index === 0 ? 'yellow' : index === 1 ? 'gray' : 'orange') : 'blue'}
+            colorPalette={index < 3 ? (index === 0 ? 'yellow' : index === 1 ? 'gray' : 'orange') : 'blue'}
             borderRadius="full"
             px={3}
             py={1}
           >
             #{index + 1}
           </Badge>
-          <Avatar
-            size="md"
-            name={person.name}
-            src={`https://github.com/${person.name}.png?size=100`}
-          />
-          <VStack align="start" spacing={0} flex={1}>
+          <Avatar.Root size="md"><Avatar.Fallback name={person.name} /><Avatar.Image src={`https://github.com/${person.name}.png?size=100`} /></Avatar.Root>
+          <VStack align="start" gap={0} flex={1}>
             <Text fontWeight="bold" fontSize="lg">
               {person.name}
             </Text>
@@ -106,8 +85,8 @@ const EditorLeaderboard: React.FC<EditorLeaderboardProps> = ({
               {person.totalReviews} reviews
             </Text>
           </VStack>
-          <VStack align="end" spacing={1}>
-            <Badge colorScheme="green">{person.approvalRate}% approval</Badge>
+          <VStack align="end" gap={1}>
+            <Badge colorPalette="green">{person.approvalRate}% approval</Badge>
             <Text fontSize="xs" color="gray.500">
               {person.avgResponseTime}h avg response
             </Text>
@@ -130,23 +109,16 @@ const EditorLeaderboard: React.FC<EditorLeaderboardProps> = ({
             filename={`editors-leaderboard-${timePeriod}.csv`}
             onClick={() => handleDownload(false)}
           >
-            <Button
-              size="sm"
-              leftIcon={<FiDownload />}
-              colorScheme="blue"
-              isLoading={loading}
-            >
-              CSV
-            </Button>
+            <Button size="sm" colorPalette="blue" loading={loading}><FiDownload />CSV
+                          </Button>
           </CSVLink>
         </Flex>
-        <VStack spacing={3} align="stretch">
+        <VStack gap={3} align="stretch">
           {editors.slice(0, 10).map((editor: any, index: number) =>
             renderLeaderboardCard(editor, index, false)
           )}
         </VStack>
       </Box>
-
       {/* Reviewers Leaderboard */}
       <Box>
         <Flex justify="space-between" align="center" mb={4}>
@@ -158,17 +130,11 @@ const EditorLeaderboard: React.FC<EditorLeaderboardProps> = ({
             filename={`reviewers-leaderboard-${timePeriod}.csv`}
             onClick={() => handleDownload(true)}
           >
-            <Button
-              size="sm"
-              leftIcon={<FiDownload />}
-              colorScheme="blue"
-              isLoading={loading}
-            >
-              CSV
-            </Button>
+            <Button size="sm" colorPalette="blue" loading={loading}><FiDownload />CSV
+                          </Button>
           </CSVLink>
         </Flex>
-        <VStack spacing={3} align="stretch">
+        <VStack gap={3} align="stretch">
           {reviewers.slice(0, 10).map((reviewer: any, index: number) =>
             renderLeaderboardCard(reviewer, index, true)
           )}

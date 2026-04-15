@@ -1,5 +1,7 @@
+import { Stat } from "@/components/ui/compat";
 import React from "react";
-import { Box, Stat, StatLabel, StatNumber, StatHelpText, Icon, Flex, useColorModeValue } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Icon, Flex } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { IconType } from "react-icons";
 
@@ -51,24 +53,24 @@ const AnalyticsStatCard: React.FC<AnalyticsStatCardProps> = ({
       transition="all 0.3s"
     >
       <Flex justify="space-between" align="start">
-        <Stat>
-          <StatLabel fontSize="sm" fontWeight="medium" color="gray.500" mb={2}>
+        <Stat.Root>
+          <Stat.Label fontSize="sm" fontWeight="medium" color="gray.500" mb={2}>
             {label}
-          </StatLabel>
-          <StatNumber fontSize="3xl" fontWeight="bold" mb={1}>
+          </Stat.Label>
+          <Stat.ValueText fontSize="3xl" fontWeight="bold" mb={1}>
             {value}
-          </StatNumber>
+          </Stat.ValueText>
           {(helpText || trendValue) && (
-            <StatHelpText mb={0} fontSize="sm">
+            <Stat.HelpText mb={0} fontSize="sm">
               {trendValue && (
                 <Box as="span" color={getTrendColor()} fontWeight="semibold" mr={2}>
                   {trendValue}
                 </Box>
               )}
               {helpText}
-            </StatHelpText>
+            </Stat.HelpText>
           )}
-        </Stat>
+        </Stat.Root>
         {icon && (
           <Flex
             bg={iconBg}

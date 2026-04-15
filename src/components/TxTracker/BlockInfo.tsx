@@ -1,19 +1,8 @@
+import { Stat } from "@/components/ui/compat";
 import React, { useState, useEffect } from 'react';
-import {
-  Box,
-  Text,
-  SimpleGrid,
-  Icon,
-  useColorModeValue,
-  Tooltip,
-  Flex,
-  Stat,
-  StatLabel,
-  StatNumber,
-  StatHelpText,
-  HStack,
-  Skeleton
-} from '@chakra-ui/react';
+import { useColorModeValue } from "../ui/color-mode";
+import { Steps, Box, Text, SimpleGrid, Icon, Flex, HStack, Skeleton } from "@chakra-ui/react";
+import { Tooltip } from '@/components/ui/tooltip';
 import {
   FaEthereum,
   FaGasPump,
@@ -185,11 +174,10 @@ const BlockInfo = ({
           </Text>
         </Box>
       </Box>
-
       <Box px={{ base: 4, md: 6 }} py={{ base: 4, md: 6 }}>
         <SimpleGrid
           columns={{ base: 1, sm: 2, md: 3, xl: 4 }}
-          spacing={{ base: 4, md: 6 }}
+          gap={{ base: 4, md: 6 }}
         >
           {isLoading
             ? Array.from({ length: 8 }).map((_, i) => (
@@ -197,13 +185,14 @@ const BlockInfo = ({
                   key={i}
                   height="110px"
                   borderRadius="lg"
-                  startColor="purple.300"
-                  endColor="purple.600"
                   fadeDuration={0.5}
-                />
+                  css={{
+                    '--start-color': 'purple.300',
+                    '--end-color': 'purple.600'
+                  }} />
               ))
             : metrics.map((m) => (
-                <Stat
+                <Stat.Root
                   key={m.key}
                   bg={tileBg}
                   backdropFilter="blur(6px)"
@@ -219,7 +208,7 @@ const BlockInfo = ({
                   }}
                   transition="0.25s"
                 >
-                  <HStack spacing={3} mb={1} align="center">
+                  <HStack gap={3} mb={1} align="center">
                     <Flex
                       w="38px"
                       h="38px"
@@ -230,28 +219,28 @@ const BlockInfo = ({
                     >
                       <Icon as={m.icon} color="purple.400" />
                     </Flex>
-                    <StatLabel
+                    <Stat.Label
                       fontSize="sm"
                       color={subColor}
                       lineHeight="1.1"
                       maxW="130px"
                     >
                       {m.label}
-                    </StatLabel>
+                    </Stat.Label>
                   </HStack>
-                  <StatNumber
+                  <Stat.ValueText
                     fontSize="xl"
                     fontWeight="semibold"
                     color={textColor}
                   >
                     {m.value}
-                  </StatNumber>
+                  </Stat.ValueText>
                   {(m.usd !== undefined || m.help) && (
-                    <StatHelpText mt={1} fontSize="xs">
+                    <Stat.HelpText mt={1} fontSize="xs">
                       {m.usd !== undefined && (
                         <Tooltip
-                          hasArrow
-                          label="Approximate USD (spot)"
+                          showArrow
+                          content="Approximate USD (spot)"
                           bg="purple.600"
                           color="white"
                         >
@@ -262,9 +251,9 @@ const BlockInfo = ({
                       )}
                       {m.usd !== undefined && m.help && ' • '}
                       {m.help && <Box as="span">{m.help}</Box>}
-                    </StatHelpText>
+                    </Stat.HelpText>
                   )}
-                </Stat>
+                </Stat.Root>
               ))}
         </SimpleGrid>
       </Box>

@@ -1,20 +1,8 @@
+import { TableContainer, Thead, Tbody, Tr, Th, Td } from "@/components/ui/compat";
 import React, { useEffect, useState } from "react";
+import { useColorModeValue } from "./ui/color-mode";
 import dynamic from "next/dynamic";
-import {
-  Box,
-  Select,
-  Button,
-  Spinner,
-  Table,
-  Tbody,
-  Th,
-  Tr,
-  Td,
-  Thead,
-  TableContainer,
-  Text,
-  useColorModeValue,
-} from "@chakra-ui/react";
+import { Steps, Box, NativeSelect, Button, Spinner, Table, Text } from "@chakra-ui/react";
 import { useWindowSize } from "react-use";
 import DateTime from "@/components/DateTime";
 import { motion } from "framer-motion";
@@ -219,23 +207,25 @@ const StackedColumnChart: React.FC<AreaCProps> = ({ dataset, status }) => {
                  className="ease-in duration-200"
         >
           <Box className={"flex w-full gap-10"}>
-            <Select
-              variant="outline"
-              placeholder="Select Year"
-              value={selectedYear.toString()}
-              onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-              className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-blue-500"
-              size="md"
-            >
-              {years?.map((item) => (
-                <option value={`${item}`} key={item}>
-                  {item}
-                </option>
-              ))}
-            </Select>
+            <NativeSelect.Root>
+              <NativeSelect.Field
+                variant="outline"
+                placeholder="Select Year"
+                value={selectedYear.toString()}
+                onValueChange={(e) => setSelectedYear(parseInt(e.target.value))}
+                className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-blue-500"
+                size="md">
+                {years?.map((item) => (
+                  <option value={`${item}`} key={item}>
+                    {item}
+                  </option>
+                ))}
+              </NativeSelect.Field>
+              <NativeSelect.Indicator />
+            </NativeSelect.Root>
 
             <Button
-          colorScheme="blue"
+          colorPalette="blue"
           variant="outline"
           fontSize={{ base: "0.6rem", md: "md" }}
           fontWeight={"bold"}
@@ -258,26 +248,26 @@ const StackedColumnChart: React.FC<AreaCProps> = ({ dataset, status }) => {
           </Box>
           <br/>
 
-          <TableContainer>
-  <Table variant="simple" minW="50%" maxW="100%" layout="fixed">
-    <Thead>
-      <Tr>
-        <Th minW="50px" style={{ wordWrap: 'break-word' }}>Category</Th>
-        <Th minW="200px" style={{ wordWrap: 'break-word' }}>Numbers</Th>
-        <Th minW="200px" style={{ wordWrap: 'break-word' }}>Percentage</Th>
-      </Tr>
-    </Thead>
-    <Tbody>
+          <Table.ScrollArea>
+  <Table.Root variant="simple" minW="50%" maxW="100%" layout="fixed">
+    <Table.Header>
+      <Table.Row>
+        <Table.ColumnHeader minW="50px" style={{ wordWrap: 'break-word' }}>Category</Table.ColumnHeader>
+        <Table.ColumnHeader minW="200px" style={{ wordWrap: 'break-word' }}>Numbers</Table.ColumnHeader>
+        <Table.ColumnHeader minW="200px" style={{ wordWrap: 'break-word' }}>Percentage</Table.ColumnHeader>
+      </Table.Row>
+    </Table.Header>
+    <Table.Body>
       {rows?.map((row) => (
-        <Tr key={`${row.category}-${row.year}`}>
-          <Td style={{ wordWrap: 'break-word' }}>{`${row.category}`}</Td>
-          <Td style={{ wordWrap: 'break-word' }}>{row.value}</Td>
-          <Td style={{ wordWrap: 'break-word' }}>{((row.value / total) * 100).toFixed(2)}%</Td>
-        </Tr>
+        <Table.Row key={`${row.category}-${row.year}`}>
+          <Table.Cell style={{ wordWrap: 'break-word' }}>{`${row.category}`}</Table.Cell>
+          <Table.Cell style={{ wordWrap: 'break-word' }}>{row.value}</Table.Cell>
+          <Table.Cell style={{ wordWrap: 'break-word' }}>{((row.value / total) * 100).toFixed(2)}%</Table.Cell>
+        </Table.Row>
       ))}
-    </Tbody>
-  </Table>
-</TableContainer>
+    </Table.Body>
+  </Table.Root>
+</Table.ScrollArea>
 
           <Box className={"flex justify-center w-full text-center"}>
             <Text fontSize="xl" fontWeight="bold" color="#30A0E0" marginRight="6">

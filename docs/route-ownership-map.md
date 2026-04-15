@@ -1,0 +1,549 @@
+# Route Ownership Map (Pages -> App)
+
+This map is the migration guardrail for incremental routing work. A route can only be owned by one router at a time.
+
+## Batch 0 (Completed in this change)
+- `app` owns page route: `/test`
+- `app` owns API routes:
+  - `/api/test`
+  - `/api/auth/[...nextauth]`
+- `pages` ownership removed:
+  - `src/pages/test/index.tsx`
+  - `src/pages/api/test/index.tsx`
+  - `src/pages/api/auth/[...nextauth].ts`
+
+## Batch 1 (Completed in this change)
+- `app` owns page routes:
+  - `/feedbacks`
+  - `/feedback-dashboard`
+- `app` owns API routes:
+  - `/api/Feedback/getAllFeedback`
+  - `/api/Feedback/getEnhancedFeedback`
+  - `/api/test-discord-webhook`
+- `pages` ownership removed:
+  - `src/pages/feedbacks.tsx`
+  - `src/pages/feedback-dashboard.tsx`
+  - `src/pages/api/Feedback/getAllFeedback.tsx`
+  - `src/pages/api/Feedback/getEnhancedFeedback.tsx`
+  - `src/pages/api/test-discord-webhook.ts`
+
+## Batch 2 (Completed in this change)
+- `app` owns page routes:
+  - `/contributors`
+  - `/contributors/[username]`
+- `app` owns API routes:
+  - `/api/contributors/stats`
+  - `/api/contributors/list`
+  - `/api/contributors/analytics`
+  - `/api/contributors/recent-activities`
+  - `/api/contributors/export-detailed`
+  - `/api/contributors/timeline`
+  - `/api/contributors/lastSyncTime`
+- `pages` ownership removed:
+  - `src/pages/contributors/index.tsx`
+  - `src/pages/contributors/[username].tsx`
+  - `src/pages/api/contributors/stats.ts`
+  - `src/pages/api/contributors/list.ts`
+  - `src/pages/api/contributors/analytics.ts`
+  - `src/pages/api/contributors/recent-activities.ts`
+  - `src/pages/api/contributors/export-detailed.ts`
+  - `src/pages/api/contributors/timeline.ts`
+  - `src/pages/api/contributors/lastSyncTime.ts`
+
+## Batch 3 (Completed in this change)
+- `app` owns page routes:
+  - `/Analytics`
+  - `/EditorAnalytics`
+- `app` owns API routes:
+  - `/api/editorAnalytics`
+  - `/api/DownloadCounter`
+- `pages` ownership removed:
+  - `src/pages/Analytics/index.tsx`
+  - `src/pages/EditorAnalytics/index.tsx`
+  - `src/pages/api/editorAnalytics.ts`
+  - `src/pages/api/DownloadCounter/index.tsx`
+
+## Batch 4 (Completed in this change)
+- `app` owns API routes (Analytics charts/data):
+  - `/api/AnalyticsCharts/prs/[name]`
+  - `/api/AnalyticsCharts/issues/[name]`
+  - `/api/AnalyticsCharts/labels/[name]`
+  - `/api/AnalyticsCharts/labels/[name]/details`
+  - `/api/AnalyticsCharts/graph2/[name]`
+  - `/api/AnalyticsCharts/graph3/[name]`
+  - `/api/AnalyticsCharts/category-subcategory/[name]`
+  - `/api/AnalyticsCharts/category-subcategory/[name]/details`
+  - `/api/AnalyticsData/prs/[name]`
+  - `/api/AnalyticsData/prs/[name]/[number]`
+  - `/api/AnalyticsData/issues/[name]`
+  - `/api/AnalyticsData/issues/[name]/[number]`
+- `pages` ownership removed:
+  - `src/pages/api/AnalyticsCharts/prs/[name].tsx`
+  - `src/pages/api/AnalyticsCharts/issues/[name].tsx`
+  - `src/pages/api/AnalyticsCharts/labels/[name].tsx`
+  - `src/pages/api/AnalyticsCharts/labels/[name]/details.tsx`
+  - `src/pages/api/AnalyticsCharts/graph2/[name].ts`
+  - `src/pages/api/AnalyticsCharts/graph3/[name].ts`
+  - `src/pages/api/AnalyticsCharts/category-subcategory/[name].ts`
+  - `src/pages/api/AnalyticsCharts/category-subcategory/[name]/details.ts`
+  - `src/pages/api/AnalyticsData/prs/[name]/index.tsx`
+  - `src/pages/api/AnalyticsData/prs/[name]/[number].tsx`
+  - `src/pages/api/AnalyticsData/issues/[name]/index.tsx`
+  - `src/pages/api/AnalyticsData/issues/[name]/[number].tsx`
+
+## Batch 5 (Completed in this change)
+- `app` owns page routes:
+  - `/boards`
+  - `/eip_board`
+  - `/review`
+- `app` owns API routes:
+  - `/api/all_board`
+  - `/api/new/all`
+- `pages` ownership removed:
+  - `src/pages/boards/index.tsx`
+  - `src/pages/eip_board/index.tsx`
+  - `src/pages/review/index.tsx`
+  - `src/pages/api/all_board/index.tsx`
+  - `src/pages/api/new/all/index.tsx`
+
+## Batch 6 (Completed in this change)
+- `app` owns page routes:
+  - `/boardsnew`
+  - `/interface`
+  - `/status`
+- `app` owns API routes:
+  - `/api/FullBoards`
+  - `/api/new/graphsv2`
+- `pages` ownership removed:
+  - `src/pages/boardsnew/index.tsx`
+  - `src/pages/interface/index.tsx`
+  - `src/pages/status/index.tsx`
+  - `src/pages/api/FullBoards/index.tsx`
+  - `src/pages/api/new/graphsv2/index.tsx`
+
+## Batch 7 (Completed in this change)
+- `app` owns page routes:
+  - `/draft`
+  - `/final`
+  - `/last-call`
+  - `/living`
+  - `/withdrawn`
+  - `/stagnant`
+- `app` API dependency used by these routes:
+  - `/api/new/all` (migrated in Batch 5)
+- `pages` ownership removed:
+  - `src/pages/draft/index.tsx`
+  - `src/pages/final/index.tsx`
+  - `src/pages/last-call/index.tsx`
+  - `src/pages/living/index.tsx`
+  - `src/pages/withdrawn/index.tsx`
+  - `src/pages/stagnant/index.tsx`
+
+## Batch 8 (Completed in this change)
+- `app` owns page routes:
+  - `/core`
+  - `/erc`
+  - `/meta`
+  - `/networking`
+  - `/informational`
+- `app` API dependencies used by these routes:
+  - `/api/new/all` (migrated in Batch 5)
+  - `/api/new/graphsv2` (migrated in Batch 6)
+- `pages` ownership removed:
+  - `src/pages/core/index.tsx`
+  - `src/pages/erc/index.tsx`
+  - `src/pages/meta/index.tsx`
+  - `src/pages/networking/index.tsx`
+  - `src/pages/informational/index.tsx`
+
+## Batch 9 (Completed in this change)
+- `app` owns page routes:
+  - `/all`
+  - `/alltable`
+  - `/eiptable`
+  - `/erctable`
+  - `/riptable`
+- `app` API dependencies used by these routes:
+  - `/api/new/all` (migrated in Batch 5)
+  - `/api/DownloadCounter` (migrated in Batch 3)
+- `pages` ownership removed:
+  - `src/pages/all/index.tsx`
+  - `src/pages/alltable/index.tsx`
+  - `src/pages/eiptable/index.tsx`
+  - `src/pages/erctable/index.tsx`
+  - `src/pages/riptable/index.tsx`
+
+## Batch 10 (Completed in this change)
+- `app` owns page routes:
+  - `/FAQs/EIP`
+  - `/FAQs/ERC`
+  - `/FAQs/RIP`
+- `pages` ownership removed:
+  - `src/pages/FAQs/EIP/index.tsx`
+  - `src/pages/FAQs/ERC/index.tsx`
+  - `src/pages/FAQs/RIP/index.tsx`
+
+## Batch 11 (Completed in this change)
+- `app` owns page routes:
+  - `/privacy`
+  - `/About`
+  - `/resources`
+  - `/grants`
+  - `/trivia`
+- `pages` ownership removed:
+  - `src/pages/privacy/index.tsx`
+  - `src/pages/About/index.tsx`
+  - `src/pages/resources/index.tsx`
+  - `src/pages/grants/index.tsx`
+  - `src/pages/trivia/index.tsx`
+
+## Batch 12 (Completed in this change)
+- `app` owns page routes:
+  - `/newsletter`
+  - `/milestones2024`
+  - `/donate`
+- `pages` ownership removed:
+  - `src/pages/newsletter/index.tsx`
+  - `src/pages/milestones2024/index.tsx`
+  - `src/pages/donate.tsx`
+
+## Batch 13 (Completed in this change)
+- `app` owns page routes:
+  - `/SearchEip`
+  - `/SearchEipTitle`
+  - `/SearchPRSandISSUES`
+  - `/authors`
+- `pages` ownership removed:
+  - `src/pages/SearchEip/index.tsx`
+  - `src/pages/SearchEipTitle/index.tsx`
+  - `src/pages/SearchPRSandISSUES/index.tsx`
+  - `src/pages/authors/index.tsx`
+
+## Batch 14 (Completed in this change)
+- `app` owns page routes:
+  - `/eips/[eip-number]`
+  - `/ercs/[erc-number]`
+  - `/rips/[rip-number]`
+- `app` owns API routes:
+  - `/api/eips/[number]`
+  - `/api/ercs/[number]`
+  - `/api/rips/[num]`
+- `pages` ownership removed:
+  - `src/pages/eips/[eip-number]/index.tsx`
+  - `src/pages/ercs/[erc-number]/index.tsx`
+  - `src/pages/rips/[rip-number]/index.tsx`
+  - `src/pages/api/eips/[number].tsx`
+  - `src/pages/api/ercs/[number].tsx`
+  - `src/pages/api/rips/[num].tsx`
+
+## Batch 15 (Completed in this change)
+- `app` owns page routes:
+  - `/txtracker`
+- `app` owns API routes:
+  - `/api/txtracker/fetchData`
+  - `/api/txtracker/fetchData1`
+  - `/api/txtracker/fetchData2`
+  - `/api/txtracker/fetchData3`
+  - `/api/txtracker/fetchData4`
+- `pages` ownership removed:
+  - `src/pages/txtracker/index.tsx`
+  - `src/pages/api/txtracker/fetchData/index.tsx`
+  - `src/pages/api/txtracker/fetchData1/index.tsx`
+  - `src/pages/api/txtracker/fetchData2/index.tsx`
+  - `src/pages/api/txtracker/fetchData3/index.tsx`
+  - `src/pages/api/txtracker/fetchData4/index.tsx`
+
+## Batch 16 (Completed in this change)
+- `app` owns page routes:
+  - `/testv2`
+- `app` owns API routes:
+  - `/api/fetchData`
+  - `/api/fetchData1`
+  - `/api/fetchData2`
+  - `/api/fetchData3`
+  - `/api/fetchData4`
+- `pages` ownership removed:
+  - `src/pages/testv2/index.tsx`
+  - `src/pages/api/fetchData/index.tsx`
+  - `src/pages/api/fetchData1/index.tsx`
+  - `src/pages/api/fetchData2/index.tsx`
+  - `src/pages/api/fetchData3/index.tsx`
+  - `src/pages/api/fetchData4/index.tsx`
+
+## Batch 17 (Completed in this change)
+- `app` owns page routes:
+  - `/`
+  - `/home`
+- `app` owns API routes:
+  - `/api/count/views`
+  - `/api/count/viewCounter`
+  - `/api/count/like`
+  - `/api/count/dislike`
+- `pages` ownership removed:
+  - `src/pages/index.tsx`
+  - `src/pages/home/index.tsx`
+  - `src/pages/api/count/viewCounter.tsx`
+  - `src/pages/api/count/like.tsx`
+  - `src/pages/api/count/dislike.tsx`
+
+## Batch 18 (Completed in this change)
+- `app` owns page routes:
+  - `/profile`
+  - `/signin`
+  - `/signup`
+- `app` owns API routes:
+  - `/api/user/me`
+  - `/api/user/verify`
+  - `/api/user/update`
+  - `/api/GetUserStatus`
+  - `/api/stripe/cancel-subscription`
+- `pages` ownership removed:
+  - `src/pages/profile/index.tsx`
+  - `src/pages/signin/index.tsx`
+  - `src/pages/signup/index.tsx`
+  - `src/pages/signup/layout.tsx`
+  - `src/pages/api/user/me.ts`
+  - `src/pages/api/user/verify.ts`
+  - `src/pages/api/user/update.ts`
+  - `src/pages/api/GetUserStatus/index.tsx`
+  - `src/pages/api/stripe/cancel-subscription.ts`
+
+## Batch 19 (Completed in this change)
+- `app` owns page routes:
+  - `/admin`
+  - `/admin/login`
+  - `/admin/dashboard`
+  - `/admin/dashboard/new`
+  - `/admin/dashboard/edit/[id]`
+- `app` API dependencies used by these routes:
+  - `/api/admin/auth/session`
+  - `/api/admin/auth/login`
+  - `/api/admin/auth/logout`
+  - `/api/admin/blogs`
+  - `/api/admin/blogs/[id]`
+  - `/api/admin/blogs/static`
+  - `/api/admin/upload`
+- `pages` ownership removed:
+  - `src/pages/admin/index.tsx`
+  - `src/pages/admin/login.tsx`
+  - `src/pages/admin/dashboard.tsx`
+  - `src/pages/admin/dashboard/new.tsx`
+  - `src/pages/admin/dashboard/edit/[id].tsx`
+
+## Batch 20 (Completed in this change)
+- `app` owns page routes:
+  - `/eip`
+  - `/rip`
+  - `/erc_board`
+  - `/dashboard`
+- `app` API dependencies used by these routes:
+  - `/api/new/all`
+  - `/api/new/graphsv2`
+  - `/api/all_board`
+- `pages` ownership removed:
+  - `src/pages/eip/index.tsx`
+  - `src/pages/rip/index.tsx`
+  - `src/pages/erc_board/index.tsx`
+  - `src/pages/dashboard/index.tsx`
+
+## Batch 21 (Completed in this change)
+- `app` owns all API routes under:
+  - `/api/**`
+- Migration strategy for this batch:
+  - Legacy Pages API handlers moved to `src/legacy/pages-api/**`
+  - App Router route handlers created at `src/app/api/**/route.ts`
+  - Route handlers use `src/lib/legacyApiAdapter.ts` as compatibility boundary
+- `pages` ownership removed:
+  - `src/pages/api/**` (entire directory removed)
+
+## Batch 22 (Completed in this change)
+- `app` now natively owns API routes (logic moved out of legacy adapter):
+  - `/api/allercs`
+  - `/api/allissues`
+  - `/api/allprs`
+  - `/api/allcontributors`
+- `legacy` ownership removed:
+  - `src/legacy/pages-api/allercs/index.tsx`
+  - `src/legacy/pages-api/allissues/index.tsx`
+  - `src/legacy/pages-api/allprs/index.tsx`
+  - `src/legacy/pages-api/allcontributors/index.tsx`
+
+## Batch 23 (Completed in this change)
+- `app` now natively owns API routes (logic moved out of legacy adapter):
+  - `/api/health`
+  - `/api/hello`
+  - `/api/stats`
+  - `/api/lastUpdatedTime`
+- `legacy` ownership removed:
+  - `src/legacy/pages-api/health/index.tsx`
+  - `src/legacy/pages-api/hello.tsx`
+  - `src/legacy/pages-api/stats/index.ts`
+  - `src/legacy/pages-api/lastUpdatedTime/index.tsx`
+
+## Batch 24 (Completed in this change)
+- `app` now natively owns API routes (logic moved out of legacy adapter):
+  - `/api/subscribe`
+  - `/api/unsubscribe`
+  - `/api/subscriptions`
+  - `/api/viewCount`
+  - `/api/insight-stats`
+- `legacy` ownership removed:
+  - `src/legacy/pages-api/subscribe.ts`
+  - `src/legacy/pages-api/unsubscribe.ts`
+  - `src/legacy/pages-api/subscriptions.ts`
+  - `src/legacy/pages-api/viewCount/index.tsx`
+  - `src/legacy/pages-api/insight-stats.ts`
+
+## Batch 25 (Completed in this change)
+- `app` now natively owns API routes (logic moved out of legacy adapter):
+  - `/api/pulse/daily`
+  - `/api/pulse/last-week`
+  - `/api/pulse/last-month`
+  - `/api/queue`
+  - `/api/repository-stats`
+  - `/api/pr/[num]`
+  - `/api/merge/[number]`
+  - `/api/time-to-editor-review/[pr]`
+  - `/api/status/[year]/[month]`
+  - `/api/asc/[year]/[month]`
+- `legacy` ownership removed:
+  - `src/legacy/pages-api/pulse/daily.tsx`
+  - `src/legacy/pages-api/pulse/last-week.tsx`
+  - `src/legacy/pages-api/pulse/last-month.tsx`
+  - `src/legacy/pages-api/queue/index.tsx`
+  - `src/legacy/pages-api/repository-stats.tsx`
+  - `src/legacy/pages-api/pr/[num].tsx`
+  - `src/legacy/pages-api/merge/[number].tsx`
+  - `src/legacy/pages-api/time-to-editor-review/[pr].tsx`
+  - `src/legacy/pages-api/status/[year]/[month].tsx`
+  - `src/legacy/pages-api/asc/[year]/[month].tsx`
+
+## Batch 26 (Completed in this change)
+- `app` now natively owns API routes (logic moved out of legacy adapter):
+  - `/api/eipopenprs`
+  - `/api/ercopenprs`
+  - `/api/eipsissuedetails`
+  - `/api/ercsissuedetails`
+  - `/api/ripsissuedetails`
+  - `/api/eipsprdetails`
+  - `/api/ercsprdetails`
+  - `/api/ripsprdetails`
+  - `/api/eipsprdetails2`
+  - `/api/ercsprdetails2`
+- `legacy` ownership removed:
+  - `src/legacy/pages-api/eipopenprs/index.ts`
+  - `src/legacy/pages-api/ercopenprs/index.ts`
+  - `src/legacy/pages-api/eipsissuedetails/index.tsx`
+  - `src/legacy/pages-api/ercsissuedetails/index.tsx`
+  - `src/legacy/pages-api/ripsissuedetails/index.tsx`
+  - `src/legacy/pages-api/eipsprdetails/index.tsx`
+  - `src/legacy/pages-api/ercsprdetails/index.tsx`
+  - `src/legacy/pages-api/ripsprdetails/index.tsx`
+  - `src/legacy/pages-api/eipsprdetails2/index.tsx`
+  - `src/legacy/pages-api/ercsprdetails2/index.tsx`
+
+## Batch 27 (Completed in this change)
+- `app` now natively owns API routes (logic moved out of legacy adapter):
+  - `/api/activeeditorsprsall`
+  - `/api/activeeditorsprseips`
+  - `/api/activeeditorsprsercs`
+  - `/api/activeeditorsprsrips`
+  - `/api/editorsActivity`
+  - `/api/editorsprseips`
+  - `/api/editorsprsercs`
+  - `/api/editorsprsrips`
+  - `/api/ercpr-stats`
+  - `/api/ercseditorsactivity`
+  - `/api/ercsrecentactivity`
+  - `/api/rippr-stats`
+  - `/api/eips-status-count`
+  - `/api/graphs`
+  - `/api/eipslabelchart/[name]`
+- `legacy` ownership removed:
+  - `src/legacy/pages-api/activeeditorsprsall/index.tsx`
+  - `src/legacy/pages-api/activeeditorsprseips/index.tsx`
+  - `src/legacy/pages-api/activeeditorsprsercs/index.tsx`
+  - `src/legacy/pages-api/activeeditorsprsrips/index.tsx`
+  - `src/legacy/pages-api/editorsActivity/index.tsx`
+  - `src/legacy/pages-api/editorsprseips/index.tsx`
+  - `src/legacy/pages-api/editorsprsercs/index.tsx`
+  - `src/legacy/pages-api/editorsprsrips/index.tsx`
+  - `src/legacy/pages-api/ercpr-stats/index.tsx`
+  - `src/legacy/pages-api/ercseditorsactivity/index.tsx`
+  - `src/legacy/pages-api/ercsrecentactivity/index.tsx`
+  - `src/legacy/pages-api/rippr-stats/index.tsx`
+  - `src/legacy/pages-api/eips-status-count/index.tsx`
+  - `src/legacy/pages-api/graphs/index.tsx`
+  - `src/legacy/pages-api/eipslabelchart/[name].tsx`
+
+## Batch 28 (Completed in this change)
+- `app` now natively owns API routes (logic moved out of legacy adapter):
+  - `/api/AnalyticsInfo/[name]`
+  - `/api/Analyticsissueinfo/[name]`
+  - `/api/EIPinfo`
+  - `/api/ERCinfo`
+  - `/api/RIPInfo`
+  - `/api/ValidateEip`
+  - `/api/ReviewersCharts/chart/[name]`
+  - `/api/ReviewersCharts/data/[name]`
+  - `/api/ReviewersCharts/data/[name]/[key]`
+  - `/api/get-issue-details/[Type]/[number]`
+  - `/api/get-pr-details/[Type]/[number]`
+  - `/api/Feedback/feedback`
+  - `/api/Feedback/stats`
+  - `/api/Feedback/enhanced-feedback`
+  - `/api/ai-summary`
+- `legacy` ownership removed:
+  - `src/legacy/pages-api/AnalyticsInfo/[name].tsx`
+  - `src/legacy/pages-api/Analyticsissueinfo/[name].tsx`
+  - `src/legacy/pages-api/EIPinfo.tsx`
+  - `src/legacy/pages-api/ERCinfo.tsx`
+  - `src/legacy/pages-api/RIPInfo.tsx`
+  - `src/legacy/pages-api/ValidateEip/index.ts`
+  - `src/legacy/pages-api/ReviewersCharts/chart/[name].tsx`
+  - `src/legacy/pages-api/ReviewersCharts/data/[name]/index.tsx`
+  - `src/legacy/pages-api/ReviewersCharts/data/[name]/[key].tsx`
+  - `src/legacy/pages-api/get-issue-details/[Type]/[number].tsx`
+  - `src/legacy/pages-api/get-pr-details/[Type]/[number].tsx`
+  - `src/legacy/pages-api/Feedback/feedback.tsx`
+  - `src/legacy/pages-api/Feedback/stats.tsx`
+  - `src/legacy/pages-api/Feedback/enhanced-feedback.tsx`
+  - `src/legacy/pages-api/ai-summary.ts`
+
+## Batch 29 (Completed in this change)
+- `app` now natively owns API routes (logic moved out of legacy adapter):
+  - `/api/auth/session/update`
+  - `/api/auth/force-update/update`
+  - `/api/sync/status`
+  - `/api/sync/trigger`
+  - `/api/cron/sync`
+  - `/api/cron/sync-contributors`
+  - `/api/boards`
+  - `/api/boards/[spec]`
+  - `/api/comments/[page]`
+  - `/api/comments/[page]/[CommentId]/reply`
+  - `/api/contributors/search`
+  - `/api/contributors/top`
+  - `/api/contributors/sync`
+  - `/api/contributors/sync-status`
+  - `/api/contributors/[username]`
+- `legacy` ownership removed:
+  - `src/legacy/pages-api/auth/session/update.ts`
+  - `src/legacy/pages-api/auth/force-update/update.ts`
+  - `src/legacy/pages-api/sync/status.ts`
+  - `src/legacy/pages-api/sync/trigger.ts`
+  - `src/legacy/pages-api/cron/sync.ts`
+  - `src/legacy/pages-api/cron/sync-contributors.ts`
+  - `src/legacy/pages-api/boards/index.ts`
+  - `src/legacy/pages-api/boards/[spec]/index.ts`
+  - `src/legacy/pages-api/comments/[page]/index.tsx`
+  - `src/legacy/pages-api/comments/[page]/[CommentId]/reply.tsx`
+  - `src/legacy/pages-api/contributors/search.ts`
+  - `src/legacy/pages-api/contributors/top.ts`
+  - `src/legacy/pages-api/contributors/sync.ts`
+  - `src/legacy/pages-api/contributors/sync-status.ts`
+  - `src/legacy/pages-api/contributors/[username]/index.ts`
+
+## Guardrail
+- Run `npm run check:route-collisions` before merge.
+- A failing check means the same pathname exists in both routers and must be resolved before shipping.

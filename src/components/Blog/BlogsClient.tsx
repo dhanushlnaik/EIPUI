@@ -1,6 +1,7 @@
 "use client";
-
-import { Box, Heading, Text, SimpleGrid, Flex, Icon, Badge, Avatar, Container, VStack, HStack, useColorModeValue } from '@chakra-ui/react';
+;
+import { Steps, Box, Heading, Text, SimpleGrid, Flex, Icon, Badge, Avatar, Container, VStack, HStack } from "@chakra-ui/react";
+import { useColorModeValue } from "../ui/color-mode";
 import Link from 'next/link';
 import { Calendar, Clock, User, ArrowRight, Tag, BookOpen, TrendingUp, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -67,8 +68,8 @@ export default function BlogsClient({ posts }: { posts: Post[] }) {
             <Box w="100%" h="100%" bgImage="repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.1) 10px, rgba(255,255,255,0.1) 20px)" />
           </Box>
           <Container maxW="7xl" py={{ base: 8, md: 10 }} position="relative" zIndex={1}>
-            <VStack spacing={4} textAlign="center">
-              <Badge colorScheme="whiteAlpha" bg="whiteAlpha.200" px={3} py={1} borderRadius="full" backdropFilter="blur(5px)" border="1px solid" borderColor="whiteAlpha.300" display="flex" alignItems="center" gap={2} w="fit-content">
+            <VStack gap={4} textAlign="center">
+              <Badge colorPalette="whiteAlpha" bg="whiteAlpha.200" px={3} py={1} borderRadius="full" backdropFilter="blur(5px)" border="1px solid" borderColor="whiteAlpha.300" display="flex" alignItems="center" gap={2} w="fit-content">
                 <Icon as={BookOpen} w={3.5} h={3.5} color="white" /> <Text fontSize="xs" fontWeight="bold" color="white" textTransform="uppercase" letterSpacing="widest">Knowledge Hub</Text>
               </Badge>
               <Heading as="h1" fontSize={{ base: '3xl', md: '5xl' }} fontWeight="black" color="white" letterSpacing="tight">
@@ -83,7 +84,7 @@ export default function BlogsClient({ posts }: { posts: Post[] }) {
 
         <Container maxW="7xl" pt={8} px={{ base: 4, md: 6, lg: 8 }}>
           {/* Stats Bar */}
-          <SimpleGrid columns={{ base: 2, md: 3 }} spacing={4} mb={10}>
+          <SimpleGrid columns={{ base: 2, md: 3 }} gap={4} mb={10}>
             {[
               { icon: BookOpen, label: 'Articles', value: posts.length, color: 'blue' },
               { icon: User, label: 'Contributors', value: new Set(posts.map(p => p.frontmatter.author)).size, color: 'green' },
@@ -120,19 +121,19 @@ export default function BlogsClient({ posts }: { posts: Post[] }) {
                       </Badge>
                     </Box>
                     <Flex direction="column" justify="center" p={{ base: 6, lg: 8 }} w={{ base: '100%', lg: '50%' }}>
-                      <HStack spacing={4} mb={3} fontSize="xs" color={mutedColor} fontWeight="medium" textTransform="uppercase" letterSpacing="wide">
+                      <HStack gap={4} mb={3} fontSize="xs" color={mutedColor} fontWeight="medium" textTransform="uppercase" letterSpacing="wide">
                         <Flex align="center" gap={1.5}><Icon as={Calendar} w={3.5} h={3.5} /> {safeDate(posts[0].frontmatter.date)}</Flex>
                         <Flex align="center" gap={1.5}><Icon as={Clock} w={3.5} h={3.5} /> {Math.ceil(posts[0].content.split(' ').length / 200)} min read</Flex>
                       </HStack>
                       <Heading as="h2" fontSize={{ base: 'xl', md: '3xl' }} fontWeight="bold" color={textColor} mb={3} lineHeight="shorter" transition="color 0.2s" _groupHover={{ color: 'blue.500' }}>
                         {posts[0].frontmatter.title}
                       </Heading>
-                      <Text color={mutedColor} mb={6} fontSize="sm" noOfLines={3} lineHeight="relaxed">
+                      <Text color={mutedColor} mb={6} fontSize="sm" lineClamp={3} lineHeight="relaxed">
                         {posts[0].content.substring(0, 200)}...
                       </Text>
                       <Flex align="center" justify="space-between" mt="auto">
                         <Flex align="center" gap={3}>
-                          <Avatar src={(posts[0].frontmatter as any).avatar} name={posts[0].frontmatter.author} size="sm" border="2px solid" borderColor="blue.100" />
+                          <Avatar.Root size="sm" border="2px solid" borderColor="blue.100"><Avatar.Fallback name={posts[0].frontmatter.author} /><Avatar.Image src={(posts[0].frontmatter as any).avatar} /></Avatar.Root>
                           <Box>
                             <Text fontSize="sm" fontWeight="semibold" color={textColor} lineHeight="1">{posts[0].frontmatter.author}</Text>
                             {(posts[0].frontmatter as any).role && <Text fontSize="xs" color={mutedColor} mt={0.5}>{(posts[0].frontmatter as any).role}</Text>}
@@ -154,7 +155,7 @@ export default function BlogsClient({ posts }: { posts: Post[] }) {
                 <Box w={1.5} h={6} bg="blue.500" borderRadius="full" />
                 <Heading as="h3" size="lg" color={textColor} fontWeight="bold">Latest Articles</Heading>
               </Flex>
-              <SimpleGrid columns={{ base: 1, sm: 2, lg: 3 }} spacing={6}>
+              <SimpleGrid columns={{ base: 1, sm: 2, lg: 3 }} gap={6}>
                 {posts.slice(1).map((post) => (
                   <MotionBox key={post.slug} variants={itemVariants} h="100%">
                     <Link href={`/Blogs/${post.slug}`} style={{ display: 'block', height: '100%' }}>
@@ -174,19 +175,19 @@ export default function BlogsClient({ posts }: { posts: Post[] }) {
                           )}
                         </Box>
                         <Flex direction="column" p={5} flex="1">
-                          <HStack spacing={3} mb={3} fontSize="xs" color={mutedColor} fontWeight="medium">
+                          <HStack gap={3} mb={3} fontSize="xs" color={mutedColor} fontWeight="medium">
                             <Flex align="center" gap={1}><Icon as={Calendar} w={3.5} h={3.5} /> {safeDate(post.frontmatter.date)}</Flex>
                             <Flex align="center" gap={1}><Icon as={Clock} w={3.5} h={3.5} /> {Math.ceil(post.content.split(' ').length / 200)} min</Flex>
                           </HStack>
-                          <Heading as="h3" fontSize="lg" fontWeight="bold" color={textColor} mb={2} lineHeight="tight" noOfLines={2} transition="color 0.2s" _groupHover={{ color: 'blue.500' }}>
+                          <Heading as="h3" fontSize="lg" fontWeight="bold" color={textColor} mb={2} lineHeight="tight" lineClamp={2} transition="color 0.2s" _groupHover={{ color: 'blue.500' }}>
                             {post.frontmatter.title}
                           </Heading>
-                          <Text color={mutedColor} fontSize="sm" mb={4} noOfLines={3} flex="1">
+                          <Text color={mutedColor} fontSize="sm" mb={4} lineClamp={3} flex="1">
                             {post.content.substring(0, 150)}...
                           </Text>
                           <Flex align="center" pt={4} borderTop="1px" borderColor={cardBorder} justify="space-between">
                             <Flex align="center" gap={2}>
-                              <Avatar src={(post.frontmatter as any).avatar} name={post.frontmatter.author} size="xs" />
+                              <Avatar.Root size="xs"><Avatar.Fallback name={post.frontmatter.author} /><Avatar.Image src={(post.frontmatter as any).avatar} /></Avatar.Root>
                               <Text fontSize="xs" fontWeight="semibold" color={textColor} isTruncated maxW="120px">
                                 {post.frontmatter.author}
                               </Text>

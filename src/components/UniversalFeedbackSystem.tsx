@@ -1,22 +1,10 @@
+import { useToast } from "@/components/ui/use-toast";
 import React, { useState, useEffect } from "react";
-import { 
-  Box, 
-  useToast, 
-  Icon,
-  Text,
-  Button,
-  HStack,
-  VStack,
-  useColorModeValue,
-  Fade,
-  IconButton,
-  Textarea,
-  ScaleFade,
-  Slide,
-  Tooltip
-} from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Icon, Text, Button, HStack, VStack, IconButton, Textarea, Presence } from "@chakra-ui/react";
+import { Tooltip } from '@/components/ui/tooltip';
 import { FiThumbsUp, FiThumbsDown, FiMeh, FiX, FiMessageSquare } from "react-icons/fi";
-import { useRouter } from "next/router";
+import { usePathname } from "next/navigation";
 
 // Combined thumbs up/down icon component
 const CombinedThumbsIcon = ({ size = "20px" }: { size?: string }) => (
@@ -52,7 +40,7 @@ const UniversalFeedbackSystem = () => {
   const [showTriggerButton, setShowTriggerButton] = useState(true); // Always show trigger button
   
   const toast = useToast();
-  const router = useRouter();
+  const pathname = usePathname();
 
   // Color mode values
   const bgColor = useColorModeValue("white", "gray.800");
@@ -118,7 +106,7 @@ const UniversalFeedbackSystem = () => {
         body: JSON.stringify({ 
           rating,
           comment: commentText.trim() || null,
-          page: router.pathname,
+          page: pathname,
           timestamp: new Date().toISOString()
         }),
       });
@@ -176,14 +164,30 @@ const UniversalFeedbackSystem = () => {
     <>
       {/* Main Feedback Widget */}
       {isVisible && (
-        <Slide direction="bottom" in={isVisible} style={{ zIndex: 1500 }}>
+        <Presence
+          present={isVisible}
+          style={{ zIndex: 1500 }}
+          position='fixed'
+          bottom='0'
+          insetX='0'
+          animationName={{
+            _open: 'slide-from-bottom-full',
+            _closed: 'slide-to-bottom-full'
+          }}
+          animationDuration='moderate'>
           <Box
             position="fixed"
             bottom="20px"
             left="50%"
             transform="translateX(-50%)"
           >
-        <ScaleFade initialScale={0.8} in={isExpanded}>
+        <Presence
+          present={isExpanded}
+          animationStyle={{
+            _open: 'scale-fade-in',
+            _closed: 'scale-fade-out'
+          }}
+          animationDuration='moderate'>
           <Box
             bg={bgColor}
             border={`1px solid ${borderColor}`}
@@ -208,8 +212,8 @@ const UniversalFeedbackSystem = () => {
             }}
           >
             {/* Show rating options with comment box always visible */}
-            <VStack spacing={4}>
-              <HStack spacing="12px" align="center" w="100%">
+            <VStack gap={4}>
+              <HStack gap="12px" align="center" w="100%">
                 <Box flex="1">
                   <Text 
                     fontSize={{ base: "md", md: "lg" }} 
@@ -226,7 +230,6 @@ const UniversalFeedbackSystem = () => {
                 
                 <IconButton
                   aria-label="Dismiss feedback"
-                  icon={<Icon as={FiX} />}
                   size="sm"
                   variant="ghost"
                   onClick={handleDismiss}
@@ -235,17 +238,15 @@ const UniversalFeedbackSystem = () => {
                   _hover={{ 
                     color: useColorModeValue("gray.700", "gray.300"),
                     bg: useColorModeValue("gray.100", "gray.700")
-                  }}
-                />
+                  }}><Icon as={FiX} /></IconButton>
               </HStack>
               
-              <HStack spacing={3} w="100%">
+              <HStack gap={3} w="100%">
                 <Button
                   size="md"
                   variant={selectedRating === 'positive' ? "solid" : "outline"}
-                  leftIcon={<Icon as={FiThumbsUp} boxSize={4} />}
-                  colorScheme="green"
-                  isLoading={isSubmitting && selectedRating === 'positive'}
+                  colorPalette="green"
+                  loading={isSubmitting && selectedRating === 'positive'}
                   onClick={() => handleRating('positive')}
                   flex={1}
                   borderRadius="xl"
@@ -259,17 +260,14 @@ const UniversalFeedbackSystem = () => {
                     transform: "translateY(-2px)",
                     boxShadow: "0 4px 12px rgba(72, 187, 120, 0.3)"
                   }}
-                  transition="all 0.2s"
-                >
-                  Good
-                </Button>
+                  transition="all 0.2s"><Icon as={FiThumbsUp} boxSize={4} />Good
+                                  </Button>
                 
                 <Button
                   size="md"
                   variant={selectedRating === 'neutral' ? "solid" : "outline"}
-                  leftIcon={<Icon as={FiMeh} boxSize={4} />}
-                  colorScheme="orange"
-                  isLoading={isSubmitting && selectedRating === 'neutral'}
+                  colorPalette="orange"
+                  loading={isSubmitting && selectedRating === 'neutral'}
                   onClick={() => handleRating('neutral')}
                   flex={1}
                   borderRadius="xl"
@@ -283,17 +281,14 @@ const UniversalFeedbackSystem = () => {
                     transform: "translateY(-2px)",
                     boxShadow: "0 4px 12px rgba(237, 137, 54, 0.3)"
                   }}
-                  transition="all 0.2s"
-                >
-                  Okay
-                </Button>
+                  transition="all 0.2s"><Icon as={FiMeh} boxSize={4} />Okay
+                                  </Button>
                 
                 <Button
                   size="md"
                   variant={selectedRating === 'negative' ? "solid" : "outline"}
-                  leftIcon={<Icon as={FiThumbsDown} boxSize={4} />}
-                  colorScheme="red"
-                  isLoading={isSubmitting && selectedRating === 'negative'}
+                  colorPalette="red"
+                  loading={isSubmitting && selectedRating === 'negative'}
                   onClick={() => handleRating('negative')}
                   flex={1}
                   borderRadius="xl"
@@ -307,14 +302,12 @@ const UniversalFeedbackSystem = () => {
                     transform: "translateY(-2px)",
                     boxShadow: "0 4px 12px rgba(245, 101, 101, 0.3)"
                   }}
-                  transition="all 0.2s"
-                >
-                  Poor
-                </Button>
+                  transition="all 0.2s"><Icon as={FiThumbsDown} boxSize={4} />Poor
+                                  </Button>
               </HStack>
 
               {/* Comment box always visible */}
-              <VStack spacing={3} w="100%">
+              <VStack gap={3} w="100%">
                 <Textarea
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
@@ -341,10 +334,10 @@ const UniversalFeedbackSystem = () => {
                     bgGradient="linear(135deg, #30A0E0, #4FD1FF)"
                     color="white"
                     onClick={handleCommentSubmit}
-                    isLoading={isSubmitting}
+                    loading={isSubmitting}
                     loadingText="Sending..."
                     w="100%"
-                    isDisabled={!selectedRating}
+                    disabled={!selectedRating}
                     borderRadius="xl"
                     fontWeight="600"
                     boxShadow="0 4px 12px rgba(48, 160, 224, 0.3)"
@@ -364,14 +357,19 @@ const UniversalFeedbackSystem = () => {
               </VStack>
             </VStack>
         </Box>
-      </ScaleFade>
+        </Presence>
     </Box>
-  </Slide>
+        </Presence>
       )}
-      
       {/* Small Trigger Button - appears after feedback is dismissed */}
       {showTriggerButton && (
-        <Fade in={showTriggerButton}>
+        <Presence
+          present={showTriggerButton}
+          animationName={{
+            _open: 'fade-in',
+            _closed: 'fade-out'
+          }}
+          animationDuration='moderate'>
           <Box
             position="fixed"
             right={{ base: "16px", md: "20px" }}
@@ -379,21 +377,22 @@ const UniversalFeedbackSystem = () => {
             zIndex="1400"
           >
             <Tooltip 
-              label="Feedback" 
-              placement="left" 
-              hasArrow
+              content="Feedback" 
+              showArrow 
               bg={useColorModeValue("gray.700", "gray.300")}
               color={useColorModeValue("white", "gray.800")}
               fontSize="xs"
               px={2}
               py={1}
               borderRadius="md"
+              positioning={{
+                placement: "left"
+              }}
             >
               <IconButton
                 aria-label="Give feedback"
-                icon={<Icon as={FiMessageSquare} boxSize={4} />}
                 size="sm"
-                colorScheme="blue"
+                colorPalette="blue"
                 variant="solid"
                 borderRadius="full"
                 bgGradient="linear(135deg, #30A0E0, #4FD1FF)"
@@ -410,11 +409,10 @@ const UniversalFeedbackSystem = () => {
                   transform: "scale(0.95)" 
                 }}
                 transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
-                color="white"
-              />
+                color="white"><Icon as={FiMessageSquare} boxSize={4} /></IconButton>
             </Tooltip>
           </Box>
-        </Fade>
+        </Presence>
       )}
     </>
   );

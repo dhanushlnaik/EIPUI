@@ -1,7 +1,8 @@
-'use client';
-
-import { Box, Heading, Text, Button, VStack, Icon, useColorModeValue } from '@chakra-ui/react';
-import { WarningIcon, RepeatIcon } from '@chakra-ui/icons';
+"use client";
+;
+import { Steps, Box, Heading, Text, Button, VStack, Icon } from "@chakra-ui/react";
+import { useColorModeValue } from "../components/ui/color-mode";
+import { LuAlertTriangle, LuRepeat } from 'react-icons/lu';
 
 export default function Error502() {
   const cardBg = useColorModeValue('white', 'gray.900');
@@ -40,8 +41,8 @@ export default function Error502() {
         border="1px solid"
         borderColor={useColorModeValue('gray.200', 'gray.700')}
       >
-        <VStack spacing={8}>
-          <Icon as={WarningIcon} boxSize={16} color={accent} />
+        <VStack gap={8}>
+          <Icon as={LuAlertTriangle} boxSize={16} color={accent} />
           <Heading size="2xl" color={accent}>
             502 Bad Gateway
           </Heading>
@@ -53,15 +54,12 @@ export default function Error502() {
             If the issue persists, contact support or try refreshing the page.
           </Text>
           <Button
-            leftIcon={<RepeatIcon />}
-            colorScheme="blue"
+            colorPalette="blue"
             variant="solid"
             size="lg"
             borderRadius="md"
-            onClick={handleReload}
-          >
-            Retry
-          </Button>
+            onClick={handleReload}><LuRepeat />Retry
+                      </Button>
         </VStack>
       </Box>
     </Box>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Box, Grid, Text, useColorModeValue, Button, Flex} from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Grid, Text, Button, Flex } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import StatusColumnChart from "@/components/StatusColumnChart";
 import AreaC from "@/components/AreaStatus";
@@ -179,26 +180,26 @@ const RIPStatusGraph = () => {
 
   return (
     <>
-       <Box className="h-full" bg={bg} paddingY={4} paddingX={6} borderRadius={"0.55rem"}>
-      <Flex justifyContent="space-between" alignItems="center" marginBottom="1rem">
-        <NextLink href={"/riptable"}>
-          <Text fontSize="3xl" fontWeight="bold" color="#30A0E0">
-            RIP (Progress Over the Years) - [{data?.length}]
-          </Text>
-        </NextLink>
-        <Button
-          colorScheme="blue"
-          fontSize={{ base: "0.6rem", md: "md" }}
-          onClick={() => handleDownloadCSV(graphData)}
-        >
-          Download CSV
-        </Button>
-      </Flex>
-      <Area {...config} />
-      <Box className={"w-full"}>
-          <DateTime />
-        </Box>
-    </Box>
+      <Box className="h-full" bg={bg} paddingY={4} paddingX={6} borderRadius={"0.55rem"}>
+     <Flex justifyContent="space-between" alignItems="center" marginBottom="1rem">
+       <NextLink href={"/riptable"}>
+         <Text fontSize="3xl" fontWeight="bold" color="#30A0E0">
+           RIP (Progress Over the Years) - [{data?.length}]
+         </Text>
+       </NextLink>
+       <Button
+         colorPalette="blue"
+         fontSize={{ base: "0.6rem", md: "md" }}
+         onClick={() => handleDownloadCSV(graphData)}
+       >
+         Download CSV
+       </Button>
+     </Flex>
+     <Area {...config} />
+     <Box className={"w-full"}>
+         <DateTime />
+       </Box>
+   </Box>
     </>
   );
 };

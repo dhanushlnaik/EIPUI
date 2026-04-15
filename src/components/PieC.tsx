@@ -1,17 +1,8 @@
 import React from "react";
+import { useColorModeValue } from "./ui/color-mode";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Pie } from "react-chartjs-2";
-import {
-  Box,
-  Card,
-  CardFooter,
-  CardHeader,
-  Stack,
-  StackDivider,
-  Text,
-  Divider,
-  useColorModeValue,
-} from "@chakra-ui/react";
+import { Steps, Box, Card, Stack, Text, Separator } from "@chakra-ui/react";
 import FlexBetween from "./FlexBetween";
 import { motion } from "framer-motion";
 import DateTime from "@/components/DateTime";
@@ -158,7 +149,7 @@ export const PieC: React.FC<CustomBoxProps> = ({ data, status }) => {
             0
           )}
         </Text>
-        <Divider mt="1rem" mb="1rem" />
+        <Separator mt="1rem" mb="1rem" />
       </Box>
     );
   }
@@ -198,8 +189,7 @@ export const PieC: React.FC<CustomBoxProps> = ({ data, status }) => {
           0
         )}
       </Text>
-      <Divider mt="1rem" mb="1rem" />
-
+      <Separator mt="1rem" mb="1rem" />
       <Pie
         data={dataa}
         options={{
@@ -215,7 +205,6 @@ export const PieC: React.FC<CustomBoxProps> = ({ data, status }) => {
           },
         }}
       />
-
       <Box className={"w-full"}>
         <DateTime />
       </Box>

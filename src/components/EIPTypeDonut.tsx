@@ -1,3 +1,4 @@
+"use client";
 // import React, { useEffect, useState } from "react";
 // import { Box, Icon, useColorModeValue, Text, Spinner, Button, Flex, Heading } from "@chakra-ui/react";
 // import DateTime from "@/components/DateTime";
@@ -302,15 +303,7 @@
 // export default EIPStatusDonut;
 
 // import React, { useEffect, useState } from "react";
-// import {
-//   Box,
-//   Button,
-//   Flex,
-//   Heading,
-//   Spinner,
-//   Text,
-//   useColorModeValue,
-// } from "@chakra-ui/react";
+// import { //   Box, //   Button, //   Flex, //   Heading, //   Spinner, //   Text, //   useColorModeValue, // } from "@chakra-ui/react";
 // import dynamic from "next/dynamic";
 // import axios from "axios";
 // import NextLink from "next/link";
@@ -564,16 +557,10 @@
 
 // export default EIPStatusDonut;
 
-"use client";
+;
 import React, { useEffect, useState, useMemo } from "react";
-import {
-  Box,
-  Flex,
-  Text,
-  Spinner,
-  SimpleGrid,
-  useColorModeValue,
-} from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Flex, Text, Spinner, SimpleGrid } from "@chakra-ui/react";
 import DateTime from "@/components/DateTime";
 
 interface EIP {
@@ -687,7 +674,7 @@ const EIPTypeDonut = () => {
             <Spinner size="xl" />
           </Flex>
         ) : (
-          <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
+          <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={6}>
             {chartData.map(({ type, count, percent, description, color }) => (
               <Box
                 key={type}
@@ -740,7 +727,6 @@ const EIPTypeDonut = () => {
           </SimpleGrid>
         )}
       </Box>
-
       <Box w="full" pt={{ base: 4, sm: 6 }}>
         <DateTime />
       </Box>

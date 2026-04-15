@@ -1,5 +1,7 @@
+import { Progress } from "@/components/ui/compat";
 import React from "react";
-import { Box, Text, Flex, useColorModeValue, Progress, Badge } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Text, Flex, Badge } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 
 interface CategoryData {
@@ -37,7 +39,6 @@ const CategoryDistributionChart: React.FC<CategoryDistributionChartProps> = ({ d
       <Text fontSize="lg" fontWeight="bold" mb={6} color={textColor}>
         {title}
       </Text>
-      
       <Box>
         {sortedData.map((item, index) => (
           <Box
@@ -50,7 +51,7 @@ const CategoryDistributionChart: React.FC<CategoryDistributionChartProps> = ({ d
           >
             <Flex justify="space-between" align="center" mb={2}>
               <Flex align="center" gap={2}>
-                <Badge colorScheme={item.color} fontSize="xs" px={2}>
+                <Badge colorPalette={item.color} fontSize="xs" px={2}>
                   {item.category}
                 </Badge>
                 <Text fontSize="sm" color="gray.500">
@@ -61,13 +62,16 @@ const CategoryDistributionChart: React.FC<CategoryDistributionChartProps> = ({ d
                 {item.percentage.toFixed(1)}%
               </Text>
             </Flex>
-            <Progress
+            <Progress.Root
               value={item.percentage}
               size="sm"
-              colorScheme={item.color}
+              colorPalette={item.color}
               borderRadius="full"
-              bg={useColorModeValue("gray.100", "gray.700")}
-            />
+              bg={useColorModeValue("gray.100", "gray.700")}>
+              <Progress.Track>
+                <Progress.Range />
+              </Progress.Track>
+            </Progress.Root>
           </Box>
         ))}
       </Box>

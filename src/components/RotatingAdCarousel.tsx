@@ -1,5 +1,14 @@
+/*
+ MIGRATION NOTE: The following Chakra UI hooks have been removed.
+ Please replace them with the suggested alternatives:
+
+//   - usePrefersReducedMotion: Use usehooks-ts: usePrefersReducedMotion
+
+ See: https://chakra-ui.com/docs/get-started/migration#hooks
+*/
 import React, { useState, useEffect } from "react";
-import { Box, Flex, Text, Button, useColorModeValue, IconButton, usePrefersReducedMotion } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Flex, Text, Button, IconButton } from "@chakra-ui/react";
 import { keyframes } from "@emotion/react";
 import { FiChevronLeft, FiChevronRight, FiExternalLink } from "react-icons/fi";
 import { trackFeatureUsage } from "@/utils/analytics";
@@ -108,7 +117,7 @@ export default function RotatingAdCarousel({
 }: RotatingAdCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
-  const prefersReducedMotion = usePrefersReducedMotion();
+  const prefersReducedMotion = false;
 
   // Permanently reduced: no auto-rotation by default
   const autoRotateEnabled = false;
@@ -173,7 +182,6 @@ export default function RotatingAdCarousel({
         pointerEvents="none"
         zIndex={1}
       />
-
       <Flex
         direction={{ base: "column", md: "row" }}
         align="center"
@@ -185,11 +193,10 @@ export default function RotatingAdCarousel({
         {/* Navigation - Left */}
         <IconButton
           aria-label="Previous ad"
-          icon={<FiChevronLeft />}
           onClick={handlePrev}
           position={{ base: "relative", md: "absolute" }}
           left={{ md: "-50px" }}
-          colorScheme="whiteAlpha"
+          colorPalette="whiteAlpha"
           variant="ghost"
           color="white"
           fontSize="2xl"
@@ -197,15 +204,14 @@ export default function RotatingAdCarousel({
             bg: "whiteAlpha.300",
             transform: "scale(1.2)",
           }}
-          transition="all 0.2s"
-        />
+          transition="all 0.2s"><FiChevronLeft /></IconButton>
 
         {/* Ad Content */}
         <Box
           flex={1}
           textAlign="center"
-          sx={{
-            animation: isAnimating ? `${slideInRight} 0.5s ease-out` : "none",
+          css={{
+            animation: isAnimating ? `${slideInRight} 0.5s ease-out` : "none"
           }}
         >
           <Text
@@ -237,11 +243,10 @@ export default function RotatingAdCarousel({
             href={currentAd.link}
             onClick={() => handleAdClick(currentAd.id)}
             size={{ base: "md", md: "lg" }}
-            colorScheme="whiteAlpha"
+            colorPalette="whiteAlpha"
             bg="white"
             color="gray.800"
             fontWeight="bold"
-            rightIcon={<FiExternalLink />}
             boxShadow="0 0 20px rgba(255, 255, 255, 0.5)"
             _hover={{
               transform: "scale(1.1)",
@@ -249,20 +254,16 @@ export default function RotatingAdCarousel({
             }}
             transition="all 0.3s ease"
             target="_blank"
-            rel="noopener noreferrer"
-          >
-            {currentAd.ctaText}
-          </Button>
+            rel="noopener noreferrer">{currentAd.ctaText}<FiExternalLink /></Button>
         </Box>
 
         {/* Navigation - Right */}
         <IconButton
           aria-label="Next ad"
-          icon={<FiChevronRight />}
           onClick={handleNext}
           position={{ base: "relative", md: "absolute" }}
           right={{ md: "-50px" }}
-          colorScheme="whiteAlpha"
+          colorPalette="whiteAlpha"
           variant="ghost"
           color="white"
           fontSize="2xl"
@@ -270,10 +271,8 @@ export default function RotatingAdCarousel({
             bg: "whiteAlpha.300",
             transform: "scale(1.2)",
           }}
-          transition="all 0.2s"
-        />
+          transition="all 0.2s"><FiChevronRight /></IconButton>
       </Flex>
-
       {/* Dot indicators */}
       <Flex
         justify="center"

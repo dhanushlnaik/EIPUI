@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { useColorModeValue } from "./ui/color-mode";
 import dynamic from "next/dynamic";
-import { Box, useColorModeValue, Spinner, Flex, Heading, Button } from "@chakra-ui/react";
+import { Steps, Box, Spinner, Flex, Heading, Button } from "@chakra-ui/react";
 import { useWindowSize } from "react-use";
 import DateTime from "@/components/DateTime";
 import { motion } from "framer-motion";
@@ -333,7 +334,7 @@ const headingColor = useColorModeValue('black', 'white');
             {`${status}`}
           </Heading>
           {/* Assuming a download option exists for the yearly data as well */}
-          <Button colorScheme="blue" onClick={async () => {
+          <Button colorPalette="blue" onClick={async () => {
     try {
       // Trigger the CSV conversion and download
       downloadData();

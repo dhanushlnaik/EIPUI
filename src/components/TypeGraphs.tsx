@@ -219,15 +219,8 @@
 // export default TypeGraphs;
 
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Text,
-  Select,
-  Button,
-  useColorModeValue,
-  Spinner,
-  VStack,
-} from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Text, NativeSelect, Button, Spinner, VStack } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import StatusColumnChart from "@/components/StatusColumnChart";
 import DateTime from "./DateTime";
@@ -274,7 +267,7 @@ const TypeGraphs = ({ selected }: { selected: string }) => {
 
 
   if (isLoading) {
-    return <Spinner mt={10} thickness="4px" size="xl" color="blue.400" />;
+    return <Spinner mt={10} borderWidth="4px" size="xl" color="blue.400" />;
   }
 
   return (

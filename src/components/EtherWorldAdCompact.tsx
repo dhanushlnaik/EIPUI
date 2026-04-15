@@ -1,13 +1,6 @@
 import React from 'react';
-import {
-  Box,
-  Text,
-  Flex,
-  Icon,
-  useColorModeValue,
-  Link,
-  Badge,
-} from '@chakra-ui/react';
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Text, Flex, Icon, Link, Badge } from "@chakra-ui/react";
 import { FaGlobe, FaExternalLinkAlt } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 
@@ -32,10 +25,10 @@ const EtherWorldAdCompact: React.FC = () => {
     >
       <Link
         href="https://etherworld.co"
-        isExternal
         _hover={{ textDecoration: 'none' }}
         display="block"
-      >
+        target='_blank'
+        rel='noopener noreferrer'>
         <Box
           bg={bgColor}
           border="2px solid"
@@ -92,7 +85,7 @@ const EtherWorldAdCompact: React.FC = () => {
               fontSize="xs"
               color={textColor}
               lineHeight="1.4"
-              noOfLines={3}
+              lineClamp={3}
             >
               Your gateway to Ethereum news, insights, and community updates
             </Text>

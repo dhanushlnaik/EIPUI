@@ -1,15 +1,7 @@
 import React, { useState, useMemo } from 'react';
-import {
-  Box,
-  Text,
-  Button,
-  Flex,
-  useColorModeValue,
-  HStack,
-  Icon,
-  Tooltip,
-  Divider,
-} from '@chakra-ui/react';
+import { useColorModeValue } from "../ui/color-mode";
+import { Steps, Box, Text, Button, Flex, HStack, Icon, Separator } from "@chakra-ui/react";
+import { Tooltip } from '@/components/ui/tooltip';
 import { MdTimeline } from 'react-icons/md';
 import dynamic from 'next/dynamic';
 
@@ -195,16 +187,16 @@ const TransactionCountChart = ({ blocks }: TransactionCountChartProps) => {
             How busy is Ethereum? Track transaction volume and types in real-time
           </Text>
         </Box>
-        <HStack spacing={2} flexWrap="wrap">
+        <HStack gap={2} flexWrap="wrap">
           {TYPES.map(t => (
             <Tooltip
               key={t}
-              label={t === 'all'
+              content={t === 'all'
                 ? 'Stacked view of all types'
                 : t === 'overall'
                   ? 'Total transactions per block'
                   : `Only ${t}`}
-              hasArrow
+              showArrow
             >
               <Button
                 size="sm"
@@ -228,7 +220,6 @@ const TransactionCountChart = ({ blocks }: TransactionCountChartProps) => {
           ))}
         </HStack>
       </Flex>
-
       <Box px={{ base: 4, md: 6 }} pt={5} pb={6}>
         <Flex align="center" justify="space-between" mb={3}>
           <Text fontSize="sm" color={subColor}>
@@ -243,7 +234,7 @@ const TransactionCountChart = ({ blocks }: TransactionCountChartProps) => {
         <Box w="100%" h={{ base: 320, md: 360 }}>
           <Column {...chartConfig} />
         </Box>
-        <Divider mt={5} mb={3} opacity={0.5} />
+        <Separator mt={5} mb={3} opacity={0.5} />
         <Text fontSize="xs" color={subColor}>
           💡 <strong>Transaction Types Explained:</strong> Type0 = Old-style transactions | Type2 = Modern flexible-fee transactions (most common) | Type1 = Special access lists | Type3/4 = Newer experimental types
         </Text>

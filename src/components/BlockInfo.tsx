@@ -1,4 +1,5 @@
-import { Box, Text, SimpleGrid, Icon, useColorModeValue } from '@chakra-ui/react';
+import { Steps, Box, Text, SimpleGrid, Icon } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
 import { FaEthereum, FaGasPump, FaFire, FaList, FaCube, FaClock, FaCoins, FaExchangeAlt } from 'react-icons/fa';
 import { convertEthToUSD, convertGweiToUSD } from './ethereumService';
 
@@ -31,10 +32,9 @@ const BlockInfo = ({ title, data, ethPriceInUSD }: { title: string; data: any; e
       >
         <Icon as={FaCube} color={"white"} mr={2} /> {title}
       </Text>
-
       <SimpleGrid
         columns={2}
-        spacing={6}
+        gap={6}
         p={4}
         borderColor={"white"}
         borderRadius="md"

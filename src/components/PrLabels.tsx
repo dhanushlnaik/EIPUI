@@ -1,13 +1,12 @@
+import { Checkbox, Divider } from "@/components/ui/compat";
 import React, { useEffect, useState, useMemo } from "react";
+import { useColorModeValue } from "./ui/color-mode";
 import dynamic from "next/dynamic";
-import {
-  Box, Card, CardHeader, CardBody, Heading, Text, Stack, Button, Checkbox,
-  CheckboxGroup, Menu, MenuButton, MenuList, MenuItem, useColorModeValue, Flex, Badge, HStack, Divider
-} from "@chakra-ui/react";
-import { ChevronDownIcon, DownloadIcon } from "@chakra-ui/icons";
+import { Steps, Box, Card, Heading, Text, Stack, Button, CheckboxGroup, Menu, Flex, Badge, HStack, Portal } from "@chakra-ui/react";
 import Papa from "papaparse";
 import CopyLink from "./CopyLink";
 import DateTime from "./DateTime";
+import { LuChevronDown, LuDownload } from 'react-icons/lu';
 
 const ReactECharts = dynamic(() => import("echarts-for-react"), { ssr: false });
 
@@ -577,7 +576,7 @@ export default function PRAnalyticsCard() {
   ];
 
   return (
-    <Card
+    <Card.Root
       bg={cardBg}
       color={textColor}
       mx="auto"
@@ -588,7 +587,7 @@ export default function PRAnalyticsCard() {
       boxShadow="sm"
       p={4}
     >
-      <CardHeader pb={3}>
+      <Card.Header pb={3}>
         <Flex align="center" justify="space-between" wrap="wrap" gap={3}>
           <Box>
             <Text fontSize="xs" fontWeight="600" letterSpacing="wider" color={useColorModeValue("gray.500", "gray.400")} mb={1}>
@@ -600,7 +599,7 @@ export default function PRAnalyticsCard() {
             <Flex align="center" gap={2} mt={1}>
               <Badge
                 variant="subtle"
-                colorScheme={labelSet === "process" ? "blue" : "purple"}
+                colorPalette={labelSet === "process" ? "blue" : "purple"}
                 px={2}
                 py={0.5}
                 borderRadius="full"
@@ -613,75 +612,84 @@ export default function PRAnalyticsCard() {
             </Flex>
           </Box>
           <Flex gap={3} align="center" wrap="wrap">
-            <Menu>
-              <MenuButton as={Button} rightIcon={<ChevronDownIcon />} variant="outline" size="sm" minW={140}>
-                {REPOS.find(r => r.key === repoKey)?.label}
-              </MenuButton>
-              <MenuList>
-                {REPOS.map(repo => (
-                  <MenuItem key={repo.key} onClick={() => setRepoKey(repo.key as "all" | "eip" | "erc" | "rip")}>
-                    {repo.label}
-                  </MenuItem>
-                ))}
-              </MenuList>
-            </Menu>
-            <Menu>
-              <MenuButton as={Button} rightIcon={<ChevronDownIcon />} variant="outline" size="sm" minW={140}>
-                {labelSetOptions.find(o => o.key === labelSet)?.label}
-              </MenuButton>
-              <MenuList>
-                {labelSetOptions.map(opt => (
-                  <MenuItem key={opt.key} onClick={() => setLabelSet(opt.key as "process" | "participants")}>
-                    {opt.label}
-                  </MenuItem>
-                ))}
-              </MenuList>
-            </Menu>
-            <Menu>
-              <MenuButton as={Button} rightIcon={<ChevronDownIcon />} variant="outline" size="sm" minW={160}>
-                {selectedMonth ? formatMonthLabel(selectedMonth) : "Select Month"}
-              </MenuButton>
-              <MenuList maxH="280px" overflowY="auto">
-                {months.slice().reverse().map(month => (
-                  <MenuItem key={month} onClick={() => setSelectedMonth(month)}>
-                    {formatMonthLabel(month)}
-                  </MenuItem>
-                ))}
-              </MenuList>
-            </Menu>
-            <Button leftIcon={<DownloadIcon />} colorScheme="blue" onClick={downloadCSV} size="sm" borderRadius="md" isDisabled={!selectedMonth}>
-              Download CSV
-            </Button>
+            <Menu.Root>
+              <Menu.Trigger asChild><Button variant="outline" size="sm" minW={140}>
+                  {REPOS.find(r => r.key === repoKey)?.label}
+                  <LuChevronDown /></Button></Menu.Trigger>
+              <Portal><Menu.Positioner><Menu.Content>
+                    {REPOS.map(repo => (
+                      <Menu.Item
+                        key={repo.key}
+                        onSelect={() => setRepoKey(repo.key as "all" | "eip" | "erc" | "rip")}
+                        value='item-0'>
+                        {repo.label}
+                      </Menu.Item>
+                    ))}
+                  </Menu.Content></Menu.Positioner></Portal>
+            </Menu.Root>
+            <Menu.Root>
+              <Menu.Trigger asChild><Button variant="outline" size="sm" minW={140}>
+                  {labelSetOptions.find(o => o.key === labelSet)?.label}
+                  <LuChevronDown /></Button></Menu.Trigger>
+              <Portal><Menu.Positioner><Menu.Content>
+                    {labelSetOptions.map(opt => (
+                      <Menu.Item
+                        key={opt.key}
+                        onSelect={() => setLabelSet(opt.key as "process" | "participants")}
+                        value='item-1'>
+                        {opt.label}
+                      </Menu.Item>
+                    ))}
+                  </Menu.Content></Menu.Positioner></Portal>
+            </Menu.Root>
+            <Menu.Root>
+              <Menu.Trigger asChild><Button variant="outline" size="sm" minW={160}>
+                  {selectedMonth ? formatMonthLabel(selectedMonth) : "Select Month"}
+                  <LuChevronDown /></Button></Menu.Trigger>
+              <Portal><Menu.Positioner><Menu.Content>
+                    {months.slice().reverse().map(month => (
+                      <Menu.Item key={month} onSelect={() => setSelectedMonth(month)} value='item-2'>
+                        {formatMonthLabel(month)}
+                      </Menu.Item>
+                    ))}
+                  </Menu.Content></Menu.Positioner></Portal>
+            </Menu.Root>
+            <Button
+              colorPalette="blue"
+              onClick={downloadCSV}
+              size="sm"
+              borderRadius="md"
+              disabled={!selectedMonth}><LuDownload />Download CSV
+                          </Button>
           </Flex>
         </Flex>
         <Text fontSize="sm" color={useColorModeValue("gray.600", "gray.400")} mt={3} maxW="900px">
           Open PRs by <strong>Process</strong> type (Typo, NEW EIP, PR DRAFT) or by <strong>Participants</strong> status (Waiting on Editor, Awaited). Sum of bars = total open PRs for that month.
         </Text>
-      </CardHeader>
-      <CardBody>
+      </Card.Header>
+      <Card.Body>
         <Flex gap={4} wrap="wrap" mb={3} align="center">
-          <Menu>
-            <MenuButton as={Button} rightIcon={<ChevronDownIcon />} variant="outline" size="sm" minW={180}>
-              Filter by {labelSetOptions.find(o => o.key === labelSet)?.label}
-            </MenuButton>
-            <MenuList minWidth="260px" px={2} py={2}>
-              <HStack mb={2} gap={2}>
-                <Button size="xs" colorScheme="teal" onClick={selectAll}>Select All</Button>
-                <Button size="xs" variant="outline" onClick={clearAll}>Clear</Button>
-              </HStack>
-              <CheckboxGroup value={selectedLabels} onChange={(v: string[]) => setSelectedLabels(v)}>
-                <Stack gap={1}>
-                  {labelSpecs.map(lbl => (
-                    <Checkbox key={lbl.value} value={lbl.value} py={1} px={2} colorScheme={labelSet === "process" ? "blue" : "purple"}>
-                      <Badge mr={2} fontSize="sm" bg={lbl.color} color={badgeText} borderRadius="md" px={2} py={0.5}>
-                        {lbl.label}
-                      </Badge>
-                    </Checkbox>
-                  ))}
-                </Stack>
-              </CheckboxGroup>
-            </MenuList>
-          </Menu>
+          <Menu.Root>
+            <Menu.Trigger asChild><Button variant="outline" size="sm" minW={180}>Filter by {labelSetOptions.find(o => o.key === labelSet)?.label}
+                <LuChevronDown /></Button></Menu.Trigger>
+            <Portal><Menu.Positioner><Menu.Content>
+                  <HStack mb={2} gap={2}>
+                    <Button size="xs" colorPalette="teal" onClick={selectAll}>Select All</Button>
+                    <Button size="xs" variant="outline" onClick={clearAll}>Clear</Button>
+                  </HStack>
+                  <CheckboxGroup value={selectedLabels} onValueChange={(v: string[]) => setSelectedLabels(v)}>
+                    <Stack gap={1}>
+                      {labelSpecs.map(lbl => (
+                        <Checkbox.Root key={lbl.value} value={lbl.value} py={1} px={2} colorPalette={labelSet === "process" ? "blue" : "purple"}><Checkbox.HiddenInput /><Checkbox.Control><Checkbox.Indicator /></Checkbox.Control><Checkbox.Label>
+                          <Badge mr={2} fontSize="sm" bg={lbl.color} color={badgeText} borderRadius="md" px={2} py={0.5}>
+                            {lbl.label}
+                          </Badge>
+                        </Checkbox.Label></Checkbox.Root>
+                      ))}
+                    </Stack>
+                  </CheckboxGroup>
+                </Menu.Content></Menu.Positioner></Portal>
+          </Menu.Root>
         </Flex>
         <Box
           bg={useColorModeValue("blue.50", "gray.700")}
@@ -752,7 +760,7 @@ export default function PRAnalyticsCard() {
         <Box mt={3}>
           <DateTime />
         </Box>
-      </CardBody>
-    </Card>
+      </Card.Body>
+    </Card.Root>
   );
 }

@@ -1,9 +1,8 @@
-'use client';
-
+"use client";
 import './globals.css';
 import { Rajdhani } from 'next/font/google';
 import { Providers } from './providers';
-import { Box, Flex } from '@chakra-ui/react';
+import { Steps, Box, Flex } from "@chakra-ui/react";
 import dynamic from 'next/dynamic';
 import { Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -61,20 +60,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 }
 
 function ClientContent({ children }: { children: React.ReactNode }) {
-  const isCollapsed = useSidebarStore((s) => s.isCollapsed);
-
   return (
-    <Flex>
-      <Box
-        ml={isCollapsed ? "3rem" : "16rem"}
-        transition="margin-left 0.3s ease"
-        p={4}
-      >
-        <Suspense fallback={<div>Loading...</div>}>
-          {children}
-        </Suspense>
-      </Box>
-    </Flex>
+    <Suspense fallback={<div>Loading...</div>}>
+      {children}
+    </Suspense>
   );
 }
 

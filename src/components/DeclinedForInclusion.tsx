@@ -1,18 +1,5 @@
-import {
-  Card,
-  CardHeader,
-  CardBody,
-  Flex,
-  Heading,
-  Text,
-  useColorModeValue,
-  IconButton,
-  Badge,
-  Box,
-  LinkBox,
-  LinkOverlay,
-  chakra,
-} from "@chakra-ui/react";
+import { Steps, Card, Flex, Heading, Text, IconButton, Badge, Box, LinkBox, LinkOverlay, chakra } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
 import { FiExternalLink, FiCopy } from "react-icons/fi";
 
 interface DeclinedEIPCardProps {
@@ -57,14 +44,14 @@ export default function DeclinedEIPCard({ eip }: DeclinedEIPCardProps) {
         bg: useColorModeValue("blue.50", "gray.700"),
       }}
     >
-      <CardHeader p={0} mb={2}>
+      <Card.Header p={0} mb={2}>
         <Flex justify="space-between" align="center">
           <Heading
             size="sm"
             color={headerColor}
             fontWeight="bold"
             lineHeight={1.3}
-            noOfLines={2}
+            lineClamp={2}
           >
             <Box as="span" color={accent} fontWeight="extrabold" mr={2}>
               {eip.id}
@@ -84,15 +71,19 @@ export default function DeclinedEIPCard({ eip }: DeclinedEIPCardProps) {
             Declined
           </Badge>
         </Flex>
-      </CardHeader>
-      <CardBody p={0} mb={4}>
-        <Text color={descriptionColor} fontSize="sm" noOfLines={3}>
+      </Card.Header>
+      <Card.Body p={0} mb={4}>
+        <Text color={descriptionColor} fontSize="sm" lineClamp={3}>
           {eip.description}
         </Text>
-      </CardBody>
+      </Card.Body>
       <Box mt="auto">
         <Flex align="center" gap={2}>
-          <LinkOverlay href={eip.discussionLink} isExternal _hover={{ textDecor: "underline" }}>
+          <LinkOverlay
+            href={eip.discussionLink}
+            _hover={{ textDecor: "underline" }}
+            target='_blank'
+            rel='noopener noreferrer'>
             <chakra.span fontWeight="medium" color={accent}>
               Read Discussion
             </chakra.span>
@@ -101,12 +92,10 @@ export default function DeclinedEIPCard({ eip }: DeclinedEIPCardProps) {
             as="a"
             href={eip.eipsLink}
             aria-label="Open EIP Spec"
-            icon={<FiExternalLink />}
             target="_blank"
             size="sm"
-            colorScheme="blue"
-            variant="ghost"
-          />
+            colorPalette="blue"
+            variant="ghost"><FiExternalLink /></IconButton>
         </Flex>
       </Box>
     </LinkBox>

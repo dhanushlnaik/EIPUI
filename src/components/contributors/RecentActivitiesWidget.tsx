@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { useColorModeValue } from "../ui/color-mode";
 import { useRouter } from "next/router";
-import { useColorModeValue } from "@chakra-ui/react";
 import { FiGitCommit, FiGitPullRequest, FiMessageSquare, FiCheckCircle, FiAlertCircle, FiChevronDown, FiChevronUp, FiExternalLink } from "react-icons/fi";
 
 interface RecentActivity {

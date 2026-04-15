@@ -1,17 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Box,
-  Text,
-  Flex,
-  Icon,
-  useColorModeValue,
-  Link,
-  Badge,
-  VStack,
-  HStack,
-  IconButton,
-  Tooltip,
-} from '@chakra-ui/react';
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Text, Flex, Icon, Link, Badge, VStack, HStack, IconButton } from "@chakra-ui/react";
+import { Tooltip } from '@/components/ui/tooltip';
 import { FaGlobe, FaExternalLinkAlt, FaTimes, FaRocket, FaNewspaper } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -86,21 +76,19 @@ const EtherWorldFloatingAd: React.FC = () => {
           {/* Close button */}
           <IconButton
             aria-label="Close ad"
-            icon={<FaTimes />}
             size="xs"
             position="absolute"
             top={2}
             right={2}
             variant="ghost"
-            colorScheme="gray"
+            colorPalette="gray"
             onClick={() => setIsVisible(false)}
-            zIndex={2}
-          />
+            zIndex={2}><FaTimes /></IconButton>
 
-          <VStack spacing={3} position="relative" zIndex={1} align="stretch">
+          <VStack gap={3} position="relative" zIndex={1} align="stretch">
             {/* Header with animated icon */}
             <HStack justify="space-between" align="center">
-              <HStack spacing={2}>
+              <HStack gap={2}>
                 <MotionBox
                   animate={{ rotate: isHovered ? 360 : 0 }}
                   transition={{ duration: 0.6 }}
@@ -112,7 +100,7 @@ const EtherWorldFloatingAd: React.FC = () => {
                 </Text>
               </HStack>
               <Badge
-                colorScheme="blue"
+                colorPalette="blue"
                 variant="solid"
                 borderRadius="full"
                 px={2}
@@ -124,15 +112,15 @@ const EtherWorldFloatingAd: React.FC = () => {
             </HStack>
 
             {/* Main content with icons */}
-            <VStack spacing={2} align="stretch">
-              <HStack spacing={2}>
+            <VStack gap={2} align="stretch">
+              <HStack gap={2}>
                 <Icon as={FaNewspaper} color={accentColor} boxSize={4} />
                 <Text fontSize="sm" color={textColor} fontWeight="medium">
                   Latest Ethereum News
                 </Text>
               </HStack>
               
-              <HStack spacing={2}>
+              <HStack gap={2}>
                 <Icon as={FaRocket} color={accentColor} boxSize={4} />
                 <Text fontSize="sm" color={textColor} fontWeight="medium">
                   Community Insights
@@ -143,9 +131,9 @@ const EtherWorldFloatingAd: React.FC = () => {
             {/* CTA Button */}
             <Link
               href="https://etherworld.co"
-              isExternal
               _hover={{ textDecoration: 'none' }}
-            >
+              target='_blank'
+              rel='noopener noreferrer'>
               <MotionBox
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}

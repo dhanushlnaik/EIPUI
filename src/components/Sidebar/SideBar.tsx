@@ -1,14 +1,8 @@
-'use client';
-
-import {
-  Box,
-  Flex,
-  IconButton,
-  VStack,
-  Tooltip,
-  useColorMode,
-  useBreakpointValue,
-} from '@chakra-ui/react';
+"use client";
+;
+import { Steps, Box, Flex, IconButton, VStack, useBreakpointValue } from "@chakra-ui/react";
+import { Tooltip } from '@/components/ui/tooltip';
+import { useColorMode } from "../ui/color-mode";
 import { FiMenu } from 'react-icons/fi';
 import { useSidebar } from './SideBarContext';
 import { useActiveSection } from './useActiveSection'; // Make sure this path is correct
@@ -47,25 +41,25 @@ export default function Sidebar() {
     >
       <IconButton
         aria-label="Toggle Sidebar"
-        icon={<FiMenu />}
         onClick={toggleSidebar}
         m={2}
         alignSelf="flex-end"
         size="sm"
         variant="ghost"
-        colorScheme={colorMode === 'dark' ? 'whiteAlpha' : 'blackAlpha'}
-      />
-      <VStack spacing={2} align="stretch" mt={4} px={2}>
+        colorPalette={colorMode === 'dark' ? 'whiteAlpha' : 'blackAlpha'}><FiMenu /></IconButton>
+      <VStack gap={2} align="stretch" mt={4} px={2}>
         {sections.map((section) => {
           const isActive = section.id === activeSectionId;
           return (
             <Tooltip
               key={section.id}
-              label={section.label}
-              placement="right"
-              isDisabled={!isCollapsed}
-              hasArrow
+              content={section.label}
+              disabled={!isCollapsed}
+              showArrow
               openDelay={300}
+              positioning={{
+                placement: "right"
+              }}
             >
               <Flex
                 align="center"

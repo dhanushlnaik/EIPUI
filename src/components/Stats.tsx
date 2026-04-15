@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Box, SimpleGrid, Heading, Text, Spinner, useColorModeValue } from '@chakra-ui/react';
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, SimpleGrid, Heading, Text, Spinner } from "@chakra-ui/react";
 
 type Counts = Record<string, number | null>;
 
@@ -42,16 +43,14 @@ const Stats: React.FC = () => {
   return (
     <Box mt={6} bg={cardBg} p={{ base: 4, md: 6 }} borderRadius="xl" border={useColorModeValue('1px solid rgba(2,6,23,0.04)', '1px solid rgba(255,255,255,0.04)')}>
       <Heading as="h3" size="md" mb={4} className="gradient-text">What we track</Heading>
-
       {loading && (
         <Box display="flex" alignItems="center">
           <Spinner size="sm" mr={2} />
           <Text as="span">Loading stats…</Text>
         </Box>
       )}
-
       {!loading && (
-        <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={4}>
+        <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} gap={4}>
           {statKeys.map((s) => (
             <Box key={s.key} p={4} bg={useColorModeValue('gray.50', '#111827')} borderRadius="md" textAlign="center">
               <Text fontSize="sm" color={useColorModeValue('gray.600', 'gray.300')}>{s.label}</Text>
@@ -62,7 +61,6 @@ const Stats: React.FC = () => {
           ))}
         </SimpleGrid>
       )}
-
       {!loading && !counts && (
         <Text mt={4} color="gray.500">Real-time counts are currently unavailable (database offline). The UI will show numbers when the data connection is available.</Text>
       )}

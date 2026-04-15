@@ -1,6 +1,7 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
-import { Box, Text, VStack, HStack, SimpleGrid, useColorModeValue } from '@chakra-ui/react';
-import { keyframes } from '@chakra-ui/system';
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Text, VStack, HStack, SimpleGrid } from "@chakra-ui/react";
+import { keyframes } from '@emotion/react';
 import React from 'react';
 
 interface TransactionChartsProps {
@@ -53,8 +54,7 @@ export const TransactionCharts: React.FC<TransactionChartsProps> = ({ transactio
   return (
     <Box>
       {/* Title */}
-
-      <HStack spacing={8} align="start">
+      <HStack gap={8} align="start">
         {/* Pie Chart */}
         <Box flex={1}>
         <Text fontSize="2xl" fontWeight="bold" mb={6} textAlign="center" fontFamily="Poppins, sans-serif">
@@ -98,7 +98,7 @@ export const TransactionCharts: React.FC<TransactionChartsProps> = ({ transactio
 
         {/* Gas Fee Stats */}
         <Box flex={1}>
-          <VStack spacing={4} align="stretch">
+          <VStack gap={4} align="stretch">
             {/* "All" Box (Full Width) */}
             {gasFeeStats.all && (
               <Box
@@ -137,7 +137,7 @@ export const TransactionCharts: React.FC<TransactionChartsProps> = ({ transactio
             )}
 
             {/* Other Boxes (2x2 Grid) */}
-            <SimpleGrid columns={2} spacing={4}>
+            <SimpleGrid columns={2} gap={4}>
               {Object.entries(gasFeeStats)
                 ?.filter(([type]) => type !== 'all')
                 ?.map(([type, stats], index) => (

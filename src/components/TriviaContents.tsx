@@ -1,4 +1,5 @@
-import { Box, Grid, Flex, Text, Heading, useColorModeValue } from "@chakra-ui/react";
+import { Steps, Box, Grid, Flex, Text, Heading } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
 import { FC } from "react";
 
 interface FactCardProps {
@@ -48,8 +49,8 @@ const FactCard: FC<FactCardProps> = ({ title, content }) => {
       </Box>
     );
   };
-  
-  
+
+
 
 const FactsSection: FC = () => {
   const headingColorLight = "#333";

@@ -1,11 +1,35 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
+import { useColorModeValue } from "../../components/ui/color-mode";
 import dynamic from 'next/dynamic';
 import {
-  Box, Flex, Spinner, Select, Heading, IconButton, Collapse, Checkbox, HStack,
-  Button, Menu, MenuButton, MenuList, MenuItem, Table, Thead, Tbody, Tr, Th, Td, Text, useColorModeValue,
-  Tooltip, Link, VStack, Badge, Avatar, Grid
+  Steps,
+  Box,
+  Flex,
+  Spinner,
+  NativeSelect,
+  Heading,
+  IconButton,
+  Collapsible,
+  Checkbox,
+  HStack,
+  Button,
+  Menu,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  Text,
+  Link,
+  VStack,
+  Badge,
+  Avatar,
+  Grid,
+  Icon,
+  Portal,
 } from '@chakra-ui/react';
-import { ChevronDownIcon, ChevronUpIcon, DownloadIcon } from '@chakra-ui/icons';
+import { Tooltip } from '@/components/ui/tooltip';
 import { FiFilter } from 'react-icons/fi';
 import { AiOutlineClose } from 'react-icons/ai';
 import axios from 'axios';
@@ -20,9 +44,9 @@ import LastUpdatedDateTime from '@/components/LastUpdatedDateTime';
 import { useRouter } from 'next/router';
 import { motion } from 'framer-motion';
 import AnimatedHeader from '@/components/AnimatedHeader';
-
 // Import new components
 import FAQSection from '../../components/reviewers/FAQSection';
+
 import LeaderboardGrid from '../../components/reviewers/LeaderboardGrid';
 import ReviewActivityTimeline from '../../components/reviewers/ReviewActivityTimeline';
 import ActiveEditorsChart from '../../components/reviewers/ActiveEditorsChart';
@@ -30,6 +54,7 @@ import ReviewerCard from '../../components/reviewers/ReviewerCard';
 import EditorRepoGrid from '../../components/reviewers/EditorRepoGrid';
 import * as helpers from '../../utils/helpers';
 import CloseableAdCard from '@/components/CloseableAdCard';
+import { LuChevronDown, LuChevronUp, LuDownload } from 'react-icons/lu';
 
 
 // Dynamic import for Ant Design's Column chart
@@ -53,7 +78,7 @@ const active_endpoints={
   all: '/api/activeeditorsprsall'
 }
 
-type ShowReviewerType = { [key: string]: boolean }; 
+type ShowReviewerType = { [key: string]: boolean };
 
 const ReviewTracker = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -620,10 +645,10 @@ const generateCSVData3 = (reviewer: string) => {
     const filteredData = downloaddata?.filter((pr) => {
       const reviewDate = pr.reviewDate ? new Date(pr.reviewDate) : null;
       return (
-        reviewDate &&
+        // Filter by reviewer if provided
+        (reviewDate &&
         reviewDate >= startDate &&
-        reviewDate <= endDate &&
-        (reviewer ? pr.reviewer === reviewer : true) // Filter by reviewer if provided
+        reviewDate <= endDate && (reviewer ? pr.reviewer === reviewer : true))
       );
     });
 
@@ -1319,7 +1344,7 @@ const renderCharts2 = (data: PRData[], selectedYear: string | null, selectedMont
   return (
     <Box>
       {selectedYear && selectedMonth && monthlyChartData && ( // Check if monthlyChartData is defined
-        <Flex direction={{ base: "column", md: "row" }} justifyContent="center" gap={{ base: 4, md: 6 }}>
+        (<Flex direction={{ base: "column", md: "row" }} justifyContent="center" gap={{ base: 4, md: 6 }}>
           {/* Editors Chart */}
           <Box width={{ base: "100%", md: "45%" }}>
             <Flex justifyContent="space-between" alignItems="center" mb={4}>
@@ -1344,7 +1369,7 @@ const renderCharts2 = (data: PRData[], selectedYear: string | null, selectedMont
                   }
                 }}
               >
-                <Button colorScheme="blue" fontSize={{ base: "0.6rem", md: "md" }}>
+                <Button colorPalette="blue" fontSize={{ base: "0.6rem", md: "md" }}>
                   {loading3 ? <Spinner size="sm" /> : "Download CSV"}
                 </Button>
               </CSVLink>
@@ -1375,7 +1400,7 @@ const renderCharts2 = (data: PRData[], selectedYear: string | null, selectedMont
                   }
                 }}
               >
-                <Button colorScheme="blue" fontSize={{ base: "0.6rem", md: "md" }}>
+                <Button colorPalette="blue" fontSize={{ base: "0.6rem", md: "md" }}>
                   {loading3 ? <Spinner size="sm" /> : "Download CSV"}
                 </Button>
               </CSVLink>
@@ -1383,9 +1408,7 @@ const renderCharts2 = (data: PRData[], selectedYear: string | null, selectedMont
             <br />
             <Bar {...getBarChartConfig(reviewersData)} />
           </Box>
-
-          
-        </Flex>
+        </Flex>)
       )}
     </Box>
   );
@@ -1778,150 +1801,150 @@ const renderCharts3 = (reviewsdata: PRData[]) => {
         console.log("show reviewers:", showReviewer);
 
     return (
-        <Box mt={2} overflowX="auto" overflowY="auto" maxHeight="600px" border="2px solid #e2e8f0" borderRadius="10px 10px 10px 10px" boxShadow="lg">
-            <Table >
-                <Thead p="8px" bg="black">
-                    
-                    <Tr>
-                            <Th 
-                              color="white" 
-                              textAlign="center" 
-                              borderTopLeftRadius="10px" 
-                              minWidth="6rem"
-                              p="8px"
-                            >
-                              PR Number
-                            </Th>
-                            <Th 
-                              color="white" 
-                              textAlign="center" 
-                              minWidth="11rem"
-                              whiteSpace="normal" // Allow wrapping
-                              overflow="hidden"   // Prevent overflow
-                              textOverflow="ellipsis" // Add ellipsis for overflowed text
-                              p="8px"
-                            >
-                              Title
-                            </Th>
-                            <Th 
-                              color="white" 
-                              textAlign="center" 
-                              minWidth="6rem" 
-                              p="8px"
-                              
-                            >
-                              Reviewed by
-                            </Th>
-                            <Th 
-                              color="white" 
-                              textAlign="center" 
-                              minWidth="6rem" 
-                              p="8px"
-                              
-                            >
-                              Review Date
-                            </Th>
-                            
-                            <Th 
-                              color="white" 
-                              textAlign="center" 
-                              minWidth="6rem" 
-                              p="8px"
-                            >
-                              Created Date
-                            </Th>
-                            <Th 
-                              color="white" 
-                              textAlign="center" 
-                              minWidth="6rem" 
-                              p="8px"
-                              
-                            >
-                              Closed Date
-                            </Th>
-                            <Th 
-                              color="white" 
-                              textAlign="center" 
-                              minWidth="6rem" 
-                              p="8px"
-                              
-                            >
-                              Merged Date
-                            </Th>
-                            <Th 
-                              color="white" 
-                              textAlign="center" 
-                              minWidth="6rem" 
-                              p="8px"
-                            >
-                              Status
-                            </Th>
-                            <Th 
-                              color="white" 
-                              textAlign="center" 
-                              minWidth="10rem"
-                              p="8px"
-                            >
-                              Link
-                            </Th>
-                          </Tr>
-                </Thead>
-                </Table>
-                <Table variant="striped" colorScheme="gray" >
-                <Tbody>
-                    {filteredData?.map((pr, index) => {
-                        const status = pr.merged_at
-                            ? 'Merged'
-                            : pr.closed_at
-                                ? 'Closed'
-                                : 'Open';
+      <Box mt={2} overflowX="auto" overflowY="auto" maxHeight="600px" border="2px solid #e2e8f0" borderRadius="10px 10px 10px 10px" boxShadow="lg">
+        <Table.Root >
+            <Table.Header p="8px" bg="black">
+                
+                <Table.Row>
+                        <Table.ColumnHeader 
+                          color="white" 
+                          textAlign="center" 
+                          borderTopLeftRadius="10px" 
+                          minWidth="6rem"
+                          p="8px"
+                        >
+                          PR Number
+                        </Table.ColumnHeader>
+                        <Table.ColumnHeader 
+                          color="white" 
+                          textAlign="center" 
+                          minWidth="11rem"
+                          whiteSpace="normal" // Allow wrapping
+                          overflow="hidden"   // Prevent overflow
+                          textOverflow="ellipsis" // Add ellipsis for overflowed text
+                          p="8px"
+                        >
+                          Title
+                        </Table.ColumnHeader>
+                        <Table.ColumnHeader 
+                          color="white" 
+                          textAlign="center" 
+                          minWidth="6rem" 
+                          p="8px"
+                          
+                        >
+                          Reviewed by
+                        </Table.ColumnHeader>
+                        <Table.ColumnHeader 
+                          color="white" 
+                          textAlign="center" 
+                          minWidth="6rem" 
+                          p="8px"
+                          
+                        >
+                          Review Date
+                        </Table.ColumnHeader>
+                        
+                        <Table.ColumnHeader 
+                          color="white" 
+                          textAlign="center" 
+                          minWidth="6rem" 
+                          p="8px"
+                        >
+                          Created Date
+                        </Table.ColumnHeader>
+                        <Table.ColumnHeader 
+                          color="white" 
+                          textAlign="center" 
+                          minWidth="6rem" 
+                          p="8px"
+                          
+                        >
+                          Closed Date
+                        </Table.ColumnHeader>
+                        <Table.ColumnHeader 
+                          color="white" 
+                          textAlign="center" 
+                          minWidth="6rem" 
+                          p="8px"
+                          
+                        >
+                          Merged Date
+                        </Table.ColumnHeader>
+                        <Table.ColumnHeader 
+                          color="white" 
+                          textAlign="center" 
+                          minWidth="6rem" 
+                          p="8px"
+                        >
+                          Status
+                        </Table.ColumnHeader>
+                        <Table.ColumnHeader 
+                          color="white" 
+                          textAlign="center" 
+                          minWidth="10rem"
+                          p="8px"
+                        >
+                          Link
+                        </Table.ColumnHeader>
+                      </Table.Row>
+            </Table.Header>
+            </Table.Root>
+        <Table.Root variant="striped" colorPalette="gray" >
+        <Table.Body>
+            {filteredData?.map((pr, index) => {
+                const status = pr.merged_at
+                    ? 'Merged'
+                    : pr.closed_at
+                        ? 'Closed'
+                        : 'Open';
 
-                        return (
-                            <Tr p="8px" key={pr.prNumber}> {/* Set border for rows */}
-                                <Td p="8px" textAlign="center" verticalAlign="middle"  width="100px">
-                                    {pr.prNumber}
-                                </Td>
-                                <Td p="8px" textAlign="center" verticalAlign="middle"  style={{ wordWrap: 'break-word', maxWidth: '200px' }}>
-                                    {pr.prTitle}
-                                </Td>
-                                <Td p="8px" textAlign="center" verticalAlign="middle" >
-                                    {pr.reviewer}
-                                </Td>
-                                <Td p="8px" textAlign="center" verticalAlign="middle" >
-                                    {pr.reviewDate ? new Date(pr.reviewDate).toLocaleDateString() : '-'}
-                                </Td>
-                                <Td p="8px" textAlign="center" verticalAlign="middle" >
-                                    {pr.created_at ? new Date(pr.created_at).toLocaleDateString() : '-'}
-                                </Td>
-                                <Td p="8px" textAlign="center" verticalAlign="middle" >
-                                    {pr.closed_at ? new Date(pr.closed_at).toLocaleDateString() : '-'}
-                                </Td>
-                                <Td p="8px" textAlign="center" verticalAlign="middle" >
-                                    {pr.merged_at ? new Date(pr.merged_at).toLocaleDateString() : '-'}
-                                </Td>
-                                <Td p="8px" textAlign="center" verticalAlign="middle" >
-                                    {status}
-                                </Td>
-                                <Td p="8px" textAlign="center" verticalAlign="middle">
-                                  <Link href={`/PR/${pr.repo}/${pr.prNumber}`} target="_blank" rel="noopener noreferrer">
-                                    <Button
-                                        as="a"
-                                        
-                                      
-                                        rel="noopener noreferrer"
-                                        colorScheme="blue"
-                                        variant="solid"
-                                    >
-                                        Pull Request
-                                    </Button>
-                                    </Link>
-                                </Td>
-                            </Tr>
-                        );
-                    })}
-                </Tbody>
-            </Table>
-        </Box>
+                return (
+                  <Table.Row p="8px" key={pr.prNumber}> {/* Set border for rows */}
+                    <Table.Cell p="8px" textAlign="center" verticalAlign="middle"  width="100px">
+                        {pr.prNumber}
+                    </Table.Cell>
+                    <Table.Cell p="8px" textAlign="center" verticalAlign="middle"  style={{ wordWrap: 'break-word', maxWidth: '200px' }}>
+                        {pr.prTitle}
+                    </Table.Cell>
+                    <Table.Cell p="8px" textAlign="center" verticalAlign="middle" >
+                        {pr.reviewer}
+                    </Table.Cell>
+                    <Table.Cell p="8px" textAlign="center" verticalAlign="middle" >
+                        {pr.reviewDate ? new Date(pr.reviewDate).toLocaleDateString() : '-'}
+                    </Table.Cell>
+                    <Table.Cell p="8px" textAlign="center" verticalAlign="middle" >
+                        {pr.created_at ? new Date(pr.created_at).toLocaleDateString() : '-'}
+                    </Table.Cell>
+                    <Table.Cell p="8px" textAlign="center" verticalAlign="middle" >
+                        {pr.closed_at ? new Date(pr.closed_at).toLocaleDateString() : '-'}
+                    </Table.Cell>
+                    <Table.Cell p="8px" textAlign="center" verticalAlign="middle" >
+                        {pr.merged_at ? new Date(pr.merged_at).toLocaleDateString() : '-'}
+                    </Table.Cell>
+                    <Table.Cell p="8px" textAlign="center" verticalAlign="middle" >
+                        {status}
+                    </Table.Cell>
+                    <Table.Cell p="8px" textAlign="center" verticalAlign="middle">
+                      <Link href={`/PR/${pr.repo}/${pr.prNumber}`} target="_blank" rel="noopener noreferrer">
+                        <Button
+                            as="a"
+                            
+                          
+                            rel="noopener noreferrer"
+                            colorPalette="blue"
+                            variant="solid"
+                        >
+                            Pull Request
+                        </Button>
+                        </Link>
+                    </Table.Cell>
+                  </Table.Row>
+                );
+            })}
+        </Table.Body>
+    </Table.Root>
+      </Box>
     );
 };
 
@@ -2427,9 +2450,9 @@ const handleFeedbackClick = (type: 'positive' | 'negative') => {
       >
         {/* Left: Tab buttons */}
         <Box>
-          <HStack spacing={2}>
+          <HStack gap={2}>
             <Button
-              colorScheme={activeTab === 'all' ? 'blue' : 'gray'}
+              colorPalette={activeTab === 'all' ? 'blue' : 'gray'}
               variant={activeTab === 'all' ? 'solid' : 'outline'}
               onClick={() => setActiveTab('all')}
               size="md"
@@ -2437,7 +2460,7 @@ const handleFeedbackClick = (type: 'positive' | 'negative') => {
               ALL
             </Button>
             <Button
-              colorScheme={activeTab === 'eips' ? 'blue' : 'gray'}
+              colorPalette={activeTab === 'eips' ? 'blue' : 'gray'}
               variant={activeTab === 'eips' ? 'solid' : 'outline'}
               onClick={() => setActiveTab('eips')}
               size="md"
@@ -2445,7 +2468,7 @@ const handleFeedbackClick = (type: 'positive' | 'negative') => {
               EIPs
             </Button>
             <Button
-              colorScheme={activeTab === 'ercs' ? 'blue' : 'gray'}
+              colorPalette={activeTab === 'ercs' ? 'blue' : 'gray'}
               variant={activeTab === 'ercs' ? 'solid' : 'outline'}
               onClick={() => setActiveTab('ercs')}
               size="md"
@@ -2453,7 +2476,7 @@ const handleFeedbackClick = (type: 'positive' | 'negative') => {
               ERCs
             </Button>
             <Button
-              colorScheme={activeTab === 'rips' ? 'blue' : 'gray'}
+              colorPalette={activeTab === 'rips' ? 'blue' : 'gray'}
               variant={activeTab === 'rips' ? 'solid' : 'outline'}
               onClick={() => setActiveTab('rips')}
               size="md"
@@ -2471,19 +2494,21 @@ const handleFeedbackClick = (type: 'positive' | 'negative') => {
             gap={3}
             flexWrap="wrap"
           >
-            <Select
-              value={leaderboardTimePeriod}
-              onChange={(e) => setLeaderboardTimePeriod(e.target.value as any)}
-              width={{ base: "100%", md: "200px" }}
-              size="sm"
-              colorScheme="blue"
-            >
-              <option value="all">All-Time</option>
-              <option value="week">Last Week</option>
-              <option value="month">This Month</option>
-              <option value="year">This Year</option>
-              <option value="custom">Custom Range</option>
-            </Select>
+            <NativeSelect.Root>
+              <NativeSelect.Field
+                value={leaderboardTimePeriod}
+                onValueChange={(e) => setLeaderboardTimePeriod(e.target.value as any)}
+                width={{ base: "100%", md: "200px" }}
+                size="sm"
+                colorPalette="blue">
+                <option value="all">All-Time</option>
+                <option value="week">Last Week</option>
+                <option value="month">This Month</option>
+                <option value="year">This Year</option>
+                <option value="custom">Custom Range</option>
+              </NativeSelect.Field>
+              <NativeSelect.Indicator />
+            </NativeSelect.Root>
 
             {leaderboardTimePeriod === 'custom' && (
               <Flex gap={2} flexWrap="wrap" alignItems="center">
@@ -2569,12 +2594,12 @@ const handleFeedbackClick = (type: 'positive' | 'negative') => {
             }
           }}
         >
-          <Button colorScheme="blue" mr="1rem" fontSize={{ base: "0.6rem", md: "md" }} display={{ base: "none", md: "flex" }}>
+          <Button colorPalette="blue" mr="1rem" fontSize={{ base: "0.6rem", md: "md" }} display={{ base: "none", md: "flex" }}>
             {loading3 ? <Spinner size="sm" /> : "Download CSV"}
           </Button>
         </CSVLink>
         <Button
-          colorScheme="blue"
+          colorPalette="blue"
           onClick={() => setLinechart(!Linechart)}
           mr="1rem"
           display={{ base: "none", md: "flex" }}
@@ -2582,14 +2607,10 @@ const handleFeedbackClick = (type: 'positive' | 'negative') => {
           {Linechart ? "Column Chart" : "Line Chart"}
         </Button>
         <Button
-          colorScheme="blue"
+          colorPalette="blue"
           onClick={() => setShowFilters(!showFilters)}
-          leftIcon={showFilters ? <AiOutlineClose /> : <FiFilter />}
-          fontSize={{ base: "0.6rem", md: "md" }} 
-          display={{ base: "none", md: "flex" }}
-        >
-          {showFilters ? "Hide Filters" : "Show Filters"}
-        </Button>
+          fontSize={{ base: "0.6rem", md: "md" }}
+          display={{ base: "none", md: "flex" }}>{showFilters ? <AiOutlineClose /> : <FiFilter />}{showFilters ? "Hide Filters" : "Show Filters"}</Button>
       </Flex>
     </Flex>
     
@@ -2609,13 +2630,13 @@ const handleFeedbackClick = (type: 'positive' | 'negative') => {
             }
           }}
         >
-          <Button colorScheme="blue" mr="1rem" fontSize={{ base: "0.6rem", md: "md" }} display={{ base: "flex", md: "none" }}>
+          <Button colorPalette="blue" mr="1rem" fontSize={{ base: "0.6rem", md: "md" }} display={{ base: "flex", md: "none" }}>
             {loading3 ? <Spinner size="sm" /> : "Download CSV"}
           </Button>
         </CSVLink>
         
         <Button
-          colorScheme="blue"
+          colorPalette="blue"
           onClick={() => setLinechart(!Linechart)}
           mr="1rem"
           display={{ base: "flex", md: "none" }}
@@ -2624,14 +2645,10 @@ const handleFeedbackClick = (type: 'positive' | 'negative') => {
           {Linechart ? "Column Chart" : "Line Chart"}
         </Button>
         <Button
-          colorScheme="blue"
+          colorPalette="blue"
           onClick={() => setShowFilters(!showFilters)}
-          leftIcon={showFilters ? <AiOutlineClose /> : <FiFilter />}
-          fontSize={{ base: "0.6rem", md: "md" }} 
-          display={{ base: "flex", md: "none" }}
-        >
-          {showFilters ? "Hide Filters" : "Show Filters"}
-        </Button>
+          fontSize={{ base: "0.6rem", md: "md" }}
+          display={{ base: "flex", md: "none" }}>{showFilters ? <AiOutlineClose /> : <FiFilter />}{showFilters ? "Hide Filters" : "Show Filters"}</Button>
       </Flex>
     
     {showFilters && (
@@ -2654,57 +2671,57 @@ const handleFeedbackClick = (type: 'positive' | 'negative') => {
             Start Date
           </Heading>
           <Flex>
-          <HStack spacing={4}>
+          <HStack gap={4}>
             {/* Year Dropdown for Start Date */}
-            <Menu>
-              <MenuButton as={Button} rightIcon={<ChevronDownIcon />} colorScheme="blue">
-                {selectedStartYear ? `${selectedStartYear}` : 'Year'}
-              </MenuButton>
-              <MenuList bg="white" color="black" borderColor="blue.500">
-                {Array.from({ length: 2025 - 2015 + 1 }, (_, i) => (2025 - i).toString())?.map((year) => (
-                  <MenuItem
-                    key={year}
-                    onClick={() => setSelectedStartYear(year)}
-                    bg="white"
-                    color="black"
-                  >
-                    {year}
-                  </MenuItem>
-                ))}
-              </MenuList>
-            </Menu>
+            <Menu.Root>
+              <Menu.Trigger asChild><Button colorPalette="blue">
+                  {selectedStartYear ? `${selectedStartYear}` : 'Year'}
+                  <LuChevronDown /></Button></Menu.Trigger>
+              <Portal><Menu.Positioner><Menu.Content>
+                    {Array.from({ length: 2025 - 2015 + 1 }, (_, i) => (2025 - i).toString())?.map((year) => (
+                      <Menu.Item
+                        key={year}
+                        onSelect={() => setSelectedStartYear(year)}
+                        bg="white"
+                        color="black"
+                        value='item-0'>
+                        {year}
+                      </Menu.Item>
+                    ))}
+                  </Menu.Content></Menu.Positioner></Portal>
+            </Menu.Root>
 
             {/* Month Dropdown for Start Date */}
-            <Menu>
-              <MenuButton as={Button} rightIcon={<ChevronDownIcon />} colorScheme="blue">
-                {selectedStartMonth ? `${selectedStartMonth}` : 'Month'}
-              </MenuButton>
-              <MenuList bg="white" color="black" borderColor="blue.500">
-                {[
-                  { name: 'Jan', value: '01' },
-                  { name: 'Feb', value: '02' },
-                  { name: 'Mar', value: '03' },
-                  { name: 'Apr', value: '04' },
-                  { name: 'May', value: '05' },
-                  { name: 'Jun', value: '06' },
-                  { name: 'Jul', value: '07' },
-                  { name: 'Aug', value: '08' },
-                  { name: 'Sep', value: '09' },
-                  { name: 'Oct', value: '10' },
-                  { name: 'Nov', value: '11' },
-                  { name: 'Dec', value: '12' },
-                ]?.map((month) => (
-                  <MenuItem
-                    key={month.value}
-                    onClick={() => setSelectedStartMonth(month.value)}
-                    bg="white"
-                    color="black"
-                  >
-                    {month.name}
-                  </MenuItem>
-                ))}
-              </MenuList>
-            </Menu>
+            <Menu.Root>
+              <Menu.Trigger asChild><Button colorPalette="blue">
+                  {selectedStartMonth ? `${selectedStartMonth}` : 'Month'}
+                  <LuChevronDown /></Button></Menu.Trigger>
+              <Portal><Menu.Positioner><Menu.Content>
+                    {[
+                      { name: 'Jan', value: '01' },
+                      { name: 'Feb', value: '02' },
+                      { name: 'Mar', value: '03' },
+                      { name: 'Apr', value: '04' },
+                      { name: 'May', value: '05' },
+                      { name: 'Jun', value: '06' },
+                      { name: 'Jul', value: '07' },
+                      { name: 'Aug', value: '08' },
+                      { name: 'Sep', value: '09' },
+                      { name: 'Oct', value: '10' },
+                      { name: 'Nov', value: '11' },
+                      { name: 'Dec', value: '12' },
+                    ]?.map((month) => (
+                      <Menu.Item
+                        key={month.value}
+                        onSelect={() => setSelectedStartMonth(month.value)}
+                        bg="white"
+                        color="black"
+                        value='item-1'>
+                        {month.name}
+                      </Menu.Item>
+                    ))}
+                  </Menu.Content></Menu.Positioner></Portal>
+            </Menu.Root>
             </HStack>
           </Flex>
         </Box>
@@ -2720,57 +2737,57 @@ const handleFeedbackClick = (type: 'positive' | 'negative') => {
             End Date
           </Heading>
           <Flex>
-          <HStack spacing={4}>
+          <HStack gap={4}>
             {/* Year Dropdown for End Date */}
-            <Menu>
-              <MenuButton as={Button} rightIcon={<ChevronDownIcon />} colorScheme="blue">
-                {selectedEndYear ? `${selectedEndYear}` : 'Year'}
-              </MenuButton>
-              <MenuList bg="white" color="black" borderColor="blue.500">
-                {Array.from({ length: 2025 - 2015 + 1 }, (_, i) => (2025 - i).toString())?.map((year) => (
-                  <MenuItem
-                    key={year}
-                    onClick={() => setSelectedEndYear(year)}
-                    bg="white"
-                    color="black"
-                  >
-                    {year}
-                  </MenuItem>
-                ))}
-              </MenuList>
-            </Menu>
+            <Menu.Root>
+              <Menu.Trigger asChild><Button colorPalette="blue">
+                  {selectedEndYear ? `${selectedEndYear}` : 'Year'}
+                  <LuChevronDown /></Button></Menu.Trigger>
+              <Portal><Menu.Positioner><Menu.Content>
+                    {Array.from({ length: 2025 - 2015 + 1 }, (_, i) => (2025 - i).toString())?.map((year) => (
+                      <Menu.Item
+                        key={year}
+                        onSelect={() => setSelectedEndYear(year)}
+                        bg="white"
+                        color="black"
+                        value='item-2'>
+                        {year}
+                      </Menu.Item>
+                    ))}
+                  </Menu.Content></Menu.Positioner></Portal>
+            </Menu.Root>
 
             {/* Month Dropdown for End Date */}
-            <Menu>
-              <MenuButton as={Button} rightIcon={<ChevronDownIcon />} colorScheme="blue">
-                {selectedEndMonth ? `${selectedEndMonth}` : 'Month'}
-              </MenuButton>
-              <MenuList bg="white" color="black" borderColor="blue.500">
-                {[
-                  { name: 'Jan', value: '01' },
-                  { name: 'Feb', value: '02' },
-                  { name: 'Mar', value: '03' },
-                  { name: 'Apr', value: '04' },
-                  { name: 'May', value: '05' },
-                  { name: 'Jun', value: '06' },
-                  { name: 'Jul', value: '07' },
-                  { name: 'Aug', value: '08' },
-                  { name: 'Sep', value: '09' },
-                  { name: 'Oct', value: '10' },
-                  { name: 'Nov', value: '11' },
-                  { name: 'Dec', value: '12' },
-                ]?.map((month) => (
-                  <MenuItem
-                    key={month.value}
-                    onClick={() => setSelectedEndMonth(month.value)}
-                    bg="white"
-                    color="black"
-                  >
-                    {month.name}
-                  </MenuItem>
-                ))}
-              </MenuList>
-            </Menu>
+            <Menu.Root>
+              <Menu.Trigger asChild><Button colorPalette="blue">
+                  {selectedEndMonth ? `${selectedEndMonth}` : 'Month'}
+                  <LuChevronDown /></Button></Menu.Trigger>
+              <Portal><Menu.Positioner><Menu.Content>
+                    {[
+                      { name: 'Jan', value: '01' },
+                      { name: 'Feb', value: '02' },
+                      { name: 'Mar', value: '03' },
+                      { name: 'Apr', value: '04' },
+                      { name: 'May', value: '05' },
+                      { name: 'Jun', value: '06' },
+                      { name: 'Jul', value: '07' },
+                      { name: 'Aug', value: '08' },
+                      { name: 'Sep', value: '09' },
+                      { name: 'Oct', value: '10' },
+                      { name: 'Nov', value: '11' },
+                      { name: 'Dec', value: '12' },
+                    ]?.map((month) => (
+                      <Menu.Item
+                        key={month.value}
+                        onSelect={() => setSelectedEndMonth(month.value)}
+                        bg="white"
+                        color="black"
+                        value='item-3'>
+                        {month.name}
+                      </Menu.Item>
+                    ))}
+                  </Menu.Content></Menu.Positioner></Portal>
+            </Menu.Root>
             </HStack>
           </Flex>
         </Box>
@@ -2785,68 +2802,53 @@ const handleFeedbackClick = (type: 'positive' | 'negative') => {
           >
             Select Reviewer
           </Heading>
-          <Menu closeOnSelect={false}>
-            <MenuButton
-              as={Button}
-              rightIcon={<ChevronDownIcon />}
-              colorScheme="blue"
-              size="md"
-              width="150px"
-            >
-              Reviewers
-            </MenuButton>
+          <Menu.Root closeOnSelect={false}>
+            <Menu.Trigger asChild><Button colorPalette="blue" size="md" width="150px">Reviewers
+                            <LuChevronDown /></Button></Menu.Trigger>
 
-            <MenuList maxHeight="200px" overflowY="auto">
-             
-              <MenuItem onClick={deselectAllReviewers}>
-                <Text as="span" fontWeight="bold" textDecoration="underline">
-                  Remove All
-                </Text>
-              </MenuItem>
-
-              <MenuItem onClick={selectAllReviewers}>
-                <Text as="span" fontWeight="bold" textDecoration="underline">
-                Select All
-                </Text>
-              </MenuItem>
-
-              
-              <MenuItem onClick={selectActiveReviewers}>
-                <Text as="span" fontWeight="bold" textDecoration="underline">
-                  Select Active
-                </Text>
-              </MenuItem>
-
-              <MenuItem onClick={selectEmeritusReviewers}>
-                <Text as="span" fontWeight="bold" textDecoration="underline">
-                  Select Emeritus
-                </Text>
-              </MenuItem>
-
-              <MenuItem onClick={selectReviewers}>
-                <Text as="span" fontWeight="bold" textDecoration="underline">
-                Select Reviewers
-                </Text>
-              </MenuItem>
-
-              
-              {Object.keys(showReviewer)?.map((reviewer) => (
-                <MenuItem key={reviewer}>
-                  <Checkbox
-                    isChecked={showReviewer[reviewer]}
-                    onChange={(e) =>
-                      setShowReviewer({
-                        ...showReviewer,
-                        [reviewer]: e.target.checked,
-                      })
-                    }
-                  >
-                    {reviewer}
-                  </Checkbox>
-                </MenuItem>
-              ))}
-            </MenuList>
-          </Menu>
+            <Portal><Menu.Positioner><Menu.Content>
+                  <Menu.Item onSelect={deselectAllReviewers} value='item-4'>
+                    <Text as="span" fontWeight="bold" textDecoration="underline">
+                      Remove All
+                    </Text>
+                  </Menu.Item>
+                  <Menu.Item onSelect={selectAllReviewers} value='item-5'>
+                    <Text as="span" fontWeight="bold" textDecoration="underline">
+                    Select All
+                    </Text>
+                  </Menu.Item>
+                  <Menu.Item onSelect={selectActiveReviewers} value='item-6'>
+                    <Text as="span" fontWeight="bold" textDecoration="underline">
+                      Select Active
+                    </Text>
+                  </Menu.Item>
+                  <Menu.Item onSelect={selectEmeritusReviewers} value='item-7'>
+                    <Text as="span" fontWeight="bold" textDecoration="underline">
+                      Select Emeritus
+                    </Text>
+                  </Menu.Item>
+                  <Menu.Item onSelect={selectReviewers} value='item-8'>
+                    <Text as="span" fontWeight="bold" textDecoration="underline">
+                    Select Reviewers
+                    </Text>
+                  </Menu.Item>
+                  {Object.keys(showReviewer)?.map((reviewer) => (
+                    <Menu.Item key={reviewer} value='item-9'>
+                      <Checkbox.Root
+                        onCheckedChange={(e) =>
+                          setShowReviewer({
+                            ...showReviewer,
+                            [reviewer]: e.target.checked,
+                          })
+                        }
+                        checked={showReviewer[reviewer]}
+                      ><Checkbox.HiddenInput /><Checkbox.Control><Checkbox.Indicator /></Checkbox.Control><Checkbox.Label>
+                        {reviewer}
+                      </Checkbox.Label></Checkbox.Root>
+                    </Menu.Item>
+                  ))}
+                </Menu.Content></Menu.Positioner></Portal>
+          </Menu.Root>
         </Box>
         </Flex>
        
@@ -2874,61 +2876,47 @@ const handleFeedbackClick = (type: 'positive' | 'negative') => {
       <br/>
      
       <Flex justify="center">
-      <HStack spacing={4}>
+      <HStack gap={4}>
          
-         <Menu closeOnSelect={false}>
-      <MenuButton
-        as={Button}
-        rightIcon={<ChevronDownIcon />}
-        colorScheme="blue"
-        size="md"
-        width="150px"
-      >
-        Reviewers
-      </MenuButton>
+         <Menu.Root closeOnSelect={false}>
+      <Menu.Trigger asChild><Button colorPalette="blue" size="md" width="150px">Reviewers
+                <LuChevronDown /></Button></Menu.Trigger>
 
-      <MenuList maxHeight="200px" overflowY="auto">
-        
-        <MenuItem onClick={deselectAllReviewers}>
-          <Text as="span" fontWeight="bold" textDecoration="underline">
-            Remove All
-          </Text>
-        </MenuItem>
+      <Portal><Menu.Positioner><Menu.Content>
+            <Menu.Item onSelect={deselectAllReviewers} value='item-10'>
+              <Text as="span" fontWeight="bold" textDecoration="underline">
+                Remove All
+              </Text>
+            </Menu.Item>
+            <Menu.Item onSelect={selectActiveReviewers} value='item-11'>
+              <Text as="span" fontWeight="bold" textDecoration="underline">
+              Active Editors
+              </Text>
+            </Menu.Item>
+            <Menu.Item onSelect={selectAllReviewers} value='item-12'>
+              <Text as="span" fontWeight="bold" textDecoration="underline">
+                Select All
+              </Text>
+            </Menu.Item>
+            {Object.keys(showReviewer)?.map((reviewer) => (
+              <Menu.Item key={reviewer} value='item-13'>
+                <Checkbox.Root
+                  onCheckedChange={(e) =>
+                    setShowReviewer({
+                      ...showReviewer,
+                      [reviewer]: e.target.checked,
+                    })
+                  }
+                  checked={showReviewer[reviewer]}
+                ><Checkbox.HiddenInput /><Checkbox.Control><Checkbox.Indicator /></Checkbox.Control><Checkbox.Label>
+                  {reviewer}
+                </Checkbox.Label></Checkbox.Root>
+              </Menu.Item>
+            ))}
+          </Menu.Content></Menu.Positioner></Portal>
+    </Menu.Root>
 
-        
-        <MenuItem onClick={selectActiveReviewers}>
-          <Text as="span" fontWeight="bold" textDecoration="underline">
-          Active Editors
-          </Text>
-        </MenuItem>
-
-        
-        <MenuItem onClick={selectAllReviewers}>
-          <Text as="span" fontWeight="bold" textDecoration="underline">
-            Select All
-          </Text>
-        </MenuItem>
-
-        
-        {Object.keys(showReviewer)?.map((reviewer) => (
-          <MenuItem key={reviewer}>
-            <Checkbox
-              isChecked={showReviewer[reviewer]}
-              onChange={(e) =>
-                setShowReviewer({
-                  ...showReviewer,
-                  [reviewer]: e.target.checked,
-                })
-              }
-            >
-              {reviewer}
-            </Checkbox>
-          </MenuItem>
-        ))}
-      </MenuList>
-    </Menu>
-
-        <Button size="md" width="150px" colorScheme="blue" onClick={toggleDropdown}>
+        <Button size="md" width="150px" colorPalette="blue" onClick={toggleDropdown}>
           {showDropdown ? 'Hide' : 'View More'}
         </Button>
        
@@ -2936,47 +2924,38 @@ const handleFeedbackClick = (type: 'positive' | 'negative') => {
 
       {showDropdown && (
         // <HStack spacing={4}>
-        <Box display={{ base: "none", md: "flex" }} justifyContent="center" gap="1rem">
-          
-            
-            <Menu>
-              <MenuButton as={Button} rightIcon={<ChevronDownIcon />} colorScheme="blue">
+        (<Box display={{ base: "none", md: "flex" }} justifyContent="center" gap="1rem">
+          <Menu.Root>
+            <Menu.Trigger asChild><Button colorPalette="blue">
                 {selectedYear ? `Year: ${selectedYear}` : 'Select Year'}
-              </MenuButton>
-              <MenuList>
-                {getYears()?.map((year) => (
-                  <MenuItem
-                    key={year}
-                    onClick={() => {
-                      setSelectedYear(year.toString());
-                      setSelectedMonth(null); 
-                    }}
-                  >
-                    {year}
-                  </MenuItem>
-                ))}
-              </MenuList>
-            </Menu>
-
-            
-            <Menu>
-              <MenuButton
-                as={Button}
-                rightIcon={<ChevronDownIcon />}
-                colorScheme="blue"
-                isDisabled={!selectedYear} 
-              >
+                <LuChevronDown /></Button></Menu.Trigger>
+            <Portal><Menu.Positioner><Menu.Content>
+                  {getYears()?.map((year) => (
+                    <Menu.Item
+                      key={year}
+                      onSelect={() => {
+                        setSelectedYear(year.toString());
+                        setSelectedMonth(null); 
+                      }}
+                      value='item-14'>
+                      {year}
+                    </Menu.Item>
+                  ))}
+                </Menu.Content></Menu.Positioner></Portal>
+          </Menu.Root>
+          <Menu.Root>
+            <Menu.Trigger asChild><Button colorPalette="blue" disabled={!selectedYear}>
                 {selectedMonth ? `Month: ${selectedMonth}` : 'Select Month'}
-              </MenuButton>
-              <MenuList>
-                {selectedYear && getMonths()?.map((month, index) => (
-                  <MenuItem key={index} onClick={() => setSelectedMonth(month)}>
-                    {month}
-                  </MenuItem>
-                ))}
-              </MenuList>
-            </Menu>
-        </Box>
+                <LuChevronDown /></Button></Menu.Trigger>
+            <Portal><Menu.Positioner><Menu.Content>
+                  {selectedYear && getMonths()?.map((month, index) => (
+                    <Menu.Item key={index} onSelect={() => setSelectedMonth(month)} value='item-15'>
+                      {month}
+                    </Menu.Item>
+                  ))}
+                </Menu.Content></Menu.Positioner></Portal>
+          </Menu.Root>
+        </Box>)
         // </HStack>
       )}
        </HStack>
@@ -2984,53 +2963,48 @@ const handleFeedbackClick = (type: 'positive' | 'negative') => {
 
       <Flex justify="center" mt={2}>
         
-      <HStack spacing={4}>
+      <HStack gap={4}>
          
        
         
 
       {showDropdown && (
-        <HStack spacing={4}>
+        <HStack gap={4}>
         <Box display={{ base: "flex", md: "none" }} justifyContent="center" gap="1rem">
           
             
-            <Menu>
-              <MenuButton as={Button} rightIcon={<ChevronDownIcon />} colorScheme="blue">
-                {selectedYear ? `Year: ${selectedYear}` : 'Select Year'}
-              </MenuButton>
-              <MenuList>
-                {getYears()?.map((year) => (
-                  <MenuItem
-                    key={year}
-                    onClick={() => {
-                      setSelectedYear(year.toString());
-                      setSelectedMonth(null); 
-                    }}
-                  >
-                    {year}
-                  </MenuItem>
-                ))}
-              </MenuList>
-            </Menu>
+            <Menu.Root>
+              <Menu.Trigger asChild><Button colorPalette="blue">
+                  {selectedYear ? `Year: ${selectedYear}` : 'Select Year'}
+                  <LuChevronDown /></Button></Menu.Trigger>
+              <Portal><Menu.Positioner><Menu.Content>
+                    {getYears()?.map((year) => (
+                      <Menu.Item
+                        key={year}
+                        onSelect={() => {
+                          setSelectedYear(year.toString());
+                          setSelectedMonth(null); 
+                        }}
+                        value='item-16'>
+                        {year}
+                      </Menu.Item>
+                    ))}
+                  </Menu.Content></Menu.Positioner></Portal>
+            </Menu.Root>
 
             
-            <Menu>
-              <MenuButton
-                as={Button}
-                rightIcon={<ChevronDownIcon />}
-                colorScheme="blue"
-                isDisabled={!selectedYear} 
-              >
-                {selectedMonth ? `Month: ${selectedMonth}` : 'Select Month'}
-              </MenuButton>
-              <MenuList>
-                {selectedYear && getMonths()?.map((month, index) => (
-                  <MenuItem key={index} onClick={() => setSelectedMonth(month)}>
-                    {month}
-                  </MenuItem>
-                ))}
-              </MenuList>
-            </Menu>
+            <Menu.Root>
+              <Menu.Trigger asChild><Button colorPalette="blue" disabled={!selectedYear}>
+                  {selectedMonth ? `Month: ${selectedMonth}` : 'Select Month'}
+                  <LuChevronDown /></Button></Menu.Trigger>
+              <Portal><Menu.Positioner><Menu.Content>
+                    {selectedYear && getMonths()?.map((month, index) => (
+                      <Menu.Item key={index} onSelect={() => setSelectedMonth(month)} value='item-17'>
+                        {month}
+                      </Menu.Item>
+                    ))}
+                  </Menu.Content></Menu.Positioner></Portal>
+            </Menu.Root>
         </Box>
         </HStack>
       )}
@@ -3075,10 +3049,10 @@ const handleFeedbackClick = (type: 'positive' | 'negative') => {
                   }}
                 >
                   <Button
-                    colorScheme="blue"
+                    colorPalette="blue"
                     fontSize={{ base: "0.6rem", md: "md" }}
                    
-                  >  <DownloadIcon marginEnd={"1.5"} />
+                  >  <Icon as={LuDownload} marginEnd={"1.5"} />
                     {loading2 ? <Spinner size="sm" /> : "Download CSV"}
                   </Button>
                 </CSVLink>

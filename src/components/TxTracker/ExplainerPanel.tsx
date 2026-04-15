@@ -1,21 +1,6 @@
 import React, { useState } from 'react';
-import {
-  Box,
-  Text,
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  AccordionIcon,
-  useColorModeValue,
-  Icon,
-  Flex,
-  Badge,
-  VStack,
-  HStack,
-  Button,
-  Collapse
-} from '@chakra-ui/react';
+import { useColorModeValue } from "../ui/color-mode";
+import { Steps, Box, Text, Accordion, Icon, Flex, Badge, VStack, HStack, Button, Collapsible } from "@chakra-ui/react";
 import { 
   FaInfoCircle, 
   FaGasPump, 
@@ -105,9 +90,9 @@ const ExplainerPanel = () => {
         _hover={{ bg: 'blue.600' }}
         transition="all 0.2s"
       >
-        <HStack spacing={3}>
+        <HStack gap={3}>
           <Icon as={FaQuestionCircle} boxSize={6} />
-          <VStack align="start" spacing={0}>
+          <VStack align="start" gap={0}>
             <Text fontSize="lg" fontWeight="bold">
               🤔 New to Ethereum? Learn the Basics!
             </Text>
@@ -116,86 +101,79 @@ const ExplainerPanel = () => {
             </Text>
           </VStack>
         </HStack>
-        <Button
-          size="sm"
-          variant="ghost"
-          color="white"
-          _hover={{ bg: 'whiteAlpha.200' }}
-          rightIcon={<Icon as={isOpen ? FaChevronUp : FaChevronDown} />}
-        >
-          {isOpen ? 'Hide' : 'Learn'}
-        </Button>
+        <Button size="sm" variant="ghost" color="white" _hover={{ bg: 'whiteAlpha.200' }}>{isOpen ? 'Hide' : 'Learn'}<Icon as={isOpen ? FaChevronUp : FaChevronDown} /></Button>
       </Flex>
-
       {/* Content */}
-      <Collapse in={isOpen} animateOpacity>
-        <Box p={6}>
-          <VStack spacing={4} align="stretch">
-            {explanations.map((item, index) => (
-              <Box
-                key={index}
-                bg={accentBg}
-                borderRadius="lg"
-                p={4}
-                border="1px solid"
-                borderColor={`${item.color}.200`}
-              >
-                <HStack spacing={3} mb={2}>
-                  <Flex
-                    w="40px"
-                    h="40px"
-                    bg={`${item.color}.500`}
-                    borderRadius="lg"
-                    align="center"
-                    justify="center"
-                  >
-                    <Icon as={item.icon} color="white" boxSize={5} />
-                  </Flex>
-                  <Text fontSize="lg" fontWeight="bold" color={textColor}>
-                    {item.title}
-                  </Text>
-                </HStack>
-                
-                <Text fontSize="sm" color={subColor} mb={2}>
-                  {item.description}
-                </Text>
-                
-                <Badge 
-                  colorScheme={item.color} 
-                  variant="subtle" 
-                  fontSize="xs" 
-                  px={3} 
-                  py={1}
-                  borderRadius="full"
+      <Collapsible.Root open={isOpen}>
+        <Collapsible.Content>
+          <Box p={6}>
+            <VStack gap={4} align="stretch">
+              {explanations.map((item, index) => (
+                <Box
+                  key={index}
+                  bg={accentBg}
+                  borderRadius="lg"
+                  p={4}
+                  border="1px solid"
+                  borderColor={`${item.color}.200`}
                 >
-                  💡 {item.simple}
-                </Badge>
-              </Box>
-            ))}
-          </VStack>
-
-          {/* Quick Reference */}
-          <Box mt={6} p={4} bg={useColorModeValue('gray.50', 'gray.700')} borderRadius="lg">
-            <Text fontSize="md" fontWeight="bold" color={textColor} mb={3}>
-              📊 Quick Reference - What the Charts Show:
-            </Text>
-            <VStack align="start" spacing={2}>
-              <Text fontSize="sm" color={subColor}>
-                • <strong>Transaction Fee Chart:</strong> How much people are paying to use Ethereum
-              </Text>
-              <Text fontSize="sm" color={subColor}>
-                • <strong>Transaction Count Chart:</strong> How busy the network is (more transactions = more activity)
-              </Text>
-              <Text fontSize="sm" color={subColor}>
-                • <strong>Recent Transactions:</strong> Latest money transfers happening right now
-              </Text>
-              <Text fontSize="sm" color={subColor}>
-                • <strong>Recent Blocks:</strong> Latest "pages" added to the Ethereum ledger
-              </Text>
+                  <HStack gap={3} mb={2}>
+                    <Flex
+                      w="40px"
+                      h="40px"
+                      bg={`${item.color}.500`}
+                      borderRadius="lg"
+                      align="center"
+                      justify="center"
+                    >
+                      <Icon as={item.icon} color="white" boxSize={5} />
+                    </Flex>
+                    <Text fontSize="lg" fontWeight="bold" color={textColor}>
+                      {item.title}
+                    </Text>
+                  </HStack>
+                  
+                  <Text fontSize="sm" color={subColor} mb={2}>
+                    {item.description}
+                  </Text>
+                  
+                  <Badge 
+                    colorPalette={item.color} 
+                    variant="subtle" 
+                    fontSize="xs" 
+                    px={3} 
+                    py={1}
+                    borderRadius="full"
+                  >
+                    💡 {item.simple}
+                  </Badge>
+                </Box>
+              ))}
             </VStack>
+
+            {/* Quick Reference */}
+            <Box mt={6} p={4} bg={useColorModeValue('gray.50', 'gray.700')} borderRadius="lg">
+              <Text fontSize="md" fontWeight="bold" color={textColor} mb={3}>
+                📊 Quick Reference - What the Charts Show:
+              </Text>
+              <VStack align="start" gap={2}>
+                <Text fontSize="sm" color={subColor}>
+                  • <strong>Transaction Fee Chart:</strong> How much people are paying to use Ethereum
+                </Text>
+                <Text fontSize="sm" color={subColor}>
+                  • <strong>Transaction Count Chart:</strong> How busy the network is (more transactions = more activity)
+                </Text>
+                <Text fontSize="sm" color={subColor}>
+                  • <strong>Recent Transactions:</strong> Latest money transfers happening right now
+                </Text>
+                <Text fontSize="sm" color={subColor}>
+                  • <strong>Recent Blocks:</strong> Latest "pages" added to the Ethereum ledger
+                </Text>
+              </VStack>
+            </Box>
           </Box>
-        </Box>
-      </Collapse>
+        </Collapsible.Content>
+      </Collapsible.Root>
     </Box>
   );
 };

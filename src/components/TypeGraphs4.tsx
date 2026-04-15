@@ -1,5 +1,6 @@
 import React from "react";
-import { Box, Grid, Text, useColorModeValue } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Grid, Text } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import StackedColumnChart from "@/components/StackedColumnChart";
 import StatusColumnChart from "@/components/StatusColumnChart3";

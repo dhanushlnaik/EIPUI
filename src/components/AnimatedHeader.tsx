@@ -1,16 +1,8 @@
+import { Divider } from "@/components/ui/compat";
 import React, { useState } from 'react';
-import {
-  Box,
-  Heading,
-  Text,
-  useColorModeValue,
-  Collapse,
-  IconButton,
-  Flex,
-  VStack,
-  Divider,
-} from '@chakra-ui/react';
-import { InfoIcon, ChevronUpIcon } from '@chakra-ui/icons';
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Heading, Text, Collapsible, IconButton, Flex, VStack, Icon } from "@chakra-ui/react";
+import { LuChevronUp, LuInfo } from 'react-icons/lu';
 
 interface FAQItem {
   question: string;
@@ -89,7 +81,6 @@ const AnimatedHeader: React.FC<AnimatedHeaderProps> = ({
         {faqItems && faqItems.length > 0 && (
           <Box pt={0.5}>
             <IconButton
-              icon={showInfo ? <ChevronUpIcon boxSize={4.5} /> : <InfoIcon boxSize={4} />}
               onClick={() => setShowInfo(!showInfo)}
               size="sm"
               variant="outline"
@@ -106,46 +97,44 @@ const AnimatedHeader: React.FC<AnimatedHeaderProps> = ({
               _active={{
                 bg: buttonBgHover,
               }}
-              transition="all 0.2s ease"
-            />
+              transition="all 0.2s ease">{showInfo ? <Icon as={LuChevronUp} boxSize={4.5} /> : <Icon as={LuInfo} boxSize={4} />}</IconButton>
           </Box>
         )}
       </Flex>
-
       {/* Collapsible FAQ Section */}
       {faqItems && faqItems.length > 0 && (
-        <Collapse in={showInfo} animateOpacity>
-          <Box
-            mt={3}
-            p={{ base: 3, md: 4 }}
-            bg={faqBg}
-            borderRadius="md"
-            borderWidth="1px"
-            borderColor={faqBorder}
-          >
-            <VStack align="stretch" spacing={3} divider={<Divider borderColor={faqBorder} />}>
-              {faqItems.map((item, index) => (
-                <Box key={index}>
-                  <Text
-                    fontWeight="semibold"
-                    color={questionColor}
-                    mb={1.5}
-                    fontSize="sm"
-                  >
-                    {item.question}
-                  </Text>
-                  <Text
-                    fontSize="sm"
-                    color={answerColor}
-                    lineHeight="1.6"
-                  >
-                    {item.answer}
-                  </Text>
-                </Box>
-              ))}
-            </VStack>
-          </Box>
-        </Collapse>
+        <Collapsible.Root open={showInfo}>
+          <Collapsible.Content>
+            <Box
+              mt={3}
+              p={{ base: 3, md: 4 }}
+              bg={faqBg}
+              borderRadius="md"
+              borderWidth="1px"
+              borderColor={faqBorder}
+            >
+              <VStack align="stretch" gap={3}>{faqItems.map((item, index) => (
+                  <Box key={index}>
+                    <Text
+                      fontWeight="semibold"
+                      color={questionColor}
+                      mb={1.5}
+                      fontSize="sm"
+                    >
+                      {item.question}
+                    </Text>
+                    <Text
+                      fontSize="sm"
+                      color={answerColor}
+                      lineHeight="1.6"
+                    >
+                      {item.answer}
+                    </Text>
+                  </Box>
+                ))}</VStack>
+            </Box>
+          </Collapsible.Content>
+        </Collapsible.Root>
       )}
     </Box>
   );

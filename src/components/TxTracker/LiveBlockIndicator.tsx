@@ -1,16 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Box,
-  Text,
-  Flex,
-  Badge,
-  Icon,
-  Tooltip,
-  useColorModeValue,
-  Skeleton,
-  HStack,
-  VStack
-} from '@chakra-ui/react';
+import { useColorModeValue } from "../ui/color-mode";
+import { Steps, Box, Text, Flex, Badge, Icon, Skeleton, HStack, VStack } from "@chakra-ui/react";
+import { Tooltip } from '@/components/ui/tooltip';
 import { FaCube, FaClock, FaSignal } from 'react-icons/fa';
 import MongoDataService, { type LatestValues } from '@/services/MongoDataService';
 
@@ -80,12 +71,13 @@ const LiveBlockIndicator = ({ network, onBlockUpdate }: LiveBlockIndicatorProps)
 
   if (!mongoData) {
     return (
-      <Skeleton 
-        height="80px" 
-        borderRadius="xl" 
-        startColor="blue.300" 
-        endColor="blue.600" 
-      />
+      <Skeleton
+        height="80px"
+        borderRadius="xl"
+        css={{
+          '--start-color': 'blue.300',
+          '--end-color': 'blue.600'
+        }} />
     );
   }
 
@@ -117,9 +109,8 @@ const LiveBlockIndicator = ({ network, onBlockUpdate }: LiveBlockIndicatorProps)
         bg={isConnected ? 'green.400' : 'red.400'}
         boxShadow={isConnected ? '0 0 8px rgba(34, 197, 94, 0.6)' : '0 0 8px rgba(239, 68, 68, 0.6)'}
       />
-
       <Flex align="center" justify="space-between">
-        <HStack spacing={3}>
+        <HStack gap={3}>
           <Flex
             w="50px"
             h="50px"
@@ -132,16 +123,16 @@ const LiveBlockIndicator = ({ network, onBlockUpdate }: LiveBlockIndicatorProps)
             <Icon as={FaCube} color="white" boxSize={6} />
           </Flex>
           
-          <VStack align="start" spacing={0}>
+          <VStack align="start" gap={0}>
             <Text fontSize="xs" color={subColor} fontWeight="medium">
               LATEST BLOCK
             </Text>
             <Text fontSize="2xl" fontWeight="bold" color={textColor} lineHeight="1">
               #{mongoData.blockNumber.toLocaleString()}
             </Text>
-            <HStack spacing={2}>
+            <HStack gap={2}>
               <Badge 
-                colorScheme={network === 'mainnet' ? 'green' : 'orange'} 
+                colorPalette={network === 'mainnet' ? 'green' : 'orange'} 
                 variant="solid" 
                 fontSize="0.7rem"
                 px={2}
@@ -151,10 +142,10 @@ const LiveBlockIndicator = ({ network, onBlockUpdate }: LiveBlockIndicatorProps)
               </Badge>
               {timeAgo && (
                 <Tooltip 
-                  label={`Last updated: ${mongoData.timestamp?.toLocaleTimeString()}`}
-                  hasArrow
+                  content={`Last updated: ${mongoData.timestamp?.toLocaleTimeString()}`}
+                  showArrow
                 >
-                  <HStack spacing={1}>
+                  <HStack gap={1}>
                     <Icon as={FaClock} boxSize={3} color={subColor} />
                     <Text fontSize="xs" color={subColor}>
                       {timeAgo}
@@ -166,8 +157,8 @@ const LiveBlockIndicator = ({ network, onBlockUpdate }: LiveBlockIndicatorProps)
           </VStack>
         </HStack>
 
-        <VStack spacing={1} align="end">
-          <HStack spacing={1}>
+        <VStack gap={1} align="end">
+          <HStack gap={1}>
             <Icon 
               as={FaSignal} 
               boxSize={4} 

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { useColorModeValue } from "./ui/color-mode";
 import { useWindowSize } from "react-use";
-import { Box, useColorModeValue, Button, Flex, Heading } from "@chakra-ui/react";
+import { Steps, Box, Button, Flex, Heading } from "@chakra-ui/react";
 import dynamic from "next/dynamic";
 import axios from "axios";
 
@@ -13,18 +14,18 @@ interface StatusChart {
     }[];
     year: number;
   }
-  
-  interface APIResponse {
-    eip: StatusChart[];
-    erc: StatusChart[];
-    rip: StatusChart[];
-  }
-  
-  interface AreaCProps {
-    category: string;
-    type: string;
-  }
-  
+
+interface APIResponse {
+  eip: StatusChart[];
+  erc: StatusChart[];
+  rip: StatusChart[];
+}
+
+interface AreaCProps {
+  category: string;
+  type: string;
+}
+
 
 const getStatus = (status: string) => {
   switch (status) {
@@ -252,29 +253,29 @@ const headingColor = useColorModeValue('black', 'white');
 
 return (
   <>
-      <Flex justifyContent="space-between" alignItems="center" mb="0.5rem" width="100%">
-          <Heading size="md" color={headingColor}>
-              {category}
-          </Heading>
-          <Button colorScheme="blue" 
-          onClick={async () => {
-            try {
-              // Trigger the CSV conversion and download
-              downloadData();
-        
-              // Trigger the API call
-              await axios.post("/api/DownloadCounter");
-            } catch (error) {
-              console.error("Error triggering download counter:", error);
-            }
-          }}
-          >
-              Download CSV
-          </Button>
-      </Flex>
-      <Box boxSize="100%" overflowX="auto">
-          <Area {...config} />
-      </Box>
+    <Flex justifyContent="space-between" alignItems="center" mb="0.5rem" width="100%">
+        <Heading size="md" color={headingColor}>
+            {category}
+        </Heading>
+        <Button colorPalette="blue" 
+        onClick={async () => {
+          try {
+            // Trigger the CSV conversion and download
+            downloadData();
+      
+            // Trigger the API call
+            await axios.post("/api/DownloadCounter");
+          } catch (error) {
+            console.error("Error triggering download counter:", error);
+          }
+        }}
+        >
+            Download CSV
+        </Button>
+    </Flex>
+    <Box boxSize="100%" overflowX="auto">
+        <Area {...config} />
+    </Box>
   </>
 );
 

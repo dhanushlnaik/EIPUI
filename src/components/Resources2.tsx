@@ -1,7 +1,8 @@
+import { TabList, Tab, TabPanels, TabPanel } from "@/components/ui/compat";
 import React, { useState, useEffect } from "react";
-import {useColorModeValue, Box, Tab, TabList, TabPanel, TabPanels, Tabs, Text, Image, Link, Flex, UnorderedList, ListItem } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
+import { Box, Tabs, Text, Image, Link, Flex, List, SimpleGrid } from "@chakra-ui/react";
 import Header from "./Header";
-import { SimpleGrid } from "@chakra-ui/react";
 
 
 const ResourcesPage: React.FC = () => {
@@ -82,7 +83,7 @@ const ResourcesPage: React.FC = () => {
           >
             {content}
           </Text>
-          <Link href={link} color="blue.400" isExternal>
+          <Link href={link} color="blue.400" target='_blank' rel='noopener noreferrer'>
             Read More
           </Link>
         </Box>
@@ -269,11 +270,13 @@ const INSIGHT= [
     A Rollup Improvement Proposal (RIP) is a formal document that outlines new features, processes, or optimizations for rollup solutions in the Ethereum ecosystem. RIPs act as specifications to improve rollups, enhance interoperability, and standardize development processes.
   </Text>
   <Text fontSize={{ base: "sm", sm: "xs", md: "md" }} mt={4} textAlign="justify">
-    <Link  href="https://ethereum-magicians.org/t/about-the-rips-category/19805"
-    isExternal
-    color="blue.500"
-    textDecoration="underline"
-    _hover={{  color: "blue.700" }}>All RIPs are optional</Link>. RIPs are and will always remain optional standards for Rollups and participants in the larger EVM ecosystem.
+    <Link
+      href="https://ethereum-magicians.org/t/about-the-rips-category/19805"
+      color="blue.500"
+      textDecoration="underline"
+      _hover={{  color: "blue.700" }}
+      target='_blank'
+      rel='noopener noreferrer'>All RIPs are optional</Link>. RIPs are and will always remain optional standards for Rollups and participants in the larger EVM ecosystem.
   </Text>
   
   <Text fontSize={{ base: "sm", sm: "xs", md: "md" }} fontWeight="semibold" color="blue.400" mt={10} textAlign="justify">
@@ -282,12 +285,12 @@ const INSIGHT= [
   <Text fontSize={{ base: "sm", sm: "xs", md: "md" }} mt={4} textAlign="justify">
     RIPs help coordinate technical improvements for rollups in a transparent, collaborative way. They:
   </Text>
-  <UnorderedList spacing={2} fontSize={{ base: "sm", sm: "xs", md: "md" }}>
-    <ListItem>Propose <Text as="span" fontWeight="bold">new features</Text> and optimizations.</ListItem>
-    <ListItem>Collect <Text as="span" fontWeight="bold">community feedback</Text> on rollup-related issues.</ListItem>
-    <ListItem>Serve as a <Text as="span" fontWeight="bold">historical record</Text> of design decisions.</ListItem>
-    <ListItem>Help rollups track progress, especially for multi-client implementations.</ListItem>
-  </UnorderedList>
+  <List.Root as='ul' gap={2} fontSize={{ base: "sm", sm: "xs", md: "md" }}>
+    <List.Item>Propose <Text as="span" fontWeight="bold">new features</Text> and optimizations.</List.Item>
+    <List.Item>Collect <Text as="span" fontWeight="bold">community feedback</Text> on rollup-related issues.</List.Item>
+    <List.Item>Serve as a <Text as="span" fontWeight="bold">historical record</Text> of design decisions.</List.Item>
+    <List.Item>Help rollups track progress, especially for multi-client implementations.</List.Item>
+  </List.Root>
   <Text fontSize={{ base: "sm", sm: "xs", md: "md" }} mt={4} textAlign="justify">
     By adopting RIPs, rollups can align on standards and ensure better <Text as="span" fontWeight="bold">interoperability</Text> across Layer 2 solutions. The goal of the RIP project is to standardize and provide high-quality documentation for Rollups in the Ethereum ecosystem.
   </Text>
@@ -298,11 +301,11 @@ const INSIGHT= [
   <Text fontSize={{ base: "sm", sm: "xs", md: "md" }} mt={4} textAlign="justify">
     <Text as="span" fontWeight="bold">Standards Track RIPs</Text> - Changes that impact most or all rollup implementations, including:
   </Text>
-  <UnorderedList spacing={2} fontSize={{ base: "sm", sm: "xs", md: "md" }}>
-    <ListItem><Text as="span" fontWeight="bold">Core</Text>: Changes to network rules, block validity, EVM opcodes, cryptographic updates.</ListItem>
-    <ListItem><Text as="span" fontWeight="bold">RRC (Rollup Request for Comments)</Text>: Application-level standards like token or wallet formats.</ListItem>
-    <ListItem><Text as="span" fontWeight="bold">Other</Text>: Improvements relevant to core developer discussions.</ListItem>
-  </UnorderedList>
+  <List.Root as='ul' gap={2} fontSize={{ base: "sm", sm: "xs", md: "md" }}>
+    <List.Item><Text as="span" fontWeight="bold">Core</Text>: Changes to network rules, block validity, EVM opcodes, cryptographic updates.</List.Item>
+    <List.Item><Text as="span" fontWeight="bold">RRC (Rollup Request for Comments)</Text>: Application-level standards like token or wallet formats.</List.Item>
+    <List.Item><Text as="span" fontWeight="bold">Other</Text>: Improvements relevant to core developer discussions.</List.Item>
+  </List.Root>
   <Text fontSize={{ base: "sm", sm: "xs", md: "md" }} mt={4} textAlign="justify">
     <Text as="span" fontWeight="bold">Meta RIPs</Text> - Proposals related to rollup processes, governance, or the RIP process itself. These are not technical but focus on <Text as="span" fontWeight="bold">procedures, tools, or guidelines</Text>.
   </Text>
@@ -313,21 +316,23 @@ const INSIGHT= [
   <Text fontSize={{ base: "sm", sm: "xs", md: "md" }}  mt={4} textAlign="justify">
     The RIP process follows these steps:
   </Text>
-  <UnorderedList spacing={2} fontSize={{ base: "sm", sm: "xs", md: "md" }}>
-    <ListItem><Text as="span" fontWeight="bold">Idea Stage</Text>: Share your proposal idea for initial feedback (e.g., Ethereum Magicians forum).</ListItem>
-    <ListItem><Text as="span" fontWeight="bold">Draft</Text>: Submit a formal RIP using the template provided.</ListItem>
-    <ListItem><Text as="span" fontWeight="bold">Review</Text>: Invite community discussion and peer review.</ListItem>
-    <ListItem><Text as="span" fontWeight="bold">Final</Text>: Once accepted, the RIP becomes the standard and is ready for implementation.</ListItem>
-    <ListItem><Text as="span" fontWeight="bold">Stagnant</Text>: RIPs inactive for 6+ months may be labeled as stagnant.</ListItem>
-    <ListItem><Text as="span" fontWeight="bold">Withdrawn</Text>: Proposals that authors decide to discontinue.</ListItem>
-    <ListItem><Text as="span" fontWeight="bold">Living</Text>: RIPs continually updated without reaching a final state.</ListItem>
-  </UnorderedList>
+  <List.Root as='ul' gap={2} fontSize={{ base: "sm", sm: "xs", md: "md" }}>
+    <List.Item><Text as="span" fontWeight="bold">Idea Stage</Text>: Share your proposal idea for initial feedback (e.g., Ethereum Magicians forum).</List.Item>
+    <List.Item><Text as="span" fontWeight="bold">Draft</Text>: Submit a formal RIP using the template provided.</List.Item>
+    <List.Item><Text as="span" fontWeight="bold">Review</Text>: Invite community discussion and peer review.</List.Item>
+    <List.Item><Text as="span" fontWeight="bold">Final</Text>: Once accepted, the RIP becomes the standard and is ready for implementation.</List.Item>
+    <List.Item><Text as="span" fontWeight="bold">Stagnant</Text>: RIPs inactive for 6+ months may be labeled as stagnant.</List.Item>
+    <List.Item><Text as="span" fontWeight="bold">Withdrawn</Text>: Proposals that authors decide to discontinue.</List.Item>
+    <List.Item><Text as="span" fontWeight="bold">Living</Text>: RIPs continually updated without reaching a final state.</List.Item>
+  </List.Root>
   <Text fontSize={{ base: "sm", sm: "xs", md: "md" }} mt={4} textAlign="justify">
-    <b>Tip</b>: For Core RIPs, presenting your proposal during  <Link  href="https://github.com/ethereum/pm/issues"
-    isExternal
+    <b>Tip</b>: For Core RIPs, presenting your proposal during  <Link
+    href="https://github.com/ethereum/pm/issues"
     color="blue.500"
     textDecoration="underline"
-    _hover={{  color: "blue.700" }}>Rollcall meetings</Link> is the best way to gather technical feedback and consensus from rollup core teams.
+    _hover={{  color: "blue.700" }}
+    target='_blank'
+    rel='noopener noreferrer'>Rollcall meetings</Link> is the best way to gather technical feedback and consensus from rollup core teams.
   </Text>
 
   <Text fontSize={{ base: "sm", sm: "xs", md: "md" }} fontWeight="semibold" color="blue.400" mt={10} textAlign="justify">
@@ -336,14 +341,16 @@ const INSIGHT= [
   <Text fontSize={{ base: "sm", sm: "xs", md: "md" }} mt={4} textAlign="justify">
     Anyone! Whether you're a developer, researcher, or rollup enthusiast, you can submit an RIP. Before drafting:
   </Text>
-  <UnorderedList spacing={2} fontSize={{ base: "sm", sm: "xs", md: "md" }}>
-    <ListItem>Discuss your idea on the <Link  href="https://ethereum-magicians.org/"
-    isExternal
-    color="blue.500"
-    textDecoration="underline"
-    _hover={{  color: "blue.700" }}>Ethereum Magicians Forum</Link>.</ListItem>
-    <ListItem>Collaborate with rollup teams early to build consensus.</ListItem>
-  </UnorderedList>
+  <List.Root as='ul' gap={2} fontSize={{ base: "sm", sm: "xs", md: "md" }}>
+    <List.Item>Discuss your idea on the <Link
+      href="https://ethereum-magicians.org/"
+      color="blue.500"
+      textDecoration="underline"
+      _hover={{  color: "blue.700" }}
+      target='_blank'
+      rel='noopener noreferrer'>Ethereum Magicians Forum</Link>.</List.Item>
+    <List.Item>Collaborate with rollup teams early to build consensus.</List.Item>
+  </List.Root>
 
   <Text fontSize={{ base: "sm", sm: "xs", md: "md" }} fontWeight="semibold" color="blue.400" mt={10} textAlign="justify">
     What Makes a Successful RIP?
@@ -351,13 +358,13 @@ const INSIGHT= [
   <Text fontSize={{ base: "sm", sm: "xs", md: "md" }} mt={4} textAlign="justify">
     A strong RIP includes:
   </Text>
-  <UnorderedList spacing={2} fontSize={{ base: "sm", sm: "xs", md: "md" }}>
-    <ListItem><Text as="span" fontWeight="bold">Clear Specification</Text>: Detailed syntax and semantics of the proposed change.</ListItem>
-    <ListItem><Text as="span" fontWeight="bold">Motivation</Text>: Why the change is necessary.</ListItem>
-    <ListItem><Text as="span" fontWeight="bold">Rationale</Text>: Design decisions and alternatives considered.</ListItem>
-    <ListItem><Text as="span" fontWeight="bold">Security Considerations</Text>: Risks, mitigations, and guidance.</ListItem>
-    <ListItem><Text as="span" fontWeight="bold">Backwards Compatibility</Text>: Notes on how the proposal impacts existing implementations.</ListItem>
-  </UnorderedList>
+  <List.Root as='ul' gap={2} fontSize={{ base: "sm", sm: "xs", md: "md" }}>
+    <List.Item><Text as="span" fontWeight="bold">Clear Specification</Text>: Detailed syntax and semantics of the proposed change.</List.Item>
+    <List.Item><Text as="span" fontWeight="bold">Motivation</Text>: Why the change is necessary.</List.Item>
+    <List.Item><Text as="span" fontWeight="bold">Rationale</Text>: Design decisions and alternatives considered.</List.Item>
+    <List.Item><Text as="span" fontWeight="bold">Security Considerations</Text>: Risks, mitigations, and guidance.</List.Item>
+    <List.Item><Text as="span" fontWeight="bold">Backwards Compatibility</Text>: Notes on how the proposal impacts existing implementations.</List.Item>
+  </List.Root>
 
   <Text fontSize={{ base: "sm", sm: "xs", md: "md" }} fontWeight="semibold" color="blue.400" mt={10} textAlign="justify">
     How Do I Format a RIP?
@@ -365,21 +372,23 @@ const INSIGHT= [
   <Text fontSize={{ base: "sm", sm: "xs", md: "md" }} mt={4} textAlign="justify">
     RIPs must follow a specific template and structure in Markdown format. Each RIP includes:
   </Text>
-  <UnorderedList spacing={2} fontSize={{ base: "sm", sm: "xs", md: "md" }}>
-    <ListItem><Text as="span" fontWeight="bold">Preamble</Text>: Metadata such as RIP number, title, author(s), and status.</ListItem>
-    <ListItem><Text as="span" fontWeight="bold">Abstract</Text>: A brief technical summary.</ListItem>
-    <ListItem><Text as="span" fontWeight="bold">Specification</Text>: A detailed technical description of the proposal.</ListItem>
-    <ListItem><Text as="span" fontWeight="bold">Rationale</Text>: Explanation of design choices.</ListItem>
-    <ListItem><Text as="span" fontWeight="bold">Security Considerations</Text>: Assessment of potential risks.</ListItem>
-    <ListItem><Text as="span" fontWeight="bold">Test Cases (if applicable)</Text>: Mandatory for consensus changes.</ListItem>
-    <ListItem><Text as="span" fontWeight="bold">Reference Implementation (optional)</Text>: Code to aid understanding.</ListItem>
-  </UnorderedList>
+  <List.Root as='ul' gap={2} fontSize={{ base: "sm", sm: "xs", md: "md" }}>
+    <List.Item><Text as="span" fontWeight="bold">Preamble</Text>: Metadata such as RIP number, title, author(s), and status.</List.Item>
+    <List.Item><Text as="span" fontWeight="bold">Abstract</Text>: A brief technical summary.</List.Item>
+    <List.Item><Text as="span" fontWeight="bold">Specification</Text>: A detailed technical description of the proposal.</List.Item>
+    <List.Item><Text as="span" fontWeight="bold">Rationale</Text>: Explanation of design choices.</List.Item>
+    <List.Item><Text as="span" fontWeight="bold">Security Considerations</Text>: Assessment of potential risks.</List.Item>
+    <List.Item><Text as="span" fontWeight="bold">Test Cases (if applicable)</Text>: Mandatory for consensus changes.</List.Item>
+    <List.Item><Text as="span" fontWeight="bold">Reference Implementation (optional)</Text>: Code to aid understanding.</List.Item>
+  </List.Root>
   <Text fontSize={{ base: "sm", sm: "xs", md: "md" }} mt={4} textAlign="justify">
-    Refer to the <Link  href="https://github.com/ethereum/RIPs/blob/master/rip-template.md"
-    isExternal
+    Refer to the <Link
+    href="https://github.com/ethereum/RIPs/blob/master/rip-template.md"
     color="blue.500"
     textDecoration="underline"
-    _hover={{  color: "blue.700" }}>RIP Template</Link> for guidelines.
+    _hover={{  color: "blue.700" }}
+    target='_blank'
+    rel='noopener noreferrer'>RIP Template</Link> for guidelines.
   </Text>
 
   <Text fontSize={{ base: "sm", sm: "xs", md: "md" }} fontWeight="semibold" color="blue.400" mt={10} textAlign="justify">
@@ -388,42 +397,50 @@ const INSIGHT= [
   <Text fontSize={{ base: "sm", sm: "xs", md: "md" }} mt={4} textAlign="justify">
     RIP Editors ensure proposals are well-formatted and ready for review. They do not decide the merits of a proposal. Current RIP editors include:
   </Text>
-  <UnorderedList spacing={2} fontSize={{ base: "sm", sm: "xs", md: "md" }}>
-    <ListItem><Text as="span" fontWeight="bold">Ansgar Dietrichs</Text></ListItem>
-    <ListItem><Text as="span" fontWeight="bold">Carl Beekhuizen</Text></ListItem>
-    <ListItem><Text as="span" fontWeight="bold">Yoav Weiss</Text></ListItem>
-    <ListItem><Text as="span" fontWeight="bold">Nicolas Consigny</Text></ListItem>
-  </UnorderedList>
+  <List.Root as='ul' gap={2} fontSize={{ base: "sm", sm: "xs", md: "md" }}>
+    <List.Item><Text as="span" fontWeight="bold">Ansgar Dietrichs</Text></List.Item>
+    <List.Item><Text as="span" fontWeight="bold">Carl Beekhuizen</Text></List.Item>
+    <List.Item><Text as="span" fontWeight="bold">Yoav Weiss</Text></List.Item>
+    <List.Item><Text as="span" fontWeight="bold">Nicolas Consigny</Text></List.Item>
+  </List.Root>
 
   <Text fontSize={{ base: "sm", sm: "xs", md: "md" }} fontWeight="semibold" color="blue.400" mt={10} textAlign="justify">
     Where Can I Track RIPs and Rollup Progress?
   </Text>
-  <UnorderedList spacing={2} fontSize={{ base: "sm", sm: "xs", md: "md" }}>
-    <ListItem><Text as="span" fontWeight="bold">GitHub Repository</Text>: <Link  href="https://github.com/ethereum/RIPs"
-    isExternal
-    color="blue.500"
-    textDecoration="underline"
-    _hover={{  color: "blue.700" }}>RIP Repository</Link></ListItem>
-    <ListItem><Text as="span" fontWeight="bold">Discussions</Text>: 
-    <Link  href="https://ethereum-magicians.org/"
-    isExternal
-    color="blue.500"
-    textDecoration="underline"
-    _hover={{  color: "blue.700" }}>
-      Ethereum Magicians Forum</Link></ListItem>
-    <ListItem><Text as="span" fontWeight="bold">Rollup Status</Text>: <Link  href="https://l2beat.com/scaling/summary"
-    isExternal
-    color="blue.500"
-    textDecoration="underline"
-    _hover={{  color: "blue.700" }}>
-      L2BEAT</Link></ListItem>
-    <ListItem><Text as="span" fontWeight="bold">Comparison of Rollups</Text>: <Link  href="https://www.rollup.codes/"
-    isExternal
-    color="blue.500"
-    textDecoration="underline"
-    _hover={{  color: "blue.700" }}>
-      rollup.codes</Link></ListItem>
-  </UnorderedList>
+  <List.Root as='ul' gap={2} fontSize={{ base: "sm", sm: "xs", md: "md" }}>
+    <List.Item><Text as="span" fontWeight="bold">GitHub Repository</Text>: <Link
+      href="https://github.com/ethereum/RIPs"
+      color="blue.500"
+      textDecoration="underline"
+      _hover={{  color: "blue.700" }}
+      target='_blank'
+      rel='noopener noreferrer'>RIP Repository</Link></List.Item>
+    <List.Item><Text as="span" fontWeight="bold">Discussions</Text>: 
+    <Link
+      href="https://ethereum-magicians.org/"
+      color="blue.500"
+      textDecoration="underline"
+      _hover={{  color: "blue.700" }}
+      target='_blank'
+      rel='noopener noreferrer'>
+      Ethereum Magicians Forum</Link></List.Item>
+    <List.Item><Text as="span" fontWeight="bold">Rollup Status</Text>: <Link
+      href="https://l2beat.com/scaling/summary"
+      color="blue.500"
+      textDecoration="underline"
+      _hover={{  color: "blue.700" }}
+      target='_blank'
+      rel='noopener noreferrer'>
+      L2BEAT</Link></List.Item>
+    <List.Item><Text as="span" fontWeight="bold">Comparison of Rollups</Text>: <Link
+      href="https://www.rollup.codes/"
+      color="blue.500"
+      textDecoration="underline"
+      _hover={{  color: "blue.700" }}
+      target='_blank'
+      rel='noopener noreferrer'>
+      rollup.codes</Link></List.Item>
+  </List.Root>
 
   <Text fontSize={{ base: "sm", sm: "xs", md: "md" }} fontWeight="semibold" color="blue.400" mt={10} textAlign="justify">
     What Happens After a RIP is Final?
@@ -435,34 +452,40 @@ const INSIGHT= [
   <Text fontSize={{ base: "sm", sm: "xs", md: "md" }} fontWeight="semibold" color="blue.400" mt={10} textAlign="justify">
     How Do I Stay Involved?
   </Text>
-  <UnorderedList spacing={2} fontSize={{ base: "sm", sm: "xs", md: "md" }}>
-    <ListItem><Text as="span" fontWeight="bold">Contribute</Text>: Submit your RIP or provide feedback on existing proposals.</ListItem>
-    <ListItem><Text as="span" fontWeight="bold">Discuss</Text>: Join community discussions on forums and GitHub.</ListItem>
-    <ListItem><Text as="span" fontWeight="bold">Engage</Text>: Present your RIP at Rollcall meetings to build consensus.</ListItem>
-  </UnorderedList>
+  <List.Root as='ul' gap={2} fontSize={{ base: "sm", sm: "xs", md: "md" }}>
+    <List.Item><Text as="span" fontWeight="bold">Contribute</Text>: Submit your RIP or provide feedback on existing proposals.</List.Item>
+    <List.Item><Text as="span" fontWeight="bold">Discuss</Text>: Join community discussions on forums and GitHub.</List.Item>
+    <List.Item><Text as="span" fontWeight="bold">Engage</Text>: Present your RIP at Rollcall meetings to build consensus.</List.Item>
+  </List.Root>
 
   <Text fontSize={{ base: "sm", sm: "xs", md: "md" }} fontWeight="semibold" color="blue.400" mt={10} textAlign="justify">
     Where Can I Find More Information?
   </Text>
-  <UnorderedList spacing={2} fontSize={{ base: "sm", sm: "xs", md: "md" }}>
-    <ListItem><Text as="span" fontWeight="bold">RIP Template</Text>: <Link  href="https://github.com/ethereum/RIPs/blob/master/rip-template.md"
-    isExternal
-    color="blue.500"
-    textDecoration="underline"
-    _hover={{  color: "blue.700" }}>Link to Template</Link></ListItem>
-    <ListItem><Text as="span" fontWeight="bold">RIP Discussions</Text>: <Link  href="https://ethereum-magicians.org/"
-    isExternal
-    color="blue.500"
-    textDecoration="underline"
-    _hover={{  color: "blue.700" }}>
-      Ethereum Magicians Forum</Link></ListItem>
-    <ListItem><Text as="span" fontWeight="bold">Rollup Specifications</Text>: <Link  href="https://www.rollup.codes/"
-    isExternal
-    color="blue.500"
-    textDecoration="underline"
-    _hover={{  color: "blue.700" }}>
-      rollup.codes</Link></ListItem>
-  </UnorderedList>
+  <List.Root as='ul' gap={2} fontSize={{ base: "sm", sm: "xs", md: "md" }}>
+    <List.Item><Text as="span" fontWeight="bold">RIP Template</Text>: <Link
+      href="https://github.com/ethereum/RIPs/blob/master/rip-template.md"
+      color="blue.500"
+      textDecoration="underline"
+      _hover={{  color: "blue.700" }}
+      target='_blank'
+      rel='noopener noreferrer'>Link to Template</Link></List.Item>
+    <List.Item><Text as="span" fontWeight="bold">RIP Discussions</Text>: <Link
+      href="https://ethereum-magicians.org/"
+      color="blue.500"
+      textDecoration="underline"
+      _hover={{  color: "blue.700" }}
+      target='_blank'
+      rel='noopener noreferrer'>
+      Ethereum Magicians Forum</Link></List.Item>
+    <List.Item><Text as="span" fontWeight="bold">Rollup Specifications</Text>: <Link
+      href="https://www.rollup.codes/"
+      color="blue.500"
+      textDecoration="underline"
+      _hover={{  color: "blue.700" }}
+      target='_blank'
+      rel='noopener noreferrer'>
+      rollup.codes</Link></List.Item>
+  </List.Root>
 
   <Text fontSize={{ base: "sm", sm: "xs", md: "md" }} mt={6} textAlign="justify">
     By collaborating through RIPs, we can drive innovation and ensure a shared, open-source approach to improving Ethereum rollup solutions.

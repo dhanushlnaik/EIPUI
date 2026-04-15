@@ -1,16 +1,5 @@
-import {
-  Box,
-  Text,
-  Input,
-  useColorModeValue,
-  Wrap,
-  WrapItem,
-  Badge,
-  Link,
-  Flex,
-  Button,
-  Select,
-} from "@chakra-ui/react";
+import { Box, Text, Input, Wrap, WrapItem, Badge, Link, Flex, Button, Select, Icon } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
 import { CCardBody, CSmartTable } from "@coreui/react-pro";
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
@@ -102,7 +91,7 @@ interface EIPData {
   __v: number;
 }
 import "@coreui/coreui/dist/css/coreui.min.css";
-import { DownloadIcon } from "@chakra-ui/icons";
+import { LuDownload } from 'react-icons/lu';
 
 interface TableProps {
   type: string;
@@ -488,7 +477,7 @@ const Table: React.FC<TableProps> = ({ type }) => {
 
   const currentYear = new Date().getFullYear();
   const startYear = 2015;
-  const yearsArr = [];
+  const yearsArr: number[] = [];
 
   for (let year = startYear; year <= currentYear; year++) {
     yearsArr.push(year);
@@ -522,24 +511,24 @@ const Table: React.FC<TableProps> = ({ type }) => {
           className="scrollbarDesign"
         >
           {isLoading ? ( // Show loader while data is loading
-            <Box
+            (<Box
             display="flex"
             justifyContent="center"
             alignItems="center"
             flexDirection="column" // Stack spinner and text vertically
             height="200px"
           >
-            <Spinner size="xl" /> {/* Larger spinner */}
-            <Text 
-              mt={4}               // Add margin-top for spacing
-              fontSize="lg"        // Make the text larger
-              fontWeight="bold"    // Make the text bold
-              color="gray.600"     // Set a nice gray color
-              textAlign="center"   // Center the text
-            >
-              Fetching data...
-            </Text>
-          </Box>
+              <Spinner size="xl" /> {/* Larger spinner */}
+              <Text 
+                mt={4}               // Add margin-top for spacing
+                fontSize="lg"        // Make the text larger
+                fontWeight="bold"    // Make the text bold
+                color="gray.600"     // Set a nice gray color
+                textAlign="center"   // Center the text
+              >
+                Fetching data...
+              </Text>
+            </Box>)
           
           ) : (
             <>
@@ -549,7 +538,7 @@ const Table: React.FC<TableProps> = ({ type }) => {
                   <Box>
                   
                     <Button
-                      colorScheme="blue"
+                      colorPalette="blue"
                       variant="outline"
                       fontSize={"14px"}
                       fontWeight={"bold"}
@@ -566,7 +555,7 @@ const Table: React.FC<TableProps> = ({ type }) => {
                         }
                       }}
                     >
-                      <DownloadIcon marginEnd={"1.5"} />
+                      <Icon as={LuDownload} marginEnd={"1.5"} />
                       Download Reports
                     </Button>
                     {/* </Flex> */}

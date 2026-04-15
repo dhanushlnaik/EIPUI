@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'; // Import useRouter hook
 import AllLayout from '@/components/Layout';
 import Author from '@/components/Author';
 import CloseableAdCard from "@/components/CloseableAdCard";
-import { Box } from "@chakra-ui/react";
+import { Steps, Box } from "@chakra-ui/react";
 
 const Authors: React.FC = () => {
     const router = useRouter();

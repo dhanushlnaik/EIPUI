@@ -1,19 +1,6 @@
-import {
-  Table,
-  Thead,
-  Tbody,
-  Tfoot,
-  Tr,
-  Th,
-  Td,
-  TableCaption,
-  TableContainer,
-  useColorModeValue,
-  Text,
-  Spinner,
-  Button,
-  Flex,
-} from "@chakra-ui/react";
+import { TableContainer, Thead, Tbody, Tr, Th, Td } from "@/components/ui/compat";
+import { Steps, Table, Tfoot, TableCaption, Text, Spinner, Button, Flex } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { CSVLink } from "react-csv";
@@ -634,7 +621,7 @@ const downloadExcelWithSummary = (csvData: CSVData[], summary: string, year: num
     {/* <Button fontSize={{ base: "0.6rem", md: "md" }} colorScheme="blue">
       {loading2 ? <Spinner size="sm" /> : "Download CSV"}
     </Button> */}
-    <Button fontSize={{ base: "0.6rem", md: "md" }} colorScheme="blue" onClick={async (e) =>{
+    <Button fontSize={{ base: "0.6rem", md: "md" }} colorPalette="blue" onClick={async (e) =>{
       handleDownload(e, data, parseInt(year), parseInt(month))
       await axios.post("/api/DownloadCounter");
     } }>
@@ -642,25 +629,25 @@ const downloadExcelWithSummary = (csvData: CSVData[], summary: string, year: num
 </Button>
   {/* </CSVLink> */}
 </Flex>
-      <TableContainer bg={bg} padding={4} rounded={"xl"} marginTop={8}>
-        <Table variant="simple" size="md" bg={bg} padding={8}>
+      <Table.ScrollArea bg={bg} padding={4} rounded={"xl"} marginTop={8}>
+        <Table.Root variant="simple" size="md" bg={bg} padding={8}>
           {/* <TableCaption>eipsinsight.com</TableCaption> */}
-          <Thead>
-            <Tr>
-              <Th>Status</Th>
-              <Th>EIP</Th>
-              <Th>ERC</Th>
-              <Th>RIP</Th>
+          <Table.Header>
+            <Table.Row>
+              <Table.ColumnHeader>Status</Table.ColumnHeader>
+              <Table.ColumnHeader>EIP</Table.ColumnHeader>
+              <Table.ColumnHeader>ERC</Table.ColumnHeader>
+              <Table.ColumnHeader>RIP</Table.ColumnHeader>
               {/* <Th isNumeric>Total</Th> */}
-            </Tr>
-          </Thead>
-          <Tbody>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
             {tableData?.map((item) => {
               return (
                 <>
-                  <Tr>
-                    <Td>{item._id}</Td>
-                    <Td>
+                  <Table.Row>
+                    <Table.Cell>{item._id}</Table.Cell>
+                    <Table.Cell>
                       <a
                         href={`/monthly/eip/${year}/${month}/${
                           item._id === "Last Call" ? "LastCall" : item._id
@@ -668,8 +655,8 @@ const downloadExcelWithSummary = (csvData: CSVData[], summary: string, year: num
                       >
                         {item.eipCount}
                       </a>
-                    </Td>
-                    <Td>
+                    </Table.Cell>
+                    <Table.Cell>
                       <a
                         href={`/monthly/erc/${year}/${month}/${
                           item._id === "Last Call" ? "LastCall" : item._id
@@ -677,8 +664,8 @@ const downloadExcelWithSummary = (csvData: CSVData[], summary: string, year: num
                       >
                         {item.ercCount}
                       </a>
-                    </Td>
-                    <Td>
+                    </Table.Cell>
+                    <Table.Cell>
                       <a
                         href={`/monthly/rip/${year}/${month}/${
                           item._id === "Last Call" ? "LastCall" : item._id
@@ -686,17 +673,17 @@ const downloadExcelWithSummary = (csvData: CSVData[], summary: string, year: num
                       >
                         {item.ripCount}
                       </a>
-                    </Td>
+                    </Table.Cell>
                    
-                  </Tr>
+                  </Table.Row>
                 </>
               );
             })}
            
             
-          </Tbody>
-        </Table>
-      </TableContainer>
+          </Table.Body>
+        </Table.Root>
+      </Table.ScrollArea>
     </>
   );
 }

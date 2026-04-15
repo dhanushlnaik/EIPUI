@@ -1,4 +1,5 @@
-import { Box, Text, Flex, useColorModeValue } from "@chakra-ui/react";
+import { Steps, Box, Text, Flex } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
 import InsightsLeaderboard from "@/components/InsightsLeaderboard";
 import InsightsOpenPrsIssues from "@/components/InsightOpenPrsIssues";
 import InsightSummary from "@/components/InsightSummaryTable";

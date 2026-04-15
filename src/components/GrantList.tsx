@@ -1,19 +1,6 @@
 import React from 'react';
-import {
-  Box,
-  VStack,
-  SimpleGrid,
-  HStack,
-  Image,
-  Text,
-  Badge,
-  Tag,
-  Button,
-  Link as ChakraLink,
-  useColorModeValue,
-  Heading,
-  Icon,
-} from '@chakra-ui/react';
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, VStack, SimpleGrid, HStack, Image, Text, Badge, Tag, Button, Link as ChakraLink, Heading, Icon } from "@chakra-ui/react";
 import { FaExternalLinkAlt, FaAward } from 'react-icons/fa';
 import NLink from 'next/link';
 
@@ -122,7 +109,7 @@ export default function GrantList() {
       borderColor={borderColor}
       boxShadow={useColorModeValue('sm', 'md')}
     >
-      <HStack spacing={3} mb={6}>
+      <HStack gap={3} mb={6}>
         <Icon as={FaAward} boxSize={8} color={useColorModeValue('purple.500', 'purple.400')} />
         <Heading 
           as="h2" 
@@ -134,7 +121,7 @@ export default function GrantList() {
           Grants & Funding
         </Heading>
       </HStack>
-      <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={3}>
+      <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={3}>
         {grants.map((grant) => (
           <Box
             key={grant.id}
@@ -150,9 +137,9 @@ export default function GrantList() {
               borderColor: useColorModeValue('blue.400', 'blue.500'),
             }}
           >
-            <VStack align="start" spacing={3}>
+            <VStack align="start" gap={3}>
               <HStack justify="space-between" w="full">
-                <HStack spacing={2}>
+                <HStack gap={2}>
                   {grant.logo && <Image src={grant.logo} alt={grant.organization} h={8} objectFit="contain" />}
                   <Text fontSize="md" fontWeight="600" color={textColor}>
                     {grant.organization}
@@ -164,14 +151,14 @@ export default function GrantList() {
                     if (tier === 'Significant' || tier === 'Small') {
                       return (
                         <ChakraLink as={NLink} href="/donate" _hover={{ textDecoration: 'none' }}>
-                          <Badge as="span" colorScheme={tierColor(tier)} variant="subtle" px={3} py={1} cursor="pointer">
+                          <Badge as="span" colorPalette={tierColor(tier)} variant="subtle" px={3} py={1} cursor="pointer">
                             {tier}
                           </Badge>
                         </ChakraLink>
                       );
                     }
                     return (
-                      <Badge colorScheme={tierColor(tier)} variant="subtle">
+                      <Badge colorPalette={tierColor(tier)} variant="subtle">
                         {tier}
                       </Badge>
                     );
@@ -183,15 +170,15 @@ export default function GrantList() {
                 {grant.title}
               </Text>
               {grant.impact && (
-                <Text fontSize="xs" color={textColor} lineHeight="short" noOfLines={3}>
+                <Text fontSize="xs" color={textColor} lineHeight="short" lineClamp={3}>
                   {grant.impact}
                 </Text>
               )}
-              <HStack spacing={1} flexWrap="wrap">
+              <HStack gap={1} flexWrap="wrap">
                 {grant.tags.map((tag) => (
-                  <Tag key={tag} size="sm" variant="subtle" colorScheme="blue">
+                  <Tag.Root key={tag} size="sm" variant="subtle" colorPalette="blue">
                     {tag}
-                  </Tag>
+                  </Tag.Root>
                 ))}
               </HStack>
 
@@ -203,12 +190,9 @@ export default function GrantList() {
                   rel="noopener noreferrer"
                   size="xs"
                   variant="outline"
-                  colorScheme="blue"
-                  rightIcon={<FaExternalLinkAlt size={10} />}
-                  w="full"
-                >
-                  Learn More
-                </Button>
+                  colorPalette="blue"
+                  w="full">Learn More
+                                  <FaExternalLinkAlt size={10} /></Button>
               )}
             </VStack>
           </Box>

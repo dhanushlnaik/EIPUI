@@ -1,19 +1,8 @@
+import { Progress } from "@/components/ui/compat";
 import React, { useState, useEffect } from 'react';
-import {
-  Box,
-  Text,
-  Flex,
-  Icon,
-  useColorModeValue,
-  Link,
-  HStack,
-  VStack,
-  IconButton,
-  Badge,
-  Button,
-  Progress,
-  Tooltip,
-} from '@chakra-ui/react';
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Text, Flex, Icon, Link, HStack, VStack, IconButton, Badge, Button } from "@chakra-ui/react";
+import { Tooltip } from '@/components/ui/tooltip';
 import { 
   FaGlobe, 
   FaExternalLinkAlt, 
@@ -114,7 +103,7 @@ const EtherWorldCreativeAd: React.FC = () => {
               position="relative"
               overflow="hidden"
             >
-              <HStack spacing={3}>
+              <HStack gap={3}>
                 <MotionBox
                   animate={{ rotate: 360, scale: [1, 1.2, 1] }}
                   transition={{ duration: 2, repeat: Infinity }}
@@ -164,7 +153,7 @@ const EtherWorldCreativeAd: React.FC = () => {
               />
               
               <Flex align="center" justify="space-between" color="white" position="relative" zIndex={1}>
-                <HStack spacing={4}>
+                <HStack gap={4}>
                   <MotionBox
                     animate={{ 
                       rotate: [0, 360],
@@ -174,7 +163,7 @@ const EtherWorldCreativeAd: React.FC = () => {
                   >
                     <Icon as={FaRocket} boxSize={8} />
                   </MotionBox>
-                  <VStack align="start" spacing={1}>
+                  <VStack align="start" gap={1}>
                     <Text fontSize="xl" fontWeight="bold">
                       EtherWorld Premium
                     </Text>
@@ -229,9 +218,9 @@ const EtherWorldCreativeAd: React.FC = () => {
                 />
               ))}
 
-              <VStack spacing={4}>
+              <VStack gap={4}>
                 <HStack justify="space-between" w="full">
-                  <HStack spacing={3}>
+                  <HStack gap={3}>
                     <MotionBox
                       animate={{ 
                         rotateY: 360,
@@ -241,52 +230,55 @@ const EtherWorldCreativeAd: React.FC = () => {
                     >
                       <Icon as={FaMagic} color={accentColor} boxSize={8} />
                     </MotionBox>
-                    <VStack align="start" spacing={0}>
+                    <VStack align="start" gap={0}>
                       <Text fontSize="xl" fontWeight="bold">
                         EtherWorld Universe
                       </Text>
-                      <HStack spacing={1}>
-                        <Badge colorScheme="purple" variant="solid">Magic</Badge>
-                        <Badge colorScheme="pink" variant="solid">Partner</Badge>
+                      <HStack gap={1}>
+                        <Badge colorPalette="purple" variant="solid">Magic</Badge>
+                        <Badge colorPalette="pink" variant="solid">Partner</Badge>
                       </HStack>
                     </VStack>
                   </HStack>
                   
                   <IconButton
                     aria-label="Close"
-                    icon={<FaTimes />}
                     size="sm"
                     variant="ghost"
-                    onClick={() => setIsVisible(false)}
-                  />
+                    onClick={() => setIsVisible(false)}><FaTimes /></IconButton>
                 </HStack>
 
-                <Progress 
-                  value={(interactionCount / 3) * 100} 
-                  colorScheme="purple" 
-                  w="full" 
+                <Progress.Root
+                  value={(interactionCount / 3) * 100}
+                  colorPalette="purple"
+                  w="full"
                   borderRadius="full"
                   bg="gray.200"
-                  size="sm"
-                />
+                  size="sm">
+                  <Progress.Track>
+                    <Progress.Range />
+                  </Progress.Track>
+                </Progress.Root>
 
-                <HStack spacing={4} w="full">
-                  <Tooltip label="Like this magic!">
+                <HStack gap={4} w="full">
+                  <Tooltip content="Like this magic!">
                     <MotionBox
                       whileHover={{ scale: 1.2 }}
                       whileTap={{ scale: 0.9 }}
                     >
                       <IconButton
                         aria-label="Like"
-                        icon={<FaHeart />}
-                        colorScheme={isLiked ? "red" : "gray"}
+                        colorPalette={isLiked ? "red" : "gray"}
                         variant={isLiked ? "solid" : "outline"}
-                        onClick={handleLike}
-                      />
+                        onClick={handleLike}><FaHeart /></IconButton>
                     </MotionBox>
                   </Tooltip>
 
-                  <Link href="https://etherworld.co" isExternal flex={1}>
+                  <Link
+                    href="https://etherworld.co"
+                    flex={1}
+                    target='_blank'
+                    rel='noopener noreferrer'>
                     <MotionBox
                       whileHover={{ scale: 1.05, rotateZ: 2 }}
                       whileTap={{ scale: 0.95 }}
@@ -297,29 +289,24 @@ const EtherWorldCreativeAd: React.FC = () => {
                         color="white"
                         size="lg"
                         w="full"
-                        rightIcon={<FaExternalLinkAlt />}
                         _hover={{
                           bgGradient: "linear(to-r, purple.600, pink.600)",
                         }}
-                        fontWeight="bold"
-                      >
-                        Enter the Magic Portal ✨
-                      </Button>
+                        fontWeight="bold">Enter the Magic Portal ✨
+                                              <FaExternalLinkAlt /></Button>
                     </MotionBox>
                   </Link>
 
-                  <Tooltip label="More interactions!">
+                  <Tooltip content="More interactions!">
                     <MotionBox
                       whileHover={{ scale: 1.2, rotate: 360 }}
                       whileTap={{ scale: 0.9 }}
                     >
                       <IconButton
                         aria-label="Interact"
-                        icon={<FaGamepad />}
-                        colorScheme="purple"
+                        colorPalette="purple"
                         variant="outline"
-                        onClick={handleInteraction}
-                      />
+                        onClick={handleInteraction}><FaGamepad /></IconButton>
                     </MotionBox>
                   </Tooltip>
                 </HStack>
@@ -372,7 +359,7 @@ const EtherWorldCreativeAd: React.FC = () => {
                 </MotionBox>
               ))}
 
-              <VStack spacing={4} color="white" position="relative" zIndex={1}>
+              <VStack gap={4} color="white" position="relative" zIndex={1}>
                 <MotionBox
                   animate={{ 
                     scale: [1, 1.3, 1],
@@ -391,7 +378,7 @@ const EtherWorldCreativeAd: React.FC = () => {
                   You've unlocked the EtherWorld Magic Portal!
                 </Text>
 
-                <Link href="https://etherworld.co" isExternal>
+                <Link href="https://etherworld.co" target='_blank' rel='noopener noreferrer'>
                   <MotionBox
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
@@ -400,12 +387,9 @@ const EtherWorldCreativeAd: React.FC = () => {
                       bg="white"
                       color="gold"
                       size="lg"
-                      rightIcon={<FaRocket />}
                       fontWeight="bold"
-                      _hover={{ bg: "gray.100" }}
-                    >
-                      Claim Your Reward! 🏆
-                    </Button>
+                      _hover={{ bg: "gray.100" }}>Claim Your Reward! 🏆
+                                          <FaRocket /></Button>
                   </MotionBox>
                 </Link>
               </VStack>

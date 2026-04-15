@@ -1,5 +1,6 @@
 import react, {useEffect, useState} from 'react';
-import {Box, Spinner, Text, useColorModeValue} from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
+import { Steps, Box, Spinner, Text } from "@chakra-ui/react";
 import NextLink from "next/link";
 import React from "react";
 import ReactMarkdown from 'react-markdown';

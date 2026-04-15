@@ -1,13 +1,5 @@
-import {
-  Box,
-  Text,
-  useColorModeValue,
-  Wrap,
-  WrapItem,
-  Badge,
-  Link,
-  Button,
-} from "@chakra-ui/react";
+import { Box, Text, Wrap, WrapItem, Badge, Link, Button, Icon } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
 import { CCardBody, CSmartTable } from "@coreui/react-pro";
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
@@ -43,7 +35,7 @@ interface EIP {
 
 import "@coreui/coreui/dist/css/coreui.min.css";
 import LoaderComponent from "./Loader";
-import { DownloadIcon } from "@chakra-ui/icons";
+import { LuDownload } from 'react-icons/lu';
 interface TabProps {
   cat: string;
   type: string;
@@ -217,7 +209,7 @@ const TableStat: React.FC<TabProps> = ({ cat, type }) => {
     >
       <Box>
         <Button
-          colorScheme="blue"
+          colorPalette="blue"
           variant="outline"
           fontSize={"14px"}
           fontWeight={"bold"}
@@ -234,12 +226,11 @@ const TableStat: React.FC<TabProps> = ({ cat, type }) => {
             }
           }}
         >
-          <DownloadIcon marginEnd={"1.5"} />
+          <Icon as={LuDownload} marginEnd={"1.5"} />
           Download Reports
         </Button>
       </Box>
       <br/>
-
       <CCardBody
         style={{
           fontSize: "13px",
@@ -247,14 +238,14 @@ const TableStat: React.FC<TabProps> = ({ cat, type }) => {
         className="scrollbarDesign"
       >
         {isLoading ? ( // Show loader while data is loading
-          <Box
+          (<Box
             display="flex"
             justifyContent="center"
             alignItems="center"
             height="200px"
           >
             <Spinner />
-          </Box>
+          </Box>)
         ) : (
           <CSmartTable
   items={filteredDataWithMergedYearsAndMonths.sort(

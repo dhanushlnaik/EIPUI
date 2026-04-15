@@ -1,18 +1,7 @@
+import { Divider } from "@/components/ui/compat";
 import React, { useMemo } from 'react';
-import {
-  Box,
-  Heading,
-  Text,
-  useColorModeValue,
-  Flex,
-  Button,
-  VStack,
-  HStack,
-  Avatar,
-  Badge,
-  Divider,
-  Spinner,
-} from '@chakra-ui/react';
+import { useColorModeValue } from "../ui/color-mode";
+import { Steps, Box, Heading, Text, Flex, Button, VStack, HStack, Avatar, Badge, Spinner } from "@chakra-ui/react";
 import { FiDownload, FiClock, FiGitPullRequest } from 'react-icons/fi';
 import { CSVLink } from 'react-csv';
 import dynamic from 'next/dynamic';
@@ -92,7 +81,7 @@ const EditorActivityTimeline: React.FC<EditorActivityTimelineProps> = ({
   }));
 
   return (
-    <VStack spacing={6} align="stretch">
+    <VStack gap={6} align="stretch">
       {/* Timeline Chart */}
       <Box
         bg={cardBg}
@@ -111,16 +100,14 @@ const EditorActivityTimeline: React.FC<EditorActivityTimelineProps> = ({
             </Text>
           </Box>
           <CSVLink data={csvData} filename={`activity-timeline-${timePeriod}.csv`}>
-            <Button size="sm" leftIcon={<FiDownload />} colorScheme="blue">
-              Export
-            </Button>
+            <Button size="sm" colorPalette="blue"><FiDownload />Export
+                          </Button>
           </CSVLink>
         </Flex>
         <Box height="400px">
           <DualAxes {...chartConfig} />
         </Box>
       </Box>
-
       {/* Recent Activities */}
       <Box
         bg={cardBg}
@@ -132,37 +119,31 @@ const EditorActivityTimeline: React.FC<EditorActivityTimelineProps> = ({
         <Heading size="lg" fontWeight="bold" color={headerColor} mb={4}>
           Recent Review Activities
         </Heading>
-        <VStack spacing={3} align="stretch" divider={<Divider />}>
-          {recentActivities.slice(0, 10).map((activity: any, index: number) => (
+        <VStack gap={3} align="stretch">{recentActivities.slice(0, 10).map((activity: any, index: number) => (
             <Flex key={index} align="center" gap={4}>
-              <Avatar
-                size="sm"
-                name={activity.editor}
-                src={`https://github.com/${activity.editor}.png?size=50`}
-              />
-              <VStack align="start" spacing={0} flex={1}>
+              <Avatar.Root size="sm"><Avatar.Fallback name={activity.editor} /><Avatar.Image src={`https://github.com/${activity.editor}.png?size=50`} /></Avatar.Root>
+              <VStack align="start" gap={0} flex={1}>
                 <HStack>
                   <Text fontWeight="semibold">{activity.editor}</Text>
-                  <Badge colorScheme="blue">{activity.action}</Badge>
+                  <Badge colorPalette="blue">{activity.action}</Badge>
                 </HStack>
                 <Text fontSize="sm" color="gray.500">
                   PR #{activity.prNumber} • {activity.repo}
                 </Text>
               </VStack>
-              <VStack align="end" spacing={0}>
+              <VStack align="end" gap={0}>
                 <Text fontSize="xs" color="gray.500">
                   {activity.timeAgo}
                 </Text>
                 {activity.responseTime && (
-                  <HStack spacing={1}>
+                  <HStack gap={1}>
                     <FiClock size={12} />
                     <Text fontSize="xs">{activity.responseTime}h</Text>
                   </HStack>
                 )}
               </VStack>
             </Flex>
-          ))}
-        </VStack>
+          ))}</VStack>
       </Box>
     </VStack>
   );

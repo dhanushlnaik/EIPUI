@@ -1,12 +1,5 @@
-import {
-  Box,
-  Grid,
-  Heading,
-  Link,
-  Image,
-  Text,
-  useColorModeValue,
-} from "@chakra-ui/react";
+import { Steps, Box, Grid, Heading, Link, Image, Text } from "@chakra-ui/react";
+import { useColorModeValue } from "./ui/color-mode";
 import { FC } from "react";
 import Header from "./Header";
 
@@ -49,7 +42,7 @@ const ToolCard: FC<ToolCardProps> = ({ imageSrc, label, link }) => {
           objectFit="contain"
           // mb={4}
         />
-        <Text fontSize="2xl" fontWeight="bold" noOfLines={2}>
+        <Text fontSize="2xl" fontWeight="bold" lineClamp={2}>
           {label}
         </Text>
       </Box>
